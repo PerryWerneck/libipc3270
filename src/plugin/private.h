@@ -29,41 +29,24 @@
  */
 
  /**
-  * @brief Private definitions for pw3270 IPC linux plugin.
+  * @brief Common definitions for pw3270 IPC plugin.
   *
   */
 
-#ifndef LINUX_PRIVATE_H_INCLUDED
+#ifndef PRIVATE_H_INCLUDED
 
-	#define LINUX_PRIVATE_H_INCLUDED
+	#define PRIVATE_H_INCLUDED
 
 	#include <config.h>
-
-	#define ENABLE_NLS
-	#define GETTEXT_PACKAGE PACKAGE_NAME
-
-	#include <libintl.h>
-	#include <glib/gi18n.h>
-	#include <gio/gio.h>
-
 	#include <lib3270/ipc.h>
 
-	G_BEGIN_DECLS
+	int pw3270_plugin_start(GtkWidget *window, GtkWidget *terminal);
+	int pw3270_plugin_stop(GtkWidget *window, GtkWidget *terminal);
 
-	typedef struct _ipc3270			ipc3270;
-	typedef struct _ipc3270Class	ipc3270Class;
+	#ifdef DEBUG
+		#define debug( fmt, ... )  fprintf(stderr,"%s(%d) " fmt "\n", __FILE__, (int) __LINE__, __VA_ARGS__ ); fflush(stderr);
+	#else
+		#define debug(...) /* __VA_ARGS */
+	#endif
 
-	struct _ipc3270 {
-		GObject			  parent;
-		GDBusConnection	* connection;
-		GDBusProxy		* proxy;
-	};
-
-	struct _ipc3270Class {
-		GObjectClass parent;
-	};
-
-
-	G_END_DECLS
-
-#endif // LINUX_PRIVATE_H_INCLUDED
+#endif // PRIVATE_H_INCLUDED

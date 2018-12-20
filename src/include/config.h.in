@@ -1,8 +1,7 @@
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
+ * "Software G3270, desenvolvido com base nos códigos fontes do WC3270  e  X3270
  * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob
- * o nome G3270.
+ * aplicativos mainframe. Registro no INPI sob o nome G3270.
  *
  * Copyright (C) <2008> <Banco do Brasil S.A.>
  *
@@ -19,51 +18,24 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como - e possui - linhas de código.
+ * Este programa está nomeado como config.h e possui - linhas de código.
  *
  * Contatos:
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
+ * erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
  *
  */
 
- /**
-  * @brief Private definitions for pw3270 IPC linux plugin.
-  *
-  */
+#ifndef LIBV3270_CONFIG_INCLUDED
 
-#ifndef LINUX_PRIVATE_H_INCLUDED
+	#define LIBV3270_CONFIG_INCLUDED 1
 
-	#define LINUX_PRIVATE_H_INCLUDED
+	#undef PACKAGE_NAME
+	#undef PACKAGE_VERSION
+	#undef PACKAGE_RELEASE
 
-	#include <config.h>
+	#undef HAVE_GNOME
+	#undef HAVE_GTKMAC
 
-	#define ENABLE_NLS
-	#define GETTEXT_PACKAGE PACKAGE_NAME
-
-	#include <libintl.h>
-	#include <glib/gi18n.h>
-	#include <gio/gio.h>
-
-	#include <lib3270/ipc.h>
-
-	G_BEGIN_DECLS
-
-	typedef struct _ipc3270			ipc3270;
-	typedef struct _ipc3270Class	ipc3270Class;
-
-	struct _ipc3270 {
-		GObject			  parent;
-		GDBusConnection	* connection;
-		GDBusProxy		* proxy;
-	};
-
-	struct _ipc3270Class {
-		GObjectClass parent;
-	};
-
-
-	G_END_DECLS
-
-#endif // LINUX_PRIVATE_H_INCLUDED
+#endif /* LIBV3270_CONFIG_INCLUDED */

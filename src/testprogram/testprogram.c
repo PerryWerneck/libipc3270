@@ -34,7 +34,8 @@
   *
   */
 
- #include "../private.h"
+ #include <v3270.h>
+ #include "../plugin/private.h"
  #include <stdlib.h>
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/

@@ -33,21 +33,11 @@
   *
   */
 
-#ifndef PRIVATE_H_INCLUDED
+#ifndef PW3270_IPC_H_INCLUDED
 
-	#define PRIVATE_H_INCLUDED
+	#define PW3270_IPC_H_INCLUDED
 
-	#define PACKAGE_NAME "pw3270"
-
-	#define ENABLE_NLS
-	#define GETTEXT_PACKAGE PACKAGE_NAME
-
-	#include <libintl.h>
-	#include <glib/gi18n.h>
 	#include <gtk/gtk.h>
-	#include <gio/gio.h>
-
-	#include <v3270.h>
 
 	G_BEGIN_DECLS
 
@@ -72,7 +62,4 @@
 		#define debug(...) /* __VA_ARGS */
 	#endif
 
-	int pw3270_plugin_start(GtkWidget *window, GtkWidget *terminal);
-	int pw3270_plugin_stop(GtkWidget *window, GtkWidget *terminal);
-
-#endif // PRIVATE_H_INCLUDED
+#endif // PW3270_IPC_H_INCLUDED

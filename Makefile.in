@@ -1,0 +1,294 @@
+#
+# "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
+# (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
+# aplicativos mainframe. Registro no INPI sob o nome G3270.
+#
+# Copyright (C) <2008> <Banco do Brasil S.A.>
+#
+# Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
+# os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
+# Free Software Foundation.
+#
+# Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
+# GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
+# A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
+# obter mais detalhes.
+#
+# Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
+# programa;  se  não, escreva para a Free Software Foundation, Inc., 59 Temple
+# Place, Suite 330, Boston, MA, 02111-1307, USA
+#
+# Contatos:
+#
+# perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
+# erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
+#
+
+#---[ Library configuration ]------------------------------------------------------------
+
+MODULE_NAME=ipc3270
+
+SOURCES= \
+	$(wildcard src/plugin/*.c) \
+	$(wildcard src/@OSNAME@/*.c) \
+	$(wildcard src/@OSNAME@/*.rc)
+
+TEST_SOURCES= \
+	$(wildcard src/testprogram/*.c)
+
+#---[ Tools ]----------------------------------------------------------------------------
+
+CC=@CC@
+LD=@CC@
+LN_S=@LN_S@
+MKDIR=@MKDIR_P@
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+XGETTEXT=@XGETTEXT@
+MSGCAT=@MSGCAT@
+WINDRES=@WINDRES@
+
+#---[ Paths ]----------------------------------------------------------------------------
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+localedir=@localedir@
+docdir=@docdir@
+sysconfdir=@sysconfdir@
+
+BASEDIR=@BASEDIR@
+
+POTDIR=$(BASEDIR)/.pot
+
+OBJDIR=$(BASEDIR)/.obj/$(MODULE_NAME)
+OBJDBG=$(OBJDIR)/Debug
+OBJRLS=$(OBJDIR)/Release
+
+BINDIR=$(BASEDIR)/.bin
+BINDBG=$(BINDIR)/Debug
+BINRLS=$(BINDIR)/Release
+
+#---[ Rules ]----------------------------------------------------------------------------
+
+DEPENDS= \
+	Makefile \
+	src/include/*.h \
+	src/include/lib3270/*.h \
+	src/linux/*.h
+
+CFLAGS= \
+	@CFLAGS@ \
+	-g \
+	-Isrc/include \
+	-DBUILD_DATE=`date +%Y%m%d` \
+	@LIB3270_CFLAGS@ \
+	@V3270_CFLAGS@ \
+	@GTK_CFLAGS@ \
+	@GLIB_CFLAGS@
+
+LIBS= \
+	@LIBS@ \
+	@GTK_LIBS@ \
+	@GLIB_LIBS@ \
+	@LIBICONV@ \
+	@INTL_LIBS@ \
+	@LIB3270_LIBS@ \
+	@V3270_LIBS@
+
+#---[ Debug Rules ]----------------------------------------------------------------------
+
+$(OBJDBG)/%.o: \
+	%.c \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+
+	@$(CC) \
+		$(CFLAGS) \
+		-Wall -Wextra -fstack-check \
+		-DDEBUG=1 \
+		-o $@ -c $<
+
+$(OBJDBG)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(WINDRES) $< -O coff -o $@
+
+#---[ Release Rules ]--------------------------------------------------------------------
+
+$(OBJRLS)/%.o: \
+	%.c \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(CC) \
+		$(CFLAGS) \
+		-DNDEBUG=1 \
+		-o $@ -c $<
+
+$(OBJRLS)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@$(WINDRES) $< -O coff -o $@
+
+#---[ Misc Rules ]-----------------------------------------------------------------------
+
+$(POTDIR)/$(MODULE_NAME)/%.pot: \
+	%.c
+
+	@echo $(notdir $@) ...
+	@$(MKDIR) `dirname $@`
+	@$(XGETTEXT) \
+		--language=C \
+		--keyword=_ \
+		--keyword=N_ \
+		--keyword=MSG_:2 \
+		--output=$@ \
+		$<
+	@touch $@
+
+$(POTDIR)/$(MODULE_NAME)/%.pot: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) `dirname $@`
+	@touch $@
+
+
+#---[ Release Targets ]------------------------------------------------------------------
+
+all: \
+	$(BINRLS)/$(MODULE_NAME)@DLLEXT@ \
+	$(POTDIR)/$(MODULE_NAME).pot
+
+Release: \
+	$(BINRLS)/$(MODULE_NAME)@DLLEXT@
+
+$(BINRLS)/$(MODULE_NAME)@DLLEXT@: \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
+
+	@$(MKDIR) `dirname $@`
+	@echo $< ...
+	@$(LD) \
+		-shared -Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
+		-L$(BINRLS) \
+		$(LIBS)
+
+#---[ Install Targets ]------------------------------------------------------------------
+
+
+#---[ Misc Targets ]---------------------------------------------------------------------
+
+$(POTDIR)/$(MODULE_NAME).pot: \
+	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(MODULE_NAME)/$(SRC).pot)
+
+	@rm -f $@
+	@mkdir -p `dirname $@`
+	@$(MSGCAT) --sort-output $^ > $@
+
+locale: \
+	$(POTDIR)/$(MODULE_NAME).pot
+
+
+#---[ Debug Targets ]--------------------------------------------------------------------
+
+Debug: \
+	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@ \
+	$(BINDBG)/$(MODULE_NAME)@EXEEXT@
+
+$(BINDBG)/$(MODULE_NAME)@EXEEXT@: \
+	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
+	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@
+
+	@$(MKDIR) `dirname $@`
+	@echo $< ...
+	@$(LD) \
+		-o $@ \
+		$^ \
+		-L$(BINDBG) \
+		-Wl,-rpath,$(BINDBG) \
+		$(LDFLAGS) \
+		$(LIBS) \
+		-l$(MODULE_NAME)
+
+run: \
+	$(BINDBG)/$(MODULE_NAME)@EXEEXT@
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(BINDBG)/$(MODULE_NAME)@EXEEXT@
+
+$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@: \
+	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+
+	@echo $< ...
+	@rm -f $@
+	@$(LN_S) \
+		@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
+		$@
+
+$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
+	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+
+	@rm -f $@
+	@$(LN_S) \
+		@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$@
+
+$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o)
+
+	@$(MKDIR) `dirname $@`
+	@echo $< ...
+	@$(LD) \
+		-shared -Wl,-soname,$(@F) \
+		-o $@ \
+		-L$(BINDBG) \
+		$(LDFLAGS) \
+		$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
+		$(LIBS)
+
+#---[ Clean Targets ]--------------------------------------------------------------------
+
+clean: \
+	cleanDebug \
+	cleanRelease
+
+	@rm -fr $(BASEDIR)/.tmp/$(MODULE_NAME)
+	@rm -fr $(POTDIR)/$(MODULE_NAME)
+	@rm -fr src/include/marshal
+
+cleanDebug:
+
+	@rm -fr $(OBJDBG)
+	@rm -fr $(BINDBG)
+	@rm -fr $(OBJDIR)/marshal
+	@rm -f src/v3270/marshal.h
+	@rm -f src/v3270ft/marshal.h
+
+cleanRelease:
+
+	@rm -fr $(OBJRLS)
+	@rm -fr $(BINRLS)
+	@rm -fr $(POTDIR)
+	@rm -f $(MODULE_NAME).pot
+
+clean: \
+	cleanDebug \
+	cleanRelease
+
+

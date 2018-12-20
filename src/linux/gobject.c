@@ -165,6 +165,17 @@ static void ipc3270_init(ipc3270 *object) {
 
 	// Got D-Bus name, register object.
 
+/*
+gpointer pw3270_dbus_register_object(DBusGConnection *connection,DBusGProxy *proxy,GType object_type,const DBusGObjectInfo *info,const gchar *path)
+{
+        GObject *object = g_object_new (object_type, NULL);
+        dbus_g_object_type_install_info (object_type, info);
+        dbus_g_connection_register_g_object (connection, path, object);
+        return object;
+}
+*/
+
+
 	return G_OBJECT(object);
 
  }

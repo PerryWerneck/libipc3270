@@ -3,4 +3,12 @@
 *.bak
 *.depend
 *.layout
-
+*.m4
+*.cache
+*.log
+*.status
+configure
+scripts
+config.h
+stamp-h1
+Makefile

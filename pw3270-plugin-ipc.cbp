@@ -3,6 +3,7 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="IPC plugin for pw3270" />
+		<Option makefile_is_custom="1" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -37,10 +38,12 @@
 		<Linker>
 			<Add option="`pkg-config --libs gtk+-3.0 lib3270 v3270 gio-2.0 dbus-1 dbus-glib-1`" />
 		</Linker>
-		<Unit filename="src/linux/start.c">
+		<Unit filename="src/include/config.h.in" />
+		<Unit filename="src/include/lib3270/ipc.h" />
+		<Unit filename="src/linux/gobject.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/private.h" />
+		<Unit filename="src/linux/gobject.h" />
 		<Unit filename="src/testprogram/testprogram.c">
 			<Option compilerVar="CC" />
 		</Unit>
