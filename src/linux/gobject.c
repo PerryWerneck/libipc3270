@@ -22,7 +22,7 @@
  *
  * Referências:
  *
- * https://github.com/fbuihuu/samples-dbus/blob/master/dbus-server.c
+ * https://github.com/joprietoe/gdbus/blob/master/gdbus-example-server.c
  *
  * Contatos:
  *

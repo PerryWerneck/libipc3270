@@ -63,7 +63,6 @@
 		GObjectClass parent;
 	};
 
-
 	G_END_DECLS
 
 #endif // LINUX_PRIVATE_H_INCLUDED
