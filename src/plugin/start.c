@@ -37,10 +37,8 @@
  #include "private.h"
 
  int pw3270_plugin_start(GtkWidget *window, GtkWidget *terminal) {
-
 	g_object_set_data_full(G_OBJECT(terminal), "ipc-object-info", ipc3270_new(window,terminal), g_object_unref);
 	return 0;
-
  }
 
 

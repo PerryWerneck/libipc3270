@@ -23,6 +23,7 @@
  * Referências:
  *
  * https://github.com/joprietoe/gdbus/blob/master/gdbus-example-server.c
+ * https://github.com/bratsche/glib/blob/master/gio/tests/gdbus-example-export.c
  *
  * Contatos:
  *
@@ -32,24 +33,44 @@
  */
 
 #include "gobject.h"
+#include <v3270.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
+
+/* Introspection data for the service we are exporting */
+static const gchar introspection_xml[] =
+	"<node>"
+	"  <interface name='br.com.bb.tn3270'>"
+	"    <method name='about'>"
+	"      <arg type='s' name='revision' direction='out'/>"
+	"    </method>"
+	"  </interface>"
+	"</node>";
 
 G_DEFINE_TYPE(ipc3270, ipc3270, G_TYPE_OBJECT)
 
 static void ipc3270_finalize(GObject *object) {
 
+	ipc3270 * ipc = IPC3270(object);
 
+	debug("%s",__FUNCTION__);
+	if(ipc->id) {
+		g_dbus_connection_unregister_object(ipc->connection,ipc->id);
+	}
 
 	G_OBJECT_CLASS(ipc3270_parent_class)->finalize(object);
 }
 
 
 static void ipc3270_class_init(ipc3270Class *klass) {
+
+	debug("%s",__FUNCTION__);
+
 	GObjectClass *object_class;
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = ipc3270_finalize;
+
 }
 
 static void ipc3270_init(ipc3270 *object) {
@@ -58,9 +79,75 @@ static void ipc3270_init(ipc3270 *object) {
 
 }
 
- GObject * ipc3270_new(GtkWidget *window, GtkWidget *terminal) {
+void
+ipc3270_method_call (GDBusConnection       *connection,
+                    const gchar           *sender,
+                    const gchar           *object_path,
+                    const gchar           *interface_name,
+                    const gchar           *method_name,
+                    GVariant              *parameters,
+                    GDBusMethodInvocation *invocation,
+                    gpointer               user_data)
+{
 
-	debug("%s",__FUNCTION__);
+
+	g_dbus_method_invocation_return_error (
+		invocation,
+		G_DBUS_ERROR,
+		G_DBUS_ERROR_UNKNOWN_METHOD,
+		"Invalid or unexpected method call");
+
+}
+
+GVariant *
+ipc3270_get_property (GDBusConnection  *connection,
+                     const gchar      *sender,
+                     const gchar      *object_path,
+                     const gchar      *interface_name,
+                     const gchar      *property_name,
+                     GError          **error,
+                     gpointer          user_data)
+{
+	GVariant *ret = NULL;
+
+	g_set_error (error,
+		G_IO_ERROR,
+		G_IO_ERROR_NOT_FOUND,
+		"There's no %s propriety", property_name
+	);
+
+	return ret;
+}
+
+gboolean
+ipc3270_set_property (GDBusConnection  *connection,
+                     const gchar      *sender,
+                     const gchar      *object_path,
+                     const gchar      *interface_name,
+                     const gchar      *property_name,
+                     GVariant         *value,
+                     GError          **error,
+                     gpointer          user_data)
+{
+
+
+	g_set_error (error,
+		G_IO_ERROR,
+		G_IO_ERROR_NOT_FOUND,
+		"There's no %s propriety", property_name
+	);
+
+	return *error == NULL;
+}
+
+GObject * ipc3270_new(GtkWidget *window, GtkWidget *terminal) {
+
+	static const GDBusInterfaceVTable interface_vtable = {
+		ipc3270_method_call,
+		ipc3270_get_property,
+		ipc3270_set_property
+	};
+
 	ipc3270 * object = IPC3270(g_object_new(GLIB_TYPE_IPC3270, NULL));
 
 	GError 				* error = NULL;
@@ -88,7 +175,7 @@ static void ipc3270_init(ipc3270 *object) {
 
 	g_dbus_connection_set_exit_on_close(object->connection,FALSE);
 
-	for(id='a'; id < 'z' && !error && !object->proxy; id++) {
+	for(id='a'; id < 'z' && !object->id && !error; id++) {
 
 		gchar *name = g_strdup_printf("br.com.bb.%s.%c",gtk_widget_get_name(window),id);
 
@@ -124,22 +211,28 @@ static void ipc3270_init(ipc3270 *object) {
 
 			if(reply == DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
 
-				object->proxy = g_dbus_proxy_new_sync(
-						object->connection,
-						G_DBUS_PROXY_FLAGS_NONE,
-						NULL,									// GDBusInterfaceInfo
-						name,									// name
-						"/br/com/bb/" PACKAGE_NAME "/terminal",	// object path
-						"br.com.bb." PACKAGE_NAME ".terminal",	// interface
-						NULL,									// GCancellable
-						&error );
-
 				gchar * widget_name = g_strdup_printf("%s:%c",gtk_widget_get_name(window),id);
 				v3270_set_session_name(terminal, widget_name);
 				g_free(widget_name);
 
 				g_message("Got %s - %s", name, v3270_get_session_name(terminal));
 
+				GDBusNodeInfo * introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
+
+				// Register object-id
+				object->id = g_dbus_connection_register_object (
+									object->connection,
+									"/br/com/bb/tn3270",
+									introspection_data->interfaces[0],
+									&interface_vtable,
+									object,
+									NULL,
+									&error
+							);
+
+				g_dbus_node_info_unref(introspection_data);
+
+				break;
 			}
 
 		}
@@ -148,34 +241,25 @@ static void ipc3270_init(ipc3270 *object) {
 
 	}
 
-	if(!object->proxy) {
+	if(error) {
 
 		GtkWidget *dialog =  gtk_message_dialog_new(
 									GTK_WINDOW(window),
 									GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
 									GTK_MESSAGE_ERROR,
 									GTK_BUTTONS_OK,
-									_( "Can't get DBUS object name" ));
+									_( "Can't register D-Bus Object" ));
+
+		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s",error->message);
+		g_error_free(error);
 
 		gtk_dialog_run(GTK_DIALOG(dialog));
 		gtk_widget_destroy(dialog);
 
 		return G_OBJECT(object);
+
 	}
-
-	// Got D-Bus name, register object.
-
-/*
-gpointer pw3270_dbus_register_object(DBusGConnection *connection,DBusGProxy *proxy,GType object_type,const DBusGObjectInfo *info,const gchar *path)
-{
-        GObject *object = g_object_new (object_type, NULL);
-        dbus_g_object_type_install_info (object_type, info);
-        dbus_g_connection_register_g_object (connection, path, object);
-        return object;
-}
-*/
-
 
 	return G_OBJECT(object);
 
- }
+}
