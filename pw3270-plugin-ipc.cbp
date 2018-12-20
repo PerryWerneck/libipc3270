@@ -32,11 +32,15 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="`pkg-config --cflags gtk+-3.0 lib3270 v3270`" />
+			<Add option="`pkg-config --cflags gtk+-3.0 lib3270 v3270 gio-2.0`" />
 		</Compiler>
 		<Linker>
-			<Add option="`pkg-config --libs gtk+-3.0 lib3270 v3270`" />
+			<Add option="`pkg-config --libs gtk+-3.0 lib3270 v3270 gio-2.0 dbus-1 dbus-glib-1`" />
 		</Linker>
+		<Unit filename="src/linux/start.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/private.h" />
 		<Unit filename="src/testprogram/testprogram.c">
 			<Option compilerVar="CC" />
 		</Unit>

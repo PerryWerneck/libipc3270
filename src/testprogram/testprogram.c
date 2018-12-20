@@ -28,9 +28,13 @@
  *
  */
 
- #include <v3270.h>
- #include <v3270/filetransfer.h>
- #include <v3270/ftprogress.h>
+
+ /**
+  * @brief Test program for pw3270 IPC plugin.
+  *
+  */
+
+ #include "../private.h"
  #include <stdlib.h>
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
@@ -39,7 +43,16 @@ static void activate(GtkApplication* app, gpointer user_data) {
 
 	GtkWidget	* window	= gtk_application_window_new(app);
 	GtkWidget	* terminal	= v3270_new();
-	gchar 		* filename	= NULL;
+
+	gtk_widget_set_name(window,"pw3270");
+
+	// Setup and show window
+	gtk_window_set_position(GTK_WINDOW(window),GTK_WIN_POS_CENTER);
+	gtk_window_set_default_size (GTK_WINDOW (window), 800, 500);
+	gtk_container_add(GTK_CONTAINER(window),terminal);
+	gtk_widget_show_all (window);
+
+	pw3270_plugin_start(window, terminal);
 
 	const gchar *url = getenv("LIB3270_DEFAULT_HOST");
 	if(url) {
@@ -55,12 +68,6 @@ static void activate(GtkApplication* app, gpointer user_data) {
 		gtk_window_set_title(GTK_WINDOW(window), v3270_get_session_name(terminal));
 
 	}
-
-	// Setup and show window
-	gtk_window_set_position(GTK_WINDOW(window),GTK_WIN_POS_CENTER);
-	gtk_window_set_default_size (GTK_WINDOW (window), 800, 500);
-	gtk_container_add(GTK_CONTAINER(window),terminal);
-	gtk_widget_show_all (window);
 
 }
 
