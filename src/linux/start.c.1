@@ -34,9 +34,7 @@
   *
   */
 
- #include "../private.h"
-
- #ifndef _WIN32
+ #include "private.h"
 
  #include <dbus/dbus-glib.h>
  #include <dbus/dbus-glib-bindings.h>
@@ -168,6 +166,21 @@
 
 	}
 
+	if(!dBus->proxy) {
+		GtkWidget *dialog =  gtk_message_dialog_new(
+									GTK_WINDOW(window),
+									GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+									GTK_MESSAGE_ERROR,
+									GTK_BUTTONS_OK,
+									_( "Can't get DBUS object name" ));
+
+		gtk_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy(dialog);
+
+		return -1;
+	}
+
+	// Got D-Bus name, register object.
 
 	return 0;
 

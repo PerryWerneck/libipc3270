@@ -29,7 +29,7 @@
  */
 
  /**
-  * @brief Private definitions for pw3270 IPC plugin.
+  * @brief Common definitions for pw3270 IPC plugin.
   *
   */
 
@@ -39,6 +39,9 @@
 
 	#define PACKAGE_NAME "pw3270"
 
+	#define ENABLE_NLS
+	#define GETTEXT_PACKAGE PACKAGE_NAME
+
 	#include <libintl.h>
 	#include <glib/gi18n.h>
 	#include <gtk/gtk.h>
@@ -46,25 +49,28 @@
 
 	#include <v3270.h>
 
-	#ifdef _WIN32
+	G_BEGIN_DECLS
 
-		#include <windows.h>
+	#define GLIB_TYPE_IPC3270				(ipc3270_get_type ())
+	#define IPC3270(obj)					(G_TYPE_CHECK_INSTANCE_CAST ((obj), GLIB_TYPE_IPC3270, ipc3270))
+	#define IPC3270_CLASS(klass)			(G_TYPE_CHECK_CLASS_CAST ((klass), GLIB_TYPE_IPC3270, ipc3270Class))
+	#define IS_IPC3270(obj)					(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GLIB_TYPE_IPC3270))
+	#define IS_IPC3270_CLASS(klass)			(G_TYPE_CHECK_CLASS_TYPE ((klass), GLIB_TYPE_IPC3270))
+	#define IPC3270_GET_CLASS(obj)			(G_TYPE_INSTANCE_GET_CLASS ((obj), GLIB_TYPE_IPC3270, ipc3270Class))
 
-	#else
+	typedef struct _ipc3270					ipc3270;
+	typedef struct _ipc3270Class			ipc3270Class;
 
-		G_GNUC_INTERNAL struct DBusSession {
-			GDBusConnection	* connection;
-			GDBusProxy		* proxy;
-		} dBus;
+	GObject		* ipc3270_new(GtkWidget *window, GtkWidget *terminal);
+	GType		  ipc3270_get_type(void);
 
-	#endif // _WIN32
+	G_END_DECLS
 
 	#ifdef DEBUG
 		#define debug( fmt, ... )  fprintf(stderr,"%s(%d) " fmt "\n", __FILE__, (int) __LINE__, __VA_ARGS__ ); fflush(stderr);
 	#else
 		#define debug(...) /* __VA_ARGS */
 	#endif
-
 
 	int pw3270_plugin_start(GtkWidget *window, GtkWidget *terminal);
 	int pw3270_plugin_stop(GtkWidget *window, GtkWidget *terminal);
