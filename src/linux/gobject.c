@@ -38,16 +38,6 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
 
-/* Introspection data for the service we are exporting */
-static const gchar introspection_xml[] =
-	"<node>"
-	"  <interface name='br.com.bb.tn3270'>"
-	"    <method name='about'>"
-	"      <arg type='s' name='revision' direction='out'/>"
-	"    </method>"
-	"  </interface>"
-	"</node>";
-
 G_DEFINE_TYPE(ipc3270, ipc3270, G_TYPE_OBJECT)
 
 static void ipc3270_finalize(GObject *object) {
@@ -79,67 +69,6 @@ static void ipc3270_init(ipc3270 *object) {
 
 }
 
-void
-ipc3270_method_call (GDBusConnection       *connection,
-                    const gchar           *sender,
-                    const gchar           *object_path,
-                    const gchar           *interface_name,
-                    const gchar           *method_name,
-                    GVariant              *parameters,
-                    GDBusMethodInvocation *invocation,
-                    gpointer               user_data)
-{
-
-
-	g_dbus_method_invocation_return_error (
-		invocation,
-		G_DBUS_ERROR,
-		G_DBUS_ERROR_UNKNOWN_METHOD,
-		"Invalid or unexpected method call");
-
-}
-
-GVariant *
-ipc3270_get_property (GDBusConnection  *connection,
-                     const gchar      *sender,
-                     const gchar      *object_path,
-                     const gchar      *interface_name,
-                     const gchar      *property_name,
-                     GError          **error,
-                     gpointer          user_data)
-{
-	GVariant *ret = NULL;
-
-	g_set_error (error,
-		G_IO_ERROR,
-		G_IO_ERROR_NOT_FOUND,
-		"There's no %s propriety", property_name
-	);
-
-	return ret;
-}
-
-gboolean
-ipc3270_set_property (GDBusConnection  *connection,
-                     const gchar      *sender,
-                     const gchar      *object_path,
-                     const gchar      *interface_name,
-                     const gchar      *property_name,
-                     GVariant         *value,
-                     GError          **error,
-                     gpointer          user_data)
-{
-
-
-	g_set_error (error,
-		G_IO_ERROR,
-		G_IO_ERROR_NOT_FOUND,
-		"There's no %s propriety", property_name
-	);
-
-	return *error == NULL;
-}
-
 GObject * ipc3270_new(GtkWidget *window, GtkWidget *terminal) {
 
 	static const GDBusInterfaceVTable interface_vtable = {
@@ -151,9 +80,10 @@ GObject * ipc3270_new(GtkWidget *window, GtkWidget *terminal) {
 	ipc3270 * object = IPC3270(g_object_new(GLIB_TYPE_IPC3270, NULL));
 
 	GError 				* error = NULL;
-	int					  id;
+	int					  id, ix;
 
-	object->connection = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, &error);
+	object->hSession	= v3270_get_session(terminal);
+	object->connection	= g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, &error);
 
 	if(error) {
 		GtkWidget *dialog =  gtk_message_dialog_new(
@@ -217,6 +147,27 @@ GObject * ipc3270_new(GtkWidget *window, GtkWidget *terminal) {
 
 				g_message("Got %s - %s", name, v3270_get_session_name(terminal));
 
+				// Introspection data for the service we are exporting
+				GString * introspection = g_string_new(
+						"<node>\n"
+						"  <interface name='br.com.bb.tn3270'>"
+						"    <method name='connect'>"
+						"      <arg type='s' name='url' direction='in'/>"
+						"    </method>"
+						"    <property type='i' name='Revision' access='read'/>"
+						"    <property type='s' name='Version' access='read'/>"
+				);
+
+				for(ix = 0; ix < (int) LIB3270_TOGGLE_COUNT; ix++) {
+					g_string_append_printf(introspection, "    <property type='i' name='%s' access='readwrite'/>", lib3270_get_toggle_name((LIB3270_TOGGLE) ix));
+				}
+
+				g_string_append(introspection,
+					"  </interface>"
+					"</node>"
+				);
+
+				gchar * introspection_xml = g_string_free(introspection,FALSE);
 				GDBusNodeInfo * introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
 
 				// Register object-id
@@ -231,6 +182,7 @@ GObject * ipc3270_new(GtkWidget *window, GtkWidget *terminal) {
 							);
 
 				g_dbus_node_info_unref(introspection_data);
+				g_free(introspection_xml);
 
 				break;
 			}

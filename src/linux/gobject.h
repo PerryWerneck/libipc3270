@@ -46,6 +46,7 @@
 	#include <glib/gi18n.h>
 	#include <gio/gio.h>
 
+	#include <lib3270.h>
 	#include <lib3270/ipc.h>
 
 	G_BEGIN_DECLS
@@ -57,6 +58,7 @@
 		GObject			  parent;
 		GDBusConnection	* connection;
 		guint			  id;
+		GtkWidget		* hSession;
 	};
 
 	struct _ipc3270Class {
