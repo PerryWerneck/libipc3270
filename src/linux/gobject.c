@@ -76,6 +76,28 @@ GObject * ipc3270_new(GtkWidget *window, GtkWidget *terminal) {
 
 void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GError **error) {
 
+	#define DECLARE_LIB3270_ACTION( name ) \
+				g_string_append_printf(introspection, \
+					"    <method name='%s'>" \
+					"    </method>", #name);
+
+	#define DECLARE_LIB3270_KEY_ACTION( name ) \
+				g_string_append_printf(introspection, \
+					"    <method name='%s'>" \
+					"    </method>", #name);
+
+	#define DECLARE_LIB3270_CURSOR_ACTION( name ) \
+				g_string_append_printf(introspection, \
+					"    <method name='%s'>" \
+					"    </method>", #name);
+
+	#define DECLARE_LIB3270_FKEY_ACTION( name ) \
+				g_string_append_printf(introspection, \
+					"    <method name='%s'>" \
+					"      <arg type='i' name='keycode' direction='in'/>" \
+					"    </method>", # name);
+
+
 	char id;
 	int ix;
 
@@ -146,6 +168,9 @@ void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GEr
 						"      <arg type='s' name='url' direction='in'/>"
 						"    </method>"
 				);
+
+				// Constrói métodos usando as macros
+				#include <lib3270/action_table.h>
 
 				// Inclui toggles
 				for(ix = 0; ix < (int) LIB3270_TOGGLE_COUNT; ix++) {
