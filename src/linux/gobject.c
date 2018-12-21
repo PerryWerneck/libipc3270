@@ -71,6 +71,13 @@ static void ipc3270_init(ipc3270 *object) {
 }
 
 GObject * ipc3270_new(GtkWidget *window, GtkWidget *terminal) {
+	return g_object_new(GLIB_TYPE_IPC3270, NULL);
+}
+
+void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GError **error) {
+
+	char id;
+	int ix;
 
 	static const GDBusInterfaceVTable interface_vtable = {
 		ipc3270_method_call,
@@ -78,60 +85,45 @@ GObject * ipc3270_new(GtkWidget *window, GtkWidget *terminal) {
 		ipc3270_set_property
 	};
 
-	ipc3270 * object = IPC3270(g_object_new(GLIB_TYPE_IPC3270, NULL));
+	ipc3270 * ipc = IPC3270(object);
+	ipc->hSession = hSession;
 
-	GError 				* error = NULL;
-	int					  id, ix;
-
-	object->hSession	= v3270_get_session(terminal);
-	object->connection	= g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, &error);
-
-	if(error) {
-		GtkWidget *dialog =  gtk_message_dialog_new(
-									GTK_WINDOW(window),
-									GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-									GTK_MESSAGE_ERROR,
-									GTK_BUTTONS_OK,
-									_( "Can't get D-Bus connection" ));
-
-		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s",error->message);
-		g_error_free(error);
-
-		gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
-
-		return G_OBJECT(object);
-
+	ipc->connection = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, error);
+	if(*error) {
+		g_message("Can't get session bus: %s",(*error)->message);
+		return;
 	}
 
-	g_dbus_connection_set_exit_on_close(object->connection,FALSE);
+	g_dbus_connection_set_exit_on_close(ipc->connection,FALSE);
 
-	for(id='a'; id < 'z' && !object->id && !error; id++) {
+	for(id='a'; id < 'z' && !ipc->id && !*error; id++) {
 
-		gchar *name = g_strdup_printf("br.com.bb.%s.%c",gtk_widget_get_name(window),id);
+		gchar *object_name = g_strdup_printf("br.com.bb.%s.%c",name,id);
 
-		debug("Requesting \"%s\"",name);
+		debug("Requesting \"%s\"",object_name);
 
 		// https://dbus.freedesktop.org/doc/dbus-specification.html
+		GError *err = NULL;
+
 		GVariant * response =
 			g_dbus_connection_call_sync (
-					object->connection,
+					ipc->connection,
 					DBUS_SERVICE_DBUS,
 					DBUS_PATH_DBUS,
 					DBUS_INTERFACE_DBUS,
 					"RequestName",
-					g_variant_new ("(su)", name, DBUS_NAME_FLAG_DO_NOT_QUEUE),
+					g_variant_new ("(su)", object_name, DBUS_NAME_FLAG_DO_NOT_QUEUE),
 					NULL,
 					G_DBUS_CALL_FLAGS_NONE,
 					-1,
 					NULL,
-					&error
+					&err
 			);
 
-		if(error) {
-			g_message("Can't request \"%s\": %s",name,error->message);
-			g_error_free(error);
-			error = NULL;
+		if(err) {
+			g_message("Can't request \"%s\": %s",object_name,err->message);
+			g_error_free(err);
+			err = NULL;
 		}
 
 		if(response) {
@@ -142,11 +134,15 @@ GObject * ipc3270_new(GtkWidget *window, GtkWidget *terminal) {
 
 			if(reply == DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
 
+				g_message("Got %s", object_name);
+
+				/*
 				gchar * widget_name = g_strdup_printf("%s:%c",gtk_widget_get_name(window),id);
 				v3270_set_session_name(terminal, widget_name);
 				g_free(widget_name);
 
 				g_message("Got %s - %s", name, v3270_get_session_name(terminal));
+				*/
 
 				// Introspection data for the service we are exporting
 				GString * introspection = g_string_new(
@@ -180,14 +176,14 @@ GObject * ipc3270_new(GtkWidget *window, GtkWidget *terminal) {
 				GDBusNodeInfo * introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
 
 				// Register object-id
-				object->id = g_dbus_connection_register_object (
-									object->connection,
+				ipc->id = g_dbus_connection_register_object (
+									ipc->connection,
 									"/br/com/bb/tn3270",
 									introspection_data->interfaces[0],
 									&interface_vtable,
-									object,
+									ipc,
 									NULL,
-									&error
+									error
 							);
 
 				g_dbus_node_info_unref(introspection_data);
@@ -198,29 +194,11 @@ GObject * ipc3270_new(GtkWidget *window, GtkWidget *terminal) {
 
 		}
 
-		g_free(name);
+		g_free(object_name);
 
 	}
-
-	if(error) {
-
-		GtkWidget *dialog =  gtk_message_dialog_new(
-									GTK_WINDOW(window),
-									GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
-									GTK_MESSAGE_ERROR,
-									GTK_BUTTONS_OK,
-									_( "Can't register D-Bus Object" ));
-
-		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s",error->message);
-		g_error_free(error);
-
-		gtk_dialog_run(GTK_DIALOG(dialog));
-		gtk_widget_destroy(dialog);
-
-		return G_OBJECT(object);
-
-	}
-
-	return G_OBJECT(object);
 
 }
+
+
+

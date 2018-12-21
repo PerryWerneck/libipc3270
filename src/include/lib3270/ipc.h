@@ -38,6 +38,7 @@
 	#define PW3270_IPC_H_INCLUDED
 
 	#include <gtk/gtk.h>
+	#include <lib3270.h>
 
 	G_BEGIN_DECLS
 
@@ -51,8 +52,9 @@
 	typedef struct _ipc3270					ipc3270;
 	typedef struct _ipc3270Class			ipc3270Class;
 
-	GObject		* ipc3270_new(GtkWidget *window, GtkWidget *terminal);
+	GObject		* ipc3270_new();
 	GType		  ipc3270_get_type(void);
+    void		  ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GError **error);
 
 	G_END_DECLS
 

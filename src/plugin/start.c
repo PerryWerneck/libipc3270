@@ -34,10 +34,47 @@
   *
   */
 
+ #define ENABLE_NLS
+ #define GETTEXT_PACKAGE PACKAGE_NAME
+
+ #include <libintl.h>
+ #include <glib/gi18n.h>
+ #include <gio/gio.h>
+
  #include "private.h"
+ #include <v3270.h>
+ #include <lib3270/ipc.h>
 
  int pw3270_plugin_start(GtkWidget *window, GtkWidget *terminal) {
-	g_object_set_data_full(G_OBJECT(terminal), "ipc-object-info", ipc3270_new(window,terminal), g_object_unref);
+
+	// Creates IPC, associate it with the terminal window
+	GObject	* ipc	= ipc3270_new();
+	g_object_set_data_full(G_OBJECT(terminal), "ipc-object-info", ipc, g_object_unref);
+
+
+	debug("Name: \"%s\"",gtk_widget_get_name(window));
+
+	// Set session handle, this starts the IPC communication.
+	GError * error = NULL;
+	ipc3270_set_session(ipc,v3270_get_session(terminal),gtk_widget_get_name(window),&error);
+
+	if(error) {
+
+		GtkWidget *dialog =  gtk_message_dialog_new(
+									GTK_WINDOW(window),
+									GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
+									GTK_MESSAGE_ERROR,
+									GTK_BUTTONS_OK,
+									_( "Can't start IPC Module" ));
+
+		gtk_message_dialog_format_secondary_text(GTK_MESSAGE_DIALOG(dialog),"%s",error->message);
+		g_error_free(error);
+
+		gtk_dialog_run(GTK_DIALOG(dialog));
+		gtk_widget_destroy(dialog);
+
+	}
+
 	return 0;
  }
 
