@@ -136,13 +136,7 @@ void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GEr
 
 				g_message("Got %s", object_name);
 
-				/*
-				gchar * widget_name = g_strdup_printf("%s:%c",gtk_widget_get_name(window),id);
-				v3270_set_session_name(terminal, widget_name);
-				g_free(widget_name);
-
-				g_message("Got %s - %s", name, v3270_get_session_name(terminal));
-				*/
+				lib3270_set_session_id(ipc->hSession, id);
 
 				// Introspection data for the service we are exporting
 				GString * introspection = g_string_new(

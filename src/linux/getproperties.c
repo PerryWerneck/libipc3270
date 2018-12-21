@@ -59,7 +59,10 @@ ipc3270_get_property (GDBusConnection  *connection,
 		if(proplist[ix].get && !g_ascii_strcasecmp(proplist[ix].name, property_name)) {
 
 			// Found it!
-			int value = 0; // proplist[ix].get(IPC3270(user_data)->hSession);
+			int value = proplist[ix].get(IPC3270(user_data)->hSession);
+
+			debug("%s=%d",property_name,value);
+
 			if(value > 0 || errno == 0) {
 				return g_variant_new_int16((gint16) value);
 			}

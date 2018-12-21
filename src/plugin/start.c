@@ -72,7 +72,15 @@
 
 		gtk_dialog_run(GTK_DIALOG(dialog));
 		gtk_widget_destroy(dialog);
+		return 0;
 
+	}
+
+	char id = lib3270_get_session_id(v3270_get_session(terminal));
+	if(id) {
+		gchar * widget_name = g_strdup_printf("%s:%c",gtk_widget_get_name(window),id);
+		v3270_set_session_name(terminal, widget_name);
+		g_free(widget_name);
 	}
 
 	return 0;
