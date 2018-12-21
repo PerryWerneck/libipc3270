@@ -33,7 +33,8 @@
  */
 
 #include "gobject.h"
-#include <v3270.h>
+#include <lib3270.h>
+#include <lib3270/properties.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
@@ -48,6 +49,53 @@ ipc3270_set_property (GDBusConnection  *connection,
                      GError          **error,
                      gpointer          user_data)
 {
+	// Check for property
+	size_t ix;
+
+	const LIB3270_INT_PROPERTY * proplist = lib3270_get_int_properties_list();
+	for(ix = 0; proplist[ix].name; ix++) {
+
+		if(proplist[ix].set && !g_ascii_strcasecmp(proplist[ix].name, property_name)) {
+
+			// Found it!
+			if(proplist[ix].set(IPC3270(user_data)->hSession, (int) g_variant_get_int32(value))) {
+
+				// Erro!
+				g_set_error (error,
+					G_IO_ERROR,
+					G_IO_ERROR_FAILED,
+					g_strerror(errno)
+				);
+
+				return FALSE;
+			}
+
+			return TRUE;
+
+		}
+
+	}
+
+	// Check for toggle
+	LIB3270_TOGGLE toggle = lib3270_get_toggle_id(property_name);
+	if(toggle != (LIB3270_TOGGLE) -1) {
+
+		// Is a Tn3270 toggle, get it!
+		if(lib3270_set_toggle(IPC3270(user_data)->hSession,toggle,(int) g_variant_get_int32(value))) {
+
+			// Erro!
+			g_set_error (error,
+				G_IO_ERROR,
+				G_IO_ERROR_FAILED,
+				g_strerror(errno)
+			);
+
+			return FALSE;
+
+		}
+
+		return TRUE;
+	}
 
 	g_set_error (error,
 		G_IO_ERROR,
@@ -55,5 +103,5 @@ ipc3270_set_property (GDBusConnection  *connection,
 		"Can't find any property named %s", property_name
 	);
 
-	return *error == NULL;
+	return FALSE;
 }

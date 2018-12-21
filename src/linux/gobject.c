@@ -33,7 +33,8 @@
  */
 
 #include "gobject.h"
-#include <v3270.h>
+#include <lib3270.h>
+#include <lib3270/properties.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
@@ -154,12 +155,20 @@ GObject * ipc3270_new(GtkWidget *window, GtkWidget *terminal) {
 						"    <method name='connect'>"
 						"      <arg type='s' name='url' direction='in'/>"
 						"    </method>"
-						"    <property type='i' name='Revision' access='read'/>"
-						"    <property type='s' name='Version' access='read'/>"
 				);
 
+				// Inclui toggles
 				for(ix = 0; ix < (int) LIB3270_TOGGLE_COUNT; ix++) {
 					g_string_append_printf(introspection, "    <property type='i' name='%s' access='readwrite'/>", lib3270_get_toggle_name((LIB3270_TOGGLE) ix));
+				}
+
+				// Inclui propriedades.
+				const LIB3270_INT_PROPERTY * proplist = lib3270_get_int_properties_list();
+				for(ix = 0; proplist[ix].name; ix++) {
+					g_string_append_printf(introspection, "    <property type='i' name='%s' access='%s'/>",
+						proplist[ix].name,
+						((proplist[ix].set == NULL) ? "read" : "readwrite")
+					);
 				}
 
 				g_string_append(introspection,

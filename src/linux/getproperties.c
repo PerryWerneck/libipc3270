@@ -33,7 +33,8 @@
  */
 
 #include "gobject.h"
-#include <v3270.h>
+#include <lib3270.h>
+#include <lib3270/properties.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
@@ -47,13 +48,41 @@ ipc3270_get_property (GDBusConnection  *connection,
                      GError          **error,
                      gpointer          user_data)
 {
-	LIB3270_TOGGLE toggle = lib3270_get_toggle_id(property_name);
+	size_t ix;
 
-	debug("%s: toggle(%s)=%d", __FUNCTION__, property_name,(int) toggle);
+	errno = 0; // Just in case.
+
+	// Check for property
+	const LIB3270_INT_PROPERTY * proplist = lib3270_get_int_properties_list();
+	for(ix = 0; proplist[ix].name; ix++) {
+
+		if(proplist[ix].get && !g_ascii_strcasecmp(proplist[ix].name, property_name)) {
+
+			// Found it!
+			int value = 0; // proplist[ix].get(IPC3270(user_data)->hSession);
+			if(value > 0 || errno == 0) {
+				return g_variant_new_int16((gint16) value);
+			}
+
+			// Erro!
+			g_set_error (error,
+				G_IO_ERROR,
+				G_IO_ERROR_FAILED,
+				g_strerror(errno)
+			);
+
+			return NULL;
+		}
+
+	}
+
+
+	// Check for toggle
+	LIB3270_TOGGLE toggle = lib3270_get_toggle_id(property_name);
 	if(toggle != (LIB3270_TOGGLE) -1) {
 
 		// Is a Tn3270 toggle, get it!
-		return g_variant_new_int16((gint16) lib3270_get_toggle(IPC3270(user_data)->hSession,toggle));
+		return g_variant_new_int16((gint16) lib3270_get_toggle( (IPC3270(user_data)->hSession), toggle));
 
 	}
 

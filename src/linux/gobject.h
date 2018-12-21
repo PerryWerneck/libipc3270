@@ -58,7 +58,7 @@
 		GObject			  parent;
 		GDBusConnection	* connection;
 		guint			  id;
-		GtkWidget		* hSession;
+		H3270			* hSession;
 	};
 
 	struct _ipc3270Class {
