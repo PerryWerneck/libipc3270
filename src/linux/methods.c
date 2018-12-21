@@ -33,7 +33,7 @@
  */
 
 #include "gobject.h"
-#include <v3270.h>
+#include <lib3270.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
@@ -48,7 +48,6 @@ ipc3270_method_call (GDBusConnection       *connection,
                     GDBusMethodInvocation *invocation,
                     gpointer               user_data)
 {
-
 
 	g_dbus_method_invocation_return_error (
 		invocation,
