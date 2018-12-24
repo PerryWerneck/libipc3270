@@ -49,7 +49,18 @@ ipc3270_method_call (GDBusConnection       *connection,
                     GDBusMethodInvocation *invocation,
                     gpointer               user_data)
 {
+
+	static const struct
+	{
+		const gchar *name;
+		int (*call)(H3270 *hSession, int keycode);
+	} int_methods[] = {
+		{ "pfkey",	lib3270_pfkey	},
+		{ "pakey",	lib3270_pakey	}
+	};
+
 	size_t ix;
+	g_autoptr (GError) error = NULL;
 
 	// Check action table.
 	const LIB3270_ACTION_ENTRY * actions = lib3270_get_action_table();
@@ -57,13 +68,11 @@ ipc3270_method_call (GDBusConnection       *connection,
 	{
 		if(!g_ascii_strcasecmp(actions[ix].name,method_name)) {
 
-			g_autoptr (GError) error = NULL;
-
 			int rc = actions[ix].call(IPC3270(user_data)->hSession);
 			if(rc)
 			{
 				// Failed
-				g_set_error(error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
+				g_set_error(&error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
 				g_dbus_method_invocation_return_gerror(invocation, error);
  			}
  			else
@@ -72,7 +81,37 @@ ipc3270_method_call (GDBusConnection       *connection,
 				g_dbus_method_invocation_return_value (invocation, g_variant_new_int16((gint16) 0));
 
 			}
+
+			return;
 		}
+	}
+
+	// Check int methods
+	for(ix = 0; ix < G_N_ELEMENTS(int_methods); ix++)
+	{
+		if(!g_ascii_strcasecmp(int_methods[ix].name,method_name)) {
+
+			gint value;
+			g_variant_get(parameters, "(i)", &value);
+
+			int rc = int_methods[ix].call(IPC3270(user_data)->hSession, value);
+			if(rc)
+			{
+				// Failed
+				g_set_error(&error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
+				g_dbus_method_invocation_return_gerror(invocation, error);
+ 			}
+ 			else
+			{
+				// Suceeded
+				g_dbus_method_invocation_return_value (invocation, g_variant_new_int16((gint16) 0));
+
+			}
+
+			return;
+
+		}
+
 	}
 
 	g_dbus_method_invocation_return_error (
