@@ -64,4 +64,11 @@
 		#define debug(...) /* __VA_ARGS */
 	#endif
 
+	typedef struct _ipc_method_int_arg {
+		const gchar *name;
+		int (*call)(H3270 *hSession, int keycode);
+	} IPC_METHOD_INT_ARG;
+
+	const IPC_METHOD_INT_ARG * ipc3270_get_int_arg_methods();
+
 #endif // PW3270_IPC_H_INCLUDED

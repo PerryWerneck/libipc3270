@@ -50,14 +50,6 @@ ipc3270_method_call (GDBusConnection       *connection,
                     gpointer               user_data)
 {
 
-	static const struct
-	{
-		const gchar *name;
-		int (*call)(H3270 *hSession, int keycode);
-	} int_methods[] = {
-		{ "pfkey",	lib3270_pfkey	},
-		{ "pakey",	lib3270_pakey	}
-	};
 
 	size_t ix;
 	g_autoptr (GError) error = NULL;
@@ -87,6 +79,8 @@ ipc3270_method_call (GDBusConnection       *connection,
 	}
 
 	// Check int methods
+	const IPC_METHOD_INT_ARG * int_methods = ipc3270_get_int_arg_methods();
+
 	for(ix = 0; ix < G_N_ELEMENTS(int_methods); ix++)
 	{
 		if(!g_ascii_strcasecmp(int_methods[ix].name,method_name)) {
