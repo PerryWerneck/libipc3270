@@ -34,6 +34,7 @@
 
 #include "gobject.h"
 #include <lib3270.h>
+#include <lib3270/actions.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
@@ -48,6 +49,31 @@ ipc3270_method_call (GDBusConnection       *connection,
                     GDBusMethodInvocation *invocation,
                     gpointer               user_data)
 {
+	size_t ix;
+
+	// Check action table.
+	const LIB3270_ACTION_ENTRY * actions = lib3270_get_action_table();
+	for(ix = 0; actions[ix].name; ix++)
+	{
+		if(!g_ascii_strcasecmp(actions[ix].name,method_name)) {
+
+			g_autoptr (GError) error = NULL;
+
+			int rc = actions[ix].call(IPC3270(user_data)->hSession);
+			if(rc)
+			{
+				// Failed
+				g_set_error(error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
+				g_dbus_method_invocation_return_gerror(invocation, error);
+ 			}
+ 			else
+			{
+				// Suceeded
+				g_dbus_method_invocation_return_value (invocation, g_variant_new_int16((gint16) 0));
+
+			}
+		}
+	}
 
 	g_dbus_method_invocation_return_error (
 		invocation,

@@ -97,6 +97,12 @@ ipc3270_set_property (GDBusConnection  *connection,
 		return TRUE;
 	}
 
+	// Check for pre-defineds
+	if(!g_ascii_strcasecmp("url", property_name)) {
+		lib3270_set_url(IPC3270(user_data)->hSession,g_variant_get_string(value,NULL));
+		return TRUE;
+	}
+
 	g_set_error (error,
 		G_IO_ERROR,
 		G_IO_ERROR_NOT_FOUND,

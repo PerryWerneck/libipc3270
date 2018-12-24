@@ -59,6 +59,7 @@
 		GDBusConnection	* connection;
 		guint			  id;
 		H3270			* hSession;
+		GQuark 			  error_domain;
 	};
 
 	struct _ipc3270Class {

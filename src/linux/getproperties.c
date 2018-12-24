@@ -89,6 +89,14 @@ ipc3270_get_property (GDBusConnection  *connection,
 
 	}
 
+	// Check for pre-defineds
+	if(!g_ascii_strcasecmp("url", property_name)) {
+		return g_variant_new_string(lib3270_get_url(IPC3270(user_data)->hSession));
+	}
+
+	if(!g_ascii_strcasecmp("luname", property_name)) {
+		return g_variant_new_string(lib3270_get_luname(IPC3270(user_data)->hSession));
+	}
 
 	g_set_error (error,
 		G_IO_ERROR,
