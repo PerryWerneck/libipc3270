@@ -52,7 +52,34 @@ ipc3270_get_property (GDBusConnection  *connection,
 
 	errno = 0; // Just in case.
 
-	// Check for property
+	// Boolean properties
+	const LIB3270_INT_PROPERTY * boolprop = lib3270_get_boolean_properties_list();
+	for(ix = 0; boolprop[ix].name; ix++) {
+
+		if(boolprop[ix].get && !g_ascii_strcasecmp(boolprop[ix].name, property_name)) {
+
+			// Found it!
+			int value = boolprop[ix].get(IPC3270(user_data)->hSession);
+
+			debug("%s=%d",property_name,value);
+
+			if(value > 0 || errno == 0) {
+				return g_variant_new_int16((gint16) value);
+			}
+
+			// Erro!
+			g_set_error (error,
+				G_IO_ERROR,
+				G_IO_ERROR_FAILED,
+				g_strerror(errno)
+			);
+
+			return NULL;
+		}
+
+	}
+
+	// int properties
 	const LIB3270_INT_PROPERTY * intprop = lib3270_get_int_properties_list();
 	for(ix = 0; intprop[ix].name; ix++) {
 
@@ -79,6 +106,7 @@ ipc3270_get_property (GDBusConnection  *connection,
 
 	}
 
+	// String properties
 	const LIB3270_STRING_PROPERTY * strprop = lib3270_get_string_properties_list();
 	for(ix = 0; strprop[ix].name; ix++) {
 

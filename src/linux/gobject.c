@@ -166,12 +166,22 @@ void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GEr
 					);
 				}
 
-				// Inclui toggles
+				// Toggle properties
 				for(ix = 0; ix < (int) LIB3270_TOGGLE_COUNT; ix++) {
 					g_string_append_printf(introspection, "    <property type='i' name='%s' access='readwrite'/>", lib3270_get_toggle_name((LIB3270_TOGGLE) ix));
 				}
 
-				// Inclui propriedades.
+				// Boolean properties
+				const LIB3270_INT_PROPERTY * bol_props = lib3270_get_boolean_properties_list();
+				for(ix = 0; bol_props[ix].name; ix++) {
+					debug("Boolean(%s)",bol_props[ix].name);
+					g_string_append_printf(introspection, "    <property type='b' name='%s' access='%s'/>",
+						bol_props[ix].name,
+						((bol_props[ix].set == NULL) ? "read" : "readwrite")
+					);
+				}
+
+				// Integer properties
 				const LIB3270_INT_PROPERTY * int_props = lib3270_get_int_properties_list();
 				for(ix = 0; int_props[ix].name; ix++) {
 					g_string_append_printf(introspection, "    <property type='i' name='%s' access='%s'/>",
@@ -180,6 +190,7 @@ void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GEr
 					);
 				}
 
+				// String properties
 				const LIB3270_STRING_PROPERTY * str_props = lib3270_get_string_properties_list();
 				for(ix = 0; str_props[ix].name; ix++) {
 					g_string_append_printf(introspection, "    <property type='s' name='%s' access='%s'/>",
@@ -194,6 +205,9 @@ void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GEr
 				);
 
 				gchar * introspection_xml = g_string_free(introspection,FALSE);
+
+				debug("\n%s\n",introspection_xml);
+
 				GDBusNodeInfo * introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
 
 				// Register object-id

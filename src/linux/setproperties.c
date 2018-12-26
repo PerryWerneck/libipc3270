@@ -52,6 +52,32 @@ ipc3270_set_property (GDBusConnection  *connection,
 	// Check for property
 	size_t ix;
 
+	// Boolean properties
+	const LIB3270_INT_PROPERTY * boolprop = lib3270_get_boolean_properties_list();
+	for(ix = 0; boolprop[ix].name; ix++) {
+
+		if(boolprop[ix].set && !g_ascii_strcasecmp(boolprop[ix].name, property_name)) {
+
+			// Found it!
+			if(boolprop[ix].set(IPC3270(user_data)->hSession, (int) g_variant_get_int32(value))) {
+
+				// Erro!
+				g_set_error (error,
+					G_IO_ERROR,
+					G_IO_ERROR_FAILED,
+					g_strerror(errno)
+				);
+
+				return FALSE;
+			}
+
+			return TRUE;
+
+		}
+
+	}
+
+	// Integer properties
 	const LIB3270_INT_PROPERTY * intprop = lib3270_get_int_properties_list();
 	for(ix = 0; intprop[ix].name; ix++) {
 
@@ -76,6 +102,7 @@ ipc3270_set_property (GDBusConnection  *connection,
 
 	}
 
+	// String properties
 	const LIB3270_STRING_PROPERTY * strprop = lib3270_get_string_properties_list();
 	for(ix = 0; strprop[ix].name; ix++) {
 
