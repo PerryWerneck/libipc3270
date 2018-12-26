@@ -59,7 +59,7 @@ ipc3270_set_property (GDBusConnection  *connection,
 		if(boolprop[ix].set && !g_ascii_strcasecmp(boolprop[ix].name, property_name)) {
 
 			// Found it!
-			if(boolprop[ix].set(IPC3270(user_data)->hSession, (int) g_variant_get_int32(value))) {
+			if(boolprop[ix].set(IPC3270(user_data)->hSession, (int) (g_variant_get_boolean(value) ? 1 : 0))) {
 
 				// Erro!
 				g_set_error (error,
@@ -84,7 +84,7 @@ ipc3270_set_property (GDBusConnection  *connection,
 		if(intprop[ix].set && !g_ascii_strcasecmp(intprop[ix].name, property_name)) {
 
 			// Found it!
-			if(intprop[ix].set(IPC3270(user_data)->hSession, (int) g_variant_get_int32(value))) {
+			if(intprop[ix].set(IPC3270(user_data)->hSession, (int) (g_variant_get_boolean(value) ? 1 : 0))) {
 
 				// Erro!
 				g_set_error (error,

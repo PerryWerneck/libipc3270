@@ -64,7 +64,7 @@ ipc3270_get_property (GDBusConnection  *connection,
 			debug("%s=%d",property_name,value);
 
 			if(value > 0 || errno == 0) {
-				return g_variant_new_int16((gint16) value);
+				return g_variant_new_boolean(value != 0);
 			}
 
 			// Erro!
@@ -137,7 +137,7 @@ ipc3270_get_property (GDBusConnection  *connection,
 	if(toggle != (LIB3270_TOGGLE) -1) {
 
 		// Is a Tn3270 toggle, get it!
-		return g_variant_new_int16((gint16) lib3270_get_toggle( (IPC3270(user_data)->hSession), toggle));
+		return g_variant_new_boolean(lib3270_get_toggle( (IPC3270(user_data)->hSession), toggle) != 0);
 
 	}
 
