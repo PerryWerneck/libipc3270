@@ -52,13 +52,37 @@ ipc3270_set_property (GDBusConnection  *connection,
 	// Check for property
 	size_t ix;
 
-	const LIB3270_INT_PROPERTY * proplist = lib3270_get_int_properties_list();
-	for(ix = 0; proplist[ix].name; ix++) {
+	const LIB3270_INT_PROPERTY * intprop = lib3270_get_int_properties_list();
+	for(ix = 0; intprop[ix].name; ix++) {
 
-		if(proplist[ix].set && !g_ascii_strcasecmp(proplist[ix].name, property_name)) {
+		if(intprop[ix].set && !g_ascii_strcasecmp(intprop[ix].name, property_name)) {
 
 			// Found it!
-			if(proplist[ix].set(IPC3270(user_data)->hSession, (int) g_variant_get_int32(value))) {
+			if(intprop[ix].set(IPC3270(user_data)->hSession, (int) g_variant_get_int32(value))) {
+
+				// Erro!
+				g_set_error (error,
+					G_IO_ERROR,
+					G_IO_ERROR_FAILED,
+					g_strerror(errno)
+				);
+
+				return FALSE;
+			}
+
+			return TRUE;
+
+		}
+
+	}
+
+	const LIB3270_STRING_PROPERTY * strprop = lib3270_get_string_properties_list();
+	for(ix = 0; strprop[ix].name; ix++) {
+
+		if(strprop[ix].set && !g_ascii_strcasecmp(strprop[ix].name, property_name)) {
+
+			// Found it!
+			if(strprop[ix].set(IPC3270(user_data)->hSession, g_variant_get_string(value,NULL))) {
 
 				// Erro!
 				g_set_error (error,
@@ -97,11 +121,33 @@ ipc3270_set_property (GDBusConnection  *connection,
 		return TRUE;
 	}
 
+	/*
 	// Check for pre-defineds
 	if(!g_ascii_strcasecmp("url", property_name)) {
-		lib3270_set_url(IPC3270(user_data)->hSession,g_variant_get_string(value,NULL));
+		if(lib3270_set_url(IPC3270(user_data)->hSession,g_variant_get_string(value,NULL))) {
+			g_set_error (error,
+				G_IO_ERROR,
+				G_IO_ERROR_FAILED,
+				g_strerror(errno)
+			);
+			return FALSE;
+		}
 		return TRUE;
 	}
+
+	if(!g_ascii_strcasecmp("luname", property_name)) {
+		if(lib3270_set_luname(IPC3270(user_data)->hSession,g_variant_get_string(value,NULL))) {
+			g_set_error (error,
+				G_IO_ERROR,
+				G_IO_ERROR_FAILED,
+				g_strerror(errno)
+			);
+			return FALSE;
+		}
+		return TRUE;
+	}
+	*/
+
 
 	g_set_error (error,
 		G_IO_ERROR,

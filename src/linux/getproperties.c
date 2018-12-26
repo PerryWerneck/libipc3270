@@ -53,13 +53,13 @@ ipc3270_get_property (GDBusConnection  *connection,
 	errno = 0; // Just in case.
 
 	// Check for property
-	const LIB3270_INT_PROPERTY * proplist = lib3270_get_int_properties_list();
-	for(ix = 0; proplist[ix].name; ix++) {
+	const LIB3270_INT_PROPERTY * intprop = lib3270_get_int_properties_list();
+	for(ix = 0; intprop[ix].name; ix++) {
 
-		if(proplist[ix].get && !g_ascii_strcasecmp(proplist[ix].name, property_name)) {
+		if(intprop[ix].get && !g_ascii_strcasecmp(intprop[ix].name, property_name)) {
 
 			// Found it!
-			int value = proplist[ix].get(IPC3270(user_data)->hSession);
+			int value = intprop[ix].get(IPC3270(user_data)->hSession);
 
 			debug("%s=%d",property_name,value);
 
@@ -79,6 +79,30 @@ ipc3270_get_property (GDBusConnection  *connection,
 
 	}
 
+	const LIB3270_STRING_PROPERTY * strprop = lib3270_get_string_properties_list();
+	for(ix = 0; strprop[ix].name; ix++) {
+
+		if(strprop[ix].get && !g_ascii_strcasecmp(strprop[ix].name, property_name)) {
+
+			// Found it!
+			const char * value = strprop[ix].get(IPC3270(user_data)->hSession);
+
+			if(value) {
+				debug("%s=%s",property_name,value);
+				return g_variant_new_string(value);
+			}
+
+			// Erro!
+			g_set_error (error,
+				G_IO_ERROR,
+				G_IO_ERROR_FAILED,
+				g_strerror(errno)
+			);
+
+			return NULL;
+		}
+
+	}
 
 	// Check for toggle
 	LIB3270_TOGGLE toggle = lib3270_get_toggle_id(property_name);
@@ -87,15 +111,6 @@ ipc3270_get_property (GDBusConnection  *connection,
 		// Is a Tn3270 toggle, get it!
 		return g_variant_new_int16((gint16) lib3270_get_toggle( (IPC3270(user_data)->hSession), toggle));
 
-	}
-
-	// Check for pre-defineds
-	if(!g_ascii_strcasecmp("url", property_name)) {
-		return g_variant_new_string(lib3270_get_url(IPC3270(user_data)->hSession));
-	}
-
-	if(!g_ascii_strcasecmp("luname", property_name)) {
-		return g_variant_new_string(lib3270_get_luname(IPC3270(user_data)->hSession));
 	}
 
 	g_set_error (error,

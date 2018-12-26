@@ -172,17 +172,23 @@ void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GEr
 				}
 
 				// Inclui propriedades.
-				const LIB3270_INT_PROPERTY * proplist = lib3270_get_int_properties_list();
-				for(ix = 0; proplist[ix].name; ix++) {
+				const LIB3270_INT_PROPERTY * int_props = lib3270_get_int_properties_list();
+				for(ix = 0; int_props[ix].name; ix++) {
 					g_string_append_printf(introspection, "    <property type='i' name='%s' access='%s'/>",
-						proplist[ix].name,
-						((proplist[ix].set == NULL) ? "read" : "readwrite")
+						int_props[ix].name,
+						((int_props[ix].set == NULL) ? "read" : "readwrite")
+					);
+				}
+
+				const LIB3270_STRING_PROPERTY * str_props = lib3270_get_string_properties_list();
+				for(ix = 0; str_props[ix].name; ix++) {
+					g_string_append_printf(introspection, "    <property type='s' name='%s' access='%s'/>",
+						str_props[ix].name,
+						((str_props[ix].set == NULL) ? "read" : "readwrite")
 					);
 				}
 
 				g_string_append(introspection,
-					"    <property type='s' name='url' access='readwrite'/>"
-					"    <property type='s' name='luname' access='read'/>"
 					"  </interface>"
 					"</node>"
 				);
