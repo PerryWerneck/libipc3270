@@ -211,6 +211,9 @@ $(BINRLS)/$(MODULE_NAME)@DLLEXT@: \
 
 #---[ Install Targets ]------------------------------------------------------------------
 
+install: \
+	install-plugin
+
 install-plugin: \
 	$(BINRLS)/$(MODULE_NAME)@DLLEXT@
 
