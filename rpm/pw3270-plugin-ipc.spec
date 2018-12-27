@@ -1,5 +1,5 @@
 #
-# spec file for packages libv3270
+# spec file for packages pw3270-plugin-ipc
 #
 # Copyright (c) 2015 SUSE LINUX GmbH, Nuernberg, Germany.
 # Copyright (C) <2008> <Banco do Brasil S.A.>
@@ -21,13 +21,6 @@
 %define MAJOR_VERSION 5
 %define MINOR_VERSION 2
 
-%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
-
-#Compat macro for new _fillupdir macro introduced in Nov 2017
-%if ! %{defined _fillupdir}
-  %define _fillupdir /var/adm/fillup-templates
-%endif
-
 #---[ Macros ]--------------------------------------------------------------------------------------------------------
 
 %if ! %{defined _release}
@@ -40,7 +33,7 @@ Summary:	D-Bus based IPC plugin for pw3270
 Name:		pw3270-plugin-ipc
 Version:	5.2
 Release:	0
-License:        LGPL-3.0
+License:	LGPL-3.0
 Source:		%{name}-%{version}.tar.xz
 
 Url:		https://portal.softwarepublico.gov.br/social/pw3270/
@@ -56,6 +49,7 @@ BuildRequires:  pkgconfig(dbus-1)
 BuildRequires:  pkgconfig(dbus-glib-1)
 BuildRequires:	libv3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
 BuildRequires:	lib3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
+BuildRequires:	pkgconfig(gtk+-3.0)
 BuildRequires:  autoconf >= 2.61
 BuildRequires:  automake
 BuildRequires:  binutils
@@ -93,7 +87,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root)
 %doc AUTHORS LICENSE README.md
 
-%{_libdir}/pw3270-plugin/ipc3270.so
+%dir %{_libdir}/pw3270-plugins
+%{_libdir}/pw3270-plugins/ipc3270.so
 
 %pre
 /sbin/ldconfig
