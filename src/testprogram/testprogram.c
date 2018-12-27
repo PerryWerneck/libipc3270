@@ -40,7 +40,7 @@
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-static void activate(GtkApplication* app, gpointer user_data) {
+static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	GtkWidget	* window	= gtk_application_window_new(app);
 	GtkWidget	* terminal	= v3270_new();

@@ -63,6 +63,9 @@
 		<Unit filename="src/plugin/start.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/service/service.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/testprogram/testprogram.c">
 			<Option compilerVar="CC" />
 		</Unit>

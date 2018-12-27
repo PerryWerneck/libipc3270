@@ -27,6 +27,7 @@
 #---[ Library configuration ]------------------------------------------------------------
 
 MODULE_NAME=ipc3270
+PACKAGE_NAME=@PACKAGE_NAME@
 
 CORE_SOURCES= \
 	$(wildcard src/*.c) \
@@ -34,6 +35,10 @@ CORE_SOURCES= \
 
 PLUGIN_SOURCES= \
 	$(wildcard src/plugin/*.c) \
+	$(wildcard src/@OSNAME@/*.rc)
+
+SERVICE_SOURCES= \
+	$(wildcard src/service/*.c) \
 	$(wildcard src/@OSNAME@/*.rc)
 
 TEST_SOURCES= \
@@ -234,6 +239,13 @@ Debug: \
 	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@ \
 	$(BINDBG)/$(MODULE_NAME)@EXEEXT@
 
+Debug-plugin: \
+	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@ \
+	$(BINDBG)/$(MODULE_NAME)@EXEEXT@
+
+Debug-service: \
+	$(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@
+
 $(BINDBG)/lib$(MODULE_NAME).a: \
 	$(foreach SRC, $(basename $(CORE_SOURCES)), $(OBJDBG)/$(SRC).o)
 
@@ -258,7 +270,22 @@ $(BINDBG)/$(MODULE_NAME)@EXEEXT@: \
 		$(LIBS) \
 		-l$(MODULE_NAME)
 
-run: \
+$(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@: \
+	$(foreach SRC, $(basename $(SERVICE_SOURCES)), $(OBJDBG)/$(SRC).o) \
+	$(BINDBG)/lib$(MODULE_NAME).a	
+
+	@$(MKDIR) `dirname $@`
+	@echo $< ...
+	@$(LD) \
+		-o $@ \
+		$^ \
+		-L$(BINDBG) \
+		-Wl,-rpath,$(BINDBG) \
+		$(LDFLAGS) \
+		$(LIBS) \
+		-l$(MODULE_NAME)
+
+run-plugin: \
 	$(BINDBG)/$(MODULE_NAME)@EXEEXT@
 
 	@LD_LIBRARY_PATH=$(BINDBG) \
@@ -308,6 +335,20 @@ clean: \
 
 cleanDebug:
 
+	@rm -fr $(OBJDBG)
+	@rm -fr $(BINDBG)
+	@rm -fr $(OBJDIR)/marshal
+	@rm -f src/v3270/marshal.h
+	@rm -f src/v3270ft/marshal.h
+
+cleanDebug-plugin:
+	@rm -fr $(OBJDBG)
+	@rm -fr $(BINDBG)
+	@rm -fr $(OBJDIR)/marshal
+	@rm -f src/v3270/marshal.h
+	@rm -f src/v3270ft/marshal.h
+
+cleanDebug-service:
 	@rm -fr $(OBJDBG)
 	@rm -fr $(BINDBG)
 	@rm -fr $(OBJDIR)/marshal

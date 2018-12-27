@@ -214,6 +214,52 @@ AC_SUBST(GDBUS_LIBS)
 AC_SUBST(GDBUS_CFLAGS)
 
 dnl ---------------------------------------------------------------------------
+dnl systemd integration
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_ENABLE([systemd],
+	AS_HELP_STRING([--enable-systemd], [Use systemd]),
+	[with_systemd=$enableval],
+	[with_systemd=auto])
+
+PKG_CHECK_MODULES(systemd,
+	[systemd],
+	[have_systemd=yes], [have_systemd=no])
+
+if test x$with_systemd = xauto ; then
+        if test x$have_systemd = xno ; then
+                with_systemd=no
+        else
+                with_systemd=yes
+        fi
+fi
+
+if (test "${with_systemd}" = "yes"); then
+
+    PKG_CHECK_MODULES(SYSTEMD, systemd, dummy=yes,AC_MSG_ERROR(systemd is required))
+
+    SYSTEMD_UNITDIR="`$PKG_CONFIG --variable=systemdsystemunitdir systemd`"
+	AC_SUBST(SYSTEMD_UNITDIR)
+
+	PKG_CHECK_MODULES( [SYSTEMD], [libsystemd], AC_DEFINE(HAVE_SYSTEMD), AC_MSG_NOTICE([libsystemd not present.]) )
+
+	AC_SUBST(SYSTEMD_CFLAGS)
+	AC_SUBST(SYSTEMD_LIBS)
+
+	AC_CONFIG_FILES(conf/systemd.service)
+
+	INIT_MODULE="systemd"
+
+else
+
+	INIT_MODULE="initd"
+
+fi
+
+AC_SUBST(INIT_MODULE)
+
+
+dnl ---------------------------------------------------------------------------
 dnl Check for pic
 dnl ---------------------------------------------------------------------------
 AC_ARG_ENABLE([pic],
