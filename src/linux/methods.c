@@ -54,6 +54,125 @@ ipc3270_method_call (GDBusConnection       *connection,
 	size_t ix;
 	g_autoptr (GError) error = NULL;
 
+	if(!g_ascii_strcasecmp(method_name,"getString"))
+	{
+		char * text = lib3270_get_string_at_address(IPC3270(user_data)->hSession,0,-1,'\n');
+
+		if(!text)
+		{
+			g_set_error(&error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
+			g_dbus_method_invocation_return_gerror(invocation, error);
+		}
+		else
+		{
+			g_dbus_method_invocation_return_value (invocation, g_variant_new_string(text));
+			lib3270_free(text);
+		}
+
+		return;
+	}
+	else if(!g_ascii_strcasecmp(method_name,"setString"))
+	{
+		gchar *text = NULL;
+		g_variant_get(parameters, "(&s)", &text);
+
+		if(lib3270_input_string(IPC3270(user_data)->hSession,(const unsigned char *) text) < 0)
+		{
+			// Failed!
+			g_set_error(&error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
+			g_dbus_method_invocation_return_gerror(invocation, error);
+		}
+		else
+		{
+			// Suceeded
+			g_dbus_method_invocation_return_value (invocation, g_variant_new_int16((gint16) 0));
+		}
+
+		return;
+	}
+	else if(!g_ascii_strcasecmp(method_name,"setStringAt"))
+	{
+		gint row,col;
+		gchar *text = NULL;
+		g_variant_get(parameters, "(ii&s)", &row, &col, &text);
+
+		if(lib3270_set_string_at(IPC3270(user_data)->hSession,row,col,(const unsigned char *) text) < 0)
+		{
+			// Failed!
+			g_set_error(&error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
+			g_dbus_method_invocation_return_gerror(invocation, error);
+		}
+		else
+		{
+			// Suceeded
+			g_dbus_method_invocation_return_value (invocation, g_variant_new_int16((gint16) 0));
+		}
+
+		return;
+	}
+	else if(!g_ascii_strcasecmp(method_name,"getStringAt"))
+	{
+		gint row,col,len;
+		guchar lf;
+		g_variant_get(parameters, "(iiy)", &row, &col, &len,&lf);
+
+		char * text = lib3270_get_string_at(IPC3270(user_data)->hSession, row, col, len, lf);
+
+		if(!text)
+		{
+			g_set_error(&error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
+			g_dbus_method_invocation_return_gerror(invocation, error);
+		}
+		else
+		{
+			g_dbus_method_invocation_return_value (invocation, g_variant_new_string(text));
+			lib3270_free(text);
+		}
+
+		return;
+	}
+	else if(!g_ascii_strcasecmp(method_name,"setStringAtAddress"))
+	{
+		gint addr;
+		gchar *text = NULL;
+		g_variant_get(parameters, "(i&s)", &addr, &text);
+
+		if(lib3270_set_string_at_address(IPC3270(user_data)->hSession,addr,(unsigned char *) text) < 0)
+		{
+			// Failed!
+			g_set_error(&error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
+			g_dbus_method_invocation_return_gerror(invocation, error);
+		}
+		else
+		{
+			// Suceeded
+			g_dbus_method_invocation_return_value (invocation, g_variant_new_int16((gint16) 0));
+		}
+
+		return;
+	}
+	else if(!g_ascii_strcasecmp(method_name,"getStringAtAddress"))
+	{
+		gint addr,len;
+		guchar lf;
+		g_variant_get(parameters, "(iiy)", &addr, &len, &lf);
+
+		char * text = lib3270_get_string_at_address(IPC3270(user_data)->hSession, addr, len, lf);
+
+		if(!text)
+		{
+			g_set_error(&error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
+			g_dbus_method_invocation_return_gerror(invocation, error);
+		}
+		else
+		{
+			g_dbus_method_invocation_return_value (invocation, g_variant_new_string(text));
+			lib3270_free(text);
+		}
+
+		return;
+
+	}
 	// Check action table.
 	const LIB3270_ACTION_ENTRY * actions = lib3270_get_action_table();
 	for(ix = 0; actions[ix].name; ix++)

@@ -143,16 +143,51 @@ void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GEr
 				// Introspection data for the service we are exporting
 				GString * introspection = g_string_new(
 						"<node>\n"
-						"  <interface name='br.com.bb.tn3270'>"
-						"    <method name='connect'>"
-						"      <arg type='s' name='url' direction='in'/>"
-						"    </method>"
-						"    <method name='pfkey'>" \
-						"      <arg type='i' name='keycode' direction='in'/>" \
-						"    </method>"
-						"    <method name='pakey'>" \
-						"      <arg type='i' name='keycode' direction='in'/>" \
-						"    </method>"
+						"	<interface name='br.com.bb.tn3270'>"
+						"		<method name='connect'>"
+						"		<arg type='s' name='url' direction='in'/>"
+						"		<arg type='i' name='result' direction='out' />" \
+						"	</method>"
+						"	<method name='pfkey'>" \
+						"		<arg type='i' name='keycode' direction='in'/>" \
+						"		<arg type='i' name='result' direction='out' />" \
+						"	</method>"
+						"	<method name='pakey'>" \
+						"		<arg type='i' name='keycode' direction='in'/>" \
+						"		<arg type='i' name='result' direction='out' />" \
+						"	</method>"
+						"	<method name='getString'>" \
+						"		<arg type='s' name='text' direction='out' />" \
+						"	</method>" \
+						"	<method name='setString'>" \
+						"		<arg type='s' name='text' direction='in' />" \
+						"		<arg type='i' name='result' direction='out' />" \
+						"	</method>" \
+						"	<method name='setStringAt'>" \
+						"		<arg type='i' name='row' direction='in' />" \
+						"		<arg type='i' name='col' direction='in' />" \
+						"		<arg type='s' name='text' direction='in' />" \
+						"		<arg type='i' name='result' direction='out' />" \
+						"	</method>" \
+						"	<method name= 'getStringAt'>" \
+						"		<arg type='i' name='row' direction='in' />" \
+						"		<arg type='i' name='col' direction='in' />" \
+						"		<arg type='i' name='len' direction='in' />" \
+						"		<arg type='y' name='lf' direction='in' />" \
+						"		<arg type='s' name='text' direction='out' />" \
+						"	</method>" \
+						"	<method name='setStringAtAddress'>" \
+						"		<arg type='i' name='addr' direction='in' />" \
+						"		<arg type='s' name='text' direction='in' />" \
+						"		<arg type='i' name='result' direction='out' />" \
+						"	</method>" \
+						"	<method name= 'getStringAtAddress'>" \
+						"		<arg type='i' name='addr' direction='in' />" \
+						"		<arg type='i' name='len' direction='in' />" \
+						"		<arg type='y' name='lf' direction='in' />" \
+						"		<arg type='s' name='text' direction='out' />" \
+						"	</method>"
+
 				);
 
 				// Constrói métodos usando a tabela de controle
