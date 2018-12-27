@@ -30,6 +30,26 @@
 					<Add option="-s" />
 				</Linker>
 			</Target>
+			<Target title="Debug-plugin">
+				<Option output=".bin/Debug/ipc3270" prefix_auto="1" extension_auto="1" />
+				<Option object_output=".obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DDEBUG=1" />
+				</Compiler>
+			</Target>
+			<Target title="Debug-service">
+				<Option output=".bin/Debug/pw3270d" prefix_auto="1" extension_auto="1" />
+				<Option object_output=".obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="-DDEBUG=1" />
+				</Compiler>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
