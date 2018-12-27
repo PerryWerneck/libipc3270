@@ -97,12 +97,11 @@ void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GEr
 
 		if(hPipe != INVALID_HANDLE_VALUE) {
 
-			ipc->source = (IPC3270_PIPE_SOURCE *) g_source_new(&pipe_source_funcs,sizeof(IPC3270_PIPE_SOURCE));
+			ipc->source = (IPC3270_PIPE_SOURCE *) g_source_new(&ipc3270_source_funcs,sizeof(IPC3270_PIPE_SOURCE));
 
 			lib3270_set_session_id(ipc->hSession, id);
 
 			ipc->source->hPipe			= hPipe;
-			ipc->source->hSession		= hSession;
 			ipc->source->state			= PIPE_STATE_WAITING;
 			ipc->source->overlap.hEvent	= CreateEvent( NULL,TRUE,TRUE,NULL);
 

@@ -32,7 +32,7 @@
 void ipc3270_wait_for_client(IPC3270_PIPE_SOURCE *source) {
 
 	if(ConnectNamedPipe(source->hPipe,&source->overlap)) {
-		g_message("Error %u in ConnectNamedPipe",(unsigned int) getLastError());
+		g_message("Error %u in ConnectNamedPipe",(unsigned int) GetLastError());
 		// popup_lasterror("%s",_( "Error in ConnectNamedPipe" ));
 		return;
 	}
@@ -48,7 +48,7 @@ void ipc3270_wait_for_client(IPC3270_PIPE_SOURCE *source) {
 			break;
 
 	default:
-		g_message("Error %u in ConnectNamedPipe",(unsigned int) getLastError());
+		g_message("Error %u in ConnectNamedPipe",(unsigned int) GetLastError());
 		// popup_lasterror("%s", _( "ConnectNamedPipe failed" ));
 	}
 

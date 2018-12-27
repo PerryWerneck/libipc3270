@@ -122,10 +122,12 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
+#ifndef _WIN32
 	if(asDaemon && daemon(0,0)) {
 		fprintf(stderr,"%s\n",strerror(errno));
 		return -1;
 	}
+#endif // _WIN32
 
 	main_loop = g_main_loop_new(NULL, FALSE);
  	g_main_loop_run(main_loop);
