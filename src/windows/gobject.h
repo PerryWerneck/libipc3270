@@ -68,7 +68,7 @@
 		GSource 			gsrc;
 		HANDLE				hPipe;
 
-		enum PIPE_STATE		state;
+		IPC3270_PIPE_STATE	state;
 
 		OVERLAPPED			overlap;
 		unsigned char		buffer[PIPE_BUFFER_LENGTH+1];

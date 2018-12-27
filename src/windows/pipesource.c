@@ -68,7 +68,7 @@ static gboolean IO_prepare(GSource *source, gint *timeout) {
 	 * returned which were >= 0.
 	 *
 	 */
-	if(WaitForSingleObject(((pipe_source *) source)->overlap.hEvent,0) == WAIT_OBJECT_0)
+	if(WaitForSingleObject(((IPC3270_PIPE_SOURCE *) source)->overlap.hEvent,0) == WAIT_OBJECT_0)
 		return TRUE;
 
 	*timeout = 10;
@@ -155,15 +155,15 @@ static gboolean IO_dispatch(GSource *source, GSourceFunc callback, gpointer data
 	BOOL	fSuccess;
 	DWORD	cbRead	= 0;
 
-	fSuccess = GetOverlappedResult(((pipe_source *) source)->hPipe,&((pipe_source *) source)->overlap,&cbRead,FALSE );
+	fSuccess = GetOverlappedResult(((IPC3270_PIPE_SOURCE *) source)->hPipe,&((IPC3270_PIPE_SOURCE *) source)->overlap,&cbRead,FALSE );
 
-	switch(((pipe_source *) source)->state) {
+	switch(((IPC3270_PIPE_SOURCE *) source)->state) {
 	case PIPE_STATE_WAITING:
 
 		if(fSuccess) {
 
 			g_message("Client is connected");
-			((pipe_source *) source)->state = PIPE_STATE_READ;
+			((IPC3270_PIPE_SOURCE *) source)->state = PIPE_STATE_READ;
 
 		} else {
 
@@ -174,13 +174,13 @@ static gboolean IO_dispatch(GSource *source, GSourceFunc callback, gpointer data
 
 	case PIPE_STATE_READ:
 		// trace("Reading pipe (cbRead=%d)",(int) cbRead);
-		read_input_pipe( (pipe_source *) source);
+		read_input_pipe( (IPC3270_PIPE_SOURCE *) source);
 		break;
 
 	case PIPE_STATE_PENDING_READ:
 		if(fSuccess && cbRead > 0)
-			process_input((pipe_source *) source,cbRead);
-		((pipe_source *) source)->state = PIPE_STATE_READ;
+			process_input((IPC3270_PIPE_SOURCE *) source,cbRead);
+		((IPC3270_PIPE_SOURCE *) source)->state = PIPE_STATE_READ;
 		break;
 
 	case PIPE_STATE_UNDEFINED:
@@ -191,11 +191,15 @@ static gboolean IO_dispatch(GSource *source, GSourceFunc callback, gpointer data
 	return TRUE;
 }
 
+static gboolean IO_closure(gpointer data) {
+	return 0;
+}
+
 static void IO_finalize(GSource *source) {
 
-	if( ((pipe_source *) source)->hPipe != INVALID_HANDLE_VALUE) {
-		CloseHandle(((pipe_source *) source)->hPipe);
-		((pipe_source *) source)->hPipe = INVALID_HANDLE_VALUE;
+	if( ((IPC3270_PIPE_SOURCE *) source)->hPipe != INVALID_HANDLE_VALUE) {
+		CloseHandle(((IPC3270_PIPE_SOURCE *) source)->hPipe);
+		((IPC3270_PIPE_SOURCE *) source)->hPipe = INVALID_HANDLE_VALUE;
 	}
 
 }
