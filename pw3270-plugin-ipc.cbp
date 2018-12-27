@@ -89,6 +89,13 @@
 		<Unit filename="src/testprogram/testprogram.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/windows/gobject.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/windows/gobject.h" />
+		<Unit filename="src/windows/pipesource.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />

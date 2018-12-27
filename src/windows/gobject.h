@@ -29,14 +29,15 @@
  */
 
  /**
-  * @brief Private definitions for pw3270 IPC linux module.
+  * @brief Private definitions for pw3270 IPC windows module.
   *
   */
 
-#ifndef LINUX_GOBJECT_H_INCLUDED
+#ifndef WINDOWS_GOBJECT_H_INCLUDED
 
-	#define LINUX_GOBJECT_H_INCLUDED
+	#define WINDOWS_GOBJECT_H_INCLUDED
 
+	#include <windows.h>
 	#include <config.h>
 
 	#define ENABLE_NLS
@@ -49,27 +50,44 @@
 	#include <lib3270.h>
 	#include <lib3270/ipc.h>
 
+	#define PIPE_BUFFER_LENGTH 8192
+
 	G_BEGIN_DECLS
 
 	typedef struct _ipc3270			ipc3270;
 	typedef struct _ipc3270Class	ipc3270Class;
 
+	typedef enum _ipc3270_pipe_state {
+		PIPE_STATE_WAITING,
+		PIPE_STATE_READ,
+		PIPE_STATE_PENDING_READ,
+		PIPE_STATE_UNDEFINED
+	} IPC3270_PIPE_STATE;
+
+	typedef struct _ipc3270_pipe_source {
+		GSource 			gsrc;
+		HANDLE				hPipe;
+
+		enum PIPE_STATE		state;
+
+		OVERLAPPED			overlap;
+		unsigned char		buffer[PIPE_BUFFER_LENGTH+1];
+	} IPC3270_PIPE_SOURCE;
+
 	struct _ipc3270 {
-		GObject			  parent;
-		GDBusConnection	* connection;
-		guint			  id;
-		H3270			* hSession;
-		GQuark 			  error_domain;
+		H3270				* hSession;
+		IPC3270_PIPE_SOURCE	* source;
+		GQuark 				  error_domain;
 	};
 
 	struct _ipc3270Class {
 		GObjectClass parent;
 	};
 
-	G_GNUC_INTERNAL void ipc3270_method_call (GDBusConnection *connection, const gchar *sender, const gchar *object_path, const gchar *interface_name, const gchar *method_name, GVariant *parameters, GDBusMethodInvocation *invocation, gpointer user_data);
-	G_GNUC_INTERNAL gboolean ipc3270_set_property(GDBusConnection *connection, const gchar *sender, const gchar *object_path, const gchar *interface_name, const gchar *property_name, GVariant *value, GError **error, gpointer user_data);
-	G_GNUC_INTERNAL GVariant * ipc3270_get_property (GDBusConnection  *connection, const gchar *sender, const gchar *object_path, const gchar *interface_name, const gchar *property_name, GError **error, gpointer user_data);
+	G_GNUC_INTERNAL GSourceFuncs ipc3270_source_funcs;
+
+	G_GNUC_INTERNAL void ipc3270_wait_for_client(IPC3270_PIPE_SOURCE *source);
 
 	G_END_DECLS
 
-#endif // LINUX_GOBJECT_H_INCLUDED
+#endif // WINDOWS_GOBJECT_H_INCLUDED
