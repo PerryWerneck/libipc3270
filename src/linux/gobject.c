@@ -72,7 +72,7 @@ static void ipc3270_init(ipc3270 *object) {
 
 }
 
-GObject * ipc3270_new(GtkWidget *window, GtkWidget *terminal) {
+GObject * ipc3270_new() {
 	return g_object_new(GLIB_TYPE_IPC3270, NULL);
 }
 
@@ -270,5 +270,8 @@ void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GEr
 
 }
 
+const gchar * ipc3270_get_display_charset(GObject *object) {
+	return lib3270_get_display_charset(IPC3270(object)->hSession);
+}
 
 

@@ -40,7 +40,7 @@
 #include <dbus/dbus-glib-bindings.h>
 
 /// @brief Converts lib3270 string to UTF-8 sets the method response.
-void g_dbus_method_invocation_return_tn3270_string(ipc3270 *obj, GDBusMethodInvocation *invocation, char *string) {
+static void g_dbus_method_invocation_return_tn3270_string(ipc3270 *obj, GDBusMethodInvocation *invocation, char *string) {
 
 	if(!string) {
 		g_autoptr (GError) error = NULL;
@@ -59,14 +59,15 @@ void g_dbus_method_invocation_return_tn3270_string(ipc3270 *obj, GDBusMethodInvo
 }
 
 void
-ipc3270_method_call (GDBusConnection       *connection,
-                    const gchar           *sender,
-                    const gchar           *object_path,
-                    const gchar           *interface_name,
-                    const gchar           *method_name,
-                    GVariant              *parameters,
-                    GDBusMethodInvocation *invocation,
-                    gpointer               user_data)
+ipc3270_method_call (
+		G_GNUC_UNUSED GDBusConnection       *connection,
+		G_GNUC_UNUSED const gchar           *sender,
+		G_GNUC_UNUSED const gchar           *object_path,
+		G_GNUC_UNUSED const gchar           *interface_name,
+		const gchar           *method_name,
+		GVariant              *parameters,
+		GDBusMethodInvocation *invocation,
+		gpointer               user_data)
 {
 
 
@@ -85,7 +86,8 @@ ipc3270_method_call (GDBusConnection       *connection,
 		gchar *text = NULL;
 		g_variant_get(parameters, "(&s)", &text);
 
-		if(lib3270_input_string(IPC3270(user_data)->hSession,(const unsigned char *) text) < 0)
+		g_autofree gchar * converted = ipc3270_convert_output_string(G_OBJECT(user_data), text);
+		if(lib3270_input_string(IPC3270(user_data)->hSession,(const unsigned char *) converted) < 0)
 		{
 			// Failed!
 			g_set_error(&error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
@@ -105,7 +107,8 @@ ipc3270_method_call (GDBusConnection       *connection,
 		gchar *text = NULL;
 		g_variant_get(parameters, "(ii&s)", &row, &col, &text);
 
-		if(lib3270_set_string_at(IPC3270(user_data)->hSession,row,col,(const unsigned char *) text) < 0)
+		g_autofree gchar * converted = ipc3270_convert_output_string(G_OBJECT(user_data), text);
+		if(lib3270_set_string_at(IPC3270(user_data)->hSession,row,col,(const unsigned char *) converted) < 0)
 		{
 			// Failed!
 			g_set_error(&error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
@@ -135,7 +138,8 @@ ipc3270_method_call (GDBusConnection       *connection,
 		gchar *text = NULL;
 		g_variant_get(parameters, "(i&s)", &addr, &text);
 
-		if(lib3270_set_string_at_address(IPC3270(user_data)->hSession,addr,(unsigned char *) text) < 0)
+		g_autofree gchar * converted = ipc3270_convert_output_string(G_OBJECT(user_data), text);
+		if(lib3270_set_string_at_address(IPC3270(user_data)->hSession,addr,(unsigned char *) converted) < 0)
 		{
 			// Failed!
 			g_set_error(&error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));

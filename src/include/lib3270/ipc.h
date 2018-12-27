@@ -55,6 +55,8 @@
 	GObject		* ipc3270_new();
 	GType		  ipc3270_get_type(void);
     void		  ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GError **error);
+	gchar		* ipc3270_convert_output_string(GObject *object, const gchar *string);
+	const gchar	* ipc3270_get_display_charset(GObject *object);
 
 	G_END_DECLS
 

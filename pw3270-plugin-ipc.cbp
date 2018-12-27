@@ -41,6 +41,9 @@
 		<Unit filename="src/constants.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/convert.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/lib3270/ipc.h" />
 		<Unit filename="src/linux/getproperties.c">

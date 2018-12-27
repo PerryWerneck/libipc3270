@@ -40,14 +40,15 @@
 #include <dbus/dbus-glib-bindings.h>
 
 gboolean
-ipc3270_set_property (GDBusConnection  *connection,
-                     const gchar      *sender,
-                     const gchar      *object_path,
-                     const gchar      *interface_name,
-                     const gchar      *property_name,
-                     GVariant         *value,
-                     GError          **error,
-                     gpointer          user_data)
+ipc3270_set_property (
+		G_GNUC_UNUSED GDBusConnection  *connection,
+		G_GNUC_UNUSED const gchar      *sender,
+		G_GNUC_UNUSED const gchar      *object_path,
+		G_GNUC_UNUSED const gchar      *interface_name,
+		const gchar      *property_name,
+		GVariant         *value,
+		GError          **error,
+		gpointer          user_data)
 {
 	// Check for property
 	size_t ix;

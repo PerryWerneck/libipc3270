@@ -28,10 +28,12 @@
 
 MODULE_NAME=ipc3270
 
-SOURCES= \
+CORE_SOURCES= \
 	$(wildcard src/*.c) \
+	$(wildcard src/@OSNAME@/*.c)
+
+PLUGIN_SOURCES= \
 	$(wildcard src/plugin/*.c) \
-	$(wildcard src/@OSNAME@/*.c) \
 	$(wildcard src/@OSNAME@/*.rc)
 
 TEST_SOURCES= \
@@ -49,6 +51,7 @@ INSTALL_PROGRAM=@INSTALL_PROGRAM@
 XGETTEXT=@XGETTEXT@
 MSGCAT=@MSGCAT@
 WINDRES=@WINDRES@
+AR=@AR@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -177,21 +180,40 @@ all: \
 Release: \
 	$(BINRLS)/$(MODULE_NAME)@DLLEXT@
 
+$(BINRLS)/lib$(MODULE_NAME).a: \
+	$(foreach SRC, $(basename $(CORE_SOURCES)), $(OBJRLS)/$(SRC).o)
+
+	@$(MKDIR) `dirname $@`
+	@echo $< ...
+
+	@$(AR) rcs $@ $^
+
 $(BINRLS)/$(MODULE_NAME)@DLLEXT@: \
-	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
+	$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
+	$(BINRLS)/lib$(MODULE_NAME).a	
+
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
 	@$(LD) \
 		-shared -Wl,-soname,$(@F) \
 		-o $@ \
-		$(LDFLAGS) \
-		$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
 		-L$(BINRLS) \
+		$(LDFLAGS) \
+		$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
+		-l$(MODULE_NAME) \
 		$(LIBS)
 
 #---[ Install Targets ]------------------------------------------------------------------
 
+install-plugin: \
+	$(BINRLS)/$(MODULE_NAME)@DLLEXT@
+
+	@$(MKDIR) $(DESTDIR)$(libdir)/pw3270-plugins
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/$(MODULE_NAME)@DLLEXT@ \
+		$(DESTDIR)$(libdir)/pw3270-plugins
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
@@ -211,6 +233,15 @@ locale: \
 Debug: \
 	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@ \
 	$(BINDBG)/$(MODULE_NAME)@EXEEXT@
+
+$(BINDBG)/lib$(MODULE_NAME).a: \
+	$(foreach SRC, $(basename $(CORE_SOURCES)), $(OBJDBG)/$(SRC).o)
+
+	@$(MKDIR) `dirname $@`
+	@echo $< ...
+
+	@$(AR) rcs $@ $^
+
 
 $(BINDBG)/$(MODULE_NAME)@EXEEXT@: \
 	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
@@ -251,7 +282,8 @@ $(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
 		$@
 
 $(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
-	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o)
+	$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJDBG)/$(SRC).o) \
+	$(BINDBG)/lib$(MODULE_NAME).a	
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
@@ -260,8 +292,9 @@ $(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MIN
 		-o $@ \
 		-L$(BINDBG) \
 		$(LDFLAGS) \
-		$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o) \
-		$(LIBS)
+		$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJDBG)/$(SRC).o) \
+		-l$(MODULE_NAME) \
+		$(LIBS) 
 
 #---[ Clean Targets ]--------------------------------------------------------------------
 
