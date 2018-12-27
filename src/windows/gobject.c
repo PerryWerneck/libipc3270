@@ -102,6 +102,7 @@ void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GEr
 			lib3270_set_session_id(ipc->hSession, id);
 
 			ipc->source->hPipe			= hPipe;
+			ipc->source->hSession		= hSession;
 			ipc->source->state			= PIPE_STATE_WAITING;
 			ipc->source->overlap.hEvent	= CreateEvent( NULL,TRUE,TRUE,NULL);
 

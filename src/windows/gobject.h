@@ -65,13 +65,14 @@
 	} IPC3270_PIPE_STATE;
 
 	typedef struct _ipc3270_pipe_source {
-		GSource 			gsrc;
-		HANDLE				hPipe;
+		GSource 			  gsrc;
+		HANDLE				  hPipe;
 
-		IPC3270_PIPE_STATE	state;
+		IPC3270_PIPE_STATE	  state;
 
-		OVERLAPPED			overlap;
-		unsigned char		buffer[PIPE_BUFFER_LENGTH+1];
+		OVERLAPPED			  overlap;
+		unsigned char		  buffer[PIPE_BUFFER_LENGTH+1];
+
 	} IPC3270_PIPE_SOURCE;
 
 	struct _ipc3270 {
