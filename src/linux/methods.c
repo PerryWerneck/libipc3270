@@ -39,6 +39,25 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
 
+/// @brief Converts lib3270 string to UTF-8 sets the method response.
+void g_dbus_method_invocation_return_tn3270_string(ipc3270 *obj, GDBusMethodInvocation *invocation, char *string) {
+
+	if(!string) {
+		g_autoptr (GError) error = NULL;
+		g_set_error(&error,obj->error_domain,errno,"%s",strerror(errno));
+		g_dbus_method_invocation_return_gerror(invocation, error);
+		return;
+	}
+
+	gchar * utftext = g_convert_with_fallback(string,-1,"UTF-8",lib3270_get_display_charset(obj->hSession),"?",NULL,NULL,NULL);
+
+	g_dbus_method_invocation_return_value(invocation, g_variant_new ("(s)", utftext));
+
+	lib3270_free(string);
+	g_free(utftext);
+
+}
+
 void
 ipc3270_method_call (GDBusConnection       *connection,
                     const gchar           *sender,
@@ -54,21 +73,11 @@ ipc3270_method_call (GDBusConnection       *connection,
 	size_t ix;
 	g_autoptr (GError) error = NULL;
 
+	debug("%s(%s)",__FUNCTION__,method_name);
+
 	if(!g_ascii_strcasecmp(method_name,"getString"))
 	{
-		char * text = lib3270_get_string_at_address(IPC3270(user_data)->hSession,0,-1,'\n');
-
-		if(!text)
-		{
-			g_set_error(&error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
-			g_dbus_method_invocation_return_gerror(invocation, error);
-		}
-		else
-		{
-			g_dbus_method_invocation_return_value (invocation, g_variant_new_string(text));
-			lib3270_free(text);
-		}
-
+		g_dbus_method_invocation_return_tn3270_string(IPC3270(user_data), invocation, lib3270_get_string_at_address(IPC3270(user_data)->hSession,0,-1,'\n'));
 		return;
 	}
 	else if(!g_ascii_strcasecmp(method_name,"setString"))
@@ -116,20 +125,9 @@ ipc3270_method_call (GDBusConnection       *connection,
 		guchar lf;
 		g_variant_get(parameters, "(iiy)", &row, &col, &len,&lf);
 
-		char * text = lib3270_get_string_at(IPC3270(user_data)->hSession, row, col, len, lf);
-
-		if(!text)
-		{
-			g_set_error(&error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
-			g_dbus_method_invocation_return_gerror(invocation, error);
-		}
-		else
-		{
-			g_dbus_method_invocation_return_value (invocation, g_variant_new_string(text));
-			lib3270_free(text);
-		}
-
+		g_dbus_method_invocation_return_tn3270_string(IPC3270(user_data), invocation, lib3270_get_string_at(IPC3270(user_data)->hSession, row, col, len, lf));
 		return;
+
 	}
 	else if(!g_ascii_strcasecmp(method_name,"setStringAtAddress"))
 	{
@@ -157,19 +155,7 @@ ipc3270_method_call (GDBusConnection       *connection,
 		guchar lf;
 		g_variant_get(parameters, "(iiy)", &addr, &len, &lf);
 
-		char * text = lib3270_get_string_at_address(IPC3270(user_data)->hSession, addr, len, lf);
-
-		if(!text)
-		{
-			g_set_error(&error,IPC3270(user_data)->error_domain,errno,"%s: %s",method_name,strerror(errno));
-			g_dbus_method_invocation_return_gerror(invocation, error);
-		}
-		else
-		{
-			g_dbus_method_invocation_return_value (invocation, g_variant_new_string(text));
-			lib3270_free(text);
-		}
-
+		g_dbus_method_invocation_return_tn3270_string(IPC3270(user_data), invocation, lib3270_get_string_at_address(IPC3270(user_data)->hSession, addr, len, lf));
 		return;
 
 	}
@@ -200,7 +186,7 @@ ipc3270_method_call (GDBusConnection       *connection,
 	// Check int methods
 	const IPC_METHOD_INT_ARG * int_methods = ipc3270_get_int_arg_methods();
 
-	for(ix = 0; ix < G_N_ELEMENTS(int_methods); ix++)
+	for(ix = 0; int_methods[ix].name; ix++)
 	{
 		if(!g_ascii_strcasecmp(int_methods[ix].name,method_name)) {
 
