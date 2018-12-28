@@ -56,6 +56,7 @@
 
 	typedef struct _ipc3270			ipc3270;
 	typedef struct _ipc3270Class	ipc3270Class;
+	typedef struct _ipc3270Request	ipc3270Request;
 
 	typedef enum _ipc3270_pipe_state {
 		PIPE_STATE_WAITING,

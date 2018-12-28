@@ -55,8 +55,19 @@
 	GObject		* ipc3270_new();
 	GType		  ipc3270_get_type(void);
     void		  ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GError **error);
-	gchar		* ipc3270_convert_output_string(GObject *object, const gchar *string);
+
+	gchar		* ipc3270_convert_output_string(GObject *object, const gchar *string, GError **error);
+	gchar		* ipc3270_convert_input_string(GObject *object, const gchar *string, GError **error);
+	GVariant	* ipc3270_GVariant_from_input_string(GObject *object, char *string, GError **error);
+
 	const gchar	* ipc3270_get_display_charset(GObject *object);
+	H3270		* ipc3270_get_session(GObject *object);
+
+	void		  ipc3270_set_error(GObject *object, int errcode, GError **error);
+
+	GVariant	* ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error);
+	gboolean	  ipc3270_set_property(GObject *object, const gchar *property_name, GVariant *value, GError **error);
+	GVariant	* ipc3270_get_property(GObject *object, const gchar *property_name, GError **error);
 
 	G_END_DECLS
 

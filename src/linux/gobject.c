@@ -76,15 +76,83 @@ GObject * ipc3270_new() {
 	return g_object_new(GLIB_TYPE_IPC3270, NULL);
 }
 
+static void
+	method_call (
+		G_GNUC_UNUSED GDBusConnection       *connection,
+		G_GNUC_UNUSED const gchar           *sender,
+		G_GNUC_UNUSED const gchar           *object_path,
+		G_GNUC_UNUSED const gchar           *interface_name,
+		const gchar           *method_name,
+		GVariant              *parameters,
+		GDBusMethodInvocation *invocation,
+		gpointer               user_data) {
+
+	g_autoptr (GError) error = NULL;
+
+	GVariant * rc = ipc3270_method_call(G_OBJECT(user_data), method_name, parameters, &error);
+
+	if(error) {
+
+		if(rc) {
+			g_variant_unref(rc);
+		}
+
+		g_dbus_method_invocation_return_gerror(invocation, error);
+
+	} else if(rc) {
+
+		g_dbus_method_invocation_return_value(invocation, rc);
+
+	} else {
+
+		g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR, G_DBUS_ERROR_UNKNOWN_METHOD, "Invalid or unexpected method call");
+
+	}
+
+
+}
+
+static GVariant *
+	get_property (
+		G_GNUC_UNUSED  GDBusConnection  *connection,
+		G_GNUC_UNUSED  const gchar      *sender,
+		G_GNUC_UNUSED  const gchar      *object_path,
+		G_GNUC_UNUSED  const gchar      *interface_name,
+		const gchar      *property_name,
+		GError          **error,
+		gpointer          user_data)
+{
+
+	return ipc3270_get_property(G_OBJECT(user_data), property_name, error);
+
+}
+
+static gboolean
+	set_property (
+		G_GNUC_UNUSED GDBusConnection  *connection,
+		G_GNUC_UNUSED const gchar      *sender,
+		G_GNUC_UNUSED const gchar      *object_path,
+		G_GNUC_UNUSED const gchar      *interface_name,
+		const gchar      *property_name,
+		GVariant         *value,
+		GError          **error,
+		gpointer          user_data)
+{
+
+	return ipc3270_set_property(G_OBJECT(user_data), property_name, value, error);
+
+}
+
+
 void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GError **error) {
 
 	char id;
 	int ix;
 
 	static const GDBusInterfaceVTable interface_vtable = {
-		ipc3270_method_call,
-		ipc3270_get_property,
-		ipc3270_set_property
+		method_call,
+		get_property,
+		set_property
 	};
 
 	ipc3270 * ipc = IPC3270(object);
@@ -274,4 +342,10 @@ const gchar * ipc3270_get_display_charset(GObject *object) {
 	return lib3270_get_display_charset(IPC3270(object)->hSession);
 }
 
+H3270 * ipc3270_get_session(GObject *object) {
+	return IPC3270(object)->hSession;
+}
 
+void ipc3270_set_error(GObject *object, int errcode, GError **error) {
+	g_set_error(error,IPC3270(object)->error_domain,errcode,"%s",strerror(errcode));
+}

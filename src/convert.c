@@ -36,8 +36,24 @@
 #include <lib3270/actions.h>
 #include <lib3270/ipc.h>
 
-gchar * ipc3270_convert_output_string(GObject *object, const gchar *string)
-{
-	return g_convert_with_fallback(string,-1,ipc3270_get_display_charset(object),"UTF-8","?",NULL,NULL,NULL);
+gchar * ipc3270_convert_output_string(GObject *object, const gchar *string, GError **error) {
+	return g_convert_with_fallback(string,-1,ipc3270_get_display_charset(object),"UTF-8","?",NULL,NULL,error);
 }
+
+gchar * ipc3270_convert_input_string(GObject *object, const gchar *string, GError **error) {
+	return g_convert_with_fallback(string,-1,"UTF-8",ipc3270_get_display_charset(object),"?",NULL,NULL,error);
+}
+
+GVariant * ipc3270_GVariant_from_input_string(GObject *object, char *string, GError **error) {
+
+	if(string) {
+		g_autofree gchar * utfstring = ipc3270_convert_input_string(object,string,error);
+		lib3270_free(string);
+		return g_variant_new("(s)", utfstring);
+	}
+
+	ipc3270_set_error(object,errno,error);
+	return g_variant_new("(s)", "");
+}
+
 

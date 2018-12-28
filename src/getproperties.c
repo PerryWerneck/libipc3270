@@ -32,25 +32,17 @@
  *
  */
 
-#include "gobject.h"
+#include <config.h>
+#include <lib3270/ipc.h>
 #include <lib3270.h>
 #include <lib3270/properties.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
 
-GVariant *
-ipc3270_get_property (
-		G_GNUC_UNUSED  GDBusConnection  *connection,
-		G_GNUC_UNUSED  const gchar      *sender,
-		G_GNUC_UNUSED  const gchar      *object_path,
-		G_GNUC_UNUSED  const gchar      *interface_name,
-		const gchar      *property_name,
-		GError          **error,
-		gpointer          user_data)
-{
-	size_t ix;
+GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GError **error) {
 
+	size_t ix;
 	errno = 0; // Just in case.
 
 	// Boolean properties
@@ -60,7 +52,7 @@ ipc3270_get_property (
 		if(boolprop[ix].get && !g_ascii_strcasecmp(boolprop[ix].name, property_name)) {
 
 			// Found it!
-			int value = boolprop[ix].get(IPC3270(user_data)->hSession);
+			int value = boolprop[ix].get(ipc3270_get_session(object));
 
 			debug("%s=%d",property_name,value);
 
@@ -69,13 +61,9 @@ ipc3270_get_property (
 			}
 
 			// Erro!
-			g_set_error (error,
-				G_IO_ERROR,
-				G_IO_ERROR_FAILED,
-				g_strerror(errno)
-			);
-
+			ipc3270_set_error(object,ENOENT,error);
 			return NULL;
+
 		}
 
 	}
@@ -87,7 +75,7 @@ ipc3270_get_property (
 		if(intprop[ix].get && !g_ascii_strcasecmp(intprop[ix].name, property_name)) {
 
 			// Found it!
-			int value = intprop[ix].get(IPC3270(user_data)->hSession);
+			int value = intprop[ix].get(ipc3270_get_session(object));
 
 			debug("%s=%d",property_name,value);
 
@@ -96,13 +84,9 @@ ipc3270_get_property (
 			}
 
 			// Erro!
-			g_set_error (error,
-				G_IO_ERROR,
-				G_IO_ERROR_FAILED,
-				g_strerror(errno)
-			);
-
+			ipc3270_set_error(object,errno,error);
 			return NULL;
+
 		}
 
 	}
@@ -114,7 +98,7 @@ ipc3270_get_property (
 		if(strprop[ix].get && !g_ascii_strcasecmp(strprop[ix].name, property_name)) {
 
 			// Found it!
-			const char * value = strprop[ix].get(IPC3270(user_data)->hSession);
+			const char * value = strprop[ix].get(ipc3270_get_session(object));
 
 			if(value) {
 				debug("%s=%s",property_name,value);
@@ -122,13 +106,9 @@ ipc3270_get_property (
 			}
 
 			// Erro!
-			g_set_error (error,
-				G_IO_ERROR,
-				G_IO_ERROR_FAILED,
-				g_strerror(errno)
-			);
-
+			ipc3270_set_error(object,errno,error);
 			return NULL;
+
 		}
 
 	}
@@ -138,16 +118,11 @@ ipc3270_get_property (
 	if(toggle != (LIB3270_TOGGLE) -1) {
 
 		// Is a Tn3270 toggle, get it!
-		return g_variant_new_boolean(lib3270_get_toggle( (IPC3270(user_data)->hSession), toggle) != 0);
+		return g_variant_new_boolean(lib3270_get_toggle( (ipc3270_get_session(object)), toggle) != 0);
 
 	}
 
-	g_set_error (error,
-		G_IO_ERROR,
-		G_IO_ERROR_NOT_FOUND,
-		"Can't find any property named %s", property_name
-	);
-
 	return NULL;
+
 }
 
