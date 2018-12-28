@@ -41,36 +41,44 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-unsigned char * ipc3270_pack(GVariant *values) {
+unsigned char * ipc3270_pack(const gchar * name, int id, GVariant *values, size_t * szPacket) {
 
 	GVariantIter	  iter;
 	gsize			  count = g_variant_iter_init(&iter, values);
 	g_autofree char * types = g_new0(char, count);
 	GVariant 		* child;
 	size_t			  ix = 0;
-	size_t			  szBuffer = sizeof(gint16);
 
-	g_print("Packaging %u itens\n", (unsigned int) count);
+	// Init packet size;
+	*szPacket = strlen(name) + 1 + (sizeof(guint16) * 2) ;
+
+	g_print("Packaging %u itens for \"%s\"\n", (unsigned int) count, name);
 	while ((child = g_variant_iter_next_value (&iter))) {
 
 		// g_print("type='%s' size=%u\n", g_variant_get_type_string(child), (unsigned int) g_variant_get_size(child));
 
 		types[ix] = g_variant_get_type_string(child)[0];
-
-		szBuffer += (1+g_variant_get_size(child));
-		if(types[ix] == 's') {
-			szBuffer += sizeof(gint16);
-		}
+		*szPacket += (1+g_variant_get_size(child));
 
 		g_variant_unref(child);
 		ix++;
 	}
 
-	unsigned char * outputBuffer 	= g_malloc0(szBuffer);
-	unsigned char * txtptr			= outputBuffer + sizeof(guint16) + sizeof(guint16);
+	// Allocate buffer
+	unsigned char * outputBuffer 	= g_malloc0(*szPacket);
+	unsigned char * txtptr			= outputBuffer;
 
-	*((guint16 *) outputBuffer) = (guint16) szBuffer;
-	*((guint16 *) (outputBuffer + sizeof(guint16))) = (guint16) count;
+	// Add name
+	strcpy((char *) txtptr,name);
+	txtptr += strlen((char *) txtptr) + 1;
+
+	// Add ID
+	*((guint16 *) txtptr) = (guint16) id;
+	txtptr += sizeof(guint16);
+
+	// Update ptr;
+	*((guint16 *) txtptr) = (guint16) count;
+	txtptr += sizeof(guint16);
 
 	ix = 0;
 	g_variant_iter_init(&iter, values);
@@ -141,23 +149,35 @@ unsigned char * ipc3270_pack(GVariant *values) {
 	return outputBuffer;
 }
 
-GVariant * ipc3270_unpack(const unsigned char *packet) {
+GVariant * ipc3270_unpack(const unsigned char *packet, int *id) {
 
-	size_t szPacket = (size_t) * ((guint16 *) packet);
-	size_t count	= (size_t) * ((guint16 *) (packet+sizeof(guint16)));
-
-	const unsigned char *txtptr	= packet + (sizeof(guint16) * 2);
+	const unsigned char *txtptr;
 	size_t ix;
 
-	g_autofree gchar * descrs = g_malloc0(count+3);
+	// Skip packet name.
+	packet += strlen((const char *) packet)+1;
+
+	// Get Packet ID or error code.
+	if(id) {
+		*id = (int) *((guint16 *) packet);
+	}
+	packet += sizeof(guint16);
+
+	// Get argument count.
+	size_t arguments = (size_t) * ((guint16 *) packet);
+	packet += sizeof(guint16);
+
+	debug("Unpacking package with %u itens", (unsigned int) arguments);
+
+	// Scan for argument types.
+	g_autofree gchar * descrs = g_malloc0(arguments+3);
 	descrs[0] = '(';
-	descrs[count+1] = ')';
+	descrs[arguments+1] = ')';
 
-	debug("Unpacking package with %u bytes and %u itens\n", (unsigned int) szPacket, (unsigned int) count);
+	txtptr = packet;
+	for(ix = 0; ix < arguments; ix++) {
 
-	for(ix = 0; ix < count; ix++) {
-
-		debug("Format(%u): %c at %u",(unsigned int) ix, *txtptr, (unsigned int) (txtptr - packet));
+		debug("Format(%u): %c",(unsigned int) ix, *txtptr);
 
 		descrs[ix+1] = *(txtptr++);
 
@@ -207,10 +227,10 @@ GVariant * ipc3270_unpack(const unsigned char *packet) {
 	GVariantBuilder builder;
 	g_variant_builder_init(&builder,G_VARIANT_TYPE(descrs));
 
-	txtptr	= packet + (sizeof(guint16) * 2);
-	for(ix = 0; ix < count; ix++) {
+	txtptr = packet;
+	for(ix = 0; ix < arguments; ix++) {
 
-		debug("Format(%u): %c at %u",(unsigned int) ix, *txtptr, (unsigned int) (txtptr - packet));
+		debug("Format(%u): %c",(unsigned int) ix, *txtptr);
 		txtptr++;
 
 		switch(descrs[ix+1]) {

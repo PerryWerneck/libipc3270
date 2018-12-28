@@ -69,6 +69,10 @@
 	gboolean	  ipc3270_set_property(GObject *object, const gchar *property_name, GVariant *value, GError **error);
 	GVariant	* ipc3270_get_property(GObject *object, const gchar *property_name, GError **error);
 
+	// TODO: Move for windows private.h
+	unsigned char	* ipc3270_pack(const gchar *name, int id, GVariant *values, size_t * szPacket);
+	GVariant		* ipc3270_unpack(const unsigned char *packet, int *id);
+
 	G_END_DECLS
 
 	#ifdef DEBUG

@@ -38,8 +38,8 @@
 #include <lib3270.h>
 #include <lib3270/actions.h>
 
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-bindings.h>
+// #include <dbus/dbus-glib.h>
+// #include <dbus/dbus-glib-bindings.h>
 
 GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error) {
 

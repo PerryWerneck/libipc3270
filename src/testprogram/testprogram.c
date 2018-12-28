@@ -41,7 +41,7 @@
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
+ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	GtkWidget	* window	= gtk_application_window_new(app);
 	GtkWidget	* terminal	= v3270_new();
@@ -75,18 +75,40 @@ static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 int main (int argc, char **argv) {
 
-  GtkApplication *app;
-  int status;
+	/*
+	GVariantBuilder builder;
 
-  app = gtk_application_new ("br.com.bb.pw3270",G_APPLICATION_FLAGS_NONE);
+	g_variant_builder_init(&builder,G_VARIANT_TYPE("(isi)"));
 
-  g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
+	g_variant_builder_add(&builder, "i", 10);
+	g_variant_builder_add(&builder, "s", "teste");
+	g_variant_builder_add(&builder, "i", 20);
 
-  status = g_application_run (G_APPLICATION (app), argc, argv);
-  g_object_unref (app);
+	GVariant *value = g_variant_builder_end(&builder);
 
-  g_message("rc=%d",status);
-  return status;
+	size_t szPacket = 0;
+	g_autofree unsigned char * buffer = ipc3270_pack("teste", value, &szPacket);
+	g_variant_unref(value);
+
+	debug("Package \"%s\" was created with %u bytes", buffer, (unsigned int) szPacket);
+
+	value = ipc3270_unpack(buffer);
+
+	g_variant_unref(value);
+	*/
+
+	GtkApplication *app;
+	int status;
+
+	app = gtk_application_new ("br.com.bb.pw3270",G_APPLICATION_FLAGS_NONE);
+
+	g_signal_connect (app, "activate", G_CALLBACK(activate), NULL);
+
+	status = g_application_run (G_APPLICATION (app), argc, argv);
+	g_object_unref (app);
+
+	g_message("rc=%d",status);
+	return status;
 
 }
 

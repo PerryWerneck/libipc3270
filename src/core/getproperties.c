@@ -37,8 +37,8 @@
 #include <lib3270.h>
 #include <lib3270/properties.h>
 
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-bindings.h>
+// #include <dbus/dbus-glib.h>
+// #include <dbus/dbus-glib-bindings.h>
 
 GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GError **error) {
 

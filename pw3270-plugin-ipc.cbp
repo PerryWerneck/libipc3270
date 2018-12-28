@@ -69,6 +69,9 @@
 		</Unit>
 		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/lib3270/ipc.h" />
+		<Unit filename="src/inout.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/linux/gobject.c">
 			<Option compilerVar="CC" />
 		</Unit>

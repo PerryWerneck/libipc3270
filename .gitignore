@@ -14,4 +14,6 @@ stamp-h1
 Makefile
 *.[0-9]
 conf/systemd.service
-src/windows/resources.rc
+src/core/windows/resources.rc
+src/plugin/windows/resources.rc
+

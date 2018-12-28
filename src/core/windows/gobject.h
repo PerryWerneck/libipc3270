@@ -89,8 +89,6 @@
 	G_GNUC_INTERNAL GSourceFuncs ipc3270_source_funcs;
 
 	G_GNUC_INTERNAL void			  ipc3270_wait_for_client(IPC3270_PIPE_SOURCE *source);
-	G_GNUC_INTERNAL unsigned char	* ipc3270_pack(GVariant *values);
-	G_GNUC_INTERNAL GVariant		* ipc3270_unpack(const unsigned char *packet);
 
 	G_END_DECLS
 
