@@ -195,18 +195,16 @@ $(BINRLS)/lib$(MODULE_NAME).a: \
 
 $(BINRLS)/$(MODULE_NAME)@DLLEXT@: \
 	$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
-	$(BINRLS)/lib$(MODULE_NAME).a	
-
+	$(foreach SRC, $(basename $(CORE_SOURCES)), $(OBJRLS)/$(SRC).o)
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
 	@$(LD) \
 		-shared -Wl,-soname,$(@F) \
 		-o $@ \
-		-L$(BINRLS) \
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
-		-l$(MODULE_NAME) \
+		$(foreach SRC, $(basename $(CORE_SOURCES)), $(OBJRLS)/$(SRC).o) \
 		$(LIBS)
 
 #---[ Install Targets ]------------------------------------------------------------------
@@ -311,19 +309,21 @@ $(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
 		@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
 		$@
 
+x: \
+	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+
 $(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 	$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJDBG)/$(SRC).o) \
-	$(BINDBG)/lib$(MODULE_NAME).a	
+	$(foreach SRC, $(basename $(CORE_SOURCES)), $(OBJDBG)/$(SRC).o)
 
 	@$(MKDIR) `dirname $@`
 	@echo $< ...
 	@$(LD) \
 		-shared -Wl,-soname,$(@F) \
 		-o $@ \
-		-L$(BINDBG) \
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJDBG)/$(SRC).o) \
-		-l$(MODULE_NAME) \
+		$(foreach SRC, $(basename $(CORE_SOURCES)), $(OBJDBG)/$(SRC).o) \
 		$(LIBS) 
 
 #---[ Clean Targets ]--------------------------------------------------------------------

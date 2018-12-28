@@ -33,6 +33,7 @@
  */
 
 #include <config.h>
+#include <string.h>
 #include <lib3270/ipc.h>
 #include <lib3270.h>
 #include <lib3270/actions.h>
@@ -48,7 +49,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 
 	if(!g_ascii_strcasecmp(method_name,"getString"))
 	{
-		return ipc3270_convert_output_string(object, lib3270_get_string_at_address(ipc3270_get_session(object),0,-1,'\n'), error);
+		return ipc3270_GVariant_from_input_string(object, lib3270_get_string_at_address(ipc3270_get_session(object),0,-1,'\n'), error);
 	}
 	else if(!g_ascii_strcasecmp(method_name,"setString"))
 	{

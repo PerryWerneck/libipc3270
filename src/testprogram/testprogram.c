@@ -35,7 +35,8 @@
   */
 
  #include <v3270.h>
- #include "../plugin/private.h"
+ #include <lib3270/ipc.h>
+ #include <string.h>
  #include <stdlib.h>
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
@@ -86,5 +87,6 @@ int main (int argc, char **argv) {
 
   g_message("rc=%d",status);
   return status;
+
 }
 

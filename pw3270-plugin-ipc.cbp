@@ -64,19 +64,16 @@
 		<Unit filename="src/convert.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/include/config.h.in" />
-		<Unit filename="src/include/lib3270/ipc.h" />
-		<Unit filename="src/linux/getproperties.c">
+		<Unit filename="src/getproperties.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/include/config.h.in" />
+		<Unit filename="src/include/lib3270/ipc.h" />
 		<Unit filename="src/linux/gobject.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/linux/gobject.h" />
-		<Unit filename="src/linux/methods.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src/linux/setproperties.c">
+		<Unit filename="src/methods.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/plugin/private.h" />
@@ -86,6 +83,9 @@
 		<Unit filename="src/service/service.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/setproperties.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/testprogram/testprogram.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -93,6 +93,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/windows/gobject.h" />
+		<Unit filename="src/windows/inout.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/windows/pipesource.c">
 			<Option compilerVar="CC" />
 		</Unit>
