@@ -100,14 +100,15 @@ CFLAGS= \
 	@GTK_CFLAGS@ \
 	@GLIB_CFLAGS@
 
+GTK_LIBS=@GTK_LIBS@
+V3270_LIBS=@V3270_LIBS@
+
 LIBS= \
 	@LIBS@ \
-	@GTK_LIBS@ \
 	@GLIB_LIBS@ \
 	@LIBICONV@ \
 	@INTL_LIBS@ \
-	@LIB3270_LIBS@ \
-	@V3270_LIBS@
+	@LIB3270_LIBS@
 
 #---[ Debug Rules ]----------------------------------------------------------------------
 
@@ -203,8 +204,11 @@ $(BINRLS)/$(MODULE_NAME)@DLLEXT@: \
 		-o $@ \
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
+		-L$(BINRLS) -l$(MODULE_NAME) \
+		$(V3270_LIBS) \
 		$(LIBS) \
-		-L$(BINRLS) -l$(MODULE_NAME)
+		$(GTK_LIBS)
+
 
 #---[ Install Targets ]------------------------------------------------------------------
 
@@ -322,8 +326,10 @@ $(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MIN
 		-o $@ \
 		$(LDFLAGS) \
 		$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJDBG)/$(SRC).o) \
+		-L$(BINDBG) -l$(MODULE_NAME) \
+		$(V3270_LIBS) \
 		$(LIBS) \
-		-L$(BINDBG) -l$(MODULE_NAME)
+		$(GTK_LIBS)
 
 #---[ Clean Targets ]--------------------------------------------------------------------
 
