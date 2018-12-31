@@ -96,7 +96,11 @@
 		<Unit filename="src/plugin/start.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/service/private.h" />
 		<Unit filename="src/service/service.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/service/session.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/testprogram/testprogram.c">

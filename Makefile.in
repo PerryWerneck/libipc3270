@@ -102,10 +102,10 @@ CFLAGS= \
 
 GTK_LIBS=@GTK_LIBS@
 V3270_LIBS=@V3270_LIBS@
+GLIB_LIBS=@GLIB_LIBS@
 
 LIBS= \
 	@LIBS@ \
-	@GLIB_LIBS@ \
 	@LIBICONV@ \
 	@INTL_LIBS@ \
 	@LIB3270_LIBS@
@@ -183,7 +183,8 @@ all: \
 	$(POTDIR)/$(MODULE_NAME).pot
 
 Release: \
-	$(BINRLS)/$(MODULE_NAME)@DLLEXT@
+	$(BINRLS)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@ \
+	$(BINRLS)/$(PACKAGE_NAME)d@EXEEXT@
 
 $(BINRLS)/lib$(MODULE_NAME).a: \
 	$(foreach SRC, $(basename $(CORE_SOURCES)), $(OBJRLS)/$(SRC).o)
@@ -208,6 +209,21 @@ $(BINRLS)/$(MODULE_NAME)@DLLEXT@: \
 		$(V3270_LIBS) \
 		$(LIBS) \
 		$(GTK_LIBS)
+
+$(BINRLS)/$(PACKAGE_NAME)d@EXEEXT@: \
+	$(foreach SRC, $(basename $(SERVICE_SOURCES)), $(OBJRLS)/$(SRC).o) \
+	$(BINRLS)/lib$(MODULE_NAME).a	
+
+	@$(MKDIR) `dirname $@`
+	@echo $< ...
+	@$(LD) \
+		-o $@ \
+		$(foreach SRC, $(basename $(SERVICE_SOURCES)), $(OBJRLS)/$(SRC).o) \
+		-L$(BINRLS) \
+		$(LDFLAGS) \
+		$(LIBS) \
+		-l$(MODULE_NAME) \
+		$(GLIB_LIBS)
 
 
 #---[ Install Targets ]------------------------------------------------------------------
@@ -241,7 +257,8 @@ locale: \
 
 Debug: \
 	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@ \
-	$(BINDBG)/$(MODULE_NAME)@EXEEXT@
+	$(BINDBG)/$(MODULE_NAME)@EXEEXT@ \
+	$(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@
 
 Debug-plugin: \
 	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@ \
@@ -249,9 +266,6 @@ Debug-plugin: \
 
 Debug-service: \
 	$(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@
-
-x:
-	@echo $(foreach SRC, $(basename $(CORE_SOURCES)), $(OBJDBG)/$(SRC).o)
 
 $(BINDBG)/lib$(MODULE_NAME).a: \
 	$(foreach SRC, $(basename $(CORE_SOURCES)), $(OBJDBG)/$(SRC).o)
@@ -275,7 +289,9 @@ $(BINDBG)/$(MODULE_NAME)@EXEEXT@: \
 		-Wl,-rpath,$(BINDBG) \
 		$(LDFLAGS) \
 		$(LIBS) \
-		-l$(MODULE_NAME)
+		-l$(MODULE_NAME) \
+		$(V3270_LIBS) \
+		$(GTK_LIBS)
 
 $(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@: \
 	$(foreach SRC, $(basename $(SERVICE_SOURCES)), $(OBJDBG)/$(SRC).o) \
@@ -285,18 +301,25 @@ $(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@: \
 	@echo $< ...
 	@$(LD) \
 		-o $@ \
-		$^ \
+		$(foreach SRC, $(basename $(SERVICE_SOURCES)), $(OBJDBG)/$(SRC).o) \
 		-L$(BINDBG) \
 		-Wl,-rpath,$(BINDBG) \
 		$(LDFLAGS) \
 		$(LIBS) \
-		-l$(MODULE_NAME)
+		-l$(MODULE_NAME) \
+		$(GLIB_LIBS)
 
 run-plugin: \
 	$(BINDBG)/$(MODULE_NAME)@EXEEXT@
 
 	@LD_LIBRARY_PATH=$(BINDBG) \
 		$(BINDBG)/$(MODULE_NAME)@EXEEXT@
+
+run-service: \
+	$(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@
 
 $(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@: \
 	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@

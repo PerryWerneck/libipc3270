@@ -26,13 +26,19 @@
  *
  */
 
-#include <config.h>
-#include <glib.h>
+#include "private.h"
 #include <errno.h>
 #include <string.h>
+#include <stdlib.h>
 #include <lib3270/ipc.h>
 
 GMainLoop * main_loop = NULL;
+
+#ifdef DEBUG
+	static gchar * pidfile = PACKAGE_NAME ".pid";
+#else
+	static gchar * pidfile = "/var/run/" PACKAGE_NAME ".pid";
+#endif // DEBUG
 
 #if defined( HAVE_SYSLOG )
 static void g_syslog(const gchar *log_domain,GLogLevelFlags log_level,const gchar *message,gpointer user_data)
@@ -95,6 +101,14 @@ static gboolean do_idle_check(G_GNUC_UNUSED gpointer dunno) {
 	return TRUE;
 }
 
+static void cleanup() {
+
+	if(pidfile) {
+		remove(pidfile);
+	}
+
+}
+
 int main(int argc, char *argv[]) {
 
 	static gboolean asDaemon = FALSE;
@@ -106,7 +120,7 @@ int main(int argc, char *argv[]) {
 
 	// Verifica argumentos
 	static const GOptionEntry app_options[] = {
-//		{ "pidfile", 	'p', 0, G_OPTION_ARG_STRING, 	&pidfile,	"Path to pidfile" , NULL },
+		{ "pidfile", 	'p', 0, G_OPTION_ARG_STRING, 	&pidfile,	"Path to pidfile" , NULL },
 		{ "daemon", 	'd', 0, G_OPTION_ARG_NONE,		&asDaemon,	"Run as daemon",	NULL },
 		{ NULL }
 	};
@@ -122,15 +136,29 @@ int main(int argc, char *argv[]) {
 		return -1;
 	}
 
+	atexit(cleanup);
+
+	if(pidfile) {
+		FILE * hpid = fopen(pidfile,"w");
+		if(hpid) {
+			fprintf(hpid,"%u",(unsigned int) getpid());
+			fclose(hpid);
+		}
+	}
+
 #ifndef _WIN32
 	if(asDaemon && daemon(0,0)) {
-		fprintf(stderr,"%s\n",strerror(errno));
+		g_print("%s can't start: %s\n",argv[0],strerror(errno));
 		return -1;
 	}
 #endif // _WIN32
 
+	g_print("%s starts\n",argv[0]);
+
 	main_loop = g_main_loop_new(NULL, FALSE);
  	g_main_loop_run(main_loop);
+
+	g_print("%s ends\n",argv[0]);
 
  	return 0;
 }
