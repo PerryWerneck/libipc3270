@@ -153,6 +153,8 @@ int main(int argc, char *argv[]) {
 	}
 #endif // _WIN32
 
+	service_start();
+
 	g_print("%s starts\n",argv[0]);
 
 	main_loop = g_main_loop_new(NULL, FALSE);

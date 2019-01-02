@@ -33,9 +33,6 @@
 
 	#define ERROR_DOMAIN g_quark_from_static_string(PACKAGE_NAME)
 
-	#define PW3270_SERVICE_DBUS_SERVICE_PATH	"/br/com/bb/pw3270/service"
-	#define PW3270_SERVICE_DBUS_SERVICE			"br.com.bb.pw3270.service"
-
 	#include <glib.h>
 	#include <gio/gio.h>
 	#include <lib3270.h>
@@ -51,6 +48,11 @@
 
 	typedef struct _session					session;
 	typedef struct _sessionClass			sessionClass;
+
+	G_GNUC_INTERNAL	void					service_start(void);
+	G_GNUC_INTERNAL	GVariant * service_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error);
+	G_GNUC_INTERNAL	GVariant * service_get_property(GObject *object, const gchar *property_name, GError **error);
+	G_GNUC_INTERNAL	gboolean service_set_property(GObject *object, const gchar *property_name, GVariant *value, GError **error);
 
 	G_END_DECLS
 

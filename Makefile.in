@@ -39,6 +39,7 @@ PLUGIN_SOURCES= \
 
 SERVICE_SOURCES= \
 	$(wildcard src/service/*.c) \
+	$(wildcard src/service/@OSNAME@/*.c) \
 	$(wildcard src/service/@OSNAME@/*.rc)
 
 TEST_SOURCES= \

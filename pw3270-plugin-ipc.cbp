@@ -96,6 +96,15 @@
 		<Unit filename="src/plugin/start.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/service/getproperties.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/service/linux/start.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/service/methods.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/service/private.h" />
 		<Unit filename="src/service/service.c">
 			<Option compilerVar="CC" />
@@ -103,6 +112,10 @@
 		<Unit filename="src/service/session.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/service/setproperties.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/service/windows/resources.rc.in" />
 		<Unit filename="src/testprogram/testprogram.c">
 			<Option compilerVar="CC" />
 		</Unit>
