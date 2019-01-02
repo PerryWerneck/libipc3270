@@ -31,32 +31,101 @@
  *
  */
 
+#include <config.h>
+#include <lib3270/ipc.h>
 #include "../private.h"
 
 #define PW3270_SERVICE_DBUS_SERVICE_PATH			"/br/com/bb/tn3270/service"
 #define PW3270_SERVICE_DBUS_SERVICE					"br.com.bb.tn3270.service"
 #define PW3270_SERVICE_DBUS_SERVICE_INTERFACE		"br.com.bb.tn3270.service"
 
-static const gchar introspection_xml[] =
-  "<node>"
-  "  <interface name='" PW3270_SERVICE_DBUS_SERVICE_INTERFACE "'>"
-  "    <property type='s' name='version' access='read'/>"
-  "  </interface>"
-  "</node>";
-
 static GDBusNodeInfo *introspection_data = NULL;
 static guint owner_id = 0;
+static gchar * introspection_xml = NULL;
+
+static void
+	method_call (
+		G_GNUC_UNUSED GDBusConnection       *connection,
+		G_GNUC_UNUSED const gchar           *sender,
+		G_GNUC_UNUSED const gchar           *object_path,
+		G_GNUC_UNUSED const gchar           *interface_name,
+		const gchar           *method_name,
+		GVariant              *parameters,
+		GDBusMethodInvocation *invocation,
+		gpointer               user_data) {
+
+	g_autoptr (GError) error = NULL;
+
+	debug("%s(%s)",__FUNCTION__,object_path);
+
+	GVariant * rc = service_method_call(method_name, parameters, &error);
+
+	if(error) {
+
+		if(rc) {
+			g_variant_unref(rc);
+		}
+
+		g_dbus_method_invocation_return_gerror(invocation, error);
+
+	} else if(rc) {
+
+		g_dbus_method_invocation_return_value(invocation, rc);
+
+	} else {
+
+		g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR, G_DBUS_ERROR_UNKNOWN_METHOD, "Invalid or unexpected method call");
+
+	}
+
+
+}
+
+static GVariant *
+	get_property (
+		G_GNUC_UNUSED  GDBusConnection  *connection,
+		G_GNUC_UNUSED  const gchar      *sender,
+		G_GNUC_UNUSED  const gchar      *object_path,
+		G_GNUC_UNUSED  const gchar      *interface_name,
+		const gchar      *property_name,
+		GError          **error,
+		gpointer          user_data)
+{
+
+	debug("%s(%s)",__FUNCTION__,object_path);
+	return service_get_property(property_name, error);
+
+}
+
+static gboolean
+	set_property (
+		G_GNUC_UNUSED GDBusConnection  *connection,
+		G_GNUC_UNUSED const gchar      *sender,
+		G_GNUC_UNUSED const gchar      *object_path,
+		G_GNUC_UNUSED const gchar      *interface_name,
+		const gchar      *property_name,
+		GVariant         *value,
+		GError          **error,
+		gpointer          user_data)
+{
+
+	debug("%s(%s)",__FUNCTION__,object_path);
+	return service_set_property(property_name, value, error);
+
+}
+
 
 static void on_bus_acquired (GDBusConnection *connection, const gchar *name, gpointer user_data) {
 
 	static const GDBusInterfaceVTable interface_vtable = {
-		service_method_call,
-		service_get_property,
-		service_set_property
+		method_call,
+		get_property,
+		set_property
 	};
 
 	guint registration_id;
 
+	g_message("Registering object %s",PW3270_SERVICE_DBUS_SERVICE_PATH);
 
 	registration_id = g_dbus_connection_register_object (connection,
 													   PW3270_SERVICE_DBUS_SERVICE_PATH,
@@ -81,6 +150,29 @@ static void on_name_lost (GDBusConnection *connection, const gchar *name, gpoint
 }
 
 void service_start(void) {
+
+	GString * introspection = g_string_new("<node>\n");
+
+	g_string_append(introspection,
+		"	<interface name='" PW3270_SERVICE_DBUS_SERVICE_INTERFACE "'>"
+		"		<method name='createSession'>"
+		"			<arg type='s' name='id' direction='out' />"
+		"		</method>"
+		"		<method name='destroySession'>"
+		"			<arg type='s' name='id' direction='in' />"
+		"			<arg type='i' name='rc' direction='out' />"
+		"		</method>"
+		"		<property type='s' name='version' access='read'/>"
+		"		<property type='s' name='release' access='read'/>"
+	);
+
+	ipc3270_add_terminal_introspection(introspection);
+
+	g_string_append(introspection,"</interface></node>\n");
+
+	introspection_xml = g_string_free(introspection,FALSE);
+
+	debug("\n\n%s\n\n",introspection_xml);
 
 	introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
 

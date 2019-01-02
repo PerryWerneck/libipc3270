@@ -33,13 +33,21 @@
  */
 
 #include <config.h>
+#include "private.h"
 #include <lib3270/ipc.h>
 #include <lib3270.h>
 #include <lib3270/properties.h>
 
-GVariant * service_get_property(GObject *object, const gchar *property_name, GError **error) {
+GVariant * service_get_property(const gchar *property_name, GError **error) {
 
-	debug("%s",__FUNCTION__);
+	debug("%s(%s)",__FUNCTION__,property_name);
+
+	if(!g_ascii_strcasecmp(property_name,"version")) {
+		return g_variant_new_string(PACKAGE_VERSION);
+	} else if(!g_ascii_strcasecmp(property_name,"release")) {
+		return g_variant_new_string(G_STRINGIFY(PACKAGE_RELEASE));
+	}
+
 
 	g_set_error (error,
 		G_IO_ERROR,

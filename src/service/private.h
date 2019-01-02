@@ -50,34 +50,10 @@
 	typedef struct _sessionClass			sessionClass;
 
 	G_GNUC_INTERNAL	void					service_start(void);
-	G_GNUC_INTERNAL	GVariant * service_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error);
-	G_GNUC_INTERNAL	GVariant * service_get_property(GObject *object, const gchar *property_name, GError **error);
-	G_GNUC_INTERNAL	gboolean service_set_property(GObject *object, const gchar *property_name, GVariant *value, GError **error);
+	G_GNUC_INTERNAL	GVariant * service_method_call(const gchar *method_name, GVariant *parameters, GError **error);
+	G_GNUC_INTERNAL	GVariant * service_get_property(const gchar *property_name, GError **error);
+	G_GNUC_INTERNAL	gboolean service_set_property(const gchar *property_name, GVariant *value, GError **error);
 
 	G_END_DECLS
-
-
-	/*
-	struct session {
-		unsigned int	  id;			///< @brief Identificador da sessão.
-		time_t			  activity;		///< @brief Timestamp da última atividade dessa sessão.
-		time_t			  timeout;		///< @brief Após quantos segundos eu encerro a sessao?
-		time_t			  maxidle;		///< @brief Tempo máximo que a sessão pode ficar IDLE
-		time_t			  autoclose;	///< @brief Destroi a sessão quantos segundos após a desconexão?
-		H3270			* host;			///< @brief Sessão TN3270.
-	};
-	*/
-
-	G_GNUC_INTERNAL GMainLoop * main_loop;
-
-	/*
-	G_GNUC_INTERNAL void			  init_3270(void);
-	G_GNUC_INTERNAL void 			  register_3270_io_handlers(void);
-
-	G_GNUC_INTERNAL struct session	* session_new();
-	G_GNUC_INTERNAL struct session	* session_find(const gchar *key);
-	G_GNUC_INTERNAL void			  session_destroy(struct session *ses);
-	G_GNUC_INTERNAL void			  session_check_for_timeout(void);
-	*/
 
 #endif // PRIVATE_H_INCLUDED

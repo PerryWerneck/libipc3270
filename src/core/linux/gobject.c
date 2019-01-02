@@ -143,6 +143,101 @@ static gboolean
 
 }
 
+void ipc3270_add_terminal_introspection(GString *introspection) {
+
+	size_t ix;
+
+	g_string_append(introspection,
+		"	<method name='connect'>"
+		"		<arg type='s' name='url' direction='in'/>"
+		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>"
+		"	<method name='pfkey'>" \
+		"		<arg type='i' name='keycode' direction='in'/>" \
+		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>"
+		"	<method name='pakey'>" \
+		"		<arg type='i' name='keycode' direction='in'/>" \
+		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>"
+		"	<method name='getString'>" \
+		"		<arg type='s' name='text' direction='out' />" \
+		"	</method>" \
+		"	<method name='setString'>" \
+		"		<arg type='s' name='text' direction='in' />" \
+		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>" \
+		"	<method name='setStringAt'>" \
+		"		<arg type='i' name='row' direction='in' />" \
+		"		<arg type='i' name='col' direction='in' />" \
+		"		<arg type='s' name='text' direction='in' />" \
+		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>" \
+		"	<method name= 'getStringAt'>" \
+		"		<arg type='i' name='row' direction='in' />" \
+		"		<arg type='i' name='col' direction='in' />" \
+		"		<arg type='i' name='len' direction='in' />" \
+		"		<arg type='y' name='lf' direction='in' />" \
+		"		<arg type='s' name='text' direction='out' />" \
+		"	</method>" \
+		"	<method name='setStringAtAddress'>" \
+		"		<arg type='i' name='addr' direction='in' />" \
+		"		<arg type='s' name='text' direction='in' />" \
+		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>" \
+		"	<method name= 'getStringAtAddress'>" \
+		"		<arg type='i' name='addr' direction='in' />" \
+		"		<arg type='i' name='len' direction='in' />" \
+		"		<arg type='y' name='lf' direction='in' />" \
+		"		<arg type='s' name='text' direction='out' />" \
+		"	</method>"
+	);
+
+	// Constrói métodos usando a tabela de controle
+	const LIB3270_ACTION_ENTRY * actions = lib3270_get_action_table();
+	for(ix = 0; actions[ix].name; ix++)
+	{
+		g_string_append_printf(
+			introspection, \
+			"	<method name='%s'>" \
+			"	</method>", actions[ix].name
+		);
+	}
+
+	// Toggle properties
+	for(ix = 0; ix < (int) LIB3270_TOGGLE_COUNT; ix++) {
+		g_string_append_printf(introspection, "    <property type='i' name='%s' access='readwrite'/>", lib3270_get_toggle_name((LIB3270_TOGGLE) ix));
+	}
+
+	// Boolean properties
+	const LIB3270_INT_PROPERTY * bol_props = lib3270_get_boolean_properties_list();
+	for(ix = 0; bol_props[ix].name; ix++) {
+		debug("Boolean(%s)",bol_props[ix].name);
+		g_string_append_printf(introspection, "    <property type='b' name='%s' access='%s'/>",
+			bol_props[ix].name,
+			((bol_props[ix].set == NULL) ? "read" : "readwrite")
+		);
+	}
+
+	// Integer properties
+	const LIB3270_INT_PROPERTY * int_props = lib3270_get_int_properties_list();
+	for(ix = 0; int_props[ix].name; ix++) {
+		g_string_append_printf(introspection, "    <property type='i' name='%s' access='%s'/>",
+			int_props[ix].name,
+			((int_props[ix].set == NULL) ? "read" : "readwrite")
+		);
+	}
+
+	// String properties
+	const LIB3270_STRING_PROPERTY * str_props = lib3270_get_string_properties_list();
+	for(ix = 0; str_props[ix].name; ix++) {
+		g_string_append_printf(introspection, "    <property type='s' name='%s' access='%s'/>",
+			str_props[ix].name,
+			((str_props[ix].set == NULL) ? "read" : "readwrite")
+		);
+	}
+
+}
 
 void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GError **error) {
 
@@ -209,103 +304,9 @@ void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GEr
 				lib3270_set_session_id(ipc->hSession, id);
 
 				// Introspection data for the service we are exporting
-				GString * introspection = g_string_new(
-						"<node>\n"
-						"	<interface name='br.com.bb.tn3270'>"
-						"		<method name='connect'>"
-						"		<arg type='s' name='url' direction='in'/>"
-						"		<arg type='i' name='result' direction='out' />" \
-						"	</method>"
-						"	<method name='pfkey'>" \
-						"		<arg type='i' name='keycode' direction='in'/>" \
-						"		<arg type='i' name='result' direction='out' />" \
-						"	</method>"
-						"	<method name='pakey'>" \
-						"		<arg type='i' name='keycode' direction='in'/>" \
-						"		<arg type='i' name='result' direction='out' />" \
-						"	</method>"
-						"	<method name='getString'>" \
-						"		<arg type='s' name='text' direction='out' />" \
-						"	</method>" \
-						"	<method name='setString'>" \
-						"		<arg type='s' name='text' direction='in' />" \
-						"		<arg type='i' name='result' direction='out' />" \
-						"	</method>" \
-						"	<method name='setStringAt'>" \
-						"		<arg type='i' name='row' direction='in' />" \
-						"		<arg type='i' name='col' direction='in' />" \
-						"		<arg type='s' name='text' direction='in' />" \
-						"		<arg type='i' name='result' direction='out' />" \
-						"	</method>" \
-						"	<method name= 'getStringAt'>" \
-						"		<arg type='i' name='row' direction='in' />" \
-						"		<arg type='i' name='col' direction='in' />" \
-						"		<arg type='i' name='len' direction='in' />" \
-						"		<arg type='y' name='lf' direction='in' />" \
-						"		<arg type='s' name='text' direction='out' />" \
-						"	</method>" \
-						"	<method name='setStringAtAddress'>" \
-						"		<arg type='i' name='addr' direction='in' />" \
-						"		<arg type='s' name='text' direction='in' />" \
-						"		<arg type='i' name='result' direction='out' />" \
-						"	</method>" \
-						"	<method name= 'getStringAtAddress'>" \
-						"		<arg type='i' name='addr' direction='in' />" \
-						"		<arg type='i' name='len' direction='in' />" \
-						"		<arg type='y' name='lf' direction='in' />" \
-						"		<arg type='s' name='text' direction='out' />" \
-						"	</method>"
-
-				);
-
-				// Constrói métodos usando a tabela de controle
-				const LIB3270_ACTION_ENTRY * actions = lib3270_get_action_table();
-				for(ix = 0; actions[ix].name; ix++)
-				{
-					g_string_append_printf(
-						introspection, \
-						"    <method name='%s'>" \
-						"    </method>", actions[ix].name
-					);
-				}
-
-				// Toggle properties
-				for(ix = 0; ix < (int) LIB3270_TOGGLE_COUNT; ix++) {
-					g_string_append_printf(introspection, "    <property type='i' name='%s' access='readwrite'/>", lib3270_get_toggle_name((LIB3270_TOGGLE) ix));
-				}
-
-				// Boolean properties
-				const LIB3270_INT_PROPERTY * bol_props = lib3270_get_boolean_properties_list();
-				for(ix = 0; bol_props[ix].name; ix++) {
-					debug("Boolean(%s)",bol_props[ix].name);
-					g_string_append_printf(introspection, "    <property type='b' name='%s' access='%s'/>",
-						bol_props[ix].name,
-						((bol_props[ix].set == NULL) ? "read" : "readwrite")
-					);
-				}
-
-				// Integer properties
-				const LIB3270_INT_PROPERTY * int_props = lib3270_get_int_properties_list();
-				for(ix = 0; int_props[ix].name; ix++) {
-					g_string_append_printf(introspection, "    <property type='i' name='%s' access='%s'/>",
-						int_props[ix].name,
-						((int_props[ix].set == NULL) ? "read" : "readwrite")
-					);
-				}
-
-				// String properties
-				const LIB3270_STRING_PROPERTY * str_props = lib3270_get_string_properties_list();
-				for(ix = 0; str_props[ix].name; ix++) {
-					g_string_append_printf(introspection, "    <property type='s' name='%s' access='%s'/>",
-						str_props[ix].name,
-						((str_props[ix].set == NULL) ? "read" : "readwrite")
-					);
-				}
-
-				g_string_append(introspection,
-					"  </interface>"
-					"</node>"
-				);
+				GString * introspection = g_string_new("<node><interface name='br.com.bb.tn3270.session'>");
+				ipc3270_add_terminal_introspection(introspection);
+				g_string_append(introspection,"</interface></node>");
 
 				gchar * introspection_xml = g_string_free(introspection,FALSE);
 

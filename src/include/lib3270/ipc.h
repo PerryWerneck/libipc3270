@@ -60,6 +60,8 @@
 	gchar		* ipc3270_convert_input_string(GObject *object, const gchar *string, GError **error);
 	GVariant	* ipc3270_GVariant_from_input_string(GObject *object, char *string, GError **error);
 
+	void		  ipc3270_add_terminal_introspection(GString *string);
+
 	const gchar	* ipc3270_get_display_charset(GObject *object);
 	H3270		* ipc3270_get_session(GObject *object);
 

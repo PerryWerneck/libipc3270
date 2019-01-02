@@ -33,12 +33,15 @@
  */
 
 #include <config.h>
+#include "private.h"
 #include <string.h>
 #include <lib3270/ipc.h>
 #include <lib3270.h>
 #include <lib3270/actions.h>
 
-GVariant * service_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error) {
+GVariant * service_method_call(const gchar *method_name, GVariant *parameters, GError **error) {
+
+	debug("%s(%s)",__FUNCTION__,method_name);
 
 	g_set_error (error,
 		G_IO_ERROR,

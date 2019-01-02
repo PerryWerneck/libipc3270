@@ -33,21 +33,20 @@
  */
 
 #include <config.h>
+#include "private.h"
 #include <lib3270/ipc.h>
 #include <lib3270.h>
 #include <lib3270/properties.h>
 
-gboolean service_set_property(GObject *object, const gchar *property_name, GVariant *value, GError **error) {
+gboolean service_set_property(const gchar *property_name, GVariant *value, GError **error) {
 
-	debug("%s",__FUNCTION__);
+	debug("%s(%s)",__FUNCTION__,property_name);
 
-	/*
 	g_set_error (error,
 		G_IO_ERROR,
 		G_IO_ERROR_NOT_FOUND,
 		"Can't find any property named %s", property_name
 	);
-	*/
 
 	return FALSE;
 }
