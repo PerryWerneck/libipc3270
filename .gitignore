@@ -16,4 +16,4 @@ Makefile
 conf/systemd.service
 src/core/windows/resources.rc
 src/plugin/windows/resources.rc
-
+*.pid

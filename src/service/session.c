@@ -46,7 +46,7 @@ G_DEFINE_TYPE(session, session, GLIB_TYPE_IPC3270)
 
 static void session_finalize(GObject *object) {
 
-	lib3270_session_free(ipc3270_get_session(IPC3270(object)));
+	lib3270_session_free(ipc3270_get_session(object));
 	G_OBJECT_CLASS(session_parent_class)->finalize(object);
 
 }
@@ -64,9 +64,7 @@ static void session_class_init(sessionClass *klass) {
 static void session_init(session *object) {
 
 	debug("%s",__FUNCTION__);
-
-	ipc3270 *ipc = IPC3270(object);
-	ipc3270_set_session(ipc,lib3270_session_new(""),PACKAGE_NAME,NULL);
+	ipc3270_set_session(&object->parent,lib3270_session_new(""),PACKAGE_NAME,NULL);
 
 }
 

@@ -36,10 +36,9 @@ G_DEFINE_TYPE(ipc3270, ipc3270, G_TYPE_OBJECT)
 
 static void ipc3270_finalize(GObject *object) {
 
-	ipc3270 * ipc = IPC3270(object);
-
-
+	// ipc3270 * ipc = IPC3270(object);
 	G_OBJECT_CLASS(ipc3270_parent_class)->finalize(object);
+
 }
 
 
@@ -102,6 +101,7 @@ void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GEr
 			lib3270_set_session_id(ipc->hSession, id);
 
 			ipc->source->hPipe			= hPipe;
+			ipc->source->object			= object;
 			ipc->source->state			= PIPE_STATE_WAITING;
 			ipc->source->overlap.hEvent	= CreateEvent( NULL,TRUE,TRUE,NULL);
 

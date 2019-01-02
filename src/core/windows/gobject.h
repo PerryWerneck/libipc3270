@@ -67,6 +67,7 @@
 
 	typedef struct _ipc3270_pipe_source {
 		GSource 			  gsrc;
+		GObject 			* object;
 		HANDLE				  hPipe;
 
 		IPC3270_PIPE_STATE	  state;

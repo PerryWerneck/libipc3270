@@ -180,7 +180,7 @@ dnl ---------------------------------------------------------------------------
 dnl Check for LIBV3270
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES( [V3270], [v3270], AC_DEFINE(HAVE_V3270), AC_MSG_ERROR([V3270 not present.]))
+PKG_CHECK_MODULES( [V3270], [libv3270], AC_DEFINE(HAVE_V3270), AC_MSG_ERROR([V3270 not present.]))
 
 AC_SUBST(V3270_LIBS)
 AC_SUBST(V3270_CFLAGS)
@@ -189,7 +189,7 @@ dnl ---------------------------------------------------------------------------
 dnl Check for GTK
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES( [GTK], [gtk+-3.0 gmodule-2.0], AC_DEFINE(HAVE_GTK), AC_MSG_ERROR([GTK not present.]))
+PKG_CHECK_MODULES( [GTK], [gtk+-3.0], AC_DEFINE(HAVE_GTK), AC_MSG_ERROR([GTK not present.]))
 
 AC_SUBST(GTK_LIBS)
 AC_SUBST(GTK_CFLAGS)
@@ -198,7 +198,7 @@ dnl ---------------------------------------------------------------------------
 dnl Check for GLIB
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES( [GLIB], [glib-2.0], AC_DEFINE(HAVE_GLIB), AC_MSG_ERROR([GLIB not present.] ))
+PKG_CHECK_MODULES( [GLIB], [glib-2.0 gobject-2.0 gmodule-2.0 gio-2.0], AC_DEFINE(HAVE_GLIB), AC_MSG_ERROR([GLIB not present.] ))
 AC_SUBST(GLIB_LIBS)
 AC_SUBST(GLIB_CFLAGS)
 

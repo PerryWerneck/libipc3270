@@ -42,10 +42,10 @@ void ipc3270_wait_for_client(IPC3270_PIPE_SOURCE *source) {
 		source->state = PIPE_STATE_WAITING;
 		break;
 
-
 	case ERROR_PIPE_CONNECTED:	// Client is already connected, so signal an event.
-		if(SetEvent(source->overlap.hEvent))
-			break;
+		source->state = PIPE_STATE_WAITING;
+		SetEvent(source->overlap.hEvent);
+		break;
 
 	default:
 		g_message("Error %u in ConnectNamedPipe",(unsigned int) GetLastError());
@@ -92,6 +92,57 @@ static gboolean IO_check(GSource *source) {
 }
 
 static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
+
+	const gchar * request_name = (const gchar *) (source->buffer);
+	int			  request_type = 0;
+
+	debug("Received packet \"%s\" with %u bytes", request_name, (unsigned int) cbRead);
+
+	g_autoptr (GError) error = NULL;
+	g_autoptr (GVariant) parameters = ipc3270_unpack(source->buffer, &request_type);
+	g_autoptr (GVariant) response = NULL;
+
+	if(!parameters) {
+		g_message("Rejecting invalid request \"%s\"", request_name);
+	}
+
+	// Process query
+	switch(request_type) {
+	case 1: // getProperty
+		response = ipc3270_get_property(source->object, request_name, &error);
+		break;
+
+	case 2: // setProperty
+		ipc3270_set_property(source->object, request_name, parameters, &error);
+		break;
+
+	case 3: // method
+		response = ipc3270_method_call(source->object, request_name, parameters, &error);
+		break;
+
+	default:
+		g_message("Rejecting request \"%s\": Invalid type %d",request_name, request_type);
+		g_set_error(&error,IPC3270(source->object)->error_domain,EINVAL,"Invalid or unexpected type %d",request_type);
+
+	}
+
+	// Pack response
+	size_t szPacket = 0;
+	g_autofree unsigned char * buffer = NULL;
+
+	if(error) {
+
+		buffer = ipc3270_pack_error(error, &szPacket);
+
+	} else {
+
+		buffer = ipc3270_pack(request_name, 0, response, &szPacket);
+
+	}
+
+	// Send response
+	DWORD wrote = (DWORD) szPacket;
+	WriteFile(source->hPipe,buffer,wrote,&wrote,NULL);
 
 }
 
@@ -167,7 +218,7 @@ static gboolean IO_dispatch(GSource *source, GSourceFunc callback, gpointer data
 
 		} else {
 
-			// popup_lasterror("%s", _( "Pipe connection failed" ));
+			g_message("Pipe connection failed with rc=%u",(unsigned int) GetLastError());
 
 		}
 		break;

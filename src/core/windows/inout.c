@@ -41,6 +41,31 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
+unsigned char * ipc3270_pack_error(const GError *error, size_t * szPacket) {
+
+	static const char * error_response = "error";
+
+	*szPacket = strlen(error_response) + 1 + (sizeof(guint16) * 2) + strlen(error->message);
+
+	// Allocate buffer
+	unsigned char * outputBuffer 	= g_malloc0(*szPacket);
+	unsigned char * txtptr			= outputBuffer;
+
+	// Add name
+	strcpy((char *) txtptr,error_response);
+	txtptr += strlen((char *) txtptr) + 1;
+
+	// Add RC
+	*((guint16 *) txtptr) = (guint16) error->code;
+	txtptr += sizeof(guint16);
+
+	// Add message
+	strcpy((char *) txtptr,error->message);
+	txtptr += (strlen((char *) txtptr)+1);
+
+	return outputBuffer;
+}
+
 unsigned char * ipc3270_pack(const gchar * name, int id, GVariant *values, size_t * szPacket) {
 
 	GVariantIter	  iter;
@@ -50,7 +75,7 @@ unsigned char * ipc3270_pack(const gchar * name, int id, GVariant *values, size_
 	size_t			  ix = 0;
 
 	// Init packet size;
-	*szPacket = strlen(name) + 1 + (sizeof(guint16) * 2) ;
+	*szPacket = strlen(name) + 1 + (sizeof(guint16) * 2);
 
 	g_print("Packaging %u itens for \"%s\"\n", (unsigned int) count, name);
 	while ((child = g_variant_iter_next_value (&iter))) {

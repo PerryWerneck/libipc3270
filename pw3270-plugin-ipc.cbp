@@ -106,7 +106,6 @@
 		<Unit filename="src/testprogram/testprogram.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/windows/gobject.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -71,6 +71,7 @@
 
 	// TODO: Move for windows private.h
 	unsigned char	* ipc3270_pack(const gchar *name, int id, GVariant *values, size_t * szPacket);
+	unsigned char	* ipc3270_pack_error(const GError *error, size_t * szPacket);
 	GVariant		* ipc3270_unpack(const unsigned char *packet, int *id);
 
 	G_END_DECLS
