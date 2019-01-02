@@ -60,12 +60,14 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		if(lib3270_input_string(ipc3270_get_session(object),(const unsigned char *) converted) < 0)
 		{
 			// Failed!
+			debug("%s failed: %s",method_name,strerror(errno));
 			ipc3270_set_error(object,errno,error);
 			return NULL;
 		}
 
 		// Suceeded
-		return g_variant_new_int16((gint16) 0);
+		debug("%s Suceeds",method_name);
+		return g_variant_new("(i)", (gint) 0);
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"setStringAt"))
@@ -83,7 +85,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		}
 
 		// Suceeded
-		return g_variant_new_int16((gint16) 0);
+		return g_variant_new("(i)", (gint) 0);
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"getStringAt"))
@@ -110,7 +112,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		}
 
 		// Suceeded
-		return g_variant_new_int16((gint16) 0);
+		return g_variant_new("(i)", (gint) 0);
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"getStringAtAddress"))
@@ -137,7 +139,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
  			}
 
 			// Suceeded
-			return g_variant_new_int16((gint16) 0);
+			return g_variant_new("(i)", (gint) 0);
 
 		}
 	}
@@ -161,7 +163,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
  			}
 
 			// Suceeded
-			return g_variant_new_int16((gint16) 0);
+			return g_variant_new("(i)", (gint) 0);
 
 		}
 
