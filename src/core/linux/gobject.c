@@ -76,73 +76,6 @@ GObject * ipc3270_new() {
 	return g_object_new(GLIB_TYPE_IPC3270, NULL);
 }
 
-static void
-	method_call (
-		G_GNUC_UNUSED GDBusConnection       *connection,
-		G_GNUC_UNUSED const gchar           *sender,
-		G_GNUC_UNUSED const gchar           *object_path,
-		G_GNUC_UNUSED const gchar           *interface_name,
-		const gchar           *method_name,
-		GVariant              *parameters,
-		GDBusMethodInvocation *invocation,
-		gpointer               user_data) {
-
-	g_autoptr (GError) error = NULL;
-
-	GVariant * rc = ipc3270_method_call(G_OBJECT(user_data), method_name, parameters, &error);
-
-	if(error) {
-
-		if(rc) {
-			g_variant_unref(rc);
-		}
-
-		g_dbus_method_invocation_return_gerror(invocation, error);
-
-	} else if(rc) {
-
-		g_dbus_method_invocation_return_value(invocation, rc);
-
-	} else {
-
-		g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR, G_DBUS_ERROR_UNKNOWN_METHOD, "Invalid or unexpected method call");
-
-	}
-
-
-}
-
-static GVariant *
-	get_property (
-		G_GNUC_UNUSED  GDBusConnection  *connection,
-		G_GNUC_UNUSED  const gchar      *sender,
-		G_GNUC_UNUSED  const gchar      *object_path,
-		G_GNUC_UNUSED  const gchar      *interface_name,
-		const gchar      *property_name,
-		GError          **error,
-		gpointer          user_data)
-{
-
-	return ipc3270_get_property(G_OBJECT(user_data), property_name, error);
-
-}
-
-static gboolean
-	set_property (
-		G_GNUC_UNUSED GDBusConnection  *connection,
-		G_GNUC_UNUSED const gchar      *sender,
-		G_GNUC_UNUSED const gchar      *object_path,
-		G_GNUC_UNUSED const gchar      *interface_name,
-		const gchar      *property_name,
-		GVariant         *value,
-		GError          **error,
-		gpointer          user_data)
-{
-
-	return ipc3270_set_property(G_OBJECT(user_data), property_name, value, error);
-
-}
-
 void ipc3270_add_terminal_introspection(GString *introspection) {
 
 	size_t ix;
@@ -239,103 +172,10 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 
 }
 
-void ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GError **error) {
-
-	char id;
-	int ix;
-
-	static const GDBusInterfaceVTable interface_vtable = {
-		method_call,
-		get_property,
-		set_property
-	};
+void ipc3270_set_session(GObject *object, H3270 *hSession) {
 
 	ipc3270 * ipc = IPC3270(object);
 	ipc->hSession = hSession;
-
-	ipc->connection = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, error);
-	if(*error) {
-		g_message("Can't get session bus: %s",(*error)->message);
-		return;
-	}
-
-	g_dbus_connection_set_exit_on_close(ipc->connection,FALSE);
-
-	for(id='a'; id < 'z' && !ipc->id && !*error; id++) {
-
-		gchar *object_name = g_strdup_printf("br.com.bb.%s.%c",name,id);
-
-		debug("Requesting \"%s\"",object_name);
-
-		// https://dbus.freedesktop.org/doc/dbus-specification.html
-		GError *err = NULL;
-
-		GVariant * response =
-			g_dbus_connection_call_sync (
-					ipc->connection,
-					DBUS_SERVICE_DBUS,
-					DBUS_PATH_DBUS,
-					DBUS_INTERFACE_DBUS,
-					"RequestName",
-					g_variant_new ("(su)", object_name, DBUS_NAME_FLAG_DO_NOT_QUEUE),
-					NULL,
-					G_DBUS_CALL_FLAGS_NONE,
-					-1,
-					NULL,
-					&err
-			);
-
-		if(err) {
-			g_message("Can't request \"%s\": %s",object_name,err->message);
-			g_error_free(err);
-			err = NULL;
-		}
-
-		if(response) {
-
-			guint32 reply = 0;
-			g_variant_get(response, "(u)", &reply);
-			g_variant_unref(response);
-
-			if(reply == DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
-
-				g_message("Got %s", object_name);
-
-				lib3270_set_session_id(ipc->hSession, id);
-
-				// Introspection data for the service we are exporting
-				GString * introspection = g_string_new("<node><interface name='br.com.bb.tn3270.session'>");
-				ipc3270_add_terminal_introspection(introspection);
-				g_string_append(introspection,"</interface></node>");
-
-				gchar * introspection_xml = g_string_free(introspection,FALSE);
-
-				debug("\n%s\n",introspection_xml);
-
-				GDBusNodeInfo * introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
-
-				// Register object-id
-				ipc->id = g_dbus_connection_register_object (
-									ipc->connection,
-									"/br/com/bb/tn3270",
-									introspection_data->interfaces[0],
-									&interface_vtable,
-									ipc,
-									NULL,
-									error
-							);
-
-				g_dbus_node_info_unref(introspection_data);
-				g_free(introspection_xml);
-
-				break;
-			}
-
-		}
-
-		g_free(object_name);
-
-	}
 
 }
 

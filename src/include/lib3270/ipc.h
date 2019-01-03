@@ -37,6 +37,23 @@
 
 	#define PW3270_IPC_H_INCLUDED
 
+	#ifdef _WIN32
+
+		#define PW3270_IPC_SESSION_BUS_NAME					"\\\\.\\pipe\\%s\\%c"
+
+	#else
+
+		#define PW3270_IPC_SESSION_BUS_NAME			"br.com.bb.%s.%c"
+		#define PW3270_IPC_SESSION_INTERFACE_NAME	"br.com.bb.tn3270.session"
+		#define PW3270_IPC_SESSION_OBJECT_PATH		"/br/com/bb/tn3270/session"
+
+		#define PW3270_IPC_SERVICE_BUS_NAME			"br.com.bb.tn3270.service"
+		#define PW3270_IPC_SERVICE_INTERFACE_NAME	"br.com.bb.tn3270.service"
+		#define PW3270_IPC_SERVICE_OBJECT_PATH		"/br/com/bb/tn3270/service"
+
+	#endif // _WIN32
+
+
 	#include <gtk/gtk.h>
 	#include <lib3270.h>
 
@@ -52,29 +69,31 @@
 	typedef struct _ipc3270					ipc3270;
 	typedef struct _ipc3270Class			ipc3270Class;
 
-	GObject		* ipc3270_new();
-	GType		  ipc3270_get_type(void);
-    void		  ipc3270_set_session(GObject *object, H3270 *hSession, const char *name, GError **error);
+	GObject			* ipc3270_new();
+	GType			  ipc3270_get_type(void);
+    void			  ipc3270_set_session(GObject *object, H3270 *hSession);
+    void			  ipc3270_export_object(GObject *object, const char *name, GError **error);
 
-	gchar		* ipc3270_convert_output_string(GObject *object, const gchar *string, GError **error);
-	gchar		* ipc3270_convert_input_string(GObject *object, const gchar *string, GError **error);
-	GVariant	* ipc3270_GVariant_from_input_string(GObject *object, char *string, GError **error);
+	gchar			* ipc3270_convert_output_string(GObject *object, const gchar *string, GError **error);
+	gchar			* ipc3270_convert_input_string(GObject *object, const gchar *string, GError **error);
+	GVariant		* ipc3270_GVariant_from_input_string(GObject *object, char *string, GError **error);
 
-	void		  ipc3270_add_terminal_introspection(GString *string);
+	void			  ipc3270_add_terminal_introspection(GString *string);
 
-	const gchar	* ipc3270_get_display_charset(GObject *object);
-	H3270		* ipc3270_get_session(GObject *object);
+	const gchar		* ipc3270_get_display_charset(GObject *object);
+	H3270			* ipc3270_get_session(GObject *object);
 
-	void		  ipc3270_set_error(GObject *object, int errcode, GError **error);
+	void			  ipc3270_set_error(GObject *object, int errcode, GError **error);
 
-	GVariant	* ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error);
-	gboolean	  ipc3270_set_property(GObject *object, const gchar *property_name, GVariant *value, GError **error);
-	GVariant	* ipc3270_get_property(GObject *object, const gchar *property_name, GError **error);
+	GVariant		* ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error);
+	gboolean		  ipc3270_set_property(GObject *object, const gchar *property_name, GVariant *value, GError **error);
+	GVariant		* ipc3270_get_property(GObject *object, const gchar *property_name, GError **error);
 
-	// TODO: Move for windows private.h
-	unsigned char	* ipc3270_pack(const gchar *name, int id, GVariant *values, size_t * szPacket);
-	unsigned char	* ipc3270_pack_error(const GError *error, size_t * szPacket);
-	GVariant		* ipc3270_unpack(const unsigned char *packet, int *id);
+	#ifdef _WIN32
+		unsigned char	* ipc3270_pack(const gchar *name, int id, GVariant *values, size_t * szPacket);
+		unsigned char	* ipc3270_pack_error(const GError *error, size_t * szPacket);
+		GVariant		* ipc3270_unpack(const unsigned char *packet, int *id);
+	#endif // _WIN32
 
 	G_END_DECLS
 

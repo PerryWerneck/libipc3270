@@ -71,6 +71,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/linux/gobject.h" />
+		<Unit filename="src/core/linux/start.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/methods.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -88,6 +91,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/windows/resources.rc" />
+		<Unit filename="src/core/windows/start.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/lib3270/ipc.h" />

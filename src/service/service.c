@@ -32,6 +32,10 @@
 #include <stdlib.h>
 #include <lib3270/ipc.h>
 
+#ifndef _WIN32
+	#include <signal.h>
+#endif // !_WIN32
+
 GMainLoop * main_loop = NULL;
 
 #ifdef DEBUG
@@ -39,6 +43,13 @@ GMainLoop * main_loop = NULL;
 #else
 	static gchar * pidfile = "/var/run/" PACKAGE_NAME ".pid";
 #endif // DEBUG
+
+#ifndef _WIN32
+static void on_sigterm(int signal) {
+	g_message("Stopping by termination request\n");
+	g_main_loop_quit(main_loop);
+}
+#endif // !_WIN32
 
 #if defined( HAVE_SYSLOG )
 static void g_syslog(const gchar *log_domain,GLogLevelFlags log_level,const gchar *message,gpointer user_data)
@@ -121,7 +132,9 @@ int main(int argc, char *argv[]) {
 	// Verifica argumentos
 	static const GOptionEntry app_options[] = {
 		{ "pidfile", 	'p', 0, G_OPTION_ARG_STRING, 	&pidfile,	"Path to pidfile" , NULL },
+#ifndef _WIN32
 		{ "daemon", 	'd', 0, G_OPTION_ARG_NONE,		&asDaemon,	"Run as daemon",	NULL },
+#endif // !_WIN32
 		{ NULL }
 	};
 
@@ -146,18 +159,24 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-#ifndef _WIN32
-	if(asDaemon && daemon(0,0)) {
-		g_print("%s can't start: %s\n",argv[0],strerror(errno));
-		return -1;
-	}
-#endif // _WIN32
-
 	service_start();
 
 	g_print("%s starts\n",argv[0]);
 
 	main_loop = g_main_loop_new(NULL, FALSE);
+
+#ifndef _WIN32
+
+	if(asDaemon && daemon(0,0)) {
+		g_print("%s can't start: %s\n",argv[0],strerror(errno));
+		return -1;
+	}
+
+	signal(SIGTERM,on_sigterm);
+	signal(SIGINT,on_sigterm);
+
+#endif // !_WIN32
+
  	g_main_loop_run(main_loop);
 
 	g_print("%s ends\n",argv[0]);

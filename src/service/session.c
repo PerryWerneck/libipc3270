@@ -42,12 +42,18 @@ struct _sessionClass {
 	GObjectClass parent;
 };
 
+static GList * session_list = NULL;
+
 G_DEFINE_TYPE(session, session, GLIB_TYPE_IPC3270)
 
 static void session_finalize(GObject *object) {
 
+	session_list = g_list_remove(session_list, object);
+
 	lib3270_session_free(ipc3270_get_session(object));
 	G_OBJECT_CLASS(session_parent_class)->finalize(object);
+
+	debug("%s(%p)",__FUNCTION__,(void *) object);
 
 }
 
@@ -63,8 +69,13 @@ static void session_class_init(sessionClass *klass) {
 
 static void session_init(session *object) {
 
-	debug("%s",__FUNCTION__);
-	ipc3270_set_session(&object->parent,lib3270_session_new(""),PACKAGE_NAME,NULL);
+	debug("%s(%p)",__FUNCTION__,(void *) object);
+
+	H3270 * hSession = lib3270_session_new("");
+	lib3270_set_user_data(hSession,object);
+	ipc3270_set_session(&object->parent,hSession);
+
+	session_list = g_list_prepend(session_list, object);
 
 }
 

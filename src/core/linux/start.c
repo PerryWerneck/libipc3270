@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como start.c e possui - linhas de código.
+ * Este programa está nomeado como main.c e possui - linhas de código.
  *
  * Referências:
  *
@@ -28,16 +28,16 @@
  * Contatos:
  *
  * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
+ * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
  *
  */
 
-#include <config.h>
+#include "gobject.h"
+#include <lib3270.h>
 #include <lib3270/ipc.h>
-#include "../private.h"
 
-static GDBusNodeInfo *introspection_data = NULL;
-static guint owner_id = 0;
-static gchar * introspection_xml = NULL;
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-bindings.h>
 
 static void
 	method_call (
@@ -52,9 +52,7 @@ static void
 
 	g_autoptr (GError) error = NULL;
 
-	debug("%s(%s)",__FUNCTION__,object_path);
-
-	GVariant * rc = service_method_call(method_name, parameters, &error);
+	GVariant * rc = ipc3270_method_call(G_OBJECT(user_data), method_name, parameters, &error);
 
 	if(error) {
 
@@ -88,8 +86,7 @@ static GVariant *
 		gpointer          user_data)
 {
 
-	debug("%s(%s)",__FUNCTION__,object_path);
-	return service_get_property(property_name, error);
+	return ipc3270_get_property(G_OBJECT(user_data), property_name, error);
 
 }
 
@@ -105,82 +102,105 @@ static gboolean
 		gpointer          user_data)
 {
 
-	debug("%s(%s)",__FUNCTION__,object_path);
-	return service_set_property(property_name, value, error);
+	return ipc3270_set_property(G_OBJECT(user_data), property_name, value, error);
 
 }
 
+void ipc3270_export_object(GObject *object, const char *name, GError **error) {
 
-static void on_bus_acquired (GDBusConnection *connection, const gchar *name, gpointer user_data) {
+	char id;
 
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 	static const GDBusInterfaceVTable interface_vtable = {
 		method_call,
 		get_property,
 		set_property
 	};
+	#pragma GCC diagnostic pop
 
-	guint registration_id;
+	ipc3270 * ipc = IPC3270(object);
 
-	g_message("Registering object %s",PW3270_IPC_SERVICE_OBJECT_PATH);
+	ipc->connection = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, error);
+	if(*error) {
+		g_message("Can't get session bus: %s",(*error)->message);
+		return;
+	}
 
-	registration_id = g_dbus_connection_register_object (connection,
-													   PW3270_IPC_SERVICE_OBJECT_PATH,
-													   introspection_data->interfaces[0],
-													   &interface_vtable,
-													   NULL,  /* user_data */
-													   NULL,  /* user_data_free_func */
-													   NULL); /* GError** */
-	g_assert (registration_id > 0);
+	g_dbus_connection_set_exit_on_close(ipc->connection,FALSE);
+
+	for(id='a'; id < 'z' && !ipc->id && !*error; id++) {
+
+		g_autofree gchar *object_name = g_strdup_printf(PW3270_IPC_SESSION_BUS_NAME,name,id);
+
+		debug("Requesting \"%s\"",object_name);
+
+		// https://dbus.freedesktop.org/doc/dbus-specification.html
+		GError *err = NULL;
+
+		GVariant * response =
+			g_dbus_connection_call_sync (
+					ipc->connection,
+					DBUS_SERVICE_DBUS,
+					DBUS_PATH_DBUS,
+					DBUS_INTERFACE_DBUS,
+					"RequestName",
+					g_variant_new ("(su)", object_name, DBUS_NAME_FLAG_DO_NOT_QUEUE),
+					NULL,
+					G_DBUS_CALL_FLAGS_NONE,
+					-1,
+					NULL,
+					&err
+			);
+
+		if(err) {
+
+			g_message("Can't request \"%s\": %s",object_name,err->message);
+			g_error_free(err);
+			err = NULL;
+
+		} else if(response) {
+
+			guint32 reply = 0;
+			g_variant_get(response, "(u)", &reply);
+			g_variant_unref(response);
+
+			if(reply == DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
+
+				g_message("Got %s", object_name);
+
+				lib3270_set_session_id(ipc->hSession, id);
+
+				// Introspection data for the service we are exporting
+				GString * introspection = g_string_new("<node><interface name='" PW3270_IPC_SESSION_INTERFACE_NAME "'>");
+				ipc3270_add_terminal_introspection(introspection);
+				g_string_append(introspection,"</interface></node>");
+
+				gchar * introspection_xml = g_string_free(introspection,FALSE);
+
+				debug("\n%s\n",introspection_xml);
+
+				GDBusNodeInfo * introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
+
+				// Register object-id
+				ipc->id = g_dbus_connection_register_object (
+									ipc->connection,
+									PW3270_IPC_SESSION_OBJECT_PATH,
+									introspection_data->interfaces[0],
+									&interface_vtable,
+									ipc,
+									NULL,
+									error
+							);
+
+				g_dbus_node_info_unref(introspection_data);
+				g_free(introspection_xml);
+
+				return;
+			}
+
+		}
+
+	}
 
 }
-
-static void on_name_acquired(GDBusConnection *connection, const gchar *name, gpointer user_data) {
-
-	g_message("Acquired %s",name);
-
-}
-
-static void on_name_lost (GDBusConnection *connection, const gchar *name, gpointer user_data) {
-	g_message("Lost %s",name);
-    g_main_loop_quit(NULL);
-}
-
-void service_start(void) {
-
-	GString * introspection = g_string_new("<node>\n");
-
-	g_string_append(introspection,
-		"	<interface name='" PW3270_IPC_SERVICE_INTERFACE_NAME "'>"
-		"		<method name='createSession'>"
-		"			<arg type='s' name='id' direction='out' />"
-		"		</method>"
-		"		<method name='destroySession'>"
-		"			<arg type='s' name='id' direction='in' />"
-		"			<arg type='i' name='rc' direction='out' />"
-		"		</method>"
-		"		<property type='s' name='version' access='read'/>"
-		"		<property type='s' name='release' access='read'/>"
-	);
-
-	ipc3270_add_terminal_introspection(introspection);
-
-	g_string_append(introspection,"</interface></node>\n");
-
-	introspection_xml = g_string_free(introspection,FALSE);
-
-	debug("\n\n%s\n\n",introspection_xml);
-
-	introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
-
-	owner_id = g_bus_own_name (G_BUS_TYPE_SESSION,
-                             PW3270_IPC_SERVICE_BUS_NAME,
-                             G_BUS_NAME_OWNER_FLAGS_NONE,
-                             on_bus_acquired,
-                             on_name_acquired,
-                             on_name_lost,
-                             NULL,
-                             NULL);
-
-
-}
-
