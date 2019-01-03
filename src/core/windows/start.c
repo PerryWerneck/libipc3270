@@ -84,16 +84,3 @@ void ipc3270_export_object(GObject *object, const char *name, GError **error) {
 	}
 
 }
-
-const gchar * ipc3270_get_display_charset(GObject *object) {
-	return lib3270_get_display_charset(IPC3270(object)->hSession);
-}
-
-H3270 * ipc3270_get_session(GObject *object) {
-	return IPC3270(object)->hSession;
-}
-
-void ipc3270_set_error(GObject *object, int errcode, GError **error) {
-	g_set_error(error,IPC3270(object)->error_domain,errcode,"%s",strerror(errcode));
-}
-

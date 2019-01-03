@@ -98,10 +98,10 @@
 		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/lib3270/ipc.h" />
 		<Unit filename="src/linux/gobject.h" />
-		<Unit filename="src/plugin/private.h" />
-		<Unit filename="src/plugin/start.c">
+		<Unit filename="src/plugin/plugin.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/plugin/private.h" />
 		<Unit filename="src/service/getproperties.c">
 			<Option compilerVar="CC" />
 		</Unit>
