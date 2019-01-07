@@ -85,6 +85,9 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='s' name='url' direction='in'/>"
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>"
+		"	<method name='disconnect'>"
+		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>"
 		"	<method name='pfkey'>" \
 		"		<arg type='i' name='keycode' direction='in'/>" \
 		"		<arg type='i' name='result' direction='out' />" \
@@ -123,7 +126,9 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='i' name='len' direction='in' />" \
 		"		<arg type='y' name='lf' direction='in' />" \
 		"		<arg type='s' name='text' direction='out' />" \
-		"	</method>"
+		"	</method>" \
+		"	<property type='s' name='version' access='read'/>" \
+		"	<property type='s' name='revision' access='read'/>"
 	);
 
 	// Constrói métodos usando a tabela de controle

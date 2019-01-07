@@ -122,6 +122,14 @@ GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GEr
 
 	}
 
+	if(!g_ascii_strcasecmp("version", property_name)) {
+		return g_variant_new_string(PACKAGE_VERSION);
+	}
+
+	if(!g_ascii_strcasecmp("revision", property_name)) {
+		return g_variant_new_string(G_STRINGIFY(PACKAGE_RELEASE));
+	}
+
 	return NULL;
 
 }
