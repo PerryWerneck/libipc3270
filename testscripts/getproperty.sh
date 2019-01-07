@@ -7,8 +7,8 @@ dbus-send \
 	--session \
 	--dest=br.com.bb.pw3270.a\
 	--print-reply \
-	"/br/com/bb/tn3270" \
+	"/br/com/bb/tn3270/session" \
 	"org.freedesktop.DBus.Properties.Get" \
-	string:br.com.bb.tn3270 \
+	string:br.com.bb.tn3270.session \
 	string:${1}
 
