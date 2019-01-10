@@ -37,9 +37,6 @@
 #include <lib3270.h>
 #include <lib3270/properties.h>
 
-// #include <dbus/dbus-glib.h>
-// #include <dbus/dbus-glib-bindings.h>
-
 GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GError **error) {
 
 	size_t ix;
@@ -120,14 +117,6 @@ GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GEr
 		// Is a Tn3270 toggle, get it!
 		return g_variant_new_boolean(lib3270_get_toggle( (ipc3270_get_session(object)), toggle) != 0);
 
-	}
-
-	if(!g_ascii_strcasecmp("version", property_name)) {
-		return g_variant_new_string(PACKAGE_VERSION);
-	}
-
-	if(!g_ascii_strcasecmp("revision", property_name)) {
-		return g_variant_new_string(G_STRINGIFY(PACKAGE_RELEASE));
 	}
 
 	return NULL;
