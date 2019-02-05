@@ -60,7 +60,8 @@
 	if(url) {
 
 		v3270_set_url(terminal,url);
-		v3270_connect(terminal);
+		v3270_reconnect(terminal);
+
 		gchar * title = g_strdup_printf("%s - %s", v3270_get_session_name(terminal), url);
 		gtk_window_set_title(GTK_WINDOW(window), title);
 		g_free(title);
