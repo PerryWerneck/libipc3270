@@ -4,8 +4,7 @@
 	<service name="tar_scm">
         <param name="changesgenerate">enable</param>
 		<param name="sslverify">disable</param>
-		<param name="versionformat">%ct</param>
-	        <!-- param name="version">5.2</param -->
+		<param name="versionformat">@PARENT_TAG@</param>
 		<param name="url">https://softwarepublico.gov.br/gitlab/pw3270/pw3270-plugin-ipc.git</param>
 		<param name="scm">git</param>
 	</service>
