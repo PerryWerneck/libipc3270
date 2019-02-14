@@ -45,6 +45,10 @@
  #include <v3270.h>
  #include <lib3270/ipc.h>
 
+ int pw3270_plugin_stop(GtkWidget *window, GtkWidget *terminal) {
+	g_object_set_data(G_OBJECT(terminal), "ipc-object-info", NULL);
+ }
+
  int pw3270_plugin_start(GtkWidget *window, GtkWidget *terminal) {
 
 	// Creates IPC, associate it with the terminal window

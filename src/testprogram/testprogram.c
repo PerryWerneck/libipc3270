@@ -34,12 +34,36 @@
   *
   */
 
+ #include <config.h>
  #include <v3270.h>
  #include <lib3270/ipc.h>
  #include <string.h>
  #include <stdlib.h>
 
+ /*---[ Globals ]------------------------------------------------------------------------------------*/
+
+ const gchar * plugin_path = ".bin/Debug";
+ const gchar * plugin_name = "ipc3270." G_MODULE_SUFFIX;
+
  /*---[ Implement ]----------------------------------------------------------------------------------*/
+
+ static void close_module(GtkWidget *widget, GModule *module)
+ {
+ 	g_message("Closing module %p",module);
+
+	static void (*stop)(GtkWidget *window, GtkWidget *terminal) = NULL;
+	if(!g_module_symbol(module,"pw3270_plugin_stop",(gpointer) &stop))
+	{
+		g_message("Can't get stop method from plugin: %s",g_module_error());
+	}
+	else
+	{
+		stop(gtk_widget_get_toplevel(widget),widget);
+	}
+
+	g_module_close(module);
+	g_message("Module %p was closed",module);
+ }
 
  static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
@@ -54,9 +78,38 @@
 	gtk_container_add(GTK_CONTAINER(window),terminal);
 	gtk_widget_show_all (window);
 
-	pw3270_plugin_start(window, terminal);
+	// Load plugin
+	{
+		g_autofree gchar * plugin = g_build_filename(plugin_path,plugin_name,NULL);
 
-	const gchar *url = getenv("LIB3270_DEFAULT_HOST");
+		g_message("Loading %s",plugin);
+
+		GModule * module = g_module_open(plugin,G_MODULE_BIND_LOCAL);
+
+		if(module)
+		{
+			g_signal_connect (terminal, "destroy", G_CALLBACK(close_module), module);
+		}
+		else
+		{
+			g_message("Can't open \"%s\": %s",plugin,g_module_error());
+			gtk_main_quit();
+		}
+
+		static void (*start)(GtkWidget *window, GtkWidget *terminal) = NULL;
+		if(!g_module_symbol(module,"pw3270_plugin_start",(gpointer) &start))
+		{
+			g_message("Can't get start method from \"%s\": %s",plugin,g_module_error());
+			gtk_main_quit();
+		}
+
+		g_message("Starting plugin %p",module);
+		start(window,terminal);
+
+	}
+
+	// Setup title.
+	const gchar *url = lib3270_get_url(v3270_get_session(terminal));
 	if(url) {
 
 		v3270_set_url(terminal,url);

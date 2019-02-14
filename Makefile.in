@@ -118,7 +118,7 @@ $(OBJDBG)/%.o: \
 	$(DEPENDS)
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(@D)
 
 	@$(CC) \
 		$(CFLAGS) \
@@ -130,7 +130,7 @@ $(OBJDBG)/%.o: \
 	%.rc
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(@D)
 	@$(WINDRES) $< -O coff -o $@
 
 #---[ Release Rules ]--------------------------------------------------------------------
@@ -140,7 +140,7 @@ $(OBJRLS)/%.o: \
 	$(DEPENDS)
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(@D)
 	@$(CC) \
 		$(CFLAGS) \
 		-DNDEBUG=1 \
@@ -150,7 +150,7 @@ $(OBJRLS)/%.o: \
 	%.rc
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(@D)
 	@$(WINDRES) $< -O coff -o $@
 
 #---[ Misc Rules ]-----------------------------------------------------------------------
@@ -159,7 +159,7 @@ $(POTDIR)/$(MODULE_NAME)/%.pot: \
 	%.c
 
 	@echo $(notdir $@) ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(@D)
 	@$(XGETTEXT) \
 		--language=C \
 		--keyword=_ \
@@ -173,7 +173,7 @@ $(POTDIR)/$(MODULE_NAME)/%.pot: \
 	%.rc
 
 	@echo $< ...
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(@D)
 	@touch $@
 
 
@@ -184,47 +184,9 @@ all: \
 	$(POTDIR)/$(MODULE_NAME).pot
 
 Release: \
-	$(BINRLS)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@ \
+	$(BINRLS)/$(MODULE_NAME)@DLLEXT@ \
 	$(BINRLS)/$(PACKAGE_NAME)d@EXEEXT@
 
-$(BINRLS)/lib$(MODULE_NAME).a: \
-	$(foreach SRC, $(basename $(CORE_SOURCES)), $(OBJRLS)/$(SRC).o)
-
-	@$(MKDIR) `dirname $@`
-	@echo $< ...
-
-	@$(AR) rcs $@ $^
-
-$(BINRLS)/$(MODULE_NAME)@DLLEXT@: \
-	$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
-	$(BINRLS)/lib$(MODULE_NAME).a	
-
-	@$(MKDIR) `dirname $@`
-	@echo $< ...
-	@$(LD) \
-		-shared -Wl,-soname,$(@F) \
-		-o $@ \
-		$(LDFLAGS) \
-		$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
-		-L$(BINRLS) -l$(MODULE_NAME) \
-		$(V3270_LIBS) \
-		$(LIBS) \
-		$(GTK_LIBS)
-
-$(BINRLS)/$(PACKAGE_NAME)d@EXEEXT@: \
-	$(foreach SRC, $(basename $(SERVICE_SOURCES)), $(OBJRLS)/$(SRC).o) \
-	$(BINRLS)/lib$(MODULE_NAME).a	
-
-	@$(MKDIR) `dirname $@`
-	@echo $< ...
-	@$(LD) \
-		-o $@ \
-		$(foreach SRC, $(basename $(SERVICE_SOURCES)), $(OBJRLS)/$(SRC).o) \
-		-L$(BINRLS) \
-		$(LDFLAGS) \
-		$(LIBS) \
-		-l$(MODULE_NAME) \
-		$(GLIB_LIBS)
 
 
 #---[ Install Targets ]------------------------------------------------------------------
@@ -257,31 +219,22 @@ locale: \
 #---[ Debug Targets ]--------------------------------------------------------------------
 
 Debug: \
-	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@ \
-	$(BINDBG)/$(MODULE_NAME)@EXEEXT@ \
-	$(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@
-
-Debug-plugin: \
-	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@ \
+	$(BINDBG)/$(MODULE_NAME)@DLLEXT@ \
 	$(BINDBG)/$(MODULE_NAME)@EXEEXT@
-
-Debug-service: \
-	$(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@
 
 $(BINDBG)/lib$(MODULE_NAME).a: \
 	$(foreach SRC, $(basename $(CORE_SOURCES)), $(OBJDBG)/$(SRC).o)
 
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(@D)
 	@echo $< ...
 
 	@$(AR) rcs $@ $^
 
 
 $(BINDBG)/$(MODULE_NAME)@EXEEXT@: \
-	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
-	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@
+	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o)
 
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(@D)
 	@echo $< ...
 	@$(LD) \
 		-o $@ \
@@ -290,15 +243,15 @@ $(BINDBG)/$(MODULE_NAME)@EXEEXT@: \
 		-Wl,-rpath,$(BINDBG) \
 		$(LDFLAGS) \
 		$(LIBS) \
-		-l$(MODULE_NAME) \
 		$(V3270_LIBS) \
-		$(GTK_LIBS)
+		$(GTK_LIBS) \
+		$(GLIB_LIBS)
 
 $(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@: \
 	$(foreach SRC, $(basename $(SERVICE_SOURCES)), $(OBJDBG)/$(SRC).o) \
 	$(BINDBG)/lib$(MODULE_NAME).a	
 
-	@$(MKDIR) `dirname $@`
+	@$(MKDIR) $(@D)
 	@echo $< ...
 	@$(LD) \
 		-o $@ \
@@ -309,6 +262,26 @@ $(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@: \
 		$(LIBS) \
 		-l$(MODULE_NAME) \
 		$(GLIB_LIBS)
+
+$(BINDBG)/$(MODULE_NAME)@DLLEXT@: \
+	$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJDBG)/$(SRC).o) \
+	$(BINDBG)/lib$(MODULE_NAME).a	
+
+	@$(MKDIR) $(@D)
+	@echo $< ...
+	@$(LD) \
+		-shared -Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJDBG)/$(SRC).o) \
+		-L$(BINDBG) -l$(MODULE_NAME) \
+		$(V3270_LIBS) \
+		$(LIBS) \
+		$(GTK_LIBS)
+
+
+run: \
+	run-plugin
 
 run-plugin: \
 	$(BINDBG)/$(MODULE_NAME)@EXEEXT@
@@ -322,41 +295,6 @@ run-service: \
 	@LD_LIBRARY_PATH=$(BINDBG) \
 		$(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@
 
-$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@: \
-	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
-
-	@echo $< ...
-	@rm -f $@
-	@$(LN_S) \
-		@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
-		$@
-
-$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
-	$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
-
-	@rm -f $@
-	@$(LN_S) \
-		@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
-		$@
-
-$(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
-	$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJDBG)/$(SRC).o) \
-	$(BINDBG)/lib$(MODULE_NAME).a	
-
-	@rm -f $(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@
-	@rm -f $(BINDBG)/@DLLPREFIX@$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
-
-	@$(MKDIR) `dirname $@`
-	@echo $< ...
-	@$(LD) \
-		-shared -Wl,-soname,$(@F) \
-		-o $@ \
-		$(LDFLAGS) \
-		$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJDBG)/$(SRC).o) \
-		-L$(BINDBG) -l$(MODULE_NAME) \
-		$(V3270_LIBS) \
-		$(LIBS) \
-		$(GTK_LIBS)
 
 #---[ Clean Targets ]--------------------------------------------------------------------
 
