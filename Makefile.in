@@ -284,6 +284,7 @@ run: \
 	run-plugin
 
 run-plugin: \
+	$(BINDBG)/$(MODULE_NAME)@DLLEXT@ \
 	$(BINDBG)/$(MODULE_NAME)@EXEEXT@
 
 	@LD_LIBRARY_PATH=$(BINDBG) \

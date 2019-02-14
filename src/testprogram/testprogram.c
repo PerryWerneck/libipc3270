@@ -36,14 +36,16 @@
 
  #include <config.h>
  #include <v3270.h>
+ #include <v3270/trace.h>
  #include <lib3270/ipc.h>
  #include <string.h>
  #include <stdlib.h>
 
  /*---[ Globals ]------------------------------------------------------------------------------------*/
 
- const gchar * plugin_path = ".bin/Debug";
- const gchar * plugin_name = "ipc3270." G_MODULE_SUFFIX;
+ const gchar * plugin_path 	= ".bin/Debug";
+ const gchar * session_name	= "pw3270";
+ const gchar * plugin_name	= "ipc3270." G_MODULE_SUFFIX;
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
 
@@ -65,17 +67,72 @@
 	g_message("Module %p was closed",module);
  }
 
+ static void toggle_ds_trace(GtkToggleToolButton *button, GtkWidget *terminal)
+ {
+	v3270_set_toggle(terminal,LIB3270_TOGGLE_DS_TRACE,gtk_toggle_tool_button_get_active(button));
+ }
+
+ static void toggle_event_trace(GtkToggleToolButton *button, GtkWidget *terminal)
+ {
+	v3270_set_toggle(terminal,LIB3270_TOGGLE_EVENT_TRACE,gtk_toggle_tool_button_get_active(button));
+ }
+
+ static void toggle_ssl_trace(GtkToggleToolButton *button, GtkWidget *terminal)
+ {
+	v3270_set_toggle(terminal,LIB3270_TOGGLE_SSL_TRACE,gtk_toggle_tool_button_get_active(button));
+ }
+
+ static void toggle_screen_trace(GtkToggleToolButton *button, GtkWidget *terminal)
+ {
+	v3270_set_toggle(terminal,LIB3270_TOGGLE_SCREEN_TRACE,gtk_toggle_tool_button_get_active(button));
+ }
+
+ static GtkToolItem * create_tool_item(GtkWidget *terminal, const gchar *label, const gchar *tooltip, GCallback callback)
+ {
+	GtkToolItem * item = gtk_toggle_tool_button_new();
+	gtk_tool_button_set_label(GTK_TOOL_BUTTON(item),label);
+
+	g_signal_connect(GTK_WIDGET(item), "toggled", G_CALLBACK(callback), terminal);
+
+	if(tooltip)
+		gtk_widget_set_tooltip_text(GTK_WIDGET(item),tooltip);
+
+	return item;
+ }
+
  static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
-	GtkWidget	* window	= gtk_application_window_new(app);
-	GtkWidget	* terminal	= v3270_new();
+	GtkWidget * window		= gtk_application_window_new(app);
+	GtkWidget * terminal	= v3270_new();
+	GtkWidget * notebook	= gtk_notebook_new();
 
-	gtk_widget_set_name(window,"pw3270");
+	gtk_widget_set_name(window,session_name);
 
-	// Setup and show window
+	// Setup tabs
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),terminal,gtk_label_new(v3270_get_session_name(terminal)));
+
+	// Create trace window
+	{
+		GtkWidget * box		= gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
+		GtkWidget * trace 	= v3270_trace_new(terminal);
+		GtkWidget * toolbar	= gtk_toolbar_new();
+
+		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),create_tool_item(terminal, "DS Trace","Toggle DS Trace",G_CALLBACK(toggle_ds_trace)),-1);
+		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),create_tool_item(terminal, "Event Trace","Toggle Event Trace",G_CALLBACK(toggle_event_trace)),-1);
+		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),create_tool_item(terminal, "Screen Trace","Toggle Screen Trace",G_CALLBACK(toggle_screen_trace)),-1);
+		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),create_tool_item(terminal, "SSL Trace","Toggle SSL Trace",G_CALLBACK(toggle_ssl_trace)),-1);
+
+		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),gtk_separator_tool_item_new(),-1);
+
+		gtk_box_pack_start(GTK_BOX(box),toolbar,FALSE,FALSE,0);
+		gtk_box_pack_start(GTK_BOX(box),trace,TRUE,TRUE,0);
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),box,gtk_label_new("Trace"));
+	}
+
+	// Setup and show main window
 	gtk_window_set_position(GTK_WINDOW(window),GTK_WIN_POS_CENTER);
 	gtk_window_set_default_size (GTK_WINDOW (window), 800, 500);
-	gtk_container_add(GTK_CONTAINER(window),terminal);
+	gtk_container_add(GTK_CONTAINER(window),notebook);
 	gtk_widget_show_all (window);
 
 	// Load plugin
