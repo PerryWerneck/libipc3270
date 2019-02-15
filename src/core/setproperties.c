@@ -36,14 +36,15 @@
 #include <lib3270/ipc.h>
 #include <lib3270.h>
 #include <lib3270/properties.h>
-
-// #include <dbus/dbus-glib.h>
-// #include <dbus/dbus-glib-bindings.h>
+#include <lib3270/trace.h>
 
 gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVariant *value, GError **error) {
 
 	// Check for property
-	size_t ix;
+	size_t	  ix;
+	H3270	* hSession = ipc3270_get_session(object);
+
+	lib3270_trace_event(hSession,"SetProperty(%s) called on session %c",property_name,lib3270_get_session_id(hSession));
 
 	// Boolean properties
 	const LIB3270_INT_PROPERTY * boolprop = lib3270_get_boolean_properties_list();
@@ -52,7 +53,7 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 		if(boolprop[ix].set && !g_ascii_strcasecmp(boolprop[ix].name, property_name)) {
 
 			// Found it!
-			if(boolprop[ix].set(ipc3270_get_session(object), (int) (g_variant_get_boolean(value) ? 1 : 0))) {
+			if(boolprop[ix].set(hSession, (int) (g_variant_get_boolean(value) ? 1 : 0))) {
 
 				// Erro!
 				g_set_error (error,
@@ -77,7 +78,7 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 		if(intprop[ix].set && !g_ascii_strcasecmp(intprop[ix].name, property_name)) {
 
 			// Found it!
-			if(intprop[ix].set(ipc3270_get_session(object), (int) (g_variant_get_boolean(value) ? 1 : 0))) {
+			if(intprop[ix].set(hSession, (int) (g_variant_get_boolean(value) ? 1 : 0))) {
 
 				// Erro!
 				g_set_error (error,
@@ -102,7 +103,7 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 		if(strprop[ix].set && !g_ascii_strcasecmp(strprop[ix].name, property_name)) {
 
 			// Found it!
-			if(strprop[ix].set(ipc3270_get_session(object), g_variant_get_string(value,NULL))) {
+			if(strprop[ix].set(hSession, g_variant_get_string(value,NULL))) {
 
 				// Erro!
 				g_set_error (error,
@@ -125,7 +126,7 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 	if(toggle != (LIB3270_TOGGLE) -1) {
 
 		// Is a Tn3270 toggle, get it!
-		if(lib3270_set_toggle(ipc3270_get_session(object),toggle,(int) g_variant_get_int32(value))) {
+		if(lib3270_set_toggle(hSession,toggle,(int) g_variant_get_int32(value))) {
 
 			// Erro!
 			g_set_error (error,

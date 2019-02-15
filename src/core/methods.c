@@ -37,6 +37,7 @@
 #include <lib3270/ipc.h>
 #include <lib3270.h>
 #include <lib3270/actions.h>
+#include <lib3270/trace.h>
 
 // #include <dbus/dbus-glib.h>
 // #include <dbus/dbus-glib-bindings.h>
@@ -44,12 +45,15 @@
 GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error) {
 
 	size_t ix;
+	H3270	* hSession = ipc3270_get_session(object);
+
+	lib3270_trace_event(hSession,"Method %s called on session %c",method_name,lib3270_get_session_id(hSession));
 
 	debug("%s(%s)",__FUNCTION__,method_name);
 
 	if(!g_ascii_strcasecmp(method_name,"getString"))
 	{
-		return ipc3270_GVariant_from_input_string(object, lib3270_get_string_at_address(ipc3270_get_session(object),0,-1,'\n'), error);
+		return ipc3270_GVariant_from_input_string(object, lib3270_get_string_at_address(hSession,0,-1,'\n'), error);
 	}
 	else if(!g_ascii_strcasecmp(method_name,"setString"))
 	{
@@ -57,7 +61,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		g_variant_get(parameters, "(&s)", &text);
 
 		g_autofree gchar * converted = ipc3270_convert_output_string(object, text, error);
-		if(lib3270_input_string(ipc3270_get_session(object),(const unsigned char *) converted) < 0)
+		if(lib3270_input_string(hSession,(const unsigned char *) converted) < 0)
 		{
 			// Failed!
 			debug("%s failed: %s",method_name,strerror(errno));
@@ -77,7 +81,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		g_variant_get(parameters, "(ii&s)", &row, &col, &text);
 
 		g_autofree gchar * converted = ipc3270_convert_output_string(object, text, error);
-		if(lib3270_set_string_at(ipc3270_get_session(object),row,col,(const unsigned char *) converted) < 0)
+		if(lib3270_set_string_at(hSession,row,col,(const unsigned char *) converted) < 0)
 		{
 			// Failed!
 			ipc3270_set_error(object,errno,error);
@@ -94,7 +98,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		guchar lf;
 		g_variant_get(parameters, "(iiy)", &row, &col, &len,&lf);
 
-		return ipc3270_GVariant_from_input_string(object,lib3270_get_string_at(ipc3270_get_session(object), row, col, len, lf),error);
+		return ipc3270_GVariant_from_input_string(object,lib3270_get_string_at(hSession, row, col, len, lf),error);
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"setStringAtAddress"))
@@ -104,7 +108,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		g_variant_get(parameters, "(i&s)", &addr, &text);
 
 		g_autofree gchar * converted = ipc3270_convert_output_string(object, text, error);
-		if(lib3270_set_string_at_address(ipc3270_get_session(object),addr,(unsigned char *) converted) < 0)
+		if(lib3270_set_string_at_address(hSession,addr,(unsigned char *) converted) < 0)
 		{
 			// Failed!
 			ipc3270_set_error(object,errno,error);
@@ -121,7 +125,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		guchar lf;
 		g_variant_get(parameters, "(iiy)", &addr, &len, &lf);
 
-		return ipc3270_GVariant_from_input_string(object,lib3270_get_string_at_address(ipc3270_get_session(object), addr, len, lf),error);
+		return ipc3270_GVariant_from_input_string(object,lib3270_get_string_at_address(hSession, addr, len, lf),error);
 
 	}
 	// Check action table.
@@ -130,7 +134,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 	{
 		if(!g_ascii_strcasecmp(actions[ix].name,method_name)) {
 
-			int rc = actions[ix].call(ipc3270_get_session(object));
+			int rc = actions[ix].call(hSession);
 			if(rc)
 			{
 				// Failed
@@ -154,7 +158,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 			gint value;
 			g_variant_get(parameters, "(i)", &value);
 
-			int rc = int_methods[ix].call(ipc3270_get_session(object), value);
+			int rc = int_methods[ix].call(hSession, value);
 			if(rc)
 			{
 				// Failed

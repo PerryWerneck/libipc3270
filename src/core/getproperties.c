@@ -36,11 +36,16 @@
 #include <lib3270/ipc.h>
 #include <lib3270.h>
 #include <lib3270/properties.h>
+#include <lib3270/trace.h>
 
 GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GError **error) {
 
-	size_t ix;
+	size_t	  ix;
+	H3270	* hSession = ipc3270_get_session(object);
+
 	errno = 0; // Just in case.
+
+	lib3270_trace_event(hSession,"GetProperty(%s) called on session %c",property_name,lib3270_get_session_id(hSession));
 
 	// Boolean properties
 	const LIB3270_INT_PROPERTY * boolprop = lib3270_get_boolean_properties_list();
@@ -49,7 +54,7 @@ GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GEr
 		if(boolprop[ix].get && !g_ascii_strcasecmp(boolprop[ix].name, property_name)) {
 
 			// Found it!
-			int value = boolprop[ix].get(ipc3270_get_session(object));
+			int value = boolprop[ix].get(hSession);
 
 			debug("%s=%d",property_name,value);
 
@@ -72,7 +77,7 @@ GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GEr
 		if(intprop[ix].get && !g_ascii_strcasecmp(intprop[ix].name, property_name)) {
 
 			// Found it!
-			int value = intprop[ix].get(ipc3270_get_session(object));
+			int value = intprop[ix].get(hSession);
 
 			debug("%s=%d",property_name,value);
 
@@ -95,7 +100,7 @@ GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GEr
 		if(strprop[ix].get && !g_ascii_strcasecmp(strprop[ix].name, property_name)) {
 
 			// Found it!
-			const char * value = strprop[ix].get(ipc3270_get_session(object));
+			const char * value = strprop[ix].get(hSession);
 
 			if(value) {
 				debug("%s=%s",property_name,value);
@@ -115,7 +120,7 @@ GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GEr
 	if(toggle != (LIB3270_TOGGLE) -1) {
 
 		// Is a Tn3270 toggle, get it!
-		return g_variant_new_boolean(lib3270_get_toggle( (ipc3270_get_session(object)), toggle) != 0);
+		return g_variant_new_boolean(lib3270_get_toggle( (hSession), toggle) != 0);
 
 	}
 
