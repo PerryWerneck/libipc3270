@@ -66,12 +66,6 @@
 		GObjectClass parent;
 	};
 
-	/*
-	G_GNUC_INTERNAL void ipc3270_method_call (GDBusConnection *connection, const gchar *sender, const gchar *object_path, const gchar *interface_name, const gchar *method_name, GVariant *parameters, GDBusMethodInvocation *invocation, gpointer user_data);
-	G_GNUC_INTERNAL gboolean ipc3270_set_property(GDBusConnection *connection, const gchar *sender, const gchar *object_path, const gchar *interface_name, const gchar *property_name, GVariant *value, GError **error, gpointer user_data);
-	G_GNUC_INTERNAL GVariant * ipc3270_get_property (GDBusConnection  *connection, const gchar *sender, const gchar *object_path, const gchar *interface_name, const gchar *property_name, GError **error, gpointer user_data);
-	*/
-
 	G_END_DECLS
 
 #endif // LINUX_GOBJECT_H_INCLUDED

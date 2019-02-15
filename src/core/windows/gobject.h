@@ -78,6 +78,7 @@
 	} IPC3270_PIPE_SOURCE;
 
 	struct _ipc3270 {
+		GObject			  	  parent;
 		H3270				* hSession;
 		IPC3270_PIPE_SOURCE	* source;
 		GQuark 				  error_domain;

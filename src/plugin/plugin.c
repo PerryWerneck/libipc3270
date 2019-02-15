@@ -46,19 +46,22 @@
  #include <lib3270/ipc.h>
 
  int pw3270_plugin_stop(GtkWidget *window, GtkWidget *terminal) {
+	debug("%s(%p)",__FUNCTION__,g_object_get_data(G_OBJECT(terminal),"ipc-object-info"));
 	g_object_set_data(G_OBJECT(terminal), "ipc-object-info", NULL);
+	return 0;
  }
 
  int pw3270_plugin_start(GtkWidget *window, GtkWidget *terminal) {
 
 	// Creates IPC, associate it with the terminal window
-	GObject	* ipc	= ipc3270_new();
+	GObject	* ipc = ipc3270_new();
 	g_object_set_data_full(G_OBJECT(terminal), "ipc-object-info", ipc, g_object_unref);
 
 	debug("Name: \"%s\"",gtk_widget_get_name(window));
 
 	// Set session handle, this starts the IPC communication.
 	GError * error = NULL;
+
 	ipc3270_set_session(ipc,v3270_get_session(terminal));
 	ipc3270_export_object(ipc,gtk_widget_get_name(window),&error);
 

@@ -31,12 +31,26 @@
 #include <lib3270.h>
 #include <lib3270/actions.h>
 #include <lib3270/properties.h>
+#include <lib3270/ipc.h>
+
+/*--[ Widget definition ]----------------------------------------------------------------------------*/
 
 G_DEFINE_TYPE(ipc3270, ipc3270, G_TYPE_OBJECT)
 
+/*--[ Implement ]------------------------------------------------------------------------------------*/
+
 static void ipc3270_finalize(GObject *object) {
 
-	// ipc3270 * ipc = IPC3270(object);
+	debug("ipc3270::%s(%p)",__FUNCTION__,object);
+
+	ipc3270 * ipc = IPC3270(object);
+
+	if(ipc->source)
+	{
+		g_source_destroy((GSource *) ipc->source);
+		ipc->source = NULL;
+	}
+
 	G_OBJECT_CLASS(ipc3270_parent_class)->finalize(object);
 
 }
@@ -54,7 +68,7 @@ static void ipc3270_class_init(ipc3270Class *klass) {
 
 static void ipc3270_init(ipc3270 *object) {
 
-	debug("%s",__FUNCTION__);
+	debug("%s(%p)",__FUNCTION__,object);
 	object->error_domain = g_quark_from_static_string(PACKAGE_NAME);
 
 }

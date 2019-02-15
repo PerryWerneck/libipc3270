@@ -31,10 +31,13 @@
 #include <lib3270.h>
 #include <lib3270/actions.h>
 #include <lib3270/properties.h>
+#include <lib3270/ipc.h>
 
 void ipc3270_export_object(GObject *object, const char *name, GError **error) {
 
 	char id;
+
+	debug("%s object=%p name=%s type=%p",__FUNCTION__,object,name,ipc3270_get_type());
 
 	ipc3270 * ipc = IPC3270(object);
 

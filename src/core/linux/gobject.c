@@ -40,13 +40,18 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
 
+/*--[ Widget definition ]----------------------------------------------------------------------------*/
+
 G_DEFINE_TYPE(ipc3270, ipc3270, G_TYPE_OBJECT)
+
+/*--[ Implement ]------------------------------------------------------------------------------------*/
 
 static void ipc3270_finalize(GObject *object) {
 
+	debug("ipc3270::%s(%p)",__FUNCTION__,object);
+
 	ipc3270 * ipc = IPC3270(object);
 
-	debug("%s",__FUNCTION__);
 	if(ipc->id) {
 		g_dbus_connection_unregister_object(ipc->connection,ipc->id);
 	}
