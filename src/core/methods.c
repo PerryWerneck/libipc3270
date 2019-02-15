@@ -47,7 +47,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 	size_t ix;
 	H3270	* hSession = ipc3270_get_session(object);
 
-	lib3270_trace_event(hSession,"Method %s called on session %c",method_name,lib3270_get_session_id(hSession));
+	lib3270_trace_event(hSession,"Method %s called on session %c\n",method_name,lib3270_get_session_id(hSession));
 
 	debug("%s(%s)",__FUNCTION__,method_name);
 

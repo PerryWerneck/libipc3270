@@ -44,7 +44,7 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 	size_t	  ix;
 	H3270	* hSession = ipc3270_get_session(object);
 
-	lib3270_trace_event(hSession,"SetProperty(%s) called on session %c",property_name,lib3270_get_session_id(hSession));
+	lib3270_trace_event(hSession,"SetProperty(%s) called on session %c\n",property_name,lib3270_get_session_id(hSession));
 
 	// Boolean properties
 	const LIB3270_INT_PROPERTY * boolprop = lib3270_get_boolean_properties_list();
