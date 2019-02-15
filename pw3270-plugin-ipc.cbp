@@ -99,6 +99,9 @@
 		<Unit filename="src/core/windows/start.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/windows/stop.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/config.h.in" />
 		<Unit filename="src/include/lib3270/ipc.h" />

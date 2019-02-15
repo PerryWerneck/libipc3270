@@ -43,13 +43,7 @@ static void ipc3270_finalize(GObject *object) {
 
 	debug("ipc3270::%s(%p)",__FUNCTION__,object);
 
-	ipc3270 * ipc = IPC3270(object);
-
-	if(ipc->source)
-	{
-		g_source_destroy((GSource *) ipc->source);
-		ipc->source = NULL;
-	}
+	ipc3270_release_object(IPC3270(object));
 
 	G_OBJECT_CLASS(ipc3270_parent_class)->finalize(object);
 
