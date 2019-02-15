@@ -74,6 +74,9 @@
 		<Unit filename="src/core/linux/start.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/linux/stop.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/methods.c">
 			<Option compilerVar="CC" />
 		</Unit>

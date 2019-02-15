@@ -56,8 +56,13 @@
 
 	struct _ipc3270 {
 		GObject			  parent;
-		GDBusConnection	* connection;
-		guint			  id;
+
+		struct {
+			gchar			* name;
+			GDBusConnection	* connection;
+			guint			  id;
+		} dbus;
+
 		H3270			* hSession;
 		GQuark 			  error_domain;
 	};
@@ -65,6 +70,8 @@
 	struct _ipc3270Class {
 		GObjectClass parent;
 	};
+
+	G_GNUC_INTERNAL void ipc3270_release_object(ipc3270 *object);
 
 	G_END_DECLS
 

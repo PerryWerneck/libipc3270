@@ -50,11 +50,7 @@ static void ipc3270_finalize(GObject *object) {
 
 	debug("ipc3270::%s(%p)",__FUNCTION__,object);
 
-	ipc3270 * ipc = IPC3270(object);
-
-	if(ipc->id) {
-		g_dbus_connection_unregister_object(ipc->connection,ipc->id);
-	}
+	ipc3270_release_object(IPC3270(object));
 
 	G_OBJECT_CLASS(ipc3270_parent_class)->finalize(object);
 }
@@ -155,7 +151,7 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 	// Boolean properties
 	const LIB3270_INT_PROPERTY * bol_props = lib3270_get_boolean_properties_list();
 	for(ix = 0; bol_props[ix].name; ix++) {
-		debug("Boolean(%s)",bol_props[ix].name);
+//		debug("Boolean(%s)",bol_props[ix].name);
 		g_string_append_printf(introspection, "    <property type='b' name='%s' access='%s'/>",
 			bol_props[ix].name,
 			((bol_props[ix].set == NULL) ? "read" : "readwrite")

@@ -121,15 +121,15 @@ void ipc3270_export_object(GObject *object, const char *name, GError **error) {
 
 	ipc3270 * ipc = IPC3270(object);
 
-	ipc->connection = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, error);
+	ipc->dbus.connection = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, error);
 	if(*error) {
 		g_message("Can't get session bus: %s",(*error)->message);
 		return;
 	}
 
-	g_dbus_connection_set_exit_on_close(ipc->connection,FALSE);
+	g_dbus_connection_set_exit_on_close(ipc->dbus.connection,FALSE);
 
-	for(id='a'; id < 'z' && !ipc->id && !*error; id++) {
+	for(id='a'; id < 'z' && !ipc->dbus.id && !*error; id++) {
 
 		g_autofree gchar *object_name = g_strdup_printf(PW3270_IPC_SESSION_BUS_NAME,name,id);
 
@@ -140,7 +140,7 @@ void ipc3270_export_object(GObject *object, const char *name, GError **error) {
 
 		GVariant * response =
 			g_dbus_connection_call_sync (
-					ipc->connection,
+					ipc->dbus.connection,
 					DBUS_SERVICE_DBUS,
 					DBUS_PATH_DBUS,
 					DBUS_INTERFACE_DBUS,
@@ -167,7 +167,8 @@ void ipc3270_export_object(GObject *object, const char *name, GError **error) {
 
 			if(reply == DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
 
-				g_message("Got %s", object_name);
+				ipc->dbus.name = g_strdup(object_name);
+				g_message("Got %s", ipc->dbus.name);
 
 				lib3270_set_session_id(ipc->hSession, id);
 
@@ -178,13 +179,13 @@ void ipc3270_export_object(GObject *object, const char *name, GError **error) {
 
 				gchar * introspection_xml = g_string_free(introspection,FALSE);
 
-				debug("\n%s\n",introspection_xml);
+				// debug("\n%s\n",introspection_xml);
 
 				GDBusNodeInfo * introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
 
 				// Register object-id
-				ipc->id = g_dbus_connection_register_object (
-									ipc->connection,
+				ipc->dbus.id = g_dbus_connection_register_object (
+									ipc->dbus.connection,
 									PW3270_IPC_SESSION_OBJECT_PATH,
 									introspection_data->interfaces[0],
 									&interface_vtable,
