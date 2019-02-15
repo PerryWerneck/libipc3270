@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como gobject.c e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -33,7 +33,7 @@
 #include <lib3270/properties.h>
 #include <lib3270/ipc.h>
 
-void ipc3270_export_object(GObject *object, const char *name, GError **error) {
+void ipc3270_export_object(GObject *object, const char *name, GError G_GNUC_UNUSED(**error)) {
 
 	char id;
 
@@ -68,6 +68,8 @@ void ipc3270_export_object(GObject *object, const char *name, GError **error) {
 		if(hPipe != INVALID_HANDLE_VALUE) {
 
 			ipc->source = (IPC3270_PIPE_SOURCE *) g_source_new(&ipc3270_source_funcs,sizeof(IPC3270_PIPE_SOURCE));
+
+			g_message("Got session \"%c\"",id);
 
 			lib3270_set_session_id(ipc->hSession, id);
 

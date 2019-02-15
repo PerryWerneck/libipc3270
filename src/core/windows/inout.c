@@ -77,10 +77,10 @@ unsigned char * ipc3270_pack(const gchar * name, int id, GVariant *values, size_
 	// Init packet size;
 	*szPacket = strlen(name) + 1 + (sizeof(guint16) * 2);
 
-	g_print("Packaging %u itens for \"%s\"\n", (unsigned int) count, name);
+	debug("Packaging %u itens for \"%s\"", (unsigned int) count, name);
 	while ((child = g_variant_iter_next_value (&iter))) {
 
-		// g_print("type='%s' size=%u\n", g_variant_get_type_string(child), (unsigned int) g_variant_get_size(child));
+		// debug("type='%s' size=%u", g_variant_get_type_string(child), (unsigned int) g_variant_get_size(child));
 
 		types[ix] = g_variant_get_type_string(child)[0];
 		*szPacket += (1+g_variant_get_size(child));

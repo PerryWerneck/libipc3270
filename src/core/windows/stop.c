@@ -36,21 +36,12 @@
 #include <lib3270.h>
 #include <lib3270/ipc.h>
 
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-bindings.h>
-
 void ipc3270_release_object(ipc3270 *object) {
 
 	if(object->source)
 	{
 		g_source_destroy((GSource *) object->source);
 		object->source = NULL;
-	}
-
-	if(object->hPipe)
-	{
-		closehandle(object->hPipe);
-		object->hPipe = 0;
 	}
 
 }

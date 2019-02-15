@@ -28,6 +28,7 @@
  */
 
 #include "gobject.h"
+#include <lib3270/trace.h>
 
 void ipc3270_wait_for_client(IPC3270_PIPE_SOURCE *source) {
 
@@ -93,8 +94,12 @@ static gboolean IO_check(GSource *source) {
 
 static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 
-	const gchar * request_name = (const gchar *) (source->buffer);
-	int			  request_type = 0;
+	const gchar * request_name	= (const gchar *) (source->buffer);
+	H3270		* hSession		= ipc3270_get_session(source->object);
+	int			  request_type	= 0;
+
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE))
+		lib3270_trace_data(hSession, "IPC Data block received on pipe", (const char *) source->buffer, (size_t) cbRead);
 
 	debug("Received packet \"%s\" with %u bytes", request_name, (unsigned int) cbRead);
 
@@ -193,7 +198,7 @@ static void read_input_pipe(IPC3270_PIPE_SOURCE *source) {
 }
 
 
-static gboolean IO_dispatch(GSource *source, GSourceFunc callback, gpointer data) {
+static gboolean IO_dispatch(GSource *source, GSourceFunc G_GNUC_UNUSED(callback), gpointer G_GNUC_UNUSED(data)) {
 	/*
 	 * Called to dispatch the event source,
 	 * after it has returned TRUE in either its prepare or its check function.
@@ -242,11 +247,13 @@ static gboolean IO_dispatch(GSource *source, GSourceFunc callback, gpointer data
 	return TRUE;
 }
 
-static gboolean IO_closure(gpointer data) {
+static gboolean IO_closure(gpointer G_GNUC_UNUSED(data)) {
 	return 0;
 }
 
 static void IO_finalize(GSource *source) {
+
+	debug("%s(%p)",__FUNCTION__,source);
 
 	if( ((IPC3270_PIPE_SOURCE *) source)->hPipe != INVALID_HANDLE_VALUE) {
 		CloseHandle(((IPC3270_PIPE_SOURCE *) source)->hPipe);
