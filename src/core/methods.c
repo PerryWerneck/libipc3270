@@ -42,7 +42,8 @@
 // #include <dbus/dbus-glib.h>
 // #include <dbus/dbus-glib-bindings.h>
 
-GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error) {
+GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error)
+{
 
 	size_t ix;
 	H3270	* hSession = ipc3270_get_session(object);
@@ -128,6 +129,13 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		return ipc3270_GVariant_from_input_string(object,lib3270_get_string_at_address(hSession, addr, len, lf),error);
 
 	}
+	else if(!g_ascii_strcasecmp(method_name,"waitforready"))
+	{
+		gint timeout = 1;
+		g_variant_get(parameters, "(i)", &timeout);
+		return g_variant_new("(i)", (gint) lib3270_wait_for_ready(hSession,timeout));
+	}
+
 	// Check action table.
 	const LIB3270_ACTION_ENTRY * actions = lib3270_get_action_table();
 	for(ix = 0; actions[ix].name; ix++)
@@ -172,6 +180,8 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		}
 
 	}
+
+	g_message("Unknown method \"%s\"",method_name);
 
 	return NULL;
 
