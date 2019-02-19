@@ -77,7 +77,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 	}
 	else if(!g_ascii_strcasecmp(method_name,"setStringAt"))
 	{
-		gint row,col;
+		guint row,col;
 		gchar *text = NULL;
 		g_variant_get(parameters, "(ii&s)", &row, &col, &text);
 
@@ -95,16 +95,16 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 	}
 	else if(!g_ascii_strcasecmp(method_name,"getStringAt"))
 	{
-		gint row,col,len;
+		guint row,col,len;
 		guchar lf;
-		g_variant_get(parameters, "(iiy)", &row, &col, &len,&lf);
+		g_variant_get(parameters, "(uuuy)", &row, &col, &len,&lf);
 
 		return ipc3270_GVariant_from_input_string(object,lib3270_get_string_at(hSession, row, col, len, lf),error);
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"setStringAtAddress"))
 	{
-		gint addr;
+		guint addr;
 		gchar *text = NULL;
 		g_variant_get(parameters, "(i&s)", &addr, &text);
 
@@ -122,17 +122,19 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 	}
 	else if(!g_ascii_strcasecmp(method_name,"getStringAtAddress"))
 	{
-		gint addr,len;
+		guint addr,len;
 		guchar lf;
-		g_variant_get(parameters, "(iiy)", &addr, &len, &lf);
+		g_variant_get(parameters, "(uuy)", &addr, &len, &lf);
+
+		debug("lf=%02x",(int) lf);
 
 		return ipc3270_GVariant_from_input_string(object,lib3270_get_string_at_address(hSession, addr, len, lf),error);
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"waitforready"))
 	{
-		gint timeout = 1;
-		g_variant_get(parameters, "(i)", &timeout);
+		guint timeout = 1;
+		g_variant_get(parameters, "(u)", &timeout);
 		return g_variant_new("(i)", (gint) lib3270_wait_for_ready(hSession,timeout));
 	}
 
