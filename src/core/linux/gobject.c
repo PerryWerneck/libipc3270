@@ -130,6 +130,7 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"	</method>" \
 		"	<method name= 'waitForReady'>" \
 		"		<arg type='i' name='seconds' direction='in' />" \
+		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>" \
 		"	<property type='s' name='version' access='read'/>" \
 		"	<property type='s' name='revision' access='read'/>"
