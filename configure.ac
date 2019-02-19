@@ -74,28 +74,18 @@ dnl ---------------------------------------------------------------------------
 DLLPREFIX="lib"
 
 case "$host" in
-	*-mingw32)
+	*-mingw32|*-pc-msys)
 		app_cv_osname="windows"
 		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
 		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
-		LDFLAGS="$LDFLAGS -pthread -static-libgcc -static-libstdc++"
+		LDFLAGS="$LDFLAGS -pthread"
 		DLLEXT=".dll"
 		DLLPREFIX=""
 
 		app_win32_revision=$(date +%y.%m.%d.%H)
 		AC_SUBST(WIN32_VERSION,$app_win32_revision)
-		AC_CONFIG_FILES(src/core/windows/resources.rc)
 		AC_CONFIG_FILES(src/service/windows/resources.rc)
 		AC_CONFIG_FILES(src/plugin/windows/resources.rc)
-		;;
-
- 	s390x-*)
-		CFLAGS="$CFLAGS -pthread"
-		LDFLAGS="$LDFLAGS -pthread"
-		app_cv_datadir="/usr/share"
-		app_cv_confdir="/etc"
-		app_cv_osname="linux"
-		LOGDIR="/var/log"
 		;;
 
  	*)

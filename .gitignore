@@ -1,5 +1,6 @@
 .bin
 .obj
+.pot
 *.bak
 *.depend
 *.layout

@@ -187,6 +187,29 @@ Release: \
 	$(BINRLS)/$(MODULE_NAME)@DLLEXT@ \
 	$(BINRLS)/$(PACKAGE_NAME)d@EXEEXT@
 
+$(BINRLS)/$(MODULE_NAME)@DLLEXT@: \
+	$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
+	$(BINRLS)/lib$(MODULE_NAME).a	
+
+	@$(MKDIR) $(@D)
+	@echo $< ...
+	@$(LD) \
+		-shared -Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
+		-L$(BINRLS) -l$(MODULE_NAME) \
+		$(V3270_LIBS) \
+		$(LIBS) \
+		$(GTK_LIBS)
+
+$(BINRLS)/lib$(MODULE_NAME).a: \
+	$(foreach SRC, $(basename $(CORE_SOURCES)), $(OBJRLS)/$(SRC).o)
+
+	@$(MKDIR) $(@D)
+	@echo $< ...
+
+	@$(AR) rcs $@ $^
 
 
 #---[ Install Targets ]------------------------------------------------------------------
