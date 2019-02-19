@@ -66,32 +66,7 @@ unsigned char * ipc3270_pack_error(const GError *error, size_t * szPacket) {
 	return outputBuffer;
 }
 
-unsigned char * ipc3270_pack(const gchar * name, int id, GVariant *values, size_t * szPacket) {
-
-	GVariantIter	  iter;
-	gsize			  count = g_variant_iter_init(&iter, values);
-	g_autofree char * types = g_new0(char, count);
-	GVariant 		* child;
-	size_t			  ix = 0;
-
-	// Init packet size;
-	*szPacket = strlen(name) + 1 + (sizeof(guint16) * 2);
-
-	debug("Packaging %u itens for \"%s\"", (unsigned int) count, name);
-	while ((child = g_variant_iter_next_value (&iter))) {
-
-		// debug("type='%s' size=%u", g_variant_get_type_string(child), (unsigned int) g_variant_get_size(child));
-
-		types[ix] = g_variant_get_type_string(child)[0];
-		*szPacket += (1+g_variant_get_size(child));
-
-		g_variant_unref(child);
-		ix++;
-	}
-
-	// Allocate buffer
-	unsigned char * outputBuffer 	= g_malloc0(*szPacket);
-	unsigned char * txtptr			= outputBuffer;
+static unsigned char * setup_header(unsigned char *txtptr, const gchar *name, int id, size_t count) {
 
 	// Add name
 	strcpy((char *) txtptr,name);
@@ -105,64 +80,133 @@ unsigned char * ipc3270_pack(const gchar * name, int id, GVariant *values, size_
 	*((guint16 *) txtptr) = (guint16) count;
 	txtptr += sizeof(guint16);
 
+	return txtptr;
+}
+
+unsigned char * pack_value(unsigned char *txtptr, GVariant *value) {
+
+	unsigned char type = (unsigned char) g_variant_get_type_string(value)[0];
+
+	debug("%s type=%c",__FUNCTION__,type);
+
+	*(txtptr++) = type;
+
+	switch(type) {
+	// https://developer.gnome.org/glib/stable/gvariant-format-strings.html
+	case 's':
+		strcpy((char *) txtptr,g_variant_get_string(value,NULL));
+		txtptr += (strlen((char *) txtptr)+1);
+		break;
+
+	case 'b':	//	gboolean
+		*(txtptr++) = g_variant_get_boolean(value) ? 1 : 0;
+		break;
+
+	case 'y':	//	guchar
+		*(txtptr++) = g_variant_get_byte(value);
+		break;
+
+	case 'n':	//	gint16
+		*((gint16 *) txtptr) = g_variant_get_int16(value);
+		txtptr += sizeof(gint16);
+		break;
+
+	case 'q':	//	guint16
+		*((guint16 *) txtptr) = g_variant_get_uint16(value);
+		txtptr += sizeof(guint16);
+		break;
+
+	case 'i':	//	gint32
+	case 'h':	//	gint32
+		*((gint32 *) txtptr) = g_variant_get_int32(value);
+		txtptr += sizeof(gint32);
+		break;
+
+	case 'u':	//	guint32
+		*((guint32 *) txtptr) = g_variant_get_uint32(value);
+		txtptr += sizeof(guint32);
+		break;
+
+	case 'x':	//	gint64
+		*((gint64 *) txtptr) = g_variant_get_int64(value);
+		txtptr += sizeof(gint64);
+		break;
+
+	case 't':	//	guint64
+		*((guint64 *) txtptr) = g_variant_get_uint64(value);
+		txtptr += sizeof(guint64);
+		break;
+
+	default:
+		errno = EINVAL;
+		return NULL;
+
+	}
+
+	return txtptr;
+}
+
+unsigned char * ipc3270_pack_value(const gchar *name, int id, GVariant *value, size_t * szPacket) {
+
+	debug("%s(%s)",__FUNCTION__,name);
+
+	// Set packet size;
+	*szPacket =
+		strlen(name) + 1
+		+ (sizeof(guint16) * 2)
+		+ g_variant_get_size(value) +1;
+
+	unsigned char * outputBuffer 	= g_malloc0(*szPacket);
+	unsigned char * txtptr			= setup_header(outputBuffer,name,id,1);
+
+	txtptr = pack_value(txtptr, value);
+	if(!txtptr) {
+		g_free(outputBuffer);
+		return NULL;
+	}
+
+	debug("used=%u allocated=%u",(unsigned int) (txtptr-outputBuffer), (unsigned int) *szPacket);
+
+	return outputBuffer;
+
+}
+
+
+unsigned char * ipc3270_pack(const gchar * name, int id, GVariant *values, size_t * szPacket) {
+
+	GVariantIter	  iter;
+	gsize			  count = g_variant_iter_init(&iter, values);
+	GVariant 		* child;
+	size_t			  ix = 0;
+
+	debug("%s(%s)",__FUNCTION__,name);
+
+	// Init packet size;
+	*szPacket = strlen(name) + 1 + (sizeof(guint16) * 2);
+
+	debug("Packaging %u itens for \"%s\"", (unsigned int) count, name);
+	while ((child = g_variant_iter_next_value (&iter))) {
+
+		// debug("type='%s' size=%u", g_variant_get_type_string(child), (unsigned int) g_variant_get_size(child));
+
+		*szPacket += (1+g_variant_get_size(child));
+
+		g_variant_unref(child);
+		ix++;
+	}
+
+	// Allocate buffer
+	unsigned char * outputBuffer 	= g_malloc0(*szPacket);
+	unsigned char * txtptr			= setup_header(outputBuffer,name,id,count);
+
 	ix = 0;
 	g_variant_iter_init(&iter, values);
 	while ((child = g_variant_iter_next_value (&iter))) {
 
 		debug("type='%s' size=%u index=%u", g_variant_get_type_string(child), (unsigned int) g_variant_get_size(child), (unsigned int) (txtptr - outputBuffer));
 
-		*(txtptr++) = types[ix];
-
-		switch(types[ix]) {
-
-		// https://developer.gnome.org/glib/stable/gvariant-format-strings.html
-
-		case 's':
-			strcpy((char *) txtptr,g_variant_get_string(child,NULL));
-			txtptr += (strlen((char *) txtptr)+1);
-			break;
-
-		case 'b':	//	gboolean
-			*(txtptr++) = g_variant_get_boolean(child) ? 1 : 0;
-			break;
-
-		case 'y':	//	guchar
-			*(txtptr++) = g_variant_get_byte(child);
-			break;
-
-		case 'n':	//	gint16
-			*((gint16 *) txtptr) = g_variant_get_int16(child);
-			txtptr += sizeof(gint16);
-			break;
-
-		case 'q':	//	guint16
-			*((guint16 *) txtptr) = g_variant_get_uint16(child);
-			txtptr += sizeof(guint16);
-			break;
-
-		case 'i':	//	gint32
-		case 'h':	//	gint32
-			*((gint32 *) txtptr) = g_variant_get_int32(child);
-			txtptr += sizeof(gint32);
-			break;
-
-		case 'u':	//	guint32
-			*((guint32 *) txtptr) = g_variant_get_uint32(child);
-			txtptr += sizeof(guint32);
-			break;
-
-		case 'x':	//	gint64
-			*((gint64 *) txtptr) = g_variant_get_int64(child);
-			txtptr += sizeof(gint64);
-			break;
-
-		case 't':	//	guint64
-			*((guint64 *) txtptr) = g_variant_get_uint64(child);
-			txtptr += sizeof(guint64);
-			break;
-
-		default:
-			errno = EINVAL;
+		txtptr = pack_value(txtptr, child);
+		if(!txtptr) {
 			g_free(outputBuffer);
 			return NULL;
 		}

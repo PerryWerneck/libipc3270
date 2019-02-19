@@ -131,6 +131,8 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 
 	}
 
+	debug("response=%p",response);
+
 	// Pack response
 	size_t szPacket = 0;
 	g_autofree unsigned char * buffer = NULL;
@@ -141,12 +143,16 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 
 	} else {
 
-		buffer = ipc3270_pack(request_name, 0, response, &szPacket);
+		buffer = ipc3270_pack_value(request_name, 0, response, &szPacket);
 
 	}
 
 	// Send response
 	DWORD wrote = (DWORD) szPacket;
+
+	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE))
+		lib3270_trace_data(hSession, "IPC Data block sent to pipe", (const char *) buffer, szPacket);
+
 	WriteFile(source->hPipe,buffer,wrote,&wrote,NULL);
 
 }
