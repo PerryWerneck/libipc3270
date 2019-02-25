@@ -89,12 +89,16 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"	<method name='disconnect'>"
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>"
+		"	<method name='action'>"
+		"		<arg type='s' name='name' direction='in' />" \
+		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>"
 		"	<method name='pfkey'>" \
-		"		<arg type='i' name='keycode' direction='in'/>" \
+		"		<arg type='u' name='keycode' direction='in'/>" \
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>"
 		"	<method name='pakey'>" \
-		"		<arg type='i' name='keycode' direction='in'/>" \
+		"		<arg type='u' name='keycode' direction='in'/>" \
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>"
 		"	<method name='getString'>" \
@@ -128,9 +132,30 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='y' name='lf' direction='in' />" \
 		"		<arg type='s' name='text' direction='out' />" \
 		"	</method>" \
+		"	<method name= 'getFieldAt'>" \
+		"		<arg type='u' name='row' direction='in' />" \
+		"		<arg type='u' name='col' direction='in' />" \
+		"		<arg type='s' name='text' direction='out' />" \
+		"	</method>" \
+		"	<method name= 'getFieldAtAddress'>" \
+		"		<arg type='u' name='addr' direction='in' />" \
+		"		<arg type='s' name='text' direction='out' />" \
+		"	</method>" \
+		"	<method name= 'getFieldAtCursor'>" \
+		"		<arg type='s' name='text' direction='out' />" \
+		"	</method>" \
 		"	<method name= 'waitForReady'>" \
 		"		<arg type='u' name='seconds' direction='in' />" \
 		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>" \
+		"	<method name= 'setCursorAddress'>" \
+		"		<arg type='u' name='addr' direction='in' />" \
+		"		<arg type='s' name='text' direction='out' />" \
+		"	</method>" \
+		"	<method name= 'setCursorPosition'>" \
+		"		<arg type='u' name='row' direction='in' />" \
+		"		<arg type='u' name='col' direction='in' />" \
+		"		<arg type='s' name='text' direction='out' />" \
 		"	</method>" \
 		"	<property type='s' name='version' access='read'/>" \
 		"	<property type='s' name='revision' access='read'/>"
