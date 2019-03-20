@@ -56,7 +56,7 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 			if(boolprop[ix].set(hSession, (int) (g_variant_get_boolean(value) ? 1 : 0))) {
 
 				// Erro!
-				g_set_error (error,
+				g_set_error_literal(error,
 					G_IO_ERROR,
 					G_IO_ERROR_FAILED,
 					g_strerror(errno)
@@ -81,7 +81,8 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 			if(intprop[ix].set(hSession, (int) (g_variant_get_boolean(value) ? 1 : 0))) {
 
 				// Erro!
-				g_set_error (error,
+				g_set_error_literal(
+					error,
 					G_IO_ERROR,
 					G_IO_ERROR_FAILED,
 					g_strerror(errno)
@@ -106,7 +107,7 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 			if(strprop[ix].set(hSession, g_variant_get_string(value,NULL))) {
 
 				// Erro!
-				g_set_error (error,
+				g_set_error_literal(error,
 					G_IO_ERROR,
 					G_IO_ERROR_FAILED,
 					g_strerror(errno)
@@ -129,7 +130,7 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 		if(lib3270_set_toggle(hSession,toggle,(int) g_variant_get_int32(value))) {
 
 			// Erro!
-			g_set_error (error,
+			g_set_error_literal(error,
 				G_IO_ERROR,
 				G_IO_ERROR_FAILED,
 				g_strerror(errno)
