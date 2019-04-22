@@ -31,6 +31,8 @@
  /**
   * @brief Common definitions for pw3270 IPC plugin.
   *
+  * @author Perry Werneck <perry.werneck@gmail.com>
+  *
   */
 
 #ifndef PW3270_IPC_H_INCLUDED
@@ -53,7 +55,7 @@
 
 	#endif // _WIN32
 
-
+	#include <glib.h>
 	#include <gtk/gtk.h>
 	#include <lib3270.h>
 
@@ -69,25 +71,25 @@
 	typedef struct _ipc3270					ipc3270;
 	typedef struct _ipc3270Class			ipc3270Class;
 
-	GObject			* ipc3270_new();
-	GType			  ipc3270_get_type(void);
-    void			  ipc3270_set_session(GObject *object, H3270 *hSession);
-    void			  ipc3270_export_object(GObject *object, const char *name, GError **error);
+	GObject				* ipc3270_new();
+	GType				  ipc3270_get_type(void);
+    void				  ipc3270_set_session(GObject *object, H3270 *hSession);
+    void				  ipc3270_export_object(GObject *object, const char *name, GError **error);
 
-	gchar			* ipc3270_convert_output_string(GObject *object, const gchar *string, GError **error);
-	gchar			* ipc3270_convert_input_string(GObject *object, const gchar *string, GError **error);
-	GVariant		* ipc3270_GVariant_from_input_string(GObject *object, char *string, GError **error);
+	gchar				* ipc3270_convert_output_string(GObject *object, const gchar *string, GError **error);
+	gchar				* ipc3270_convert_input_string(GObject *object, const gchar *string, GError **error);
+	GVariant			* ipc3270_GVariant_from_input_string(GObject *object, char *string, GError **error);
 
-	void			  ipc3270_add_terminal_introspection(GString *string);
+	void				  ipc3270_add_terminal_introspection(GString *string);
 
-	const gchar		* ipc3270_get_display_charset(GObject *object);
-	H3270			* ipc3270_get_session(GObject *object);
+	const gchar			* ipc3270_get_display_charset(GObject *object);
+	H3270				* ipc3270_get_session(GObject *object);
 
-	void			  ipc3270_set_error(GObject *object, int errcode, GError **error);
+	void				  ipc3270_set_error(GObject *object, int errcode, GError **error);
 
-	GVariant		* ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error);
-	gboolean		  ipc3270_set_property(GObject *object, const gchar *property_name, GVariant *value, GError **error);
-	GVariant		* ipc3270_get_property(GObject *object, const gchar *property_name, GError **error);
+	GVariant			* ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error);
+	gboolean			  ipc3270_set_property(GObject *object, const gchar *property_name, GVariant *value, GError **error);
+	GVariant			* ipc3270_get_property(GObject *object, const gchar *property_name, GError **error);
 
 	#ifdef _WIN32
 		unsigned char	* ipc3270_pack(const gchar *name, int id, GVariant *values, size_t * szPacket);
@@ -97,6 +99,11 @@
 	#endif // _WIN32
 
 	G_END_DECLS
+
+	#if ! GLIB_CHECK_VERSION(2,44,0)
+        G_GNUC_INTERNAL void ipc3270_autoptr_cleanup_generic_gfree(void *p);
+        #define g_autofree __attribute__((cleanup(ipc3270_autoptr_cleanup_generic_gfree)))
+	#endif // ! GLIB(2,44,0)
 
 	#ifdef DEBUG
 		#define debug( fmt, ... )  fprintf(stderr,"%s(%d) " fmt "\n", __FILE__, (int) __LINE__, __VA_ARGS__ ); fflush(stderr);
