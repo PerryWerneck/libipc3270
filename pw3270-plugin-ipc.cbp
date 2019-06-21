@@ -80,7 +80,6 @@
 		<Unit filename="src/core/methods.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/core/private.h" />
 		<Unit filename="src/core/setproperties.c">
 			<Option compilerVar="CC" />
 		</Unit>

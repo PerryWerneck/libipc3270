@@ -121,6 +121,30 @@
 	return item;
  }
 
+ static void session_changed(GtkWidget *widget, GtkWidget *window) {
+
+	g_autofree gchar * title = NULL;
+
+ 	g_message("Session name was changed");
+
+	if(v3270_is_connected(widget)) {
+		const gchar *host = v3270_get_hostname(widget);
+
+		if(host && *host)
+			title = g_strdup_printf("%s - %s",v3270_get_session_name(widget),host);
+		else
+			title = g_strdup_printf("%s",v3270_get_session_name(widget));
+
+	} else {
+
+		title = g_strdup_printf("%s - Disconnected",v3270_get_session_name(widget));
+	}
+
+	gtk_window_set_title(GTK_WINDOW(window),title);
+
+
+ }
+
  static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
 
 	GtkWidget * window		= gtk_application_window_new(app);
@@ -203,6 +227,8 @@
 		gtk_window_set_title(GTK_WINDOW(window), v3270_get_session_name(terminal));
 
 	}
+
+	g_signal_connect(terminal,"session_changed",G_CALLBACK(session_changed),window);
 
 }
 

@@ -30,7 +30,7 @@
 
 
  /**
-  * @brief Plugin startup/stop for linux.
+  * @brief IPC Plugin startup/stop for linux.
   *
   */
 
