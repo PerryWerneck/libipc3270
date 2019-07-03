@@ -26,7 +26,7 @@
 
 #---[ Library configuration ]------------------------------------------------------------
 
-MODULE_NAME=ipc3270d
+MODULE_NAME=ipc3270
 PACKAGE_NAME=@PACKAGE_NAME@
 
 MAIN_SOURCES= \
@@ -172,13 +172,32 @@ $(POTDIR)/$(MODULE_NAME)/%.pot: \
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
-	$(BINRLS)/$(MODULE_NAME)@DLLEXT@ \
+	$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@ \
+	$(BINRLS)/lib$(MODULE_NAME).a \
 	$(POTDIR)/$(MODULE_NAME).pot
 
 Release: \
-	$(BINRLS)/$(MODULE_NAME)@DLLEXT@
+	$(BINRLS)/$(MODULE_NAME)@DLLEXT@ \
+	$(BINRLS)/lib$(MODULE_NAME).a
 
-$(BINRLS)/$(MODULE_NAME)@DLLEXT@: \
+$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@: \
+	$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+
+	@echo $< ...
+	@rm -f $@
+	@$(LN_S) \
+		$(notdir $^) \
+		$@
+
+$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
+	$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+
+	@rm -f $@
+	@$(LN_S) \
+		$(notdir $^) \
+		$@
+
+$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o)
 
 	@$(MKDIR) $(@D)
@@ -204,6 +223,19 @@ $(BINRLS)/lib$(MODULE_NAME).a: \
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
+#---[ Misc Targets ]---------------------------------------------------------------------
+
+$(POTDIR)/$(MODULE_NAME).pot: \
+	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(POTDIR)/$(MODULE_NAME)/$(SRC).pot)
+
+	@rm -f $@
+	@mkdir -p `dirname $@`
+	@$(MSGCAT) --sort-output $^ > $@
+
+locale: \
+	$(POTDIR)/$(MODULE_NAME).pot
+
+
 #---[ Debug Targets ]--------------------------------------------------------------------
 
 Debug: \
@@ -225,6 +257,23 @@ $(BINDBG)/$(MODULE_NAME)@EXEEXT@: \
 
 
 $(BINDBG)/lib$(MODULE_NAME)@DLLEXT@: \
+	$(BINDBG)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+
+	@echo $< ...
+	@rm -f $@
+	@$(LN_S) \
+		$(notdir $^) \
+		$@
+
+$(BINDBG)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
+	$(BINDBG)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+
+	@rm -f $@
+	@$(LN_S) \
+		$(notdir $^) \
+		$@
+
+$(BINDBG)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
 	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJDBG)/$(SRC).o)
 
 	@$(MKDIR) $(@D)
