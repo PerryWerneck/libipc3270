@@ -76,11 +76,11 @@ BASEDIR=@BASEDIR@
 
 POTDIR=$(BASEDIR)/.pot
 
-OBJDIR=$(BASEDIR)/.obj/$(MODULE_NAME)
+OBJDIR=.obj/$(MODULE_NAME)
 OBJDBG=$(OBJDIR)/Debug
 OBJRLS=$(OBJDIR)/Release
 
-BINDIR=$(BASEDIR)/.bin
+BINDIR=.bin
 BINDBG=$(BINDIR)/Debug
 BINRLS=$(BINDIR)/Release
 
@@ -88,13 +88,12 @@ BINRLS=$(BINDIR)/Release
 
 DEPENDS= \
 	Makefile \
-	src/include/*.h \
-	src/include/lib3270/*.h
+	$(BASEDIR)/common/src/include/*.h \
+	$(BASEDIR)/common/src/include/lib3270/*.h
 
 CFLAGS= \
 	@CFLAGS@ \
-	-g \
-	-Isrc/include \
+	-I$(BASEDIR)/common/src/include \
 	-DBUILD_DATE=`date +%Y%m%d` \
 	@LIB3270_CFLAGS@ \
 	@V3270_CFLAGS@ \

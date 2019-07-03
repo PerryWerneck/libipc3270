@@ -31,7 +31,7 @@ AC_PREREQ(2.61)
 
 dnl Initialise automake with the package name, version and
 dnl bug-reporting address.
-AC_INIT([pw3270], [5.2], [perry.werneck@gmail.com])
+AC_INIT([ipc3270], [5.2], [perry.werneck@gmail.com])
 
 dnl Place auxilliary scripts here.
 AC_CONFIG_AUX_DIR([scripts])
@@ -40,7 +40,7 @@ dnl Compute the canonical host-system type
 AC_CANONICAL_HOST
 
 dnl Put macro definitions here (though they aren't used).
-AC_CONFIG_HEADER([src/include/config.h])
+AC_CONFIG_HEADER([common/src/include/config.h])
 
 dnl Initialise automake stuff.
 AM_INIT_AUTOMAKE
@@ -284,7 +284,7 @@ dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
 
-AC_CONFIG_FILES(Makefile)
+AC_CONFIG_FILES(server/Makefile)
 
 dnl ---------------------------------------------------------------------------
 dnl Output the generated config.status script.
