@@ -28,7 +28,7 @@
  */
 
 /**
- * @file src/lib3270++/ipc/session.cc
+ * @file src/session/remote/session.cc
  *
  * @brief Implements lib3270 access using IPC calls.
  *

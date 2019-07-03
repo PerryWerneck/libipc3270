@@ -28,9 +28,9 @@
  */
 
 /**
- * @file src/lib3270++/linux/request.cc
+ * @file src/os/linux/request.cc
  *
- * @brief Implements D-Bus message.
+ * @brief Implements linux request methods for remote session.
  *
  * @author perry.werneck@gmail.com
  *

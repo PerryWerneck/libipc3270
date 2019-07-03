@@ -28,9 +28,9 @@
  */
 
 /**
- * @file src/lib3270++/ipc/windows/session.cc
+ * @file src/os/windows/session.cc
  *
- * @brief Implements Windows session create/destroy session.
+ * @brief Implements WIN32 remote session methods.
  *
  * @author perry.werneck@gmail.com
  *

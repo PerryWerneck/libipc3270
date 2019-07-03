@@ -47,19 +47,19 @@
 		<Unit filename="../include/lib3270/actions.h" />
 		<Unit filename="../include/lib3270/popup.h" />
 		<Unit filename="../include/lib3270/session.h" />
-		<Unit filename="abstract.cc" />
-		<Unit filename="events.cc" />
-		<Unit filename="host.cc" />
-		<Unit filename="ipc/session.cc" />
-		<Unit filename="linux/request.cc" />
-		<Unit filename="linux/session.cc" />
-		<Unit filename="local/events.cc" />
-		<Unit filename="local/session.cc" />
 		<Unit filename="private.h" />
-		<Unit filename="session.cc" />
-		<Unit filename="testprogram/testprogram.cc" />
-		<Unit filename="windows/request.cc" />
-		<Unit filename="windows/session.cc" />
+		<Unit filename="src/core/abstract.cc" />
+		<Unit filename="src/core/events.cc" />
+		<Unit filename="src/core/host.cc" />
+		<Unit filename="src/core/session.cc" />
+		<Unit filename="src/os/linux/request.cc" />
+		<Unit filename="src/os/linux/session.cc" />
+		<Unit filename="src/os/windows/request.cc" />
+		<Unit filename="src/os/windows/session.cc" />
+		<Unit filename="src/session/local/events.cc" />
+		<Unit filename="src/session/local/session.cc" />
+		<Unit filename="src/session/remote/session.cc" />
+		<Unit filename="src/testprogram/testprogram.cc" />
 		<Extensions>
 			<code_completion />
 			<envvars />

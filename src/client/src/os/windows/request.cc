@@ -28,9 +28,9 @@
  */
 
 /**
- * @file src/lib3270++/windows/request.cc
+ * @file src/os/windows/request.cc
  *
- * @brief Implements WIN32 Pipe Based IPC.
+ * @brief Implements WIN32 request methods.
  *
  * @author perry.werneck@gmail.com
  *

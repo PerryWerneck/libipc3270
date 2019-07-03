@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como lib3270++.h e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -28,9 +28,9 @@
  */
 
 /**
- * @file src/lib3270++/session.cc
+ * @file src/core/events.cc
  *
- * @brief
+ * @brief Implements event object.
  *
  * @author perry.werneck@gmail.com
  *
@@ -43,33 +43,11 @@
 
  namespace TN3270 {
 
-	/// @brief Create a tn3270 session.
-	Session * Session::create(const char *id) {
-
-		if(!id) {
-			return new Local::Session();
-		}
-
-		return new IPC::Session(id);
-
+	Event::Event(enum Event::Type type) {
+		this->type = type;
 	}
 
-
-	Session::Session() {
-
-	}
-
-	Session::~Session() {
-
-	}
-
-	void Session::insert(Event::Type type, std::function <void(const Event &event)> listener) {
-	}
-
-	/// @brief Fire event.
-	void Session::fire(const Event &event) {
-
-
+	Event::~Event() {
 	}
 
  }

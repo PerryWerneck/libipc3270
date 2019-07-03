@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como lib3270++.h e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -28,9 +28,9 @@
  */
 
 /**
- * @file src/lib3270++/abstract.cc
+ * @file src/core/abstract.cc
  *
- * @brief
+ * @brief Implements abstract session object.
  *
  * @author perry.werneck@gmail.com
  *
@@ -93,7 +93,7 @@
 
 #else
 
-		#error No ICONV Support
+		throw std::runtime_error("No ICONV Support");
 
 #endif
 

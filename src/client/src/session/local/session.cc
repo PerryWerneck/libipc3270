@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como lib3270++.h e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Contatos:
  *
@@ -28,7 +28,7 @@
  */
 
 /**
- * @file src/lib3270++/local/session.cc
+ * @file src/session/local/session.cc
  *
  * @brief Implement lib3270 direct access layout (NO IPC).
  *
