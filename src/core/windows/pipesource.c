@@ -28,7 +28,7 @@
  */
 
 #include "gobject.h"
-#include <lib3270/ipc.h>
+#include <lib3270/ipc-glib.h>
 #include <lib3270/trace.h>
 
 void ipc3270_wait_for_client(IPC3270_PIPE_SOURCE *source) {

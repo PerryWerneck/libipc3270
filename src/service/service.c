@@ -30,7 +30,7 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
-#include <lib3270/ipc.h>
+#include <lib3270/ipc-glib.h>
 
 #ifndef _WIN32
 	#include <signal.h>

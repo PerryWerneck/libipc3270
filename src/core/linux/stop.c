@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como main.c e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Referências:
  *
@@ -34,7 +34,7 @@
 
 #include "gobject.h"
 #include <lib3270.h>
-#include <lib3270/ipc.h>
+#include <lib3270/ipc-glib.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>

@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como main.c e possui - linhas de código.
+ * Este programa está nomeado como - e possui - linhas de código.
  *
  * Referências:
  *
@@ -34,7 +34,7 @@
 
 #include <lib3270.h>
 #include <lib3270/actions.h>
-#include <lib3270/ipc.h>
+#include <lib3270/ipc-glib.h>
 
 gchar * ipc3270_convert_output_string(GObject *object, const gchar *string, GError **error) {
 	return g_convert_with_fallback(string,-1,ipc3270_get_display_charset(object),"UTF-8","?",NULL,NULL,error);

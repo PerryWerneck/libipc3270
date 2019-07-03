@@ -37,7 +37,7 @@
  #include <config.h>
  #include <v3270.h>
  #include <v3270/trace.h>
- #include <lib3270/ipc.h>
+ #include <lib3270/ipc-glib.h>
  #include <string.h>
  #include <stdlib.h>
 

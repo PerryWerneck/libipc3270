@@ -107,7 +107,7 @@
 		</Unit>
 		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/config.h.in" />
-		<Unit filename="src/include/lib3270/ipc.h" />
+		<Unit filename="src/include/lib3270/ipc-glib.h" />
 		<Unit filename="src/plugin/plugin.c">
 			<Option compilerVar="CC" />
 		</Unit>

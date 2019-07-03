@@ -47,7 +47,7 @@
 	#include <gio/gio.h>
 
 	#include <lib3270.h>
-	#include <lib3270/ipc.h>
+	#include <lib3270/ipc-glib.h>
 
 	G_BEGIN_DECLS
 

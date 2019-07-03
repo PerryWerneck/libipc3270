@@ -35,7 +35,7 @@
   */
 
  #include <config.h>
- #include <lib3270/ipc.h>
+ #include <lib3270/ipc-glib.h>
  #include <string.h>
  #include <stdlib.h>
 
