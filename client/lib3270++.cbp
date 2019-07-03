@@ -51,6 +51,7 @@
 		<Unit filename="src/core/abstract.cc" />
 		<Unit filename="src/core/events.cc" />
 		<Unit filename="src/core/host.cc" />
+		<Unit filename="src/core/linux/request.cc" />
 		<Unit filename="src/core/session.cc" />
 		<Unit filename="src/os/linux/request.cc" />
 		<Unit filename="src/os/linux/session.cc" />

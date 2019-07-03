@@ -36,7 +36,7 @@
  *
  */
 
- #include "../private.h"
+ #include <ipc-client-internals.h>
  #include <lib3270/actions.h>
  #include <lib3270/properties.h>
  #include <cstring>

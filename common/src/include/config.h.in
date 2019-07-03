@@ -35,7 +35,10 @@
 	#undef PACKAGE_VERSION
 	#undef PACKAGE_RELEASE
 
-	#undef HAVE_GNOME
-	#undef HAVE_GTKMAC
+	#undef HAVE_ICONV
+	#undef ICONV_CONST
+
+	#undef HAVE_VASPRINTF
+
 
 #endif /* LIBV3270_CONFIG_INCLUDED */

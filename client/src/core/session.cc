@@ -28,26 +28,48 @@
  */
 
 /**
- * @file src/core/events.cc
+ * @file src/core/session.cc
  *
- * @brief Implements event object.
+ * @brief Implements common session object.
  *
  * @author perry.werneck@gmail.com
  *
  */
 
- #include "private.h"
+ #include <ipc-client-internals.h>
 
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
 
-	Event::Event(enum Event::Type type) {
-		this->type = type;
+	/// @brief Create a tn3270 session.
+	Session * Session::create(const char *id) {
+
+		if(!id) {
+			return new Local::Session();
+		}
+
+		return new IPC::Session(id);
+
 	}
 
-	Event::~Event() {
+
+	Session::Session() {
+
+	}
+
+	Session::~Session() {
+
+	}
+
+	void Session::insert(Event::Type type, std::function <void(const Event &event)> listener) {
+	}
+
+	/// @brief Fire event.
+	void Session::fire(const Event &event) {
+
+
 	}
 
  }

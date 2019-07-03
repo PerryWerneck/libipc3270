@@ -50,6 +50,7 @@ AM_ICONV
 
 dnl Checks for programs.
 AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_SED
 AC_PROG_LN_S
 
@@ -84,8 +85,9 @@ case "$host" in
 
 		app_win32_revision=$(date +%y.%m.%d.%H)
 		AC_SUBST(WIN32_VERSION,$app_win32_revision)
-		AC_CONFIG_FILES(src/service/windows/resources.rc)
-		AC_CONFIG_FILES(src/plugin/windows/resources.rc)
+		AC_CONFIG_FILES(server/src/plugin/windows/resources.rc)
+		AC_CONFIG_FILES(server/src/service/windows/resources.rc)
+		AC_CONFIG_FILES(client/src/core/windows/resources.rc)
 		;;
 
  	*)
@@ -106,6 +108,8 @@ AC_SUBST(LIBS)
 AC_SUBST(LOGDIR)
 AC_SUBST(DLLEXT)
 AC_SUBST(DLLPREFIX)
+
+AC_CHECK_FUNC(vasprintf, AC_DEFINE(HAVE_VASPRINTF) )
 
 dnl ---------------------------------------------------------------------------
 dnl Check for other programs
@@ -285,6 +289,7 @@ dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
 
 AC_CONFIG_FILES(server/Makefile)
+AC_CONFIG_FILES(client/Makefile)
 
 dnl ---------------------------------------------------------------------------
 dnl Output the generated config.status script.

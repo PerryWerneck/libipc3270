@@ -36,7 +36,7 @@
  *
  */
 
- #include "../private.h"
+ #include <ipc-client-internals.h>
  #include <cstring>
 
  using std::string;

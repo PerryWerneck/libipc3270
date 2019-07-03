@@ -36,8 +36,10 @@
  *
  */
 
- #include "../private.h"
+ #include <ipc-client-internals.h>
  #include <stdio.h>
+ #include <cstring>
+ #include <malloc.h>
 
  extern "C" {
 	 #include <lib3270/actions.h>
@@ -52,7 +54,7 @@
 	int vasprintf(char **strp, const char *fmt, va_list ap) {
 		char buf[1024];
 
-		int nc = vsnprintf(buf, sizeof(buf), fmt, args);
+		int nc = vsnprintf(buf, sizeof(buf), fmt, ap);
 
 		if(nc < 0) {
 
@@ -60,15 +62,15 @@
 
 		} else if (nc < sizeof(buf)) {
 
-			*strp = malloc(nc+1);
+			*strp = (char *) malloc(nc+1);
 			strcpy(*strp, buf);
 
 		} else {
 
-			*strp = malloc(nc + 1);
-			if(vsnprintf(*strp, nc, fmt, args) < 0) {
+			*strp = (char *) malloc(nc + 1);
+			if(vsnprintf(*strp, nc, fmt, ap) < 0) {
 				free(*strp);
-				*strp = strdup(NULL,_( "Out of memory in vasprintf" ) );
+				*strp = strdup( _( "Out of memory in vasprintf" ) );
 			}
 
 		}
