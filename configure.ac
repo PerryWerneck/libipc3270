@@ -288,6 +288,7 @@ dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
 
+AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(server/Makefile)
 AC_CONFIG_FILES(client/Makefile)
 

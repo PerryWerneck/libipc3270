@@ -74,7 +74,7 @@ OBJDIR=.obj/$(MODULE_NAME)
 OBJDBG=$(OBJDIR)/Debug
 OBJRLS=$(OBJDIR)/Release
 
-BINDIR=.bin
+BINDIR=$(BASEDIR)/.bin
 BINDBG=$(BINDIR)/Debug
 BINRLS=$(BINDIR)/Release
 
@@ -239,9 +239,9 @@ locale: \
 #---[ Debug Targets ]--------------------------------------------------------------------
 
 Debug: \
-	$(BINDBG)/$(MODULE_NAME)@EXEEXT@
+	$(BINDBG)/$(MODULE_NAME)-client@EXEEXT@
 
-$(BINDBG)/$(MODULE_NAME)@EXEEXT@: \
+$(BINDBG)/$(MODULE_NAME)-client@EXEEXT@: \
 	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
 	$(BINDBG)/lib$(MODULE_NAME)@DLLEXT@
 
@@ -287,10 +287,10 @@ $(BINDBG)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSI
 
 
 run: \
-	$(BINDBG)/$(MODULE_NAME)@EXEEXT@
+	$(BINDBG)/$(MODULE_NAME)-client@EXEEXT@
 
 	@LD_LIBRARY_PATH=$(BINDBG) \
-		$(BINDBG)/$(MODULE_NAME)@EXEEXT@
+		$(BINDBG)/$(MODULE_NAME)-client@EXEEXT@
 
 #---[ Clean Targets ]--------------------------------------------------------------------
 

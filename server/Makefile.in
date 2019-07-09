@@ -26,7 +26,8 @@
 
 #---[ Library configuration ]------------------------------------------------------------
 
-MODULE_NAME=ipc3270
+MODULE_NAME=ipcserver
+SERVICE_NAME=ipc3270d
 PACKAGE_NAME=@PACKAGE_NAME@
 
 CORE_SOURCES= \
@@ -80,7 +81,7 @@ OBJDIR=.obj/$(MODULE_NAME)
 OBJDBG=$(OBJDIR)/Debug
 OBJRLS=$(OBJDIR)/Release
 
-BINDIR=.bin
+BINDIR=$(BASEDIR)/.bin
 BINDBG=$(BINDIR)/Debug
 BINRLS=$(BINDIR)/Release
 
@@ -269,7 +270,7 @@ $(BINDBG)/$(MODULE_NAME)@EXEEXT@: \
 		$(GTK_LIBS) \
 		$(GLIB_LIBS)
 
-$(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@: \
+$(BINDBG)/$(SERVICE_NAME)@EXEEXT@: \
 	$(foreach SRC, $(basename $(SERVICE_SOURCES)), $(OBJDBG)/$(SRC).o) \
 	$(BINDBG)/lib$(MODULE_NAME).a	
 
@@ -313,7 +314,7 @@ run-plugin: \
 		$(BINDBG)/$(MODULE_NAME)@EXEEXT@
 
 run-service: \
-	$(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@
+	$(BINDBG)/$(SERVICE_NAME)@EXEEXT@
 
 	@LD_LIBRARY_PATH=$(BINDBG) \
 		$(BINDBG)/$(PACKAGE_NAME)d@EXEEXT@
