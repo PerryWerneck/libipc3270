@@ -44,12 +44,10 @@ BuildRoot:	/var/tmp/%{name}-%{version}
 Provides:	pw3270-plugin-dbus
 Conflicts:	otherproviders(pw3270-plugin-dbus)
 
-BuildRequires:  pkgconfig(openssl)
-BuildRequires:  pkgconfig(dbus-1)
-BuildRequires:  pkgconfig(dbus-glib-1)
-BuildRequires:	libv3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
-BuildRequires:	lib3270-%{MAJOR_VERSION}_%{MINOR_VERSION}-devel
-BuildRequires:	pkgconfig(gtk+-3.0)
+Requires:	pw3270 >= 5.2
+
+BuildRequires:	lib3270-devel >= 5.2
+BuildRequires:	libv3270-devel >= 5.2
 BuildRequires:  autoconf >= 2.61
 BuildRequires:  automake
 BuildRequires:  binutils
@@ -58,11 +56,56 @@ BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  m4
 
+%if 0%{?fedora} ||  0%{?suse_version} > 1200
+
+BuildRequires:  pkgconfig(openssl)
+BuildRequires:  pkgconfig(dbus-1)
+BuildRequires:  pkgconfig(dbus-glib-1)
+BuildRequires:	pkgconfig(gtk+-3.0)
+
+%else
+
+BuildRequires:  openssl-devel
+BuildRequires:  dbus-1-devel
+BuildRequires:  dbus-glib-devel
+BuildRequires:	gtk3-devel
+
+%endif
+
+%if 0%{?centos_version}
+# centos requires python for genmarshal
+BuildRequires:  python
+%endif
+
 %description
 
 PW3270 plugin exporting D-Bus objects for every tn3270 session.
 
 See more details at https://softwarepublico.gov.br/social/pw3270/
+
+#---[ IPC Library Package ]-------------------------------------------------------------------------------------------
+
+%package -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
+Summary: IPC Library for pw3270
+Recommends: %{name}
+
+%description -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
+
+IPC client library for lib3270/pw3270.
+
+Designed as a support tool for language bindings.
+
+%package -n libipc3270-devel
+Summary: Development files for ipc3270
+Requires: libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
+BuildRequires:	lib3270-devel >= 5.2
+
+%description -n libipc3270-devel
+
+Development files for lib3270/pw3270 IPC client library.
+
+Designed as a support tool for language bindings.
+
 
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
@@ -71,8 +114,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 NOCONFIGURE=1 ./autogen.sh
 
-%configure \
-	--with-sdk-version=%{version}
+%configure
 
 %build
 make clean
@@ -97,15 +139,26 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/pw3270-plugins
 %{_libdir}/pw3270-plugins/ipcserver.so
 
-%pre
+%files -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
+%defattr(-,root,root)
+%{_libdir}/libipc3270.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
+%{_libdir}/libipc3270.so.%{MAJOR_VERSION}
+
+%files -n libipc3270-devel
+%defattr(-,root,root)
+%{_includedir}/lib3270/ipc.h
+%{_libdir}/libipc3270.a
+%{_libdir}/libipc3270.so
+
+%pre -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
 /sbin/ldconfig
 exit 0
 
-%post
+%post -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
 /sbin/ldconfig
 exit 0
 
-%postun
+%postun -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
 /sbin/ldconfig
 exit 0
 
