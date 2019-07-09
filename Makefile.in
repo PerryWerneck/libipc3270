@@ -54,18 +54,26 @@ INSTALL_PROGRAM=@INSTALL_PROGRAM@
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
-	$(BINRLS)/ipcserver@DLLEXT@
+	$(BINRLS)/ipcserver@DLLEXT@ \
+	$(BINRLS)/libipc3270@DLLEXT@
 
 plugin: \
 	$(BINRLS)/ipcserver@DLLEXT@
 
+library: \
+	$(BINRLS)/libipc3270@DLLEXT@
+
 $(BINRLS)/ipcserver@DLLEXT@:
 	@$(MAKE) -C server $@	
+
+$(BINRLS)/libipc3270@DLLEXT@:
+	@$(MAKE) -C client $@	
 
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	install-plugin
+	install-plugin \
+	install-library
 
 install-plugin: \
 	$(BINRLS)/ipcserver@DLLEXT@
@@ -77,6 +85,9 @@ install-plugin: \
 		$(BINRLS)/ipcserver@DLLEXT@ \
 		$(DESTDIR)$(libdir)/pw3270-plugins
 		
+
+install-library:
+	@$(MAKE) -C client DESTDIR=$(DESTDIR) install
 
 #---[ Clean Targets ]--------------------------------------------------------------------
 

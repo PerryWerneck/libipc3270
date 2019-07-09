@@ -221,7 +221,47 @@ $(BINRLS)/lib$(MODULE_NAME).a: \
 
 #---[ Install Targets ]------------------------------------------------------------------
 
-#---[ Misc Targets ]---------------------------------------------------------------------
+install: \
+	install-shared \
+	install-static \
+	install-devel
+
+install-shared: \
+	$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+
+	@$(MKDIR) \
+		$(DESTDIR)/$(libdir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(DESTDIR)/$(libdir)
+		
+	@$(LN_S) \
+		lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
+		$(DESTDIR)/$(libdir)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+
+	@$(LN_S) \
+		lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
+		$(DESTDIR)/$(libdir)/lib$(MODULE_NAME)@DLLEXT@
+
+install-static: \
+	$(BINRLS)/lib$(MODULE_NAME).a
+
+	@$(MKDIR) \
+		$(DESTDIR)/$(libdir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/lib$(MODULE_NAME).a \
+		$(DESTDIR)/$(libdir)
+
+install-devel:
+
+	@$(MKDIR) \
+		$(DESTDIR)/$(includedir)/lib3270
+
+	@$(INSTALL_DATA) \
+		$(BASEDIR)/common/src/include/lib3270/ipc.h \
+		$(DESTDIR)/$(includedir)/lib3270
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
