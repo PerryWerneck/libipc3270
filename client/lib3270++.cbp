@@ -8,7 +8,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../../.bin/Debug/lib3270++" prefix_auto="1" extension_auto="1" />
+				<Option output=".bin/Debug/ipc3270" prefix_auto="1" extension_auto="1" />
 				<Option object_output=".obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -41,18 +41,12 @@
 			<Add option="`pkg-config --libs lib3270`" />
 		</Linker>
 		<Unit filename="../include/config.h.in" />
-		<Unit filename="../include/lib3270++.h" />
-		<Unit filename="../include/lib3270.h" />
-		<Unit filename="../include/lib3270/action_table.h" />
-		<Unit filename="../include/lib3270/actions.h" />
-		<Unit filename="../include/lib3270/popup.h" />
-		<Unit filename="../include/lib3270/session.h" />
-		<Unit filename="private.h" />
 		<Unit filename="src/core/abstract.cc" />
 		<Unit filename="src/core/events.cc" />
 		<Unit filename="src/core/host.cc" />
 		<Unit filename="src/core/linux/request.cc" />
 		<Unit filename="src/core/session.cc" />
+		<Unit filename="src/include/ipc-client-internals.h" />
 		<Unit filename="src/os/linux/request.cc" />
 		<Unit filename="src/os/linux/session.cc" />
 		<Unit filename="src/os/windows/request.cc" />

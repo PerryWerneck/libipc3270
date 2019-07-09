@@ -28,9 +28,9 @@
  */
 
 /**
- * @file src/lib3270++/private.h
+ * @file ipc-client-internals.h
  *
- * @brief
+ * @brief Private definitions for lib3270/pw3270 ipc client library.
  *
  * @author perry.werneck@gmail.com
  *
@@ -216,7 +216,7 @@
 
 		}
 
-		/// @brief IPC Based acess (Access and active instance of pw3270 or pw3270d)
+		/// @brief IPC Based acess (Access an active instance of pw3270 or pw3270d)
 		namespace IPC {
 
 			class Session;
