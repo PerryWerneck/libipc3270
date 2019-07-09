@@ -52,7 +52,7 @@
 
 	#include <iostream>
 	#include <mutex>
-	#include <lib3270++.h>
+	#include <lib3270/ipc.h>
 	#include <lib3270/popup.h>
 	#include <system_error>
 	#include <stdexcept>

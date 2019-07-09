@@ -38,7 +38,7 @@
 
  #include <getopt.h>
  #include <cstdlib>
- #include <lib3270++.h>
+ #include <lib3270/ipc.h>
 
  using namespace std;
 
