@@ -43,9 +43,13 @@
 
  /*---[ Globals ]------------------------------------------------------------------------------------*/
 
- const gchar * plugin_path 	= ".bin/Debug";
+ #ifdef _WIN32
+ const gchar * plugin_path 	= ".";
+ #else
+ const gchar * plugin_path 	= G_STRINGIFY(PLUGIN_PATH);
+ #endif // _WIN32
  const gchar * session_name	= "pw3270";
- const gchar * plugin_name	= "ipc3270." G_MODULE_SUFFIX;
+ const gchar * plugin_name	= "ipcserver." G_MODULE_SUFFIX;
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/
 

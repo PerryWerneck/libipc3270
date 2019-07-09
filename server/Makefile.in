@@ -59,6 +59,7 @@ XGETTEXT=@XGETTEXT@
 MSGCAT=@MSGCAT@
 WINDRES=@WINDRES@
 AR=@AR@
+VALGRIND=@VALGRIND@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -124,6 +125,7 @@ $(OBJDBG)/%.o: \
 		$(CFLAGS) \
 		-Wall -Wextra -fstack-check \
 		-DDEBUG=1 \
+		-DPLUGIN_PATH=$(BINDBG) \
 		-o $@ -c $<
 
 $(OBJDBG)/%.o: \
@@ -305,6 +307,23 @@ $(BINDBG)/$(MODULE_NAME)@DLLEXT@: \
 
 run: \
 	run-plugin
+
+check-plugin: \
+	$(BINDBG)/$(MODULE_NAME)@DLLEXT@ \
+	$(BINDBG)/$(MODULE_NAME)@EXEEXT@
+
+ifeq ($(VALGRIND),no)
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(BINDBG)/$(MODULE_NAME)@EXEEXT@
+
+else
+	@touch valgrind.suppression
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(VALGRIND) --leak-check=full --track-origins=yes --gen-suppressions=all --suppressions=valgrind.suppression \
+			$(BINDBG)/$(MODULE_NAME)@EXEEXT@
+endif
 
 run-plugin: \
 	$(BINDBG)/$(MODULE_NAME)@DLLEXT@ \
