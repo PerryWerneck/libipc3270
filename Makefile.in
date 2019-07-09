@@ -26,7 +26,57 @@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+localedir=@localedir@
+docdir=@docdir@
+sysconfdir=@sysconfdir@
 
+BASEDIR=@BASEDIR@
+
+BINDIR=$(BASEDIR)/.bin
+BINDBG=$(BINDIR)/Debug
+BINRLS=$(BINDIR)/Release
+
+#---[ Tools ]----------------------------------------------------------------------------
+
+LN_S=@LN_S@
+MKDIR=@MKDIR_P@
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+
+#---[ Release Targets ]------------------------------------------------------------------
+
+all: \
+	$(BINRLS)/ipcserver@DLLEXT@
+
+plugin: \
+	$(BINRLS)/ipcserver@DLLEXT@
+
+$(BINRLS)/ipcserver@DLLEXT@:
+	@$(MAKE) -C server $@	
+
+#---[ Install Targets ]------------------------------------------------------------------
+
+install: \
+	install-plugin
+
+install-plugin: \
+	$(BINRLS)/ipcserver@DLLEXT@
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)/pw3270-plugins
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/ipcserver@DLLEXT@ \
+		$(DESTDIR)$(libdir)/pw3270-plugins
+		
 
 #---[ Clean Targets ]--------------------------------------------------------------------
 
