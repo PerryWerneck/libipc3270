@@ -44,6 +44,11 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 	size_t	  ix;
 	H3270	* hSession = ipc3270_get_session(object);
 
+	if(!value) {
+		g_set_error(&error,ipc3270_get_error_domain(object),EINVAL,"Set property method requires an argument");
+		return FALSE;
+	}
+
 	lib3270_trace_event(hSession,"SetProperty(%s) called on session %c\n",property_name,lib3270_get_session_id(hSession));
 
 	// Boolean properties

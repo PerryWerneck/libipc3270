@@ -36,8 +36,9 @@
  *
  */
 
+ #include <config.h>
+ #include <cstdio>
  #include <ipc-client-internals.h>
- #include <stdio.h>
  #include <cstring>
  #include <malloc.h>
 
@@ -50,17 +51,17 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-#ifndef HAVE_VASPRINTF
-	int vasprintf(char **strp, const char *fmt, va_list ap) {
+#ifdef _WIN32
+	int win32_vasprintf(char **strp, const char *fmt, va_list ap) {
 		char buf[1024];
 
 		int nc = vsnprintf(buf, sizeof(buf), fmt, ap);
 
 		if(nc < 0) {
 
-			*strp = strdup(_("Error in vasprintf"));
+			return nc;
 
-		} else if (nc < sizeof(buf)) {
+		} else if (nc < ((int) sizeof(buf))) {
 
 			*strp = (char *) malloc(nc+1);
 			strcpy(*strp, buf);
@@ -77,7 +78,7 @@
 
 		return nc;
 	}
-#endif // !HAVE_VASPRINTF
+#endif // _WIN32
 
  namespace TN3270 {
 
@@ -105,10 +106,17 @@
 				this->msg = msg;
 
 				char * buffer = NULL;
+#ifdef _WIN32
+				if(win32_vasprintf(&buffer,fmt,arg) != -1) {
+					this->description = buffer;
+					free(buffer);
+				}
+#else
 				if(vasprintf(&buffer,fmt,arg) != -1) {
 					this->description = buffer;
 					free(buffer);
 				}
+#endif
 
 #ifdef DEBUG
 				std::cerr	<< "Popup:"				<< std::endl

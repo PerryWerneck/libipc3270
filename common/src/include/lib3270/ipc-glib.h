@@ -85,6 +85,8 @@
 	const gchar			* ipc3270_get_display_charset(GObject *object);
 	H3270				* ipc3270_get_session(GObject *object);
 
+	GQuark				  ipc3270_get_error_domain(GObject *object);
+
 	void				  ipc3270_set_error(GObject *object, int errcode, GError **error);
 
 	GVariant			* ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error);

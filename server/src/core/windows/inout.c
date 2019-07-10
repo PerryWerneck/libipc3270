@@ -85,65 +85,70 @@ static unsigned char * setup_header(unsigned char *txtptr, const gchar *name, in
 
 unsigned char * pack_value(unsigned char *txtptr, GVariant *value) {
 
-	unsigned char type = (unsigned char) g_variant_get_type_string(value)[0];
+	const GVariantType *type = g_variant_get_type(value);
 
-	debug("%s type=%c",__FUNCTION__,type);
+	if(g_variant_type_equal(type,G_VARIANT_TYPE_STRING)) {
 
-	*(txtptr++) = type;
-
-	switch(type) {
-	// https://developer.gnome.org/glib/stable/gvariant-format-strings.html
-	case 's':
+		*(txtptr++) = 's';
 		strcpy((char *) txtptr,g_variant_get_string(value,NULL));
 		txtptr += (strlen((char *) txtptr)+1);
-		break;
 
-	case 'b':	//	gboolean
+	} else if(g_variant_type_equal(type,G_VARIANT_TYPE_BOOLEAN)) {
+
+		*(txtptr++) = 'b';
 		*(txtptr++) = g_variant_get_boolean(value) ? 1 : 0;
-		break;
 
-	case 'y':	//	guchar
+	} else if(g_variant_type_equal(type,G_VARIANT_TYPE_BYTE)) {
+
+		*(txtptr++) = 'y';
 		*(txtptr++) = g_variant_get_byte(value);
-		break;
 
-	case 'n':	//	gint16
+	} else if(g_variant_type_equal(type,G_VARIANT_TYPE_INT16)) {
+
+		*(txtptr++) = 'n';
 		*((gint16 *) txtptr) = g_variant_get_int16(value);
 		txtptr += sizeof(gint16);
-		break;
 
-	case 'q':	//	guint16
+	} else if(g_variant_type_equal(type,G_VARIANT_TYPE_UINT16)) {
+
+		*(txtptr++) = 'q';
 		*((guint16 *) txtptr) = g_variant_get_uint16(value);
 		txtptr += sizeof(guint16);
-		break;
 
-	case 'i':	//	gint32
-	case 'h':	//	gint32
+	} else if(g_variant_type_is_subtype_of(type,G_VARIANT_TYPE_INT32)) {
+
+		*(txtptr++) = 'i';
 		*((gint32 *) txtptr) = g_variant_get_int32(value);
 		txtptr += sizeof(gint32);
-		break;
 
-	case 'u':	//	guint32
+	} else if(g_variant_type_equal(type,G_VARIANT_TYPE_UINT32)) {
+
+		*(txtptr++) = 'u';
 		*((guint32 *) txtptr) = g_variant_get_uint32(value);
 		txtptr += sizeof(guint32);
-		break;
 
-	case 'x':	//	gint64
+	} else if(g_variant_type_equal(type,G_VARIANT_TYPE_INT64)) {
+
+		*(txtptr++) = 'x';
 		*((gint64 *) txtptr) = g_variant_get_int64(value);
 		txtptr += sizeof(gint64);
-		break;
 
-	case 't':	//	guint64
+	} else if(g_variant_type_equal(type,G_VARIANT_TYPE_UINT64)) {
+
+		*(txtptr++) = 't';
 		*((guint64 *) txtptr) = g_variant_get_uint64(value);
 		txtptr += sizeof(guint64);
-		break;
 
-	default:
+	} else {
+
 		errno = EINVAL;
+		g_message("Invalid IPC value type \"%s\"", g_variant_get_type_string(value));
 		return NULL;
 
 	}
 
 	return txtptr;
+
 }
 
 unsigned char * ipc3270_pack_value(const gchar *name, int id, GVariant *value, size_t * szPacket) {

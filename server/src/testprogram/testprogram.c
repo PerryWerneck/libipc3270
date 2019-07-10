@@ -40,6 +40,8 @@
  #include <lib3270/ipc-glib.h>
  #include <string.h>
  #include <stdlib.h>
+ #include <glib.h>
+ #include <glib/gstdio.h>
 
  /*---[ Globals ]------------------------------------------------------------------------------------*/
 
@@ -157,6 +159,32 @@
 	GModule   * module		= NULL;
 
 	gtk_widget_set_name(window,session_name);
+
+#ifdef _WIN32
+	{
+		// WIN32 path settings.
+		static const char * sep = "\\/.";
+
+		TCHAR szPath[MAX_PATH];
+
+		if(GetModuleFileName(NULL, szPath, MAX_PATH ) ) {
+
+			for(const char *p = sep; *p; p++) {
+
+				char *ptr = strrchr(szPath,*p);
+				if(ptr) {
+					*(ptr+1) = 0;
+					break;
+				}
+
+			}
+
+		}
+
+		g_chdir(szPath);
+
+	}
+#endif // _WIN32
 
 	// Setup tabs
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook),terminal,gtk_label_new(v3270_get_session_name(terminal)));

@@ -36,7 +36,7 @@
  *
  */
 
- #include "../private.h"
+ #include <ipc-client-internals.h>
  #include <cstring>
  #include <lib3270/trace.h>
  #include <algorithm>

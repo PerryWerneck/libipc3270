@@ -72,7 +72,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 
 		// Suceeded
 		debug("%s Suceeds",method_name);
-		return g_variant_new("(i)", (gint) 0);
+		return g_variant_new_int32(0);
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"setStringAt"))
@@ -90,7 +90,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		}
 
 		// Suceeded
-		return g_variant_new("(i)", (gint) 0);
+		return g_variant_new_int32(0);
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"getStringAt"))
@@ -117,7 +117,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		}
 
 		// Suceeded
-		return g_variant_new("(i)", (gint) 0);
+		return g_variant_new_int32(0);
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"getStringAtAddress"))
@@ -134,8 +134,10 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 	else if(!g_ascii_strcasecmp(method_name,"waitforready"))
 	{
 		guint timeout = 1;
-		g_variant_get(parameters, "(u)", &timeout);
-		return g_variant_new("(i)", (gint) lib3270_wait_for_ready(hSession,timeout));
+		if(parameters) {
+			g_variant_get(parameters, "(u)", &timeout);
+		}
+		return g_variant_new_int32((gint) lib3270_wait_for_ready(hSession,timeout));
 	}
 
 	// Check action table.
@@ -153,7 +155,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
  			}
 
 			// Suceeded
-			return g_variant_new("(i)", (gint) 0);
+			return g_variant_new_int32(0);
 
 		}
 	}
@@ -177,7 +179,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
  			}
 
 			// Suceeded
-			return g_variant_new("(i)", (gint) 0);
+			return g_variant_new_int32(0);
 
 		}
 
