@@ -39,6 +39,9 @@ MAIN_SOURCES= \
 TEST_SOURCES= \
 	$(wildcard src/testprogram/*.cc)
 
+TARGETS= \
+	@CLIENT_TARGETS@
+
 #---[ Tools ]----------------------------------------------------------------------------
 
 CXX=@CXX@
@@ -222,9 +225,7 @@ $(BINRLS)/lib$(MODULE_NAME).a: \
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	install-shared \
-	install-static \
-	install-devel
+       $(foreach TARGET, $(TARGETS), install-$(TARGET))
 
 install-shared: \
 	$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@

@@ -67,6 +67,8 @@ APP_RESOURCES=""
 APP_LDFLAGS=""
 DLL_LDFLAGS="-shared"
 STATIC_LDFLAGS=""
+CLIENT_TARGETS="shared devel"
+
 
 dnl ---------------------------------------------------------------------------
 dnl Check for OS specifics
@@ -88,6 +90,9 @@ case "$host" in
 		AC_CONFIG_FILES(server/src/plugin/windows/resources.rc)
 		AC_CONFIG_FILES(server/src/service/windows/resources.rc)
 		AC_CONFIG_FILES(client/src/core/windows/resources.rc)
+
+		app_cv_static='yes'
+
 		;;
 
  	*)
@@ -98,6 +103,9 @@ case "$host" in
 		app_cv_osname="linux"
 		LOGDIR="/var/log"
 		DLLEXT=".so"
+
+		app_cv_static='no'
+
 
 esac
 
@@ -147,6 +155,24 @@ AC_DEFINE_UNQUOTED(PACKAGE_MINOR_RELEASE, $app_rls_minor)
 AC_SUBST(PACKAGE_RELEASE,$app_cv_release)
 AC_SUBST(PACKAGE_MAJOR_RELEASE,$app_rls_major)
 AC_SUBST(PACKAGE_MINOR_RELEASE,$app_rls_minor)
+
+dnl ---------------------------------------------------------------------------
+dnl Build options
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_ENABLE([static],
+ 	[AS_HELP_STRING([--enable-static], [Enable build and install the static library])],
+[
+ 	app_cv_static="$enableval"
+],[
+	AC_MSG_NOTICE([Keep default selection for static library.])
+])
+
+if test "$app_cv_static" == "yes"; then
+	CLIENT_TARGETS="$CLIENT_TARGETS static"
+fi
+
+AC_SUBST(CLIENT_TARGETS)
 
 dnl ---------------------------------------------------------------------------
 dnl Check for libintl
