@@ -64,7 +64,11 @@ static void
 
 	} else if(rc) {
 
-		g_dbus_method_invocation_return_value(invocation, rc);
+		// Convert rc to tuple.
+		// It is an error if parameters is not of the right format: it must be a tuple containing the out-parameters of the D-Bus method.
+		// Even if the method has a single out-parameter, it must be contained in a tuple.
+
+		g_dbus_method_invocation_return_value(invocation, g_variant_new_tuple(&rc,1));
 
 	} else {
 

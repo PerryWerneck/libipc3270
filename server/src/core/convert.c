@@ -49,11 +49,11 @@ GVariant * ipc3270_GVariant_from_input_string(GObject *object, char *string, GEr
 	if(string) {
 		g_autofree gchar * utfstring = ipc3270_convert_input_string(object,string,error);
 		lib3270_free(string);
-		return g_variant_new("(s)", utfstring);
+		return g_variant_new_string(utfstring);
 	}
 
 	ipc3270_set_error(object,errno,error);
-	return g_variant_new("(s)", "");
+	return g_variant_new_string("");
 }
 
 
