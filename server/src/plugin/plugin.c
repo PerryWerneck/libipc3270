@@ -57,7 +57,7 @@
 	GObject	* ipc = ipc3270_new();
 	g_object_set_data_full(G_OBJECT(terminal), "ipc-object-info", ipc, g_object_unref);
 
-	debug("Name: \"%s\"",v3270_get_session_name(window));
+	debug("Name: \"%s\"",v3270_get_session_name(terminal));
 
 	// Set session handle, this starts the IPC communication.
 	GError * error = NULL;
@@ -85,7 +85,7 @@
 
 	char id = lib3270_get_session_id(v3270_get_session(terminal));
 	if(id) {
-		gchar * widget_name = g_strdup_printf("%s:%c",gtk_widget_get_name(window),id);
+		gchar * widget_name = g_strdup_printf("%s:%c",v3270_get_session_name(terminal),id);
 		v3270_set_session_name(terminal, widget_name);
 		g_free(widget_name);
 	}

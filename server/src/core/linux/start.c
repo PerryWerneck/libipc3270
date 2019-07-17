@@ -118,6 +118,7 @@ static gboolean
 void ipc3270_export_object(GObject *object, const char *name, GError **error) {
 
 	char id;
+	gchar *ptr;
 
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
@@ -141,6 +142,9 @@ void ipc3270_export_object(GObject *object, const char *name, GError **error) {
 	for(id='a'; id < 'z' && !ipc->dbus.id && !*error; id++) {
 
 		g_autofree gchar *object_name = g_strdup_printf(PW3270_IPC_SESSION_BUS_NAME,name,id);
+
+		for(ptr=object_name;*ptr;ptr++)
+			*ptr = g_ascii_tolower(*ptr);
 
 		debug("Requesting \"%s\"",object_name);
 
