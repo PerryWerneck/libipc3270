@@ -174,7 +174,7 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 
 	// Toggle properties
 	for(ix = 0; ix < (int) LIB3270_TOGGLE_COUNT; ix++) {
-		g_string_append_printf(introspection, "    <property type='i' name='%s' access='readwrite'/>", lib3270_get_toggle_name((LIB3270_TOGGLE) ix));
+		g_string_append_printf(introspection, "    <property type='b' name='%s' access='readwrite'/>", lib3270_get_toggle_name((LIB3270_TOGGLE) ix));
 	}
 
 	// Boolean properties
@@ -193,6 +193,15 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		g_string_append_printf(introspection, "    <property type='i' name='%s' access='%s'/>",
 			int_props[ix].name,
 			((int_props[ix].set == NULL) ? "read" : "readwrite")
+		);
+	}
+
+	// Unsigned integer properties
+	const LIB3270_UINT_PROPERTY * uint_props = lib3270_get_unsigned_properties_list();
+	for(ix = 0; uint_props[ix].name; ix++) {
+		g_string_append_printf(introspection, "    <property type='u' name='%s' access='%s'/>",
+			uint_props[ix].name,
+			((uint_props[ix].set == NULL) ? "read" : "readwrite")
 		);
 	}
 

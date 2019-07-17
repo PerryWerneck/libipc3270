@@ -45,7 +45,7 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 	H3270	* hSession = ipc3270_get_session(object);
 
 	if(!value) {
-		g_set_error(&error,ipc3270_get_error_domain(object),EINVAL,"Set property method requires an argument");
+		g_set_error(error,ipc3270_get_error_domain(object),EINVAL,"Set property method requires an argument");
 		return FALSE;
 	}
 
@@ -83,7 +83,7 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 		if(intprop[ix].set && !g_ascii_strcasecmp(intprop[ix].name, property_name)) {
 
 			// Found it!
-			if(intprop[ix].set(hSession, (int) (g_variant_get_boolean(value) ? 1 : 0))) {
+			if(intprop[ix].set(hSession, (int) g_variant_get_int32(value))) {
 
 				// Erro!
 				g_set_error_literal(
@@ -101,6 +101,33 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 		}
 
 	}
+
+	// Unsigned int properties
+	const LIB3270_UINT_PROPERTY * uintprop = lib3270_get_unsigned_properties_list();
+	for(ix = 0; uintprop[ix].name; ix++) {
+
+		if(uintprop[ix].set && !g_ascii_strcasecmp(uintprop[ix].name, property_name)) {
+
+			// Found it!
+			if(uintprop[ix].set(hSession, (unsigned int) g_variant_get_uint32(value) ? 1 : 0)) {
+
+				// Erro!
+				g_set_error_literal(
+					error,
+					G_IO_ERROR,
+					G_IO_ERROR_FAILED,
+					g_strerror(errno)
+				);
+
+				return FALSE;
+			}
+
+			return TRUE;
+
+		}
+
+	}
+
 
 	// String properties
 	const LIB3270_STRING_PROPERTY * strprop = lib3270_get_string_properties_list();
@@ -132,7 +159,7 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 	if(toggle != (LIB3270_TOGGLE) -1) {
 
 		// Is a Tn3270 toggle, get it!
-		if(lib3270_set_toggle(hSession,toggle,(int) g_variant_get_int32(value))) {
+		if(lib3270_set_toggle(hSession,toggle,(int) (g_variant_get_boolean(value) ? 1 : 0))) {
 
 			// Erro!
 			g_set_error_literal(error,

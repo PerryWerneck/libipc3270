@@ -77,12 +77,37 @@ GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GEr
 		if(intprop[ix].get && !g_ascii_strcasecmp(intprop[ix].name, property_name)) {
 
 			// Found it!
+			errno = 0; // Reset errno
 			int value = intprop[ix].get(hSession);
 
 			debug("%s=%d",property_name,value);
 
-			if(value > 0 || errno == 0) {
-				return g_variant_new_int16((gint16) value);
+			if(errno == 0) {
+				return g_variant_new_int32((gint32) value);
+			}
+
+			// Erro!
+			ipc3270_set_error(object,errno,error);
+			return NULL;
+
+		}
+
+	}
+
+	// Unsigned int properties
+	const LIB3270_UINT_PROPERTY * uintprop = lib3270_get_unsigned_properties_list();
+	for(ix = 0; uintprop[ix].name; ix++) {
+
+		if(uintprop[ix].get && !g_ascii_strcasecmp(uintprop[ix].name, property_name)) {
+
+			// Found it!
+			errno = 0; // Reset errno.
+			unsigned int value = uintprop[ix].get(hSession);
+
+			debug("%s=%d",property_name,value);
+
+			if(errno == 0) {
+				return g_variant_new_uint32((guint32) value);
 			}
 
 			// Erro!
