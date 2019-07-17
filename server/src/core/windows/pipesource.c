@@ -116,6 +116,7 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 
 	case 2: // setProperty
 		ipc3270_set_property(source->object, request_name, parameters, &error);
+		response = g_variant_new_int32(0);
 		break;
 
 	case 3: // method

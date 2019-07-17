@@ -57,13 +57,13 @@
 	GObject	* ipc = ipc3270_new();
 	g_object_set_data_full(G_OBJECT(terminal), "ipc-object-info", ipc, g_object_unref);
 
-	debug("Name: \"%s\"",gtk_widget_get_name(window));
+	debug("Name: \"%s\"",v3270_get_session_name(window));
 
 	// Set session handle, this starts the IPC communication.
 	GError * error = NULL;
 
 	ipc3270_set_session(ipc,v3270_get_session(terminal));
-	ipc3270_export_object(ipc,gtk_widget_get_name(window),&error);
+	ipc3270_export_object(ipc,v3270_get_session_name(terminal),&error);
 
 	if(error) {
 

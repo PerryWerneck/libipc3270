@@ -50,9 +50,12 @@ static void
 		GDBusMethodInvocation *invocation,
 		gpointer               user_data) {
 
-	g_autoptr (GError) error = NULL;
+	g_autoptr (GError)	  error = NULL;
+	GVariant			* rc;
 
-	GVariant * rc = ipc3270_method_call(G_OBJECT(user_data), method_name, parameters, &error);
+	debug("%s(%s,%s)",__FUNCTION__,interface_name,object_path);
+
+	rc = ipc3270_method_call(G_OBJECT(user_data), method_name, parameters, &error);
 
 	if(error) {
 
@@ -90,6 +93,7 @@ static GVariant *
 		gpointer          user_data)
 {
 
+	debug("%s(%s)",__FUNCTION__,property_name);
 	return ipc3270_get_property(G_OBJECT(user_data), property_name, error);
 
 }
@@ -106,6 +110,7 @@ static gboolean
 		gpointer          user_data)
 {
 
+	debug("%s(%s)",__FUNCTION__,property_name);
 	return ipc3270_set_property(G_OBJECT(user_data), property_name, value, error);
 
 }

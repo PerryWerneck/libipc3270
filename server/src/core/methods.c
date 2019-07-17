@@ -139,6 +139,37 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		}
 		return g_variant_new_int32((gint) lib3270_wait_for_ready(hSession,timeout));
 	}
+	else if(!g_ascii_strcasecmp(method_name,"connect"))
+	{
+		gchar *text = NULL;
+		g_variant_get(parameters, "(&s)", &text);
+
+		g_autofree gchar * converted = ipc3270_convert_output_string(object, text, error);
+		if(lib3270_connect_url(hSession,converted,0))
+		{
+			// Failed!
+			ipc3270_set_error(object,errno,error);
+			return NULL;
+		}
+
+		// Suceeded
+		return g_variant_new_int32(0);
+
+	}
+	else if(!g_ascii_strcasecmp(method_name,"disconnect"))
+	{
+		if(lib3270_disconnect(hSession))
+		{
+			// Failed!
+			ipc3270_set_error(object,errno,error);
+			return NULL;
+		}
+
+		// Suceeded
+		return g_variant_new_int32(0);
+	}
+
+
 
 	// Check action table.
 	const LIB3270_ACTION_ENTRY * actions = lib3270_get_action_table();

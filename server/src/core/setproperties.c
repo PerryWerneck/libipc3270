@@ -109,7 +109,7 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 		if(uintprop[ix].set && !g_ascii_strcasecmp(uintprop[ix].name, property_name)) {
 
 			// Found it!
-			if(uintprop[ix].set(hSession, (unsigned int) g_variant_get_uint32(value) ? 1 : 0)) {
+			if(uintprop[ix].set(hSession, (unsigned int) g_variant_get_uint32(value))) {
 
 				// Erro!
 				g_set_error_literal(
@@ -122,6 +122,7 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 				return FALSE;
 			}
 
+//			g_message("%s=%u",property_name,uintprop[ix].get(hSession));
 			return TRUE;
 
 		}
