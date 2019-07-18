@@ -168,6 +168,7 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		g_string_append_printf(
 			introspection, \
 			"	<method name='%s'>" \
+			"		<arg type='i' name='result' direction='out' />" \
 			"	</method>", actions[ix].name
 		);
 	}
