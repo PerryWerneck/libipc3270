@@ -18,7 +18,7 @@
  * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
  * St, Fifth Floor, Boston, MA  02110-1301  USA
  *
- * Este programa está nomeado como lib3270++.h e possui - linhas de código.
+ * Este programa está nomeado como ipc.h e possui - linhas de código.
  *
  * Contatos:
  *
@@ -434,4 +434,4 @@
 
 #endif
 
-#endif // LIB3270_H_INCLUDED
+#endif // LIB3270_IPC_H_INCLUDED
