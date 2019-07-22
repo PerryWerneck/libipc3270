@@ -109,7 +109,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		g_variant_get(parameters, "(i&s)", &addr, &text);
 
 		g_autofree gchar * converted = ipc3270_convert_output_string(object, text, error);
-		if(lib3270_set_string_at_address(hSession,addr,(unsigned char *) converted) < 0)
+		if(lib3270_set_string_at_address(hSession,addr,(unsigned char *) converted, -1) < 0)
 		{
 			// Failed!
 			ipc3270_set_error(object,errno,error);
