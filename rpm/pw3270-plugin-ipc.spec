@@ -44,6 +44,8 @@ BuildRoot:	/var/tmp/%{name}-%{version}
 Provides:	pw3270-plugin-dbus
 Conflicts:	otherproviders(pw3270-plugin-dbus)
 
+Provides:	lib3270-ipc-service
+
 Requires:	pw3270 >= 5.2
 
 BuildRequires:	lib3270-devel >= 5.2
@@ -87,7 +89,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 %package -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
 Summary: IPC Library for pw3270
-Recommends: %{name}
+Recommends: lib3270-ipc-service
 
 %description -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
 
@@ -98,7 +100,6 @@ Designed as a support tool for language bindings.
 %package -n libipc3270-devel
 Summary: Development files for ipc3270
 Requires: libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
-BuildRequires:	lib3270-devel >= 5.2
 
 %description -n libipc3270-devel
 
@@ -147,7 +148,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n libipc3270-devel
 %defattr(-,root,root)
 %{_includedir}/lib3270/ipc.h
-%{_libdir}/libipc3270.a
 %{_libdir}/libipc3270.so
 
 %pre -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
