@@ -62,7 +62,7 @@
 
 		std::transform(pipename.begin(), pipename.end(), pipename.begin(), ::tolower);
 
-		debug("pipename: \"%s\"",pipename.c_str());
+		debug("id: \"", id, "\" pipename: \"", pipename , "\"");
 
 		this->hPipe = CreateFile(
 			TEXT(pipename.c_str()),		// pipe name

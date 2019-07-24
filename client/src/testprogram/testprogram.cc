@@ -70,6 +70,8 @@
 
 	}
 
+	cout << "Session: " << session << endl;
+
 	TN3270::Host host{session};
 
 	try {

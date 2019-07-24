@@ -46,6 +46,8 @@
 	/// @brief Create a tn3270 session.
 	Session * Session::create(const char *id) {
 
+		debug("Creating session with ID \"",id,"\"");
+
 		if(!id) {
 			return new Local::Session();
 		}

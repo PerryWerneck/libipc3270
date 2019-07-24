@@ -47,6 +47,10 @@
 		<Unit filename="src/core/host.cc" />
 		<Unit filename="src/core/linux/request.cc" />
 		<Unit filename="src/core/session.cc" />
+		<Unit filename="src/core/windows/request.cc" />
+		<Unit filename="src/core/windows/resources.rc" />
+		<Unit filename="src/core/windows/resources.rc.in" />
+		<Unit filename="src/core/windows/session.cc" />
 		<Unit filename="src/include/ipc-client-internals.h" />
 		<Unit filename="src/os/linux/request.cc" />
 		<Unit filename="src/os/linux/session.cc" />
