@@ -36,6 +36,7 @@
 #include <lib3270/ipc-glib.h>
 #include <lib3270.h>
 #include <lib3270/properties.h>
+#include <lib3270/toggle.h>
 #include <lib3270/trace.h>
 
 gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVariant *value, GError **error) {

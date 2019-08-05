@@ -36,6 +36,7 @@
 #include <lib3270.h>
 #include <lib3270/actions.h>
 #include <lib3270/properties.h>
+#include <lib3270/toggle.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>

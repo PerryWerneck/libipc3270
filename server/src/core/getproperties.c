@@ -36,6 +36,7 @@
 #include <lib3270/ipc-glib.h>
 #include <lib3270.h>
 #include <lib3270/properties.h>
+#include <lib3270/toggle.h>
 #include <lib3270/trace.h>
 
 GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GError **error) {
