@@ -1,5 +1,5 @@
 #
-# spec file for packages pw3270-plugin-ipc
+# spec file for packages mingw32-pw3270-plugin-ipc
 #
 # Copyright (c) 2015 SUSE LINUX GmbH, Nuernberg, Germany.
 # Copyright (C) <2008> <Banco do Brasil S.A.>
@@ -21,20 +21,24 @@
 %define MAJOR_VERSION 5
 %define MINOR_VERSION 2
 
-#---[ Macros ]--------------------------------------------------------------------------------------------------------
+%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
-%if ! %{defined _release}
-  %define _release suse%{suse_version}
-%endif
+%define __strip %{_mingw32_strip}
+%define __objdump %{_mingw32_objdump}
+%define _use_internal_dependency_generator 0
+%define __find_requires %{_mingw32_findrequires}
+%define __find_provides %{_mingw32_findprovides}
+%define __os_install_post %{_mingw32_debug_install_post} \
+                          %{_mingw32_install_post}
 
 #---[ Main package ]--------------------------------------------------------------------------------------------------
 
 Summary:	D-Bus based IPC plugin for pw3270
-Name:		pw3270-plugin-ipc
+Name:		mingw32-pw3270-plugin-ipc
 Version:	5.2
 Release:	0
 License:	LGPL-3.0
-Source:		%{name}-%{version}.tar.xz
+Source:		pw3270-plugin-ipc-%{version}.tar.xz
 
 Url:		https://portal.softwarepublico.gov.br/social/pw3270/
 
@@ -44,12 +48,10 @@ BuildRoot:	/var/tmp/%{name}-%{version}
 Provides:	pw3270-plugin-dbus
 Conflicts:	otherproviders(pw3270-plugin-dbus)
 
-Provides:	lib3270-ipc-service
+Provides:	mingw32-lib3270-ipc-service
 
-Requires:	pw3270 >= 5.2
-
-BuildRequires:	lib3270-devel >= 5.2
-BuildRequires:	libv3270-devel >= 5.2
+BuildRequires:	mingw32-lib3270-devel >= 5.2
+BuildRequires:	mingw32-libv3270-devel >= 5.2
 BuildRequires:  autoconf >= 2.61
 BuildRequires:  automake
 BuildRequires:  binutils
@@ -58,26 +60,19 @@ BuildRequires:  gcc-c++
 BuildRequires:  gettext-devel
 BuildRequires:  m4
 
-%if 0%{?fedora} ||  0%{?suse_version} > 1200
+BuildRequires:	mingw32-cross-binutils
+BuildRequires:	mingw32-cross-gcc
+BuildRequires:	mingw32-cross-gcc-c++
+BuildRequires:	mingw32-cross-pkg-config
+BuildRequires:	mingw32-filesystem
+BuildRequires:	mingw32-zlib-devel
+BuildRequires:	mingw32(lib:iconv)
+BuildRequires:	mingw32(lib:intl)
 
-BuildRequires:  pkgconfig(openssl)
-BuildRequires:  pkgconfig(dbus-1)
-BuildRequires:  pkgconfig(dbus-glib-1)
-BuildRequires:	pkgconfig(gtk+-3.0)
-
-%else
-
-BuildRequires:  openssl-devel
-BuildRequires:  dbus-1-devel
-BuildRequires:  dbus-glib-devel
-BuildRequires:	gtk3-devel
-
-%endif
-
-%if 0%{?centos_version}
-# centos requires python for genmarshal
-BuildRequires:  python
-%endif
+BuildRequires:	mingw32(pkg:gtk+-win32-3.0)
+BuildRequires:	mingw32(pkg:lib3270)
+BuildRequires:	mingw32(pkg:lib3270-static)
+BuildRequires:	mingw32(pkg:libv3270)
 
 %description
 
@@ -87,22 +82,22 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 #---[ IPC Library Package ]-------------------------------------------------------------------------------------------
 
-%package -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
+%package -n mingw32-libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
 Summary: IPC Library for pw3270
-Recommends: lib3270-ipc-service
+Recommends: mingw32-lib3270-ipc-service
 
-%description -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
+%description -n mingw32-libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
 
 IPC client library for lib3270/pw3270.
 
 Designed as a support tool for language bindings.
 
-%package -n libipc3270-devel
+%package -n mingw32-libipc3270-devel
 Summary: Development files for ipc3270
 Requires: libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
 Requires: pkgconfig(lib3270)
 
-%description -n libipc3270-devel
+%description -n mingw32-libipc3270-devel
 
 Development files for lib3270/pw3270 IPC client library.
 
@@ -112,15 +107,20 @@ Designed as a support tool for language bindings.
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
-%setup
+%setup -n pw3270-plugin-ipc-%{version}
 
 NOCONFIGURE=1 ./autogen.sh
 
-%configure
+%{_mingw32_configure} \
+	--without-static-lib3270
 
 %build
 make clean
 make all
+
+%{_mingw32_strip} \
+	--strip-all \
+    .bin/Release/*.dll
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -138,31 +138,21 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS README.md LICENSE
 %endif
 
-%dir %{_libdir}/pw3270-plugins
-%{_libdir}/pw3270-plugins/ipcserver.so
+%dir %{_mingw32_libdir}/pw3270-plugins
+%{_mingw32_libdir}/pw3270-plugins/ipcserver.dll
 
-%files -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
+%files -n mingw32-libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
 %defattr(-,root,root)
-%{_libdir}/libipc3270.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
-%{_libdir}/libipc3270.so.%{MAJOR_VERSION}
+%{_mingw32_libdir}/libipc3270.dll
+%{_mingw32_libdir}/libipc3270.dll.%{MAJOR_VERSION}
+%{_mingw32_libdir}/libipc3270.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
-%files -n libipc3270-devel
+%files -n mingw32-libipc3270-devel
 %defattr(-,root,root)
-%{_includedir}/lib3270/ipc.h
-%{_libdir}/libipc3270.so
-%{_libdir}/pkgconfig/ipc3270.pc
-
-%pre -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
-/sbin/ldconfig
-exit 0
-
-%post -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
-/sbin/ldconfig
-exit 0
-
-%postun -n libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
-/sbin/ldconfig
-exit 0
+%{_mingw32_includedir}/lib3270/ipc.h
+%{_mingw32_libdir}/libipc3270.a
+%{_mingw32_libdir}/pkgconfig/ipc3270-static.pc
+%{_mingw32_libdir}/pkgconfig/ipc3270.pc
 
 %changelog
 
