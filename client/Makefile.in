@@ -175,32 +175,15 @@ $(POTDIR)/$(MODULE_NAME)/%.pot: \
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
-	$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@ \
+	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@ \
 	$(BINRLS)/lib$(MODULE_NAME).a \
 	$(POTDIR)/$(MODULE_NAME).pot
 
 Release: \
-	$(BINRLS)/$(MODULE_NAME)@DLLEXT@ \
+	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@ \
 	$(BINRLS)/lib$(MODULE_NAME).a
 
-$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@: \
-	$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
-
-	@echo $< ...
-	@rm -f $@
-	@$(LN_S) \
-		$(notdir $^) \
-		$@
-
-$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
-	$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
-
-	@rm -f $@
-	@$(LN_S) \
-		$(notdir $^) \
-		$@
-
-$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
+$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@: \
 	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o)
 
 	@$(MKDIR) $(@D)
@@ -209,7 +192,7 @@ $(BINRLS)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSI
 		-shared -Wl,-soname,$(@F) \
 		-o $@ \
 		$(LDFLAGS) \
-		$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
+		$^
 		$(LIBS) \
 		$(GTK_LIBS)
 
@@ -234,8 +217,8 @@ install-shared: \
 		$(DESTDIR)/$(libdir)
 
 	@$(INSTALL_PROGRAM) \
-		$(BINRLS)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
-		$(DESTDIR)/$(libdir)
+		$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@ \
+		$(DESTDIR)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
 		
 	@$(LN_S) \
 		lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
@@ -284,37 +267,20 @@ Debug: \
 
 $(BINDBG)/$(MODULE_NAME)-client@EXEEXT@: \
 	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
-	$(BINDBG)/lib$(MODULE_NAME)@DLLEXT@
+	$(BINDBG)/lib$(MODULE_NAME)@LIBEXT@
 
 	@$(MKDIR) $(@D)
 	@echo $< ...
 	@$(LD) \
 		-o $@ \
-		$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
+		$^ \
 		-L$(BINDBG) -l$(MODULE_NAME)\
 		-Wl,-rpath,$(BINDBG) \
 		$(LDFLAGS) \
 		$(LIBS)
 
 
-$(BINDBG)/lib$(MODULE_NAME)@DLLEXT@: \
-	$(BINDBG)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
-
-	@echo $< ...
-	@rm -f $@
-	@$(LN_S) \
-		$(notdir $^) \
-		$@
-
-$(BINDBG)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@: \
-	$(BINDBG)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
-
-	@rm -f $@
-	@$(LN_S) \
-		$(notdir $^) \
-		$@
-
-$(BINDBG)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@: \
+$(BINDBG)/lib$(MODULE_NAME)@LIBEXT@: \
 	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJDBG)/$(SRC).o)
 
 	@$(MKDIR) $(@D)
@@ -323,7 +289,7 @@ $(BINDBG)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSI
 		-shared -Wl,-soname,$(@F) \
 		-o $@ \
 		$(LDFLAGS) \
-		$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJDBG)/$(SRC).o) \
+		$^ \
 		$(LIBS)
 
 

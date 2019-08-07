@@ -156,6 +156,20 @@ AC_SUBST(PACKAGE_RELEASE,$app_cv_release)
 AC_SUBST(PACKAGE_MAJOR_RELEASE,$app_rls_major)
 AC_SUBST(PACKAGE_MINOR_RELEASE,$app_rls_minor)
 
+case "$host" in
+	*-mingw32|*-pc-msys)
+		AC_SUBST(LIBEXT,.dll)
+		;;
+
+ 	s390x-*)
+		AC_SUBST(LIBEXT,.so)
+		;;
+
+ 	*)
+		AC_SUBST(LIBEXT,.so.$app_vrs_major.$app_vrs_minor)
+
+esac
+
 dnl ---------------------------------------------------------------------------
 dnl Build options
 dnl ---------------------------------------------------------------------------
