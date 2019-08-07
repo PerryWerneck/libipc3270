@@ -55,18 +55,18 @@ INSTALL_PROGRAM=@INSTALL_PROGRAM@
 
 all: \
 	$(BINRLS)/ipcserver@DLLEXT@ \
-	$(BINRLS)/libipc3270@DLLEXT@
+	$(BINRLS)/libipc3270@LIBEXT@
 
 plugin: \
 	$(BINRLS)/ipcserver@DLLEXT@
 
 library: \
-	$(BINRLS)/libipc3270@DLLEXT@
+	$(BINRLS)/libipc3270@LIBEXT@
 
 $(BINRLS)/ipcserver@DLLEXT@:
 	@$(MAKE) -C server $@	
 
-$(BINRLS)/libipc3270@DLLEXT@:
+$(BINRLS)/libipc3270@LIBEXT@:
 	@$(MAKE) -C client $@	
 
 #---[ Install Targets ]------------------------------------------------------------------
