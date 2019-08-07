@@ -207,7 +207,32 @@ dnl ---------------------------------------------------------------------------
 dnl Check for LIB3270
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES( [LIB3270], [lib3270], AC_DEFINE(HAVE_LIB3270), AC_MSG_ERROR([LIB3270 not present.]))
+AC_ARG_WITH([static-lib3270],
+        [AS_HELP_STRING([--with-static-lib3270], [Uses static version of lib3270])],
+[
+	app_cv_static_lib3270=$withval
+],[
+	app_cv_static_lib3270=auto
+])
+
+if test "$app_cv_static_lib3270" == "auto"; then
+	case "$host" in
+	*-mingw32|*-pc-msys)
+		app_cv_static_lib3270="yes"
+		;;
+
+	*)
+		app_cv_static_lib3270="no"
+
+	esac
+
+fi
+
+if test "$app_cv_static_lib3270" == "yes"; then
+	PKG_CHECK_MODULES( [LIB3270], [lib3270-static], AC_DEFINE(HAVE_LIB3270), AC_MSG_ERROR([LIB3270 not present.]))
+else
+	PKG_CHECK_MODULES( [LIB3270], [lib3270], AC_DEFINE(HAVE_LIB3270), AC_MSG_ERROR([LIB3270 not present.]))
+fi
 
 AC_SUBST(LIB3270_LIBS)
 AC_SUBST(LIB3270_CFLAGS)
