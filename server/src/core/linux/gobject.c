@@ -37,6 +37,7 @@
 #include <lib3270/actions.h>
 #include <lib3270/properties.h>
 #include <lib3270/toggle.h>
+#include <v3270.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-bindings.h>
@@ -49,9 +50,18 @@ G_DEFINE_TYPE(ipc3270, ipc3270, G_TYPE_OBJECT)
 
 static void ipc3270_finalize(GObject *object) {
 
+	ipc3270 * ipc = IPC3270(object);
 	debug("ipc3270::%s(%p)",__FUNCTION__,object);
 
 	ipc3270_release_object(IPC3270(object));
+
+	g_autofree gchar * widget_name = g_strdup(v3270_get_session_name(ipc->terminal));
+	gchar 			 * ptr = strrchr(widget_name,':');
+	if(ptr)
+		*ptr = 0;
+
+	v3270_set_session_name(ipc->terminal,widget_name);
+	lib3270_set_session_id(ipc->hSession, 0);
 
 	G_OBJECT_CLASS(ipc3270_parent_class)->finalize(object);
 }
@@ -218,10 +228,12 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 
 }
 
-void ipc3270_set_session(GObject *object, H3270 *hSession) {
+void ipc3270_set_terminal_widget(GObject *object, GtkWidget *terminal) {
 
 	ipc3270 * ipc = IPC3270(object);
-	ipc->hSession = hSession;
+
+	ipc->terminal = terminal;
+	ipc->hSession = v3270_get_session(terminal);
 
 }
 

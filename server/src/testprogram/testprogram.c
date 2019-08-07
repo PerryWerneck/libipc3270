@@ -73,34 +73,14 @@
 	g_message("Module %p was closed",module);
  }
 
- static void toggle_ds_trace(GtkToggleToolButton *button, GtkWidget *terminal)
- {
-	v3270_set_toggle(terminal,LIB3270_TOGGLE_DS_TRACE,gtk_toggle_tool_button_get_active(button));
- }
-
- static void toggle_event_trace(GtkToggleToolButton *button, GtkWidget *terminal)
- {
-	v3270_set_toggle(terminal,LIB3270_TOGGLE_EVENT_TRACE,gtk_toggle_tool_button_get_active(button));
- }
-
- static void toggle_ssl_trace(GtkToggleToolButton *button, GtkWidget *terminal)
- {
-	v3270_set_toggle(terminal,LIB3270_TOGGLE_SSL_TRACE,gtk_toggle_tool_button_get_active(button));
- }
-
- static void toggle_screen_trace(GtkToggleToolButton *button, GtkWidget *terminal)
- {
-	v3270_set_toggle(terminal,LIB3270_TOGGLE_SCREEN_TRACE,gtk_toggle_tool_button_get_active(button));
- }
-
- static void toggle_started_trace(GtkToggleToolButton *button, GModule *module)
+ static void toggle_started(GtkToggleButton *button, GModule *module)
  {
  	if(!module)
 		return;
 
 	GtkWidget * terminal = g_object_get_data(G_OBJECT(button),"terminal");
 
-	const gchar * method_name = (gtk_toggle_tool_button_get_active(button) ? "pw3270_plugin_start" : "pw3270_plugin_stop");
+	const gchar * method_name = (gtk_toggle_button_get_active(button) ? "pw3270_plugin_start" : "pw3270_plugin_stop");
 
 	static void (*call)(GtkWidget *window, GtkWidget *terminal) = NULL;
 	if(!g_module_symbol(module,method_name,(gpointer) &call))
@@ -114,36 +94,24 @@
 
  }
 
- static GtkToolItem * create_tool_item(GtkWidget *terminal, const gchar *label, const gchar *tooltip, GCallback callback)
- {
-	GtkToolItem * item = gtk_toggle_tool_button_new();
-	gtk_tool_button_set_label(GTK_TOOL_BUTTON(item),label);
-
-	g_signal_connect(GTK_WIDGET(item), "toggled", G_CALLBACK(callback), terminal);
-
-	if(tooltip)
-		gtk_widget_set_tooltip_text(GTK_WIDGET(item),tooltip);
-
-	return item;
- }
-
  static void session_changed(GtkWidget *widget, GtkWidget *window) {
 
-	g_autofree gchar * title = NULL;
+	g_autofree gchar	* title = NULL;
+	const gchar			* name = v3270_get_session_name(widget);
 
- 	g_message("Session name was changed");
+ 	g_message("Session name was changed to \"%s\"", name);
 
 	if(v3270_is_connected(widget)) {
 		const gchar *host = v3270_get_hostname(widget);
 
 		if(host && *host)
-			title = g_strdup_printf("%s - %s",v3270_get_session_name(widget),host);
+			title = g_strdup_printf("%s - %s",name,host);
 		else
-			title = g_strdup_printf("%s",v3270_get_session_name(widget));
+			title = g_strdup_printf("%s",name);
 
 	} else {
 
-		title = g_strdup_printf("%s - Disconnected",v3270_get_session_name(widget));
+		title = g_strdup_printf("%s - Disconnected",name);
 	}
 
 	gtk_window_set_title(GTK_WINDOW(window),title);
@@ -210,9 +178,25 @@
 	}
 	// Create trace window
 	{
+		GtkWidget	* trace 	= v3270_trace_new(terminal);
+		GtkWidget	* start		= gtk_toggle_button_new_with_label("Enable");
+		GtkWidget	* buttons	= v3270_trace_get_button_box(trace);
+
+		gtk_widget_set_sensitive(GTK_WIDGET(start),module != NULL);
+
+		g_object_set_data(G_OBJECT(start),"terminal",terminal);
+
+		g_signal_connect(GTK_WIDGET(start), "toggled", G_CALLBACK(toggle_started), module);
+		gtk_widget_set_tooltip_text(GTK_WIDGET(start),"Start/Stop plugin module");
+
+		gtk_box_pack_start(GTK_BOX(buttons),start,FALSE,FALSE,0);
+		gtk_box_reorder_child(GTK_BOX(buttons),start,0);
+
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),trace,gtk_label_new("Trace"));
+
+		/*
 		GtkWidget	* box		= gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
 		GtkWidget	* trace 	= v3270_trace_new(terminal);
-		GtkWidget	* toolbar	= gtk_toolbar_new();
 		GtkToolItem	* start		= gtk_toggle_tool_button_new();
 
 		gtk_widget_set_sensitive(GTK_WIDGET(start),module != NULL);
@@ -223,18 +207,16 @@
 		g_signal_connect(GTK_WIDGET(start), "toggled", G_CALLBACK(toggle_started_trace), module);
 		gtk_widget_set_tooltip_text(GTK_WIDGET(start),"Start/Stop plugin module");
 
+		v3270_trace_button_box_insert(trace,start);
+
 		gtk_toolbar_insert(GTK_TOOLBAR(toolbar), start, -1);
 
 		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),gtk_separator_tool_item_new(),-1);
 
-		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),create_tool_item(terminal, "DS Trace","Toggle DS Trace",G_CALLBACK(toggle_ds_trace)),-1);
-		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),create_tool_item(terminal, "Event Trace","Toggle Event Trace",G_CALLBACK(toggle_event_trace)),-1);
-		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),create_tool_item(terminal, "Screen Trace","Toggle Screen Trace",G_CALLBACK(toggle_screen_trace)),-1);
-		gtk_toolbar_insert(GTK_TOOLBAR(toolbar),create_tool_item(terminal, "SSL Trace","Toggle SSL Trace",G_CALLBACK(toggle_ssl_trace)),-1);
-
 		gtk_box_pack_start(GTK_BOX(box),toolbar,FALSE,FALSE,0);
 		gtk_box_pack_start(GTK_BOX(box),trace,TRUE,TRUE,0);
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),box,gtk_label_new("Trace"));
+		*/
 	}
 
 	// Setup and show main window

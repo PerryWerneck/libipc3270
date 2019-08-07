@@ -64,6 +64,7 @@
 		} dbus;
 
 		H3270			* hSession;
+		GtkWidget		* terminal;
 		GQuark 			  error_domain;
 	};
 

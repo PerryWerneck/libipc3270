@@ -62,7 +62,7 @@
 	// Set session handle, this starts the IPC communication.
 	GError * error = NULL;
 
-	ipc3270_set_session(ipc,v3270_get_session(terminal));
+	ipc3270_set_terminal_widget(ipc,terminal);
 	ipc3270_export_object(ipc,v3270_get_session_name(terminal),&error);
 
 	if(error) {
@@ -85,9 +85,8 @@
 
 	char id = lib3270_get_session_id(v3270_get_session(terminal));
 	if(id) {
-		gchar * widget_name = g_strdup_printf("%s:%c",v3270_get_session_name(terminal),id);
+		g_autofree gchar * widget_name = g_strdup_printf("%s:%c",v3270_get_session_name(terminal),id);
 		v3270_set_session_name(terminal, widget_name);
-		g_free(widget_name);
 	}
 
 	return 0;

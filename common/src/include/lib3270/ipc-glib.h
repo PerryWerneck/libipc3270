@@ -73,7 +73,7 @@
 
 	GObject				* ipc3270_new();
 	GType				  ipc3270_get_type(void);
-    void				  ipc3270_set_session(GObject *object, H3270 *hSession);
+    void				  ipc3270_set_terminal_widget(GObject *object, GtkWidget *widget);
     void				  ipc3270_export_object(GObject *object, const char *name, GError **error);
 
     /**
