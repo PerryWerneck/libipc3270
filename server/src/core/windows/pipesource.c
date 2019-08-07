@@ -30,6 +30,7 @@
 #include "gobject.h"
 #include <lib3270/ipc-glib.h>
 #include <lib3270/trace.h>
+#include <lib3270/toggle.h>
 
 void ipc3270_wait_for_client(IPC3270_PIPE_SOURCE *source) {
 
@@ -251,7 +252,10 @@ static gboolean IO_dispatch(GSource *source, GSourceFunc G_GNUC_UNUSED(callback)
 	return TRUE;
 }
 
-static gboolean IO_closure(gpointer G_GNUC_UNUSED(data)) {
+static gboolean IO_closure(gpointer source) {
+
+	debug("%s(%p)",__FUNCTION__,source);
+
 	return 0;
 }
 

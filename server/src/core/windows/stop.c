@@ -38,9 +38,12 @@
 
 void ipc3270_release_object(ipc3270 *object) {
 
+	debug("%s(%p) source=%p",__FUNCTION__,object,object->source);
+
 	if(object->source)
 	{
 		g_source_destroy((GSource *) object->source);
+		g_source_unref((GSource *) object->source);
 		object->source = NULL;
 	}
 

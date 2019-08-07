@@ -80,6 +80,7 @@
 	struct _ipc3270 {
 		GObject			  	  parent;
 		H3270				* hSession;
+		GtkWidget			* terminal;
 		IPC3270_PIPE_SOURCE	* source;
 		GQuark 				  error_domain;
 	};

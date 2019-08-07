@@ -51,9 +51,8 @@ G_DEFINE_TYPE(ipc3270, ipc3270, G_TYPE_OBJECT)
 static void ipc3270_finalize(GObject *object) {
 
 	ipc3270 * ipc = IPC3270(object);
-	debug("ipc3270::%s(%p)",__FUNCTION__,object);
 
-	ipc3270_release_object(IPC3270(object));
+	ipc3270_release_object(ipc);
 
 	g_autofree gchar * widget_name = g_strdup(v3270_get_session_name(ipc->terminal));
 	gchar 			 * ptr = strrchr(widget_name,':');
@@ -64,6 +63,7 @@ static void ipc3270_finalize(GObject *object) {
 	lib3270_set_session_id(ipc->hSession, 0);
 
 	G_OBJECT_CLASS(ipc3270_parent_class)->finalize(object);
+
 }
 
 
