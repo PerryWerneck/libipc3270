@@ -19,3 +19,4 @@ src/core/windows/resources.rc
 src/plugin/windows/resources.rc
 *.pid
 resources.rc
+*.pc

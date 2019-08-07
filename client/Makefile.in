@@ -238,6 +238,11 @@ install-static: \
 		$(BINRLS)/lib$(MODULE_NAME).a \
 		$(DESTDIR)/$(libdir)
 
+	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
+	@$(INSTALL_DATA) \
+		sdk/ipc3270-static.pc \
+		$(DESTDIR)$(libdir)/pkgconfig/ipc3270-static.pc
+
 install-devel:
 
 	@$(MKDIR) \
@@ -246,6 +251,13 @@ install-devel:
 	@$(INSTALL_DATA) \
 		$(BASEDIR)/common/src/include/lib3270/ipc.h \
 		$(DESTDIR)/$(includedir)/lib3270
+
+	# Install PKG-CONFIG files
+	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
+
+	@$(INSTALL_DATA) \
+		sdk/ipc3270.pc \
+		$(DESTDIR)$(libdir)/pkgconfig/ipc3270.pc
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
