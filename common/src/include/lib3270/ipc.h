@@ -336,10 +336,16 @@
 				return session->getConnectionState() == state;
 			}
 
-			void connect(const char *url, bool sync = true);
-			void disconnect();
+			Host & connect(const char *url, bool sync = true);
+			Host & disconnect();
 
-			void waitForReady(time_t timeout = DEFAULT_TIMEOUT);
+			Host & waitForReady(time_t timeout = DEFAULT_TIMEOUT);
+
+			/// @brief Execute action by name.
+			inline Host & action(const char *action_name) {
+				session->action(action_name);
+				return *this;
+			}
 
 			inline ProgramMessage getProgramMessage() const {
 				return session->getProgramMessage();

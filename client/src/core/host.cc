@@ -58,19 +58,22 @@
 		this->session = nullptr;
 	}
 
-    void Host::connect(const char *url, bool sync) {
+    Host & Host::connect(const char *url, bool sync) {
         this->session->connect(url);
         if(sync) {
 			this->sync();
         }
+        return *this;
     }
 
-	void Host::disconnect() {
+	Host & Host::disconnect() {
         this->session->disconnect();
+        return *this;
 	}
 
-	void Host::waitForReady(time_t timeout) {
+	Host & Host::waitForReady(time_t timeout) {
 		this->session->waitForReady(timeout);
+		return *this;
 	}
 
 	/// @brief Writes characters to the associated file from the put area
