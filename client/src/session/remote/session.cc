@@ -249,12 +249,34 @@
 
 	TN3270::Session & IPC::Session::push(const Action action) {
 
-		const char * actions[] = {
+		static const char * actions[] = {
 			"enter",
 			"erase",
 			"eraseeof",
 			"eraseeol",
 			"eraseinput"
+            "kybdreset",
+            "newline",
+            "clear",
+            "select_field",
+            "select_all",
+            "unselect",
+            "reselect",
+            "delete",
+            "dup",
+            "fieldmark",
+            "backspace",
+            "previousword",
+            "nextword",
+            "fieldend",
+            "firstfield",
+            "nextfield",
+            "previousfield",
+            "attn",
+            "break",
+            "deleteword",
+            "deletefield",
+            "sysreq"
 		};
 
 		if( ((size_t) action) > (sizeof(actions)/sizeof(actions[0]))) {

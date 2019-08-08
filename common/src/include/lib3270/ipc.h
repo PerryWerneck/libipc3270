@@ -166,11 +166,34 @@
 
 		/// @brief Actions keys
 		enum Action : uint8_t {
-			ENTER,		///< Enter key
+			ENTER,				///< @brief Enter key
 			ERASE,
 			ERASE_EOF,
 			ERASE_EOL,
-			ERASE_INPUT
+			ERASE_INPUT,
+			KYBD_RESET,
+			NEWLINE,
+			CLEAR,
+			SELECT_FIELD,
+			SELECT_ALL,
+			UNSELECT,
+			RESELECT,
+			DELETE,
+			DUP,
+			FIELDMARK,
+			BACKSPACE,
+			WORD_PREVIOUS,
+			WORD_NEXT,
+			FIELD_END,		///< @brief Move the cursor to the first blank after the last nonblank in the field.
+			FIELD_FIRST,	///< @brief Move to first unprotected field on screen.
+			FIELD_NEXT,
+			FIELD_PREVIOUS,	///< @brief Tab backward to previous field.
+			ATTN,			///< @brief ATTN key, per RFC 2355.  Sends IP, regardless.
+			BREAK,
+			WORD_DELETE,	///< @brief Backspaces the cursor until it hits the front of a word (does a ^W).
+			FIELD_DELETE,	///< @brief Delete field key (does a ^U).
+			SYSREQ
+
 		};
 
 		/// @brief TN3270 Session.
