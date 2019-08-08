@@ -280,6 +280,31 @@
 		return *this;
 	}
 
+	TN3270::Session & Local::Session::pfkey(unsigned short value) {
+
+		std::lock_guard<std::mutex> lock(sync);
+
+		int rc = lib3270_pfkey(hSession,(int) value);
+		if(rc) {
+			throw std::system_error(errno, std::system_category());
+		}
+
+		return *this;
+	}
+
+	TN3270::Session & Local::Session::pakey(unsigned short value) {
+
+		std::lock_guard<std::mutex> lock(sync);
+
+		int rc = lib3270_pakey(hSession,(int) value);
+		if(rc) {
+			throw std::system_error(errno, std::system_category());
+		}
+
+		return *this;
+	}
+
+
 	TN3270::Session & Local::Session::pop(int baddr, std::string &text) {
 
 		std::lock_guard<std::mutex> lock(sync);

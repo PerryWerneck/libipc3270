@@ -184,6 +184,18 @@
 		return *this;
 	}
 
+	/// @brief Send PF.
+	Host & Host::pfkey(unsigned short value) {
+		this->session->pfkey(value);
+		return *this;
+	}
+
+	/// @brief Send PA.
+	Host & Host::pakey(unsigned short value) {
+		this->session->pakey(value);
+		return *this;
+	}
+
 
  }
 

@@ -248,6 +248,12 @@
 			/// @brief Set cursor position.
 			virtual TN3270::Session & setCursorPosition(unsigned short row, unsigned short col) = 0;
 
+			/// @brief Send PF.
+			virtual Session & pfkey(unsigned short value) = 0;
+
+			/// @brief Send PF.
+			virtual Session & pakey(unsigned short value) = 0;
+
 			virtual Session & push(int baddr, const std::string &text) = 0;
 			virtual Session & push(int row, int col, const std::string &text) = 0;
 			virtual Session & push(const PFKey key) = 0;
@@ -353,6 +359,14 @@
 			std::string getRevision() const {
 				return session->getRevision();
 			}
+
+			// Actions
+
+			/// @brief Send PF.
+			Host & pfkey(unsigned short value);
+
+			/// @brief Send PA.
+			Host & pakey(unsigned short value);
 
 			// Set contents.
 

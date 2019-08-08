@@ -195,6 +195,9 @@
 				TN3270::Session & setCursorPosition(unsigned short addr) override;
 				TN3270::Session & setCursorPosition(unsigned short row, unsigned short col) override;
 
+				TN3270::Session & pfkey(unsigned short value);
+				TN3270::Session & pakey(unsigned short value);
+
 				/// @brief Set field at current posicion, jumps to next writable field.
 				TN3270::Session & push(const char *text) override;
 
@@ -358,6 +361,9 @@
 
 				TN3270::Session & setCursorPosition(unsigned short addr) override;
 				TN3270::Session & setCursorPosition(unsigned short row, unsigned short col) override;
+
+				TN3270::Session & pfkey(unsigned short value);
+				TN3270::Session & pakey(unsigned short value);
 
 				/// @brief Set field at current posicion, jumps to next writable field.
 				TN3270::Session & push(const char *text) override;

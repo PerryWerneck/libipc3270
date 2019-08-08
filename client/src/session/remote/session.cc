@@ -214,6 +214,39 @@
 
 	}
 
+	TN3270::Session & IPC::Session::pfkey(unsigned short value) {
+
+		int32_t rc;
+
+		Request(*this,"pfkey")
+			.push((uint32_t) value)
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
+		return *this;
+	}
+
+	TN3270::Session & IPC::Session::pakey(unsigned short value) {
+
+		int32_t rc;
+
+		Request(*this,"pakey")
+			.push((uint32_t) value)
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
+		return *this;
+
+	}
+
 	TN3270::Session & IPC::Session::push(const Action action) {
 
 		const char * actions[] = {
