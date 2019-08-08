@@ -65,6 +65,10 @@
         }
     }
 
+	void Host::disconnect() {
+        this->session->disconnect();
+	}
+
 
 	/// @brief Writes characters to the associated file from the put area
 	int Host::sync() {

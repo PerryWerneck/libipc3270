@@ -305,6 +305,7 @@
 			}
 
 			void connect(const char *url, bool sync = true);
+			void disconnect();
 
 			inline ProgramMessage getProgramMessage() const {
 				return session->getProgramMessage();
