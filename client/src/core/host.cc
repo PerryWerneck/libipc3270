@@ -69,6 +69,9 @@
         this->session->disconnect();
 	}
 
+	void Host::waitForReady(time_t timeout) {
+		this->session->waitForReady(timeout);
+	}
 
 	/// @brief Writes characters to the associated file from the put area
 	int Host::sync() {

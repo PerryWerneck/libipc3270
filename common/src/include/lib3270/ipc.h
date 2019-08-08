@@ -307,6 +307,8 @@
 			void connect(const char *url, bool sync = true);
 			void disconnect();
 
+			void waitForReady(time_t timeout = DEFAULT_TIMEOUT);
+
 			inline ProgramMessage getProgramMessage() const {
 				return session->getProgramMessage();
 			}
