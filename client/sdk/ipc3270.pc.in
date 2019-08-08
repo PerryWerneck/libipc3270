@@ -7,6 +7,6 @@ Name: @PACKAGE_NAME@
 Description: @PACKAGE_DESCRIPTION@
 Version: @PACKAGE_VERSION@
 Libs: -L\@libdir@ -lipc3270
-Libs.private: @LIB3270_LIBS@ @DBUS_LIBS@ @LIBS@
+Libs.private: @LIBS@ @LIBICONV@ @INTL_LIBS@ @LIB3270_LIBS@ @DBUS_LIBS@
 Cflags: -I@includedir@
 
