@@ -271,6 +271,9 @@
 			/// @brief Set cursor position.
 			virtual TN3270::Session & setCursorPosition(unsigned short row, unsigned short col) = 0;
 
+			/// @brief Get cursor address
+			virtual unsigned short getCursorPosition() = 0;
+
 			/// @brief Send PF.
 			virtual Session & pfkey(unsigned short value) = 0;
 
@@ -369,6 +372,11 @@
 			/// @brief Set cursor position.
 			inline void setCursorPosition(unsigned short row, unsigned short col) {
 				session->setCursorPosition(row,col);
+			}
+
+			/// @brief Get cursor address
+			inline unsigned short getCursorPosition() {
+				return session->getCursorPosition();
 			}
 
 			// Get properties

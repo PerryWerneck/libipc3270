@@ -399,6 +399,20 @@
 		return *this;
 	}
 
+	/// @brief Get cursor address.
+	///
+	/// @return
+	unsigned short Local::Session::getCursorPosition() {
+
+		unsigned int position = lib3270_get_cursor_address(hSession);
+
+		if(!position)
+			throw std::system_error(errno, std::system_category());
+
+		return position;
+	}
+
+
 	/// @brief Set cursor position.
 	///
 	/// @param row	New cursor row.

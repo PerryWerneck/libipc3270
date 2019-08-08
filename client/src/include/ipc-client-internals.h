@@ -194,6 +194,7 @@
 
 				TN3270::Session & setCursorPosition(unsigned short addr) override;
 				TN3270::Session & setCursorPosition(unsigned short row, unsigned short col) override;
+				unsigned short getCursorPosition() override;
 
 				TN3270::Session & pfkey(unsigned short value);
 				TN3270::Session & pakey(unsigned short value);
@@ -361,6 +362,7 @@
 
 				TN3270::Session & setCursorPosition(unsigned short addr) override;
 				TN3270::Session & setCursorPosition(unsigned short row, unsigned short col) override;
+				unsigned short getCursorPosition() override;
 
 				TN3270::Session & pfkey(unsigned short value);
 				TN3270::Session & pakey(unsigned short value);

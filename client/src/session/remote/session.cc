@@ -338,6 +338,13 @@
 
 	}
 
+	unsigned short IPC::Session::getCursorPosition() {
+
+		// TODO: Implement it.
+		throw std::system_error((int) ENOTSUP, std::system_category());
+
+	}
+
 	/// @brief Set cursor position.
 	///
 	/// @param row	New cursor row.
