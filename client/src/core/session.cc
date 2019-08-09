@@ -90,6 +90,9 @@
 		return push(baddr,text.c_str(),text.size());
 	}
 
+	void Session::setCharSet(const char *charset) {
+	}
+
 
 
  }

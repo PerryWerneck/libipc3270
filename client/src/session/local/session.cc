@@ -469,6 +469,22 @@
 		return *this;
 	}
 
+	/// @brief Wait.
+	TN3270::Session & Local::Session::wait(unsigned short seconds) {
+
+		return *this;
+	}
+
+	/// @brief Wait for update.
+	TN3270::Session & Local::Session::wait_for_update(unsigned short seconds) {
+
+		return *this;
+	}
+
+	void Local::Session::setUnlockDelay(unsigned short delay) {
+		lib3270_set_unlock_delay(hSession,delay);
+	}
+
  }
 
 

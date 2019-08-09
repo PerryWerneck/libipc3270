@@ -268,6 +268,10 @@
 				return this->getConnectionState() == state;
 			}
 
+			// Set properties.
+			virtual void setUnlockDelay(unsigned short delay = 350) = 0;
+			void setCharSet(const char *charset);
+
 			// Set contents.
 
 			/// @brief Set field at current posicion, jumps to next writable field.
@@ -317,6 +321,12 @@
 
 			/// @brief Execute action by name.
 			virtual Session & action(const char *action_name) = 0;
+
+			/// @brief Wait.
+			virtual Session & wait(unsigned short seconds) = 0;
+
+			/// @brief Wait for update.
+			virtual Session & wait_for_update(unsigned short seconds) = 0;
 
 		};
 

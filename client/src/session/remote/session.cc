@@ -367,6 +367,22 @@
 		return *this;
 	}
 
+	/// @brief Wait.
+	TN3270::Session & IPC::Session::wait(unsigned short seconds) {
+
+		return *this;
+	}
+
+	/// @brief Wait for update.
+	TN3270::Session & IPC::Session::wait_for_update(unsigned short seconds) {
+
+		return *this;
+	}
+
+	void IPC::Session::setUnlockDelay(unsigned short delay) {
+
+	}
+
  }
 
 

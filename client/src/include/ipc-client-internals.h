@@ -181,6 +181,9 @@
 				void getProperty(const char *name, std::string &value) const override;
 				void getProperty(const char *name, bool &value) const override;
 
+				// Set properties.
+				void setUnlockDelay(unsigned short delay = 350) override;
+
 				std::string getVersion() const override;
 				std::string getRevision() const override;
 
@@ -216,6 +219,12 @@
 
 				/// @brief Execute action by name.
 				TN3270::Session & action(const char *action_name) override;
+
+				/// @brief Wait.
+				TN3270::Session & wait(unsigned short seconds) override;
+
+				/// @brief Wait for update.
+				TN3270::Session & wait_for_update(unsigned short seconds) override;
 
 			};
 
@@ -353,6 +362,9 @@
 				std::string getVersion() const override;
 				std::string getRevision() const override;
 
+				// Set properties.
+				void setUnlockDelay(unsigned short delay = 350) override;
+
 				// Gets
 				std::string	toString(int baddr, size_t len, char lf) const override;
 				std::string	toString(int row, int col, size_t sz, char lf) const override;
@@ -385,6 +397,12 @@
 
 				/// @brief Execute action by name.
 				TN3270::Session & action(const char *action_name) override;
+
+				/// @brief Wait.
+				TN3270::Session & wait(unsigned short seconds) override;
+
+				/// @brief Wait for update.
+				TN3270::Session & wait_for_update(unsigned short seconds) override;
 
 			};
 
