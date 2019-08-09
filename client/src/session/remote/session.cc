@@ -127,6 +127,8 @@
 
 	TN3270::Session & IPC::Session::input(const char *text, size_t length) {
 
+		throw std::system_error(ENOTSUP, std::system_category());
+
 		return *this;
 	}
 
@@ -148,13 +150,17 @@
 
 	}
 
-	TN3270::Session & IPC::Session::push(int baddr, const std::string &text) {
+	TN3270::Session & IPC::Session::push(int baddr, const char *text, int length) {
 
 		int rc;
 
+		if(length < 0)
+			length = strlen(text);
+
 		Request(*this,"setStringAtAddress")
 			.push((uint32_t) baddr)
-			.push(text.c_str())
+			.push(text)
+			.push((uint32_t) length)
 			.call()
 			.pop(rc);
 
@@ -166,48 +172,18 @@
 
 	}
 
-	TN3270::Session & IPC::Session::push(int row, int col, const std::string &text) {
+	TN3270::Session & IPC::Session::push(int row, int col, const char *text, int length) {
 
 		int32_t rc;
+
+		if(length < 0)
+			length = strlen(text);
 
 		Request(*this,"setStringAt")
 			.push((uint32_t) row)
 			.push((uint32_t) col)
-			.push(text.c_str())
-			.call()
-			.pop(rc);
-
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
-
-		return *this;
-
-	}
-
-	TN3270::Session & IPC::Session::push(const PFKey key) {
-
-		int32_t rc;
-
-		Request(*this,"pfkey")
-			.push((uint32_t) key)
-			.call()
-			.pop(rc);
-
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
-
-		return *this;
-
-	}
-
-	TN3270::Session & IPC::Session::push(const PAKey key) {
-
-		int32_t rc;
-
-		Request(*this,"pakey")
-			.push((uint32_t) key)
+			.push(text)
+			.push((uint32_t) length)
 			.call()
 			.pop(rc);
 

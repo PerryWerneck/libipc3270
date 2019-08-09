@@ -294,10 +294,15 @@
 			/// @brief Send PA.
 			virtual Session & pakey(unsigned short value) = 0;
 
-			virtual Session & push(int baddr, const std::string &text) = 0;
-			virtual Session & push(int row, int col, const std::string &text) = 0;
-			virtual Session & push(const PFKey key) = 0;
-			virtual Session & push(const PAKey key) = 0;
+			virtual Session & push(int baddr, const char *text, int length) = 0;
+			virtual Session & push(int row, int col, const char *text, int length) = 0;
+
+			Session & push(int row, int col, const std::string &text);
+			Session & push(int baddr, const std::string &text);
+
+			Session & push(const PFKey key);
+			Session & push(const PAKey key);
+
 			virtual Session & push(const Action action) = 0;
 
 			// Get contents.
@@ -341,8 +346,6 @@
 
 			/// @brief Write error to log file.
 			void error(const char *fmt, ...) const;
-
-			void input(const char *text, size_t sz);
 
 		public:
 			Host(const char *id = nullptr, const char *url = nullptr, time_t timeout = DEFAULT_TIMEOUT);
@@ -435,6 +438,8 @@
 			/// @param control_char	Control character used to identify commands.
 			Host & input(const char *text, const char control_char = '@');
 
+			Host & input(const char *text, size_t sz);
+
 			/// @brief Set field at current posicion, jumps to next writable field.
 			inline Host & push(const char *text) {
 				session->push(text);
@@ -452,8 +457,18 @@
 				return *this;
 			}
 
+			inline Host & push(int baddr, const char *text, int length = -1) {
+				session->push(baddr,text,length);
+				return *this;
+			}
+
 			inline Host & push(int row, int col, const std::string &text) {
 				session->push(row,col,text);
+				return *this;
+			}
+
+			inline Host & push(int row, int col, const char *text, int length = -1) {
+				session->push(row,col,text,length);
 				return *this;
 			}
 

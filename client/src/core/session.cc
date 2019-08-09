@@ -74,6 +74,24 @@
 
 	}
 
+	Session & Session::push(const PFKey key) {
+		return pfkey( ((unsigned short) key) + 1);
+	}
+
+	Session & Session::push(const PAKey key) {
+		return pakey( ((unsigned short) key) + 1);
+	}
+
+	Session & Session::push(int row, int col, const std::string &text) {
+		return push(row,col,text.c_str(),text.size());
+	}
+
+	Session & Session::push(int baddr, const std::string &text) {
+		return push(baddr,text.c_str(),text.size());
+	}
+
+
+
  }
 
 

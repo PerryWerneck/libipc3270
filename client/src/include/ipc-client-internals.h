@@ -204,10 +204,9 @@
 				/// @brief Set field at current posicion, jumps to next writable field.
 				TN3270::Session & push(const char *text) override;
 
-				TN3270::Session & push(int baddr, const std::string &text) override;
-				TN3270::Session & push(int row, int col, const std::string &text) override;
-				TN3270::Session & push(const PFKey key) override;
-				TN3270::Session & push(const PAKey key) override;
+				TN3270::Session & push(int baddr, const char *text, int length = -1) override;
+				TN3270::Session & push(int row, int col, const char *text, int length = -1) override;
+
 				TN3270::Session & push(const Action action) override;
 
 				// Get contents.
@@ -374,10 +373,9 @@
 				/// @brief Set field at current posicion, jumps to next writable field.
 				TN3270::Session & push(const char *text) override;
 
-				TN3270::Session & push(int baddr, const std::string &text) override;
-				TN3270::Session & push(int row, int col, const std::string &text) override;
-				TN3270::Session & push(const PFKey key) override;
-				TN3270::Session & push(const PAKey key) override;
+				TN3270::Session & push(int baddr, const char *text, int length = -1) override;
+				TN3270::Session & push(int row, int col, const char *text, int length = -1) override;
+
 				TN3270::Session & push(const Action action) override;
 
 				// Get contents.

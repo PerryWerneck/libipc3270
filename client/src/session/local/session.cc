@@ -252,10 +252,10 @@
 		return *this;
 	}
 
-	TN3270::Session & Local::Session::push(int baddr, const std::string &text) {
+	TN3270::Session & Local::Session::push(int baddr, const char * text, int length) {
 		std::lock_guard<std::mutex> lock(sync);
 
-		string converted = convertToHost(text.c_str(),text.size());
+		string converted = convertToHost(text, length);
 
 		if(lib3270_set_string_at_address(this->hSession,baddr,(unsigned char *) converted.c_str(),converted.length()) < 0) {
 			throw std::system_error(errno, std::system_category());
@@ -264,27 +264,15 @@
 		return *this;
 	}
 
-	TN3270::Session & Local::Session::push(int row, int col, const std::string &text) {
+	TN3270::Session & Local::Session::push(int row, int col, const char *text, int length) {
 		std::lock_guard<std::mutex> lock(sync);
 
-		string converted = convertToHost(text.c_str(),text.size());
+		string converted = convertToHost(text,length);
 
 		if(lib3270_set_string_at(this->hSession,row,col,(unsigned char *) converted.c_str())) {
 			throw std::system_error(errno, std::system_category());
 		}
 
-		return *this;
-	}
-
-	TN3270::Session & Local::Session::push(const PFKey key) {
-		std::lock_guard<std::mutex> lock(sync);
-		lib3270_pfkey(hSession,(int) key);
-		return *this;
-	}
-
-	TN3270::Session & Local::Session::push(const PAKey key) {
-		std::lock_guard<std::mutex> lock(sync);
-		lib3270_pakey(hSession,(int) key);
 		return *this;
 	}
 

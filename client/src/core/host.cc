@@ -211,19 +211,10 @@
             throw std::system_error(ENOTSUP, std::system_category());
 	}
 
-	void Host::input(const char *text, size_t sz) {
-
-#ifdef DEBUG
-		{
-			string str = string(text,sz);
-			clog << __FUNCTION__ << "(\"" << str << "\")" << endl;
-		}
-#endif // DEBUG
-
+	Host & Host::input(const char *text, size_t sz) {
 		this->session->input(text, sz);
-
+		return *this;
 	}
-
 
 	Host & Host::input(const char *text, const char control_char) {
 
