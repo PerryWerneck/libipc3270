@@ -228,16 +228,51 @@
 	/// @brief Set field at current position, jumps to next writable field.
 	TN3270::Session & Local::Session::push(const char *text) {
 		std::lock_guard<std::mutex> lock(sync);
+
+		string converted = convertToHost(text);
+
+		int rc = lib3270_input_string(this->hSession, (unsigned char *) converted.c_str(), converted.size());
+		if(rc) {
+			throw std::system_error(errno, std::system_category());
+		}
+
+		return *this;
+	}
+
+	TN3270::Session & Local::Session::input(const char *text, size_t length) {
+		std::lock_guard<std::mutex> lock(sync);
+
+		string converted = convertToHost(text,length);
+
+		int rc = lib3270_input_string(this->hSession, (unsigned char *) converted.c_str(), converted.size());
+		if(rc) {
+			throw std::system_error(errno, std::system_category());
+		}
+
 		return *this;
 	}
 
 	TN3270::Session & Local::Session::push(int baddr, const std::string &text) {
 		std::lock_guard<std::mutex> lock(sync);
+
+		string converted = convertToHost(text.c_str(),text.size());
+
+		if(lib3270_set_string_at_address(this->hSession,baddr,(unsigned char *) converted.c_str(),converted.length()) < 0) {
+			throw std::system_error(errno, std::system_category());
+		}
+
 		return *this;
 	}
 
 	TN3270::Session & Local::Session::push(int row, int col, const std::string &text) {
 		std::lock_guard<std::mutex> lock(sync);
+
+		string converted = convertToHost(text.c_str(),text.size());
+
+		if(lib3270_set_string_at(this->hSession,row,col,(unsigned char *) converted.c_str())) {
+			throw std::system_error(errno, std::system_category());
+		}
+
 		return *this;
 	}
 

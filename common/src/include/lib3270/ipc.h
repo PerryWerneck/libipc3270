@@ -154,7 +154,19 @@
 			PF_9,
 			PF_10,
 			PF_11,
-			PF_12
+			PF_12,
+			PF_13,
+			PF_14,
+			PF_15,
+			PF_16,
+			PF_17,
+			PF_18,
+			PF_19,
+			PF_20,
+			PF_21,
+			PF_22,
+			PF_23,
+			PF_24
 		};
 
 		/// @brief PF Keys
@@ -264,6 +276,9 @@
 				return push(text.c_str());
 			}
 
+			/// @brief Input string.
+			virtual Session & input(const char *text, size_t length) = 0;
+
 			/// @brief Set cursor address.
 			virtual TN3270::Session & setCursorPosition(unsigned short addr) = 0;
 
@@ -276,7 +291,7 @@
 			/// @brief Send PF.
 			virtual Session & pfkey(unsigned short value) = 0;
 
-			/// @brief Send PF.
+			/// @brief Send PA.
 			virtual Session & pakey(unsigned short value) = 0;
 
 			virtual Session & push(int baddr, const std::string &text) = 0;
@@ -326,6 +341,8 @@
 
 			/// @brief Write error to log file.
 			void error(const char *fmt, ...) const;
+
+			void input(const char *text, size_t sz);
 
 		public:
 			Host(const char *id = nullptr, const char *url = nullptr, time_t timeout = DEFAULT_TIMEOUT);
@@ -404,7 +421,19 @@
 			/// @brief Send PA.
 			Host & pakey(unsigned short value);
 
+			/// @brief Request print
+			Host & print(LIB3270_CONTENT_OPTION option = LIB3270_CONTENT_ALL);
+
 			// Set contents.
+
+			/// @brief Input string.
+			///
+			/// Input the supplied string processing commands delimited by the control char in
+			/// the same way of the old HLLAPI.
+			///
+			/// @param text			String with the text to input.
+			/// @param control_char	Control character used to identify commands.
+			Host & input(const char *text, const char control_char = '@');
 
 			/// @brief Set field at current posicion, jumps to next writable field.
 			inline Host & push(const char *text) {

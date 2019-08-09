@@ -62,7 +62,7 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		g_variant_get(parameters, "(&s)", &text);
 
 		g_autofree gchar * converted = ipc3270_convert_output_string(object, text, error);
-		if(lib3270_input_string(hSession,(const unsigned char *) converted) < 0)
+		if(lib3270_input_string(hSession,(const unsigned char *) converted, -1))
 		{
 			// Failed!
 			debug("%s failed: %s",method_name,strerror(errno));

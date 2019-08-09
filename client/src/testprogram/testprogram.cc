@@ -39,7 +39,6 @@
  #include <getopt.h>
  #include <cstdlib>
  #include <lib3270/ipc.h>
- #include <delayimp.h>
 
  using namespace std;
 
@@ -87,11 +86,16 @@
 			<< "\tProgram message is " << host.getProgramMessage()
 			<< std::endl;
 
-		// host.connect(getenv("LIB3270_DEFAULT_HOST"));
+
+		// host.input("test@0another line");
+
+		/*
+		host.connect();
 
 		if(host) {
 			cout << host << endl;
 		}
+		*/
 
 	} catch(const std::exception &e) {
 

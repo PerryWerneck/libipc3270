@@ -121,7 +121,7 @@
 #endif
 
 				/// @brief Converte charset.
-				static std::string convertCharset(iconv_t &converter, const char *str);
+				static std::string convertCharset(iconv_t &converter, const char *str, int length);
 
 			protected:
 
@@ -135,10 +135,10 @@
 				void setCharSet(const char *remote, const char *local = SYSTEM_CHARSET);
 
 				/// @brief Converte string recebida do host para o charset atual.
-				std::string convertFromHost(const char *str) const;
+				std::string convertFromHost(const char *str, int length = -1) const;
 
 				/// @brief Converte string do charset atual para o charset do host.
-				std::string convertToHost(const char *str) const;
+				std::string convertToHost(const char *str, int length = -1) const;
 
 			};
 
@@ -198,6 +198,8 @@
 
 				TN3270::Session & pfkey(unsigned short value);
 				TN3270::Session & pakey(unsigned short value);
+
+				TN3270::Session & input(const char *text, size_t length) override;
 
 				/// @brief Set field at current posicion, jumps to next writable field.
 				TN3270::Session & push(const char *text) override;
@@ -366,6 +368,8 @@
 
 				TN3270::Session & pfkey(unsigned short value);
 				TN3270::Session & pakey(unsigned short value);
+
+				TN3270::Session & input(const char *text, size_t length) override;
 
 				/// @brief Set field at current posicion, jumps to next writable field.
 				TN3270::Session & push(const char *text) override;

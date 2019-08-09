@@ -125,6 +125,11 @@
 
 	}
 
+	TN3270::Session & IPC::Session::input(const char *text, size_t length) {
+
+		return *this;
+	}
+
 	/// @brief Set field at current position, jumps to next writable field.
 	TN3270::Session & IPC::Session::push(const char *text) {
 
