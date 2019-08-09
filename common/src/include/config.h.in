@@ -38,6 +38,9 @@
 	#undef HAVE_ICONV
 	#undef ICONV_CONST
 
+	#undef LIB3270_DELAYED
+	#undef LIB3270_DYNAMIC
+
 	#undef HAVE_VASPRINTF
 
 

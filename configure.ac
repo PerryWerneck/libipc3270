@@ -79,9 +79,9 @@ DLLPREFIX="lib"
 case "$host" in
 	*-mingw32|*-pc-msys)
 		app_cv_osname="windows"
-		CFLAGS="$CFLAGS -pthread -D_WIN32_WINNT=0x0600"
+		CFLAGS="$CFLAGS -D_WIN32_WINNT=0x0600"
 		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
-		LDFLAGS="$LDFLAGS -pthread"
+		LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++"
 		DLLEXT=".dll"
 		DLLPREFIX=""
 
@@ -211,31 +211,31 @@ dnl ---------------------------------------------------------------------------
 dnl Check for LIB3270
 dnl ---------------------------------------------------------------------------
 
-AC_ARG_WITH([static-lib3270],
-        [AS_HELP_STRING([--with-static-lib3270], [Uses static version of lib3270])],
+AC_ARG_WITH([delayed-lib3270],
+        [AS_HELP_STRING([--with-delayed-lib3270], [Uses delayed version of lib3270 (WIN32 Only)])],
 [
-	app_cv_static_lib3270=$withval
+	app_cv_delayed_lib3270=$withval
 ],[
-	app_cv_static_lib3270=auto
+	app_cv_delayed_lib3270="auto"
 ])
 
-if test "$app_cv_static_lib3270" == "auto"; then
+if test "$app_cv_delayed_lib3270" == "auto"; then
 	case "$host" in
 	*-mingw32|*-pc-msys)
-		app_cv_static_lib3270="yes"
+		app_cv_delayed_lib3270="yes"
 		;;
 
 	*)
-		app_cv_static_lib3270="no"
+		app_cv_delayed_lib3270="no"
 
 	esac
 
 fi
 
-if test "$app_cv_static_lib3270" == "yes"; then
-	PKG_CHECK_MODULES( [LIB3270], [lib3270-static], AC_DEFINE(HAVE_LIB3270), AC_MSG_ERROR([LIB3270 not present.]))
+if test "$app_cv_delayed_lib3270" == "yes"; then
+	PKG_CHECK_MODULES( [LIB3270], [lib3270-delayed], AC_DEFINE(LIB3270_DELAYED), AC_MSG_ERROR([LIB3270 delayed module is not present.]))
 else
-	PKG_CHECK_MODULES( [LIB3270], [lib3270], AC_DEFINE(HAVE_LIB3270), AC_MSG_ERROR([LIB3270 not present.]))
+	PKG_CHECK_MODULES( [LIB3270], [lib3270], AC_DEFINE(LIB3270_DYNAMIC), AC_MSG_ERROR([LIB3270 dynamic module is not present.]))
 fi
 
 AC_SUBST(LIB3270_LIBS)

@@ -178,7 +178,7 @@
 			SELECT_ALL,
 			UNSELECT,
 			RESELECT,
-			DELETE,
+			CHAR_DELETE,
 			DUP,
 			FIELDMARK,
 			BACKSPACE,
@@ -193,7 +193,6 @@
 			WORD_DELETE,	///< @brief Backspaces the cursor until it hits the front of a word (does a ^W).
 			FIELD_DELETE,	///< @brief Delete field key (does a ^U).
 			SYSREQ
-
 		};
 
 		/// @brief TN3270 Session.

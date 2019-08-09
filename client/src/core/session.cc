@@ -48,7 +48,7 @@
 
 		debug("Creating session with ID \"",id,"\"");
 
-		if(!id) {
+		if(!(id && *id)) {
 			return new Local::Session();
 		}
 

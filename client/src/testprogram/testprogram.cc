@@ -39,6 +39,7 @@
  #include <getopt.h>
  #include <cstdlib>
  #include <lib3270/ipc.h>
+ #include <delayimp.h>
 
  using namespace std;
 
@@ -46,7 +47,7 @@
 
  int main(int argc, char **argv) {
 
-	const char * session = "pw3270:a";
+	const char * session = ""; // "pw3270:a";
 
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
