@@ -183,7 +183,7 @@ all: \
 
 Release: \
 	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@ \
-	$(BINRLS)/lib$(MODULE_NAME).a
+	$(BINRLS)/lib$(MODULE_NAME).static.a
 
 $(BINRLS)/lib$(MODULE_NAME)@LIBEXT@: \
 	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o)
@@ -198,7 +198,7 @@ $(BINRLS)/lib$(MODULE_NAME)@LIBEXT@: \
 		$(LIBS) \
 		$(GTK_LIBS)
 
-$(BINRLS)/lib$(MODULE_NAME).a: \
+$(BINRLS)/lib$(MODULE_NAME).static.a: \
 	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o)
 
 	@$(MKDIR) $(@D)
@@ -231,13 +231,13 @@ install-shared: \
 		$(DESTDIR)/$(libdir)/lib$(MODULE_NAME)@DLLEXT@
 
 install-static: \
-	$(BINRLS)/lib$(MODULE_NAME).a
+	$(BINRLS)/lib$(MODULE_NAME).static.a
 
 	@$(MKDIR) \
 		$(DESTDIR)/$(libdir)
 
 	@$(INSTALL_PROGRAM) \
-		$(BINRLS)/lib$(MODULE_NAME).a \
+		$(BINRLS)/lib$(MODULE_NAME).static.a \
 		$(DESTDIR)/$(libdir)
 
 	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
