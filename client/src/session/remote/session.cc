@@ -248,43 +248,7 @@
 	}
 
 	TN3270::Session & IPC::Session::push(const Action action) {
-
-		static const char * actions[] = {
-			"enter",
-			"erase",
-			"eraseeof",
-			"eraseeol",
-			"eraseinput"
-            "kybdreset",
-            "newline",
-            "clear",
-            "select_field",
-            "select_all",
-            "unselect",
-            "reselect",
-            "delete",
-            "dup",
-            "fieldmark",
-            "backspace",
-            "previousword",
-            "nextword",
-            "fieldend",
-            "firstfield",
-            "nextfield",
-            "previousfield",
-            "attn",
-            "break",
-            "deleteword",
-            "deletefield",
-            "sysreq"
-		};
-
-		if( ((size_t) action) > (sizeof(actions)/sizeof(actions[0]))) {
-            throw std::system_error(EINVAL, std::system_category());
-		}
-
-		return this->action(actions[action]);
-
+		return this->action(toCharString(action));
 	}
 
 	TN3270::Session & IPC::Session::pop(int baddr, std::string &text) {

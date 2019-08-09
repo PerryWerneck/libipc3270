@@ -286,7 +286,7 @@ $(BINDBG)/$(MODULE_NAME)-client@EXEEXT@: \
 	@$(LD) \
 		-o $@ \
 		$^ \
-		-L$(BINDBG) -l$(MODULE_NAME)\
+		-L$(BINDBG) \
 		-Wl,-rpath,$(BINDBG) \
 		$(LDFLAGS) \
 		$(LIBS)

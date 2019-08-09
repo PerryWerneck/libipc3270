@@ -464,6 +464,7 @@
 
 	TN3270_PUBLIC const char * toCharString(const TN3270::ProgramMessage programMessage) noexcept;
 	TN3270_PUBLIC const char * toCharString(const TN3270::ConnectionState connectionState) noexcept;
+	TN3270_PUBLIC const char * toCharString(const TN3270::Action action);
 
 	template <typename T>
 	inline TN3270_PUBLIC TN3270::Session & operator<<(TN3270::Session& session, const T value) {
