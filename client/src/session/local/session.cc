@@ -413,7 +413,7 @@
 	/// @brief Set cursor address.
 	///
 	/// @param addr	Cursor address.
-	TN3270::Session & Local::Session::setCursorPosition(unsigned short addr) {
+	TN3270::Session & Local::Session::setCursor(unsigned short addr) {
 
 		if(lib3270_set_cursor_address(hSession,addr) < 0) {
 			throw std::system_error(errno, std::system_category());
@@ -425,7 +425,7 @@
 	/// @brief Get cursor address.
 	///
 	/// @return
-	unsigned short Local::Session::getCursorPosition() {
+	unsigned short Local::Session::getCursorAddress() {
 
 		unsigned int position = lib3270_get_cursor_address(hSession);
 
@@ -440,7 +440,7 @@
 	///
 	/// @param row	New cursor row.
 	/// @param col	New cursor column.
-	TN3270::Session & Local::Session::setCursorPosition(unsigned short row, unsigned short col) {
+	TN3270::Session & Local::Session::setCursor(unsigned short row, unsigned short col) {
 
 		if(lib3270_set_cursor_position(hSession,row,col)) {
 			throw std::system_error(errno, std::system_category());
@@ -457,6 +457,13 @@
 
 	std::string Local::Session::getRevision() const {
 		return lib3270_get_revision();
+	}
+
+	std::string Local::Session::getLUName() const {
+		const char * luname =  lib3270_get_luname(hSession);
+		if(luname)
+			return luname;
+		return "";
 	}
 
 	/// @brief Execute action by name.

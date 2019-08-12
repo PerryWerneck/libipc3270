@@ -186,6 +186,7 @@
 
 				std::string getVersion() const override;
 				std::string getRevision() const override;
+				std::string getLUName() const override;
 
 				// Gets
 				std::string	toString(int baddr, size_t len, char lf) const override;
@@ -195,9 +196,9 @@
 
 				ConnectionState getConnectionState() const override;
 
-				TN3270::Session & setCursorPosition(unsigned short addr) override;
-				TN3270::Session & setCursorPosition(unsigned short row, unsigned short col) override;
-				unsigned short getCursorPosition() override;
+				TN3270::Session & setCursor(unsigned short addr) override;
+				TN3270::Session & setCursor(unsigned short row, unsigned short col) override;
+				unsigned short getCursorAddress() override;
 
 				TN3270::Session & pfkey(unsigned short value);
 				TN3270::Session & pakey(unsigned short value);
@@ -361,8 +362,10 @@
 
 				std::string getVersion() const override;
 				std::string getRevision() const override;
+				std::string getLUName() const override;
 
 				// Set properties.
+				void setProperty(const char *name, const int value) const;
 				void setUnlockDelay(unsigned short delay = 350) override;
 
 				// Gets
@@ -373,9 +376,9 @@
 
 				ConnectionState getConnectionState() const override;
 
-				TN3270::Session & setCursorPosition(unsigned short addr) override;
-				TN3270::Session & setCursorPosition(unsigned short row, unsigned short col) override;
-				unsigned short getCursorPosition() override;
+				TN3270::Session & setCursor(unsigned short addr) override;
+				TN3270::Session & setCursor(unsigned short row, unsigned short col) override;
+				unsigned short getCursorAddress() override;
 
 				TN3270::Session & pfkey(unsigned short value);
 				TN3270::Session & pakey(unsigned short value);

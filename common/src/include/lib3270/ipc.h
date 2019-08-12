@@ -253,6 +253,7 @@
 
 			virtual std::string getVersion() const = 0;
 			virtual std::string getRevision() const = 0;
+			virtual std::string getLUName() const = 0;
 
 			virtual ProgramMessage getProgramMessage() const = 0;
 			inline operator ProgramMessage() const {
@@ -284,13 +285,13 @@
 			virtual Session & input(const char *text, size_t length) = 0;
 
 			/// @brief Set cursor address.
-			virtual TN3270::Session & setCursorPosition(unsigned short addr) = 0;
+			virtual TN3270::Session & setCursor(unsigned short addr) = 0;
 
 			/// @brief Set cursor position.
-			virtual TN3270::Session & setCursorPosition(unsigned short row, unsigned short col) = 0;
+			virtual TN3270::Session & setCursor(unsigned short row, unsigned short col) = 0;
 
 			/// @brief Get cursor address
-			virtual unsigned short getCursorPosition() = 0;
+			virtual unsigned short getCursorAddress() = 0;
 
 			/// @brief Send PF.
 			virtual Session & pfkey(unsigned short value) = 0;
@@ -400,18 +401,18 @@
 			}
 
 			/// @brief Set cursor address.
-			inline void setCursorPosition(unsigned short addr) {
-				session->setCursorPosition(addr);
+			inline void setCursor(unsigned short addr) {
+				session->setCursor(addr);
 			}
 
 			/// @brief Set cursor position.
-			inline void setCursorPosition(unsigned short row, unsigned short col) {
-				session->setCursorPosition(row,col);
+			inline void setCursor(unsigned short row, unsigned short col) {
+				session->setCursor(row,col);
 			}
 
 			/// @brief Get cursor address
-			inline unsigned short getCursorPosition() {
-				return session->getCursorPosition();
+			inline unsigned short getCursorAddress() {
+				return session->getCursorAddress();
 			}
 
 			// Get properties
@@ -424,6 +425,11 @@
 			/// @brief Get lib3270 revision.
 			std::string getRevision() const {
 				return session->getRevision();
+			}
+
+			/// @brief Get LU Name.
+			std::string getLUName() const {
+				return session->getLUName();
 			}
 
 			// Actions
@@ -515,8 +521,8 @@
 
 	}
 
-	TN3270_PUBLIC const char * toCharString(const TN3270::ProgramMessage programMessage) noexcept;
-	TN3270_PUBLIC const char * toCharString(const TN3270::ConnectionState connectionState) noexcept;
+	TN3270_PUBLIC const char * toCharString(const TN3270::ProgramMessage programMessage);
+	TN3270_PUBLIC const char * toCharString(const TN3270::ConnectionState connectionState);
 	TN3270_PUBLIC const char * toCharString(const TN3270::Action action);
 
 	template <typename T>

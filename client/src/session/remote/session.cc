@@ -266,27 +266,18 @@
 	/// @brief Set cursor address.
 	///
 	/// @param addr	Cursor address.
-	TN3270::Session & IPC::Session::setCursorPosition(unsigned short addr) {
+	TN3270::Session & IPC::Session::setCursor(unsigned short addr) {
 
-		int32_t rc;
-
-		Request(*this,"setCursorAddress")
-			.push((uint32_t) addr)
-			.call()
-			.pop(rc);
-
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
-
+		setProperty("setCursorAddress", (uint32_t) addr);
 		return *this;
 
 	}
 
-	unsigned short IPC::Session::getCursorPosition() {
+	unsigned short IPC::Session::getCursorAddress() {
 
-		// TODO: Implement it.
-		throw std::system_error((int) ENOTSUP, std::system_category());
+		int32_t address;
+		getProperty("cursor_address",address);
+		return (unsigned short) address;
 
 	}
 
@@ -294,7 +285,7 @@
 	///
 	/// @param row	New cursor row.
 	/// @param col	New cursor column.
-	TN3270::Session & IPC::Session::setCursorPosition(unsigned short row, unsigned short col) {
+	TN3270::Session & IPC::Session::setCursor(unsigned short row, unsigned short col) {
 
 		int32_t rc;
 
@@ -317,6 +308,21 @@
 		Request(*this,false,name)
 			.call()
 			.pop(value);
+
+	}
+
+	void IPC::Session::setProperty(const char *name, const int value) const {
+
+		int32_t rc;
+
+		Request(*this,true,name)
+			.push(value)
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
 
 	}
 
@@ -346,6 +352,14 @@
 
 		string rc;
 		getProperty("revision",rc);
+		return rc;
+
+	}
+
+	std::string IPC::Session::getLUName() const {
+
+		string rc;
+		getProperty("luname",rc);
 		return rc;
 
 	}
@@ -380,6 +394,8 @@
 	}
 
 	void IPC::Session::setUnlockDelay(unsigned short delay) {
+
+		setProperty("unlock_delay", (uint32_t) delay);
 
 	}
 

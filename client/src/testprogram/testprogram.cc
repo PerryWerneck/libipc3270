@@ -46,7 +46,7 @@
 
  int main(int argc, char **argv) {
 
-	const char * session = ""; // "pw3270:a";
+	const char * session = "pw3270:a";
 
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
@@ -82,8 +82,9 @@
 			<< std::endl;
 
 		cout
-			<< "Connection state is " << host.getConnectionState()
-			<< "\tProgram message is " << host.getProgramMessage()
+			<< "Connection state is " << toCharString(host.getConnectionState()) << std::endl
+			<< "Program message is " << toCharString(host.getProgramMessage()) << std::endl
+			<< "Luname is " << host.getLUName() << std::endl
 			<< std::endl;
 
 

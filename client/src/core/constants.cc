@@ -80,6 +80,54 @@ TN3270_PUBLIC const char * toCharString(const TN3270::Action action) {
     return actions[action];
 }
 
+TN3270_PUBLIC const char * toCharString(const TN3270::ProgramMessage programMessage) {
+
+	static const char *messages[] = {
+		"",
+		"X System",
+		"X Wait",
+		"Connected"
+		"X Not Connected",
+		"Awaiting first",
+		"X -f",
+		"X Protected",
+		"X Numeric",
+		"X Overflow",
+		"X Inhibit",
+		"KybdLock",
+		"X",
+		"X Resolving",
+		"X Connecting",
+	};
+
+    if( ((size_t) programMessage) > (sizeof(messages)/sizeof(messages[0]))) {
+        throw std::system_error(EINVAL, std::system_category());
+    }
+
+    return messages[programMessage];
+}
+
+TN3270_PUBLIC const char * toCharString(const TN3270::ConnectionState connectionState) {
+
+	static const char *states[] = {
+		"Disconnected",
+		"Resolving hostname",
+		"Pending",
+		"Connected, no mode yet",
+		"Connected in NVT ANSI mode",
+		"Connected in old-style 3270 mode",
+		"Connected in TN3270E mode, unnegotiated",
+		"Connected in TN3270E mode, NVT mode",
+		"Connected in TN3270E mode, SSCP-LU mode",
+		"Connected in TN3270E mode, 3270 mode",
+	};
+
+    if( ((size_t) connectionState) > (sizeof(states)/sizeof(states[0]))) {
+        throw std::system_error(EINVAL, std::system_category());
+    }
+
+    return states[connectionState];
+}
 
 
 
