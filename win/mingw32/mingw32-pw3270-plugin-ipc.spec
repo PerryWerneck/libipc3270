@@ -45,10 +45,8 @@ Url:		https://portal.softwarepublico.gov.br/social/pw3270/
 Group:		System/X11/Terminals
 BuildRoot:	/var/tmp/%{name}-%{version}
 
-Provides:	pw3270-plugin-dbus
-Conflicts:	otherproviders(pw3270-plugin-dbus)
-
 Provides:	mingw32-lib3270-ipc-service
+Conflicts:	otherproviders(mingw32-lib3270-ipc-service)
 
 BuildRequires:	mingw32-lib3270-devel >= 5.2
 BuildRequires:	mingw32-libv3270-devel >= 5.2
@@ -76,7 +74,7 @@ BuildRequires:	mingw32(pkg:libv3270)
 
 %description
 
-PW3270 plugin exporting D-Bus objects for every tn3270 session.
+PW3270 IPC plugin.
 
 See more details at https://softwarepublico.gov.br/social/pw3270/
 
@@ -84,7 +82,9 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 %package -n mingw32-libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
 Summary: IPC Library for pw3270
+
 Recommends: mingw32-lib3270-ipc-service
+Provides:	mingw32(lib:ipc3270)
 
 %description -n mingw32-libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
 
@@ -150,9 +150,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -n mingw32-libipc3270-devel
 %defattr(-,root,root)
 %{_mingw32_includedir}/lib3270/ipc.h
-%{_mingw32_libdir}/libipc3270.a
-%{_mingw32_libdir}/pkgconfig/ipc3270-static.pc
-%{_mingw32_libdir}/pkgconfig/ipc3270.pc
+%{_mingw32_libdir}/*.a
+%{_mingw32_libdir}/pkgconfig/*.pc
 
 %changelog
 
