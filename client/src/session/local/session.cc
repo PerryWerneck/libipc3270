@@ -36,6 +36,15 @@
  *
  */
 
+ #ifdef _WIN32
+
+	#include <winsock2.h>
+	#include <windows.h>
+	#include <lmcons.h>
+	#include <libloaderapi.h>
+
+ #endif // _WIN32
+
  #include <ipc-client-internals.h>
  #include <lib3270/actions.h>
  #include <lib3270/properties.h>
@@ -45,6 +54,8 @@
 
  extern "C" {
 	 #include <lib3270/session.h>
+
+
  }
 
  using std::string;
@@ -53,9 +64,137 @@
 
  namespace TN3270 {
 
+ #ifdef _WIN32
+	static void write_log(const char *msg, int rc = (int) GetLastError()) {
+
+		HANDLE hEventLog = RegisterEventSource(NULL, PACKAGE_NAME);
+
+		if(hEventLog) {
+
+			char	username[UNLEN + 1];
+			DWORD	szName = sizeof(username);
+
+			memset(username,0,szName);
+
+			if(!GetUserName(username, &szName)) {
+				strncpy(username,"?",UNLEN);
+			}
+
+			char lasterror[1024];
+			snprintf(lasterror,sizeof(lasterror),"The error code was %d",rc);
+
+			const char *outMsg[] = {
+				username,
+				msg,
+				lasterror
+			};
+
+			ReportEvent(
+				hEventLog,
+				EVENTLOG_ERROR_TYPE,
+				1,
+				0,
+				NULL,
+				3,
+				0,
+				outMsg,
+				NULL
+			);
+
+			DeregisterEventSource(hEventLog);
+
+		}
+
+	}
+ #endif // _WIN32
+
 	Local::Session::Session() : Abstract::Session() {
 
 		std::lock_guard<std::mutex> lock(sync);
+
+#ifdef _WIN32
+		{
+			static bool initialized = false;
+
+			if(!initialized) {
+
+				// Get application DATADIR
+
+				// https://github.com/curl/curl/blob/master/lib/system_win32.c
+
+				char datadir[4096];
+				HKEY hKey = 0;
+				unsigned long datalen = sizeof(datadir);
+
+				memset(datadir,0,sizeof(datadir));
+
+				LSTATUS rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\pw3270",0,KEY_QUERY_VALUE,&hKey);
+				if(rc == ERROR_SUCCESS) {
+
+					unsigned long datatype; // #defined in winnt.h (predefined types 0-11)
+
+					if(RegQueryValueExA(hKey,"InstallLocation",NULL,&datatype,(LPBYTE) datadir,&datalen) != ERROR_SUCCESS) {
+
+						// Can't get DATADIR
+
+						*datadir = 0;
+					}
+
+					RegCloseKey(hKey);
+
+				} else {
+
+					write_log("Can't open HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\pw3270", (int) rc);
+
+				}
+
+				if(*datadir) {
+
+					HMODULE kernel =
+						LoadLibrary("kernel32.dll");
+
+					if(kernel) {
+
+						HANDLE WINAPI (*AddDllDirectory)(PCWSTR) =
+							(HANDLE WINAPI (*)(PCWSTR)) GetProcAddress(kernel,"AddDllDirectory");
+
+						//BOOL WINAPI (*RemoveDllDirectory)(HANDLE) =
+						//	(BOOL WINAPI (*)(HANDLE)) GetProcAddress(kernel,"RemoveDllDirectory");
+
+						if(AddDllDirectory) {
+
+							wchar_t	*path = (wchar_t *) malloc(sizeof(datadir)*sizeof(wchar_t));
+							mbstowcs(path, datadir, 4095);
+
+							if(!AddDllDirectory(path)) {
+                                write_log("AddDllDirectory has failed");
+							}
+
+							free(path);
+
+						} else {
+
+							write_log("Can't find AddDllDirectory@kernel32.dll");
+
+						}
+
+						FreeLibrary(kernel);
+
+
+					} else {
+
+						write_log("Can't load kernel32.dll");
+
+					}
+
+				}
+
+				initialized = true;
+
+			}
+
+		}
+#endif // _WIN32
 
 		this->hSession = lib3270_session_new("");
 		lib3270_set_user_data(this->hSession,(void *) this);

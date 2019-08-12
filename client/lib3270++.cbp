@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="C++ Bindings for lib3270" />
+		<Option title="IPC Client library for lib3270/pw3270" />
 		<Option makefile_is_custom="1" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
@@ -53,10 +53,6 @@
 		<Unit filename="src/core/windows/resources.rc.in" />
 		<Unit filename="src/core/windows/session.cc" />
 		<Unit filename="src/include/ipc-client-internals.h" />
-		<Unit filename="src/os/linux/request.cc" />
-		<Unit filename="src/os/linux/session.cc" />
-		<Unit filename="src/os/windows/request.cc" />
-		<Unit filename="src/os/windows/session.cc" />
 		<Unit filename="src/session/local/events.cc" />
 		<Unit filename="src/session/local/session.cc" />
 		<Unit filename="src/session/remote/session.cc" />
