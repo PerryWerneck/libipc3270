@@ -366,7 +366,7 @@
 				return session->getConnectionState() == state;
 			}
 
-			Host & connect(const char *url, bool sync = true);
+			Host & connect(const char *url = nullptr, bool sync = true);
 			Host & disconnect();
 
 			Host & waitForReady(time_t timeout = DEFAULT_TIMEOUT);

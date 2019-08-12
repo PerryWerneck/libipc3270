@@ -40,6 +40,7 @@
  #include <lib3270/actions.h>
  #include <lib3270/properties.h>
  #include <lib3270/toggle.h>
+ #include <iostream>
  #include <cstring>
 
  extern "C" {
@@ -83,26 +84,30 @@
 		this->hSession = nullptr;
 	}
 
+	void Local::Session::chkResponse(int rc) {
+
+		if(rc == 0)
+			return;
+
+#ifdef _WIN32
+		if(rc == ENOTCONN)
+			throw std::runtime_error("Not connected");
+#endif // _WIN32
+
+		throw std::system_error(rc, std::system_category());
+
+	}
+
 	void Local::Session::wait(time_t timeout) {
 
 		std::lock_guard<std::mutex> lock(sync);
-
-		int rc = lib3270_wait_for_ready(this->hSession, timeout);
-
-		if(rc) {
-			throw std::system_error(rc, std::system_category());
-		}
+		chkResponse(lib3270_wait(this->hSession, timeout));
 
 	}
 
 	void Local::Session::connect(const char *url) {
 		std::lock_guard<std::mutex> lock(sync);
-		int rc = lib3270_connect_url(hSession,url,0);
-
-		if(rc) {
-            throw std::system_error(rc, std::system_category());
-		}
-
+		chkResponse(lib3270_connect_url(hSession,url,0));
     }
 
 	void Local::Session::disconnect() {
@@ -112,7 +117,8 @@
 
 	// Wait for session state.
 	void Local::Session::waitForReady(time_t timeout) throw() {
-		this->wait(timeout);
+		std::lock_guard<std::mutex> lock(sync);
+		chkResponse(lib3270_wait_for_ready(hSession,timeout));
 	}
 
 	std::string	Local::Session::toString(int baddr, size_t len, char lf) const {
@@ -231,10 +237,7 @@
 
 		string converted = convertToHost(text);
 
-		int rc = lib3270_input_string(this->hSession, (unsigned char *) converted.c_str(), converted.size());
-		if(rc) {
-			throw std::system_error(errno, std::system_category());
-		}
+		chkResponse(lib3270_input_string(this->hSession, (unsigned char *) converted.c_str(), converted.size()));
 
 		return *this;
 	}
@@ -244,10 +247,7 @@
 
 		string converted = convertToHost(text,length);
 
-		int rc = lib3270_input_string(this->hSession, (unsigned char *) converted.c_str(), converted.size());
-		if(rc) {
-			throw std::system_error(errno, std::system_category());
-		}
+		chkResponse(lib3270_input_string(this->hSession, (unsigned char *) converted.c_str(), converted.size()));
 
 		return *this;
 	}
@@ -316,11 +316,7 @@
 
 		std::lock_guard<std::mutex> lock(sync);
 
-		int rc = actions[(size_t) action](hSession);
-
-		if(rc) {
-			throw std::system_error(errno, std::system_category());
-		}
+		chkResponse(actions[(size_t) action](hSession));
 
 		return *this;
 	}
@@ -329,10 +325,7 @@
 
 		std::lock_guard<std::mutex> lock(sync);
 
-		int rc = lib3270_pfkey(hSession,(int) value);
-		if(rc) {
-			throw std::system_error(errno, std::system_category());
-		}
+		chkResponse(lib3270_pfkey(hSession,(int) value));
 
 		return *this;
 	}
@@ -341,10 +334,7 @@
 
 		std::lock_guard<std::mutex> lock(sync);
 
-		int rc = lib3270_pakey(hSession,(int) value);
-		if(rc) {
-			throw std::system_error(errno, std::system_category());
-		}
+		chkResponse(lib3270_pakey(hSession,(int) value));
 
 		return *this;
 	}
@@ -469,22 +459,20 @@
 	/// @brief Execute action by name.
 	TN3270::Session & Local::Session::action(const char *action_name) {
 
-		if(lib3270_action(hSession,action_name)) {
-			throw std::system_error(errno, std::system_category());
-		}
+		chkResponse(lib3270_action(hSession,action_name));
 
 		return *this;
 	}
 
 	/// @brief Wait.
 	TN3270::Session & Local::Session::wait(unsigned short seconds) {
-
+		chkResponse(lib3270_wait(hSession,seconds));
 		return *this;
 	}
 
 	/// @brief Wait for update.
 	TN3270::Session & Local::Session::wait_for_update(unsigned short seconds) {
-
+		throw std::system_error(ENOTSUP, std::system_category());
 		return *this;
 	}
 

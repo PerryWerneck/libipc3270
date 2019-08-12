@@ -165,6 +165,9 @@
 				/// @brief Wait for network events
 				void wait(time_t timeout = 5);
 
+				/// @brief Check lib3270 return codes, launch exception when failed.
+				static void chkResponse(int rc);
+
 			public:
 				Session();
 				virtual ~Session();

@@ -81,6 +81,8 @@
 			<< "\tRevision: " << host.getRevision()
 			<< std::endl;
 
+		host.connect();
+
 		cout
 			<< "Connection state is " << toCharString(host.getConnectionState()) << std::endl
 			<< "Program message is " << toCharString(host.getProgramMessage()) << std::endl
