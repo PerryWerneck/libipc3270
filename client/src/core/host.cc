@@ -115,7 +115,6 @@
 	}
 
 	bool Host::isConnected() const {
-        this->session->waitForReady(this->timeout);
 		return getConnectionState() == CONNECTED_TN3270E;
 	}
 
