@@ -106,6 +106,29 @@
 		}
 
 	}
+
+	static HKEY openKey() {
+
+		LSTATUS rc;
+		HKEY hKey = 0;
+
+		rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\pw3270",0,KEY_QUERY_VALUE,&hKey);
+		if(rc == ERROR_SUCCESS) {
+			return hKey;
+		}
+
+		write_log("Can't open HKLM\\Software\\pw3270", (int) rc);
+
+		rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\pw3270",0,KEY_QUERY_VALUE,&hKey);
+		if(rc == ERROR_SUCCESS) {
+			return hKey;
+		}
+
+		write_log("Can't open HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\pw3270", (int) rc);
+
+		return 0;
+	}
+
  #endif // _WIN32
 
 	Local::Session::Session() : Abstract::Session() {
@@ -123,13 +146,12 @@
 				// https://github.com/curl/curl/blob/master/lib/system_win32.c
 
 				char datadir[4096];
-				HKEY hKey = 0;
+				HKEY hKey = openKey();
 				unsigned long datalen = sizeof(datadir);
 
 				memset(datadir,0,sizeof(datadir));
 
-				LSTATUS rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE,"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\pw3270",0,KEY_QUERY_VALUE,&hKey);
-				if(rc == ERROR_SUCCESS) {
+				if(hKey) {
 
 					unsigned long datatype; // #defined in winnt.h (predefined types 0-11)
 
@@ -141,10 +163,6 @@
 					}
 
 					RegCloseKey(hKey);
-
-				} else {
-
-					write_log("Can't open HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\pw3270", (int) rc);
 
 				}
 
