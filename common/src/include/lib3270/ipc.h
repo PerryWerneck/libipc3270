@@ -405,6 +405,10 @@
 				session->setCursor(addr);
 			}
 
+			inline void setCursorAddress(unsigned short addr) {
+				session->setCursor(addr);
+			}
+
 			/// @brief Set cursor position.
 			inline void setCursor(unsigned short row, unsigned short col) {
 				session->setCursor(row,col);
@@ -413,6 +417,14 @@
 			/// @brief Get cursor address
 			inline unsigned short getCursorAddress() {
 				return session->getCursorAddress();
+			}
+
+			inline void setUnlockDelay(unsigned short delay) {
+				return session->setUnlockDelay(delay);
+			}
+
+			inline void setCharSet(const char *charset) {
+				return session->setCharSet(charset);
 			}
 
 			// Get properties
