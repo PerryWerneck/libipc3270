@@ -455,6 +455,12 @@
 			/// @brief Request print
 			Host & print(LIB3270_CONTENT_OPTION option = LIB3270_CONTENT_ALL);
 
+			/// @brief Wait.
+			inline Host & wait(unsigned short seconds) {
+				session->wait(seconds);
+				return *this;
+			}
+
 			// Set contents.
 
 			/// @brief Input string.
