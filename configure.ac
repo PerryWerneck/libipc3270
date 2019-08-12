@@ -81,7 +81,8 @@ case "$host" in
 		app_cv_osname="windows"
 		CFLAGS="$CFLAGS -D_WIN32_WINNT=0x0600"
 		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
-		LDFLAGS="$LDFLAGS -static-libgcc -static-libstdc++"
+		LDFLAGS="$LDFLAGS"
+		STATIC_LDFLAGS="-static -static-libgcc -static-libstdc++"
 		DLLEXT=".dll"
 		DLLPREFIX=""
 
@@ -120,6 +121,7 @@ AC_SUBST(LIBS)
 AC_SUBST(LOGDIR)
 AC_SUBST(DLLEXT)
 AC_SUBST(DLLPREFIX)
+AC_SUBST(STATIC_LDFLAGS)
 
 AC_CHECK_FUNC(vasprintf, AC_DEFINE(HAVE_VASPRINTF) )
 
