@@ -326,6 +326,21 @@
 
 	}
 
+	void IPC::Session::setProperty(const char *name, const char *value) const {
+
+		int32_t rc;
+
+		Request(*this,true,name)
+			.push(value)
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
+	}
+
 	void IPC::Session::getProperty(const char *name, std::string &value) const {
 
 		Request(*this,false,name)
@@ -397,6 +412,41 @@
 
 		setProperty("unlock_delay", (uint32_t) delay);
 
+	}
+
+	std::string IPC::Session::getHostURL() const {
+
+		std::string value;
+		getProperty("url",value);
+		return value;
+
+	}
+
+	void IPC::Session::setHostURL(const char *url) {
+		setProperty("url",url);
+	}
+
+	unsigned short IPC::Session::getScreenWidth() const {
+
+		int value;
+		getProperty("width",value);
+		return (unsigned short) value;
+
+	}
+
+	unsigned short IPC::Session::getScreenHeight() const {
+
+		int value;
+		getProperty("height",value);
+		return (unsigned short) value;
+
+	}
+
+	unsigned short IPC::Session::getScreenLength() const {
+
+		int value;
+		getProperty("length",value);
+		return (unsigned short) value;
 	}
 
  }

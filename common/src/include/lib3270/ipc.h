@@ -254,6 +254,11 @@
 			virtual std::string getVersion() const = 0;
 			virtual std::string getRevision() const = 0;
 			virtual std::string getLUName() const = 0;
+			virtual std::string getHostURL() const = 0;
+
+			virtual unsigned short getScreenWidth() const = 0;
+			virtual unsigned short getScreenHeight() const = 0;
+			virtual unsigned short getScreenLength() const = 0;
 
 			virtual ProgramMessage getProgramMessage() const = 0;
 			inline operator ProgramMessage() const {
@@ -272,6 +277,7 @@
 			// Set properties.
 			virtual void setUnlockDelay(unsigned short delay = 350) = 0;
 			void setCharSet(const char *charset);
+			virtual void setHostURL(const char *url) = 0;
 
 			// Set contents.
 

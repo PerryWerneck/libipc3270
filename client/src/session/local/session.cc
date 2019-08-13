@@ -675,6 +675,26 @@
 		lib3270_set_unlock_delay(hSession,delay);
 	}
 
+	std::string Local::Session::getHostURL() const {
+		return lib3270_get_url(hSession);
+	}
+
+	void Local::Session::setHostURL(const char *url) {
+		lib3270_set_url(hSession,url);
+	}
+
+	unsigned short Local::Session::getScreenWidth() const {
+		return (unsigned short) lib3270_get_width(hSession);
+	}
+
+	unsigned short Local::Session::getScreenHeight() const {
+		return (unsigned short) lib3270_get_height(hSession);
+	}
+
+	unsigned short Local::Session::getScreenLength() const {
+		return (unsigned short) lib3270_get_length(hSession);
+	}
+
  }
 
 

@@ -186,10 +186,16 @@
 
 				// Set properties.
 				void setUnlockDelay(unsigned short delay = 350) override;
+				void setHostURL(const char *url) override;
 
 				std::string getVersion() const override;
 				std::string getRevision() const override;
 				std::string getLUName() const override;
+				std::string getHostURL() const override;
+
+				unsigned short getScreenWidth() const override;
+				unsigned short getScreenHeight() const override;
+				unsigned short getScreenLength() const override;
 
 				// Gets
 				std::string	toString(int baddr, size_t len, char lf) const override;
@@ -366,10 +372,18 @@
 				std::string getVersion() const override;
 				std::string getRevision() const override;
 				std::string getLUName() const override;
+				std::string getHostURL() const override;
+
+				unsigned short getScreenWidth() const override;
+				unsigned short getScreenHeight() const override;
+				unsigned short getScreenLength() const override;
 
 				// Set properties.
 				void setProperty(const char *name, const int value) const;
+				void setProperty(const char *name, const char * value) const;
 				void setUnlockDelay(unsigned short delay = 350) override;
+				void setHostURL(const char *url) override;
+
 
 				// Gets
 				std::string	toString(int baddr, size_t len, char lf) const override;
