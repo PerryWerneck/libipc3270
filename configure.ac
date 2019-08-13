@@ -80,7 +80,7 @@ case "$host" in
 	*-mingw32|*-pc-msys)
 		app_cv_osname="windows"
 		CFLAGS="$CFLAGS -D_WIN32_WINNT=0x0600"
-		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32"
+		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32 -lkernel32"
 		LDFLAGS="$LDFLAGS"
 		STATIC_LDFLAGS="-static -static-libgcc -static-libstdc++"
 		DLLEXT=".dll"

@@ -69,6 +69,8 @@
 
 		HANDLE hEventLog = RegisterEventSource(NULL, PACKAGE_NAME);
 
+		debug(msg," rc=",rc);
+
 		if(hEventLog) {
 
 			char	username[UNLEN + 1];
@@ -142,8 +144,7 @@
 			if(!initialized) {
 
 				// Get application DATADIR
-
-				// https://github.com/curl/curl/blob/master/lib/system_win32.c
+				LSTATUS rc;
 
 				char datadir[4096];
 				HKEY hKey = openKey();
@@ -155,55 +156,48 @@
 
 					unsigned long datatype; // #defined in winnt.h (predefined types 0-11)
 
-					if(RegQueryValueExA(hKey,"InstallLocation",NULL,&datatype,(LPBYTE) datadir,&datalen) != ERROR_SUCCESS) {
+					rc = RegQueryValueExA(hKey,"InstallLocation",NULL,&datatype,(LPBYTE) datadir,&datalen);
+					if(rc != ERROR_SUCCESS) {
 
 						// Can't get DATADIR
+						write_log("Can't get Install Location", (int) rc);
 
 						*datadir = 0;
 					}
-
 					RegCloseKey(hKey);
 
 				}
 
+#ifdef DEBUG
+				debug("Datadir=\"",datadir,"\"");
+#endif // DEBUG
+
 				if(*datadir) {
 
-					HMODULE kernel =
-						LoadLibrary("kernel32.dll");
+					wchar_t	*path = (wchar_t *) malloc(sizeof(datadir)*sizeof(wchar_t));
+					mbstowcs(path, datadir, 4095);
 
-					if(kernel) {
-
-						HANDLE WINAPI (*AddDllDirectory)(PCWSTR) =
-							(HANDLE WINAPI (*)(PCWSTR)) GetProcAddress(kernel,"AddDllDirectory");
-
-						//BOOL WINAPI (*RemoveDllDirectory)(HANDLE) =
-						//	(BOOL WINAPI (*)(HANDLE)) GetProcAddress(kernel,"RemoveDllDirectory");
-
-						if(AddDllDirectory) {
-
-							wchar_t	*path = (wchar_t *) malloc(sizeof(datadir)*sizeof(wchar_t));
-							mbstowcs(path, datadir, 4095);
-
-							if(!AddDllDirectory(path)) {
-                                write_log("AddDllDirectory has failed");
-							}
-
-							free(path);
-
-						} else {
-
-							write_log("Can't find AddDllDirectory@kernel32.dll");
-
-						}
-
-						FreeLibrary(kernel);
-
-
-					} else {
-
-						write_log("Can't load kernel32.dll");
-
+					if(!SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_USER_DIRS)) {
+						write_log("SetDefaultDllDirectories has failed");
 					}
+#ifdef DEBUG
+					else {
+						debug("SetDefaultDllDirectories has suceeded");
+					}
+#endif
+
+					if(!AddDllDirectory(path)) {
+						string msg = "Can't add ";
+						msg += datadir;
+						msg += " to directory path";
+						write_log(msg.c_str());
+					}
+#ifdef DEBUG
+					else {
+						debug("AddDllDirectory has suceeded");
+					}
+#endif
+					free(path);
 
 				}
 
@@ -215,6 +209,7 @@
 #endif // _WIN32
 
 		this->hSession = lib3270_session_new("");
+
 		lib3270_set_user_data(this->hSession,(void *) this);
 		setCharSet(lib3270_get_display_charset(this->hSession));
 
