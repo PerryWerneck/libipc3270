@@ -88,16 +88,11 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 
 		if(!g_ascii_strcasecmp(actions[ix].name,method_name)) {
 
-			int rc = actions[ix].call(hSession);
-			if(rc)
-			{
-				// Failed
+			if(actions[ix].call(hSession))
 				ipc3270_set_error(object,errno,error);
-				return;
- 			}
+			else
+				ipc3270_response_append_int32(response, 0);
 
-			// Suceeded
-			ipc3270_response_append_int32(response, 0);
 			return 0;
 
 		}
@@ -113,16 +108,11 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 			gint value;
 			g_variant_get(request, "(i)", &value);
 
-			int rc = int_methods[ix].call(hSession, value);
-			if(rc)
-			{
-				// Failed
+			if(int_methods[ix].call(hSession, value))
 				ipc3270_set_error(object,errno,error);
-				return;
- 			}
+			else
+				ipc3270_response_append_int32(response, 0);
 
-			// Suceeded
-			ipc3270_response_append_int32(response, 0);
 			return 0;
 
 		}
