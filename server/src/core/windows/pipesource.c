@@ -121,7 +121,14 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 		break;
 
 	case 3: // method
-		response = ipc3270_method_call(source->object, request_name, parameters, &error);
+		{
+			g_autoptr(GObject) rsp = ipc3270_response_new();
+			ipc3270_method_call(source->object, request_name, parameters, response, &error);
+
+			if(ipc3270_response_has_values(rsp))
+				response = ipc3270_response_steal_value(rsp);
+
+		}
 		break;
 
 	default:

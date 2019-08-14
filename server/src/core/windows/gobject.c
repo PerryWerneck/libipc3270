@@ -56,6 +56,8 @@ static void ipc3270_finalize(GObject *object) {
 	v3270_set_session_name(ipc->terminal,widget_name);
 	lib3270_set_session_id(ipc->hSession, 0);
 
+	g_free(ipc->charset);
+
 	G_OBJECT_CLASS(ipc3270_parent_class)->finalize(object);
 
 }
@@ -75,6 +77,12 @@ static void ipc3270_init(ipc3270 *object) {
 
 	debug("%s(%p)",__FUNCTION__,object);
 	object->error_domain = g_quark_from_static_string(PACKAGE_NAME);
+
+	// Get charset
+	const gchar * scharset = NULL;
+	g_get_charset(&scharset);
+
+	object->charset = g_strdup(scharset);
 
 }
 
@@ -108,8 +116,11 @@ GQuark ipc3270_get_error_domain(GObject *object) {
 }
 
 gchar * ipc3270_convert_to_3270(GObject *object, const gchar *string, GError **error) {
-	return g_convert_with_fallback(string,-1,ipc3270_get_display_charset(object),"UTF-8","?",NULL,NULL,error);
+	return g_convert_with_fallback(string,-1,lib3270_get_display_charset(IPC3270(object)->hSession),IPC3270(object)->charset,"?",NULL,NULL,error);
 }
 
+gchar * ipc3270_convert_from_3270(GObject *object, const gchar *string, GError **error) {
+	return g_convert_with_fallback(string,-1,IPC3270(object)->charset,lib3270_get_display_charset(IPC3270(object)->hSession),"?",NULL,NULL,error);
+}
 
 
