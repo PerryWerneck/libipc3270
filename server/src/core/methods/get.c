@@ -1,8 +1,7 @@
 /*
  * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
  * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob
- * o nome G3270.
+ * aplicativos mainframe. Registro no INPI sob o nome G3270.
  *
  * Copyright (C) <2008> <Banco do Brasil S.A.>
  *
@@ -28,53 +27,58 @@
  *
  */
 
- /**
-  * @brief Private definitions for pw3270 IPC linux module.
-  *
-  */
+#include "private.h"
 
-#ifndef LINUX_GOBJECT_H_INCLUDED
+int ipc3270_method_get_string(GObject *session, GVariant *request, GObject *response, GError **error) {
 
-	#define LINUX_GOBJECT_H_INCLUDED
+	H3270 *hSession = ipc3270_get_session(session);
 
-	#include <config.h>
+	lib3270_autoptr(char) text = NULL;
 
-	#define ENABLE_NLS
-	#define GETTEXT_PACKAGE PACKAGE_NAME
+	switch(g_variant_n_children(request)) {
+	case 0: // No arguments
+		{
 
-	#include <libintl.h>
-	#include <glib/gi18n.h>
-	#include <gio/gio.h>
+		}
+		break;
 
-	#include <lib3270.h>
-	#include <lib3270/ipc-glib.h>
+	case 3:	// address, length, line-delimiter
+		{
+			gint addr;
+			guint len;
+			guchar lf;
 
-	G_BEGIN_DECLS
+			g_variant_get(request, "(iiy)", &addr, &len, &lf);
 
-	typedef struct _ipc3270			ipc3270;
-	typedef struct _ipc3270Class	ipc3270Class;
+			text = lib3270_get_string_at_address(hSession, addr, len, lf);
 
-	struct _ipc3270 {
-		GObject			  parent;
+		}
+		break;
 
-		struct {
-			gchar			* name;
-			GDBusConnection	* connection;
-			guint			  id;
-		} dbus;
+	case 4: // row, col, length, line-delimiter
+		{
+			guint row,col,len;
+			guchar lf;
+			g_variant_get(request, "(uuuy)", &row, &col, &len, &lf);
 
-		H3270			* hSession;
-		gchar			* charset;
-		GtkWidget		* terminal;
-		GQuark 			  error_domain;
-	};
+			text = lib3270_get_string_at(hSession, row, col, len, lf);
 
-	struct _ipc3270Class {
-		GObjectClass parent;
-	};
+		}
+		break;
 
-	G_GNUC_INTERNAL void ipc3270_release_object(ipc3270 *object);
+	default:
+		return EINVAL;
+	}
 
-	G_END_DECLS
+	debug("text:\n%s\n",text);
 
-#endif // LINUX_GOBJECT_H_INCLUDED
+	if(!text)
+		return errno;
+
+	g_autofree gchar * converted = ipc3270_convert_from_3270(session,text,error);
+	ipc3270_response_append_string(response, converted);
+
+	return 0;
+
+}
+

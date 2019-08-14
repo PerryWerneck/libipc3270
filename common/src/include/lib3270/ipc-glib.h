@@ -75,7 +75,7 @@
 
 	void		  ipc3270_response_append_int32(GObject *object, gint32 value);
 	void		  ipc3270_response_append_uint32(GObject *object, guint32 value);
-	void		  ipc3270_response_append_3270_string(GObject *object, const char *text, GError **error);
+	void		  ipc3270_response_append_string(GObject *object, const gchar *text);
 	gboolean	  ipc3270_response_has_values(GObject *object);
 	GVariant	* ipc3270_response_steal_value(GObject *object);
 
@@ -96,7 +96,7 @@
     void				  ipc3270_export_object(GObject *object, const char *name, GError **error);
 
     /**
-     * @brief Convert UTF-8 string to lib3270 charset.
+     * @brief Convert from native charset to lib3270 charset.
      *
      * @param object	ipc3270 Object.
      * @param string	UTF-8 string to convert.
@@ -105,7 +105,7 @@
      * @return Converted string in lib3270 charset.
      *
      */
-	gchar				* ipc3270_convert_output_string(GObject *object, const gchar *string, GError **error);
+	gchar * ipc3270_convert_to_3270(GObject *object, const gchar *string, GError **error);
 
 	/**
 	 * @brief Convert lib3270 received string to UTF-8.
@@ -117,7 +117,7 @@
      * @return The string converted to UTF-8.
      *
      */
-	gchar				* ipc3270_convert_input_string(GObject *object, const gchar *string, GError **error);
+	gchar * ipc3270_convert_from_3270(GObject *object, const gchar *string, GError **error);
 
 	/**
 	 * @brief Create a GVariant from a lib3270 string.
@@ -140,7 +140,7 @@
 
 	void				  ipc3270_set_error(GObject *object, int errcode, GError **error);
 
-	void				  ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *request, GObject *response, GError **error);
+	int					  ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *request, GObject *response, GError **error);
 	gboolean			  ipc3270_set_property(GObject *object, const gchar *property_name, GVariant *value, GError **error);
 	GVariant			* ipc3270_get_property(GObject *object, const gchar *property_name, GError **error);
 

@@ -107,3 +107,9 @@ GQuark ipc3270_get_error_domain(GObject *object) {
 	return IPC3270(object)->error_domain;
 }
 
+gchar * ipc3270_convert_to_3270(GObject *object, const gchar *string, GError **error) {
+	return g_convert_with_fallback(string,-1,ipc3270_get_display_charset(object),"UTF-8","?",NULL,NULL,error);
+}
+
+
+

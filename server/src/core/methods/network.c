@@ -1,8 +1,7 @@
 /*
  * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
  * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270. Registro no INPI sob
- * o nome G3270.
+ * aplicativos mainframe. Registro no INPI sob o nome G3270.
  *
  * Copyright (C) <2008> <Banco do Brasil S.A.>
  *
@@ -28,53 +27,22 @@
  *
  */
 
- /**
-  * @brief Private definitions for pw3270 IPC linux module.
-  *
-  */
+#include "private.h"
 
-#ifndef LINUX_GOBJECT_H_INCLUDED
+int ipc3270_method_connect(GObject *session, GVariant *request, GObject *response, GError **error) {
 
-	#define LINUX_GOBJECT_H_INCLUDED
+	gchar *text = NULL;
+	g_variant_get(request, "(&s)", &text);
 
-	#include <config.h>
+	g_autofree gchar * converted = ipc3270_convert_to_3270(session,text,error);
 
-	#define ENABLE_NLS
-	#define GETTEXT_PACKAGE PACKAGE_NAME
+	if(!*error)
+		return lib3270_connect_url(ipc3270_get_session(session),converted,0);
 
-	#include <libintl.h>
-	#include <glib/gi18n.h>
-	#include <gio/gio.h>
+	return 0;
 
-	#include <lib3270.h>
-	#include <lib3270/ipc-glib.h>
+}
 
-	G_BEGIN_DECLS
-
-	typedef struct _ipc3270			ipc3270;
-	typedef struct _ipc3270Class	ipc3270Class;
-
-	struct _ipc3270 {
-		GObject			  parent;
-
-		struct {
-			gchar			* name;
-			GDBusConnection	* connection;
-			guint			  id;
-		} dbus;
-
-		H3270			* hSession;
-		gchar			* charset;
-		GtkWidget		* terminal;
-		GQuark 			  error_domain;
-	};
-
-	struct _ipc3270Class {
-		GObjectClass parent;
-	};
-
-	G_GNUC_INTERNAL void ipc3270_release_object(ipc3270 *object);
-
-	G_END_DECLS
-
-#endif // LINUX_GOBJECT_H_INCLUDED
+int ipc3270_method_disconnect(GObject *session, GVariant *request, GObject *response, GError **error) {
+	return lib3270_disconnect(ipc3270_get_session(session));
+}

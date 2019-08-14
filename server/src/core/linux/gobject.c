@@ -62,6 +62,8 @@ static void ipc3270_finalize(GObject *object) {
 	v3270_set_session_name(ipc->terminal,widget_name);
 	lib3270_set_session_id(ipc->hSession, 0);
 
+	g_free(ipc->charset);
+
 	G_OBJECT_CLASS(ipc3270_parent_class)->finalize(object);
 
 }
@@ -81,6 +83,12 @@ static void ipc3270_init(ipc3270 *object) {
 
 	debug("%s",__FUNCTION__);
 	object->error_domain = g_quark_from_static_string(PACKAGE_NAME);
+
+	// Get charset
+	const gchar * scharset = NULL;
+	g_get_charset(&scharset);
+
+	object->charset = g_strdup(scharset);
 
 }
 
@@ -138,8 +146,8 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>" \
 		"	<method name= 'getStringAtAddress'>" \
-		"		<arg type='u' name='addr' direction='in' />" \
-		"		<arg type='u' name='len' direction='in' />" \
+		"		<arg type='i' name='addr' direction='in' />" \
+		"		<arg type='i' name='len' direction='in' />" \
 		"		<arg type='y' name='lf' direction='in' />" \
 		"		<arg type='s' name='text' direction='out' />" \
 		"	</method>" \
@@ -247,10 +255,18 @@ H3270 * ipc3270_get_session(GObject *object) {
 }
 
 void ipc3270_set_error(GObject *object, int errcode, GError **error) {
-	g_set_error(error,IPC3270(object)->error_domain,errcode,"%s",strerror(errcode));
+	if(!*error)
+		g_set_error(error,IPC3270(object)->error_domain,errcode,"%s",strerror(errcode));
 }
 
 GQuark ipc3270_get_error_domain(GObject *object) {
 	return IPC3270(object)->error_domain;
 }
 
+gchar * ipc3270_convert_to_3270(GObject *object, const gchar *string, GError **error) {
+	return g_convert_with_fallback(string,-1,lib3270_get_display_charset(IPC3270(object)->hSession),IPC3270(object)->charset,"?",NULL,NULL,error);
+}
+
+gchar * ipc3270_convert_from_3270(GObject *object, const gchar *string, GError **error) {
+	return g_convert_with_fallback(string,-1,IPC3270(object)->charset,lib3270_get_display_charset(IPC3270(object)->hSession),"?",NULL,NULL,error);
+}

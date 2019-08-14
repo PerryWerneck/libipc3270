@@ -82,7 +82,23 @@
 		<Unit filename="src/core/linux/stop.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/methods/field.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/methods/get.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/methods/methods.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/methods/network.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/methods/private.h" />
+		<Unit filename="src/core/methods/set.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/methods/wait.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/setproperties.c">
