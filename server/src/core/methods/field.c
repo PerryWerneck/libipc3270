@@ -29,57 +29,10 @@
 
 #include "private.h"
 
-int ipc3270_method_get_string(GObject *session, GVariant *request, GObject *response, GError **error) {
+int ipc3270_method_get_field_attribute(GObject *session, GVariant *request, GObject *response, GError **error) {
 
-	H3270 *hSession = ipc3270_get_session(session);
+	debug("%s childs=%u",__FUNCTION__,(unsigned int) g_variant_n_children(request));
 
-	lib3270_autoptr(char) text = NULL;
-
-	switch(g_variant_n_children(request)) {
-	case 0: // No arguments
-		{
-			text = lib3270_get_string_at_address(hSession, 0, -1, '\n');
-		}
-		break;
-
-	case 3:	// address, length, line-delimiter
-		{
-			gint addr = 0, len = -1;
-			guchar lf = 0;
-
-			g_variant_get(request, "(iiy)", &addr, &len, &lf);
-
-			text = lib3270_get_string_at_address(hSession, addr, len, lf);
-
-		}
-		break;
-
-	case 4: // row, col, length, line-delimiter
-		{
-			guint row = 0, col = 0;
-			gint len = -1;
-			guchar lf = 0;
-
-			g_variant_get(request, "(uuiy)", &row, &col, &len, &lf);
-
-			text = lib3270_get_string_at(hSession, row, col, len, lf);
-
-		}
-		break;
-
-	default:
-		return EINVAL;
-	}
-
-	debug("text:\n%s\n",text);
-
-	if(!text)
-		return errno;
-
-	g_autofree gchar * converted = ipc3270_convert_from_3270(session,text,error);
-	ipc3270_response_append_string(response, converted);
-
-	return 0;
-
+	return ENOTSUP;
 }
 

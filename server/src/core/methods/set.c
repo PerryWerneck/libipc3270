@@ -29,40 +29,67 @@
 
 #include "private.h"
 
-int ipc3270_method_get_string(GObject *session, GVariant *request, GObject *response, GError **error) {
+int ipc3270_method_set_string(GObject *session, GVariant *request, GObject *response, GError **error) {
 
 	H3270 *hSession = ipc3270_get_session(session);
 
-	lib3270_autoptr(char) text = NULL;
+	gchar *text = NULL;
+	g_variant_get(request, "(&s)", &text);
+
+
+	if(*error)
+		return 0;
 
 	switch(g_variant_n_children(request)) {
-	case 0: // No arguments
+	case 1:	// Just text
 		{
-			text = lib3270_get_string_at_address(hSession, 0, -1, '\n');
+			gchar *text = NULL;
+			g_variant_get(request, "(&s)", &text);
+
+			if(text) {
+
+				g_autofree gchar * converted = ipc3270_convert_to_3270(session,text,error);
+
+				if(!lib3270_input_string(hSession,(const unsigned char *) converted, -1))
+					return errno;
+			}
+
+		}
+
+		break;
+
+	case 2:	// Address and text
+		{
+			gint addr;
+			gchar *text = NULL;
+			g_variant_get(request, "(i&s)", &addr, &text);
+
+			if(text) {
+
+				g_autofree gchar * converted = ipc3270_convert_to_3270(session,text,error);
+
+				if(lib3270_set_string_at_address(hSession,addr,(unsigned char *) converted, -1) < 0)
+					return errno;
+
+			}
+
 		}
 		break;
 
-	case 3:	// address, length, line-delimiter
+	case 3:	// Row, col & text
 		{
-			gint addr = 0, len = -1;
-			guchar lf = 0;
+			guint row, col;
+			gchar *text = NULL;
+			g_variant_get(request, "(uu&s)", &row, &col, &text);
 
-			g_variant_get(request, "(iiy)", &addr, &len, &lf);
+			if(text) {
 
-			text = lib3270_get_string_at_address(hSession, addr, len, lf);
+				g_autofree gchar * converted = ipc3270_convert_to_3270(session,text,error);
 
-		}
-		break;
+				if(lib3270_set_string_at(hSession, row, col, (unsigned char *) converted) < 0)
+					return errno;
 
-	case 4: // row, col, length, line-delimiter
-		{
-			guint row = 0, col = 0;
-			gint len = -1;
-			guchar lf = 0;
-
-			g_variant_get(request, "(uuiy)", &row, &col, &len, &lf);
-
-			text = lib3270_get_string_at(hSession, row, col, len, lf);
+			}
 
 		}
 		break;
@@ -71,15 +98,8 @@ int ipc3270_method_get_string(GObject *session, GVariant *request, GObject *resp
 		return EINVAL;
 	}
 
-	debug("text:\n%s\n",text);
-
-	if(!text)
-		return errno;
-
-	g_autofree gchar * converted = ipc3270_convert_from_3270(session,text,error);
-	ipc3270_response_append_string(response, converted);
+	ipc3270_response_append_uint32(response, 0);
 
 	return 0;
-
 }
 
