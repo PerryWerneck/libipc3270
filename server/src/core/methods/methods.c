@@ -39,11 +39,7 @@
 #include <lib3270/actions.h>
 #include <lib3270/trace.h>
 
-// #include <dbus/dbus-glib.h>
-// #include <dbus/dbus-glib-bindings.h>
-
-GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error)
-{
+void ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *request, GObject *response, GError **error) {
 
 	size_t ix;
 	H3270	* hSession = ipc3270_get_session(object);
@@ -54,12 +50,14 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 
 	if(!g_ascii_strcasecmp(method_name,"getString"))
 	{
-		return ipc3270_GVariant_from_input_string(object, lib3270_get_string_at_address(hSession,0,-1,'\n'), error);
+		lib3270_autoptr(char) str = lib3270_get_string_at_address(hSession,0,-1,'\n');
+		ipc3270_response_append_3270_string(response,str,error);
+		return;
 	}
 	else if(!g_ascii_strcasecmp(method_name,"setString"))
 	{
 		gchar *text = NULL;
-		g_variant_get(parameters, "(&s)", &text);
+		g_variant_get(request, "(&s)", &text);
 
 		g_autofree gchar * converted = ipc3270_convert_output_string(object, text, error);
 		if(lib3270_input_string(hSession,(const unsigned char *) converted, -1))
@@ -67,82 +65,92 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 			// Failed!
 			debug("%s failed: %s",method_name,strerror(errno));
 			ipc3270_set_error(object,errno,error);
-			return NULL;
+			return;
 		}
 
 		// Suceeded
 		debug("%s Suceeds",method_name);
-		return g_variant_new_int32(0);
+		ipc3270_response_append_int32(response, 0);
+		return;
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"setStringAt"))
 	{
 		guint row,col;
 		gchar *text = NULL;
-		g_variant_get(parameters, "(ii&s)", &row, &col, &text);
+		g_variant_get(request, "(ii&s)", &row, &col, &text);
 
 		g_autofree gchar * converted = ipc3270_convert_output_string(object, text, error);
 		if(lib3270_set_string_at(hSession,row,col,(const unsigned char *) converted) < 0)
 		{
 			// Failed!
 			ipc3270_set_error(object,errno,error);
-			return NULL;
+			return;
 		}
 
 		// Suceeded
-		return g_variant_new_int32(0);
+		ipc3270_response_append_int32(response, 0);
+		return;
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"getStringAt"))
 	{
 		guint row,col,len;
 		guchar lf;
-		g_variant_get(parameters, "(uuuy)", &row, &col, &len,&lf);
+		g_variant_get(request, "(uuuy)", &row, &col, &len,&lf);
 
-		return ipc3270_GVariant_from_input_string(object,lib3270_get_string_at(hSession, row, col, len, lf),error);
+		lib3270_autoptr(char) str = lib3270_get_string_at(hSession, row, col, len, lf);
+		ipc3270_response_append_3270_string(response,str,error);
+		return;
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"setStringAtAddress"))
 	{
-		guint addr;
+		gint addr;
 		gchar *text = NULL;
-		g_variant_get(parameters, "(i&s)", &addr, &text);
+		g_variant_get(request, "(i&s)", &addr, &text);
 
 		g_autofree gchar * converted = ipc3270_convert_output_string(object, text, error);
 		if(lib3270_set_string_at_address(hSession,addr,(unsigned char *) converted, -1) < 0)
 		{
 			// Failed!
 			ipc3270_set_error(object,errno,error);
-			return NULL;
+			return;
 		}
 
 		// Suceeded
-		return g_variant_new_int32(0);
+		ipc3270_response_append_int32(response, 0);
+		return;
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"getStringAtAddress"))
 	{
-		guint addr,len;
+		gint addr;
+		guint len;
 		guchar lf;
-		g_variant_get(parameters, "(uuy)", &addr, &len, &lf);
+		g_variant_get(request, "(iuy)", &addr, &len, &lf);
 
 		debug("lf=%02x",(int) lf);
 
-		return ipc3270_GVariant_from_input_string(object,lib3270_get_string_at_address(hSession, addr, len, lf),error);
+		lib3270_autoptr(char) str = lib3270_get_string_at_address(hSession, addr, len, lf);
+		ipc3270_response_append_3270_string(response,str,error);
+		return;
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"waitforready"))
 	{
 		guint timeout = 1;
-		if(parameters) {
-			g_variant_get(parameters, "(u)", &timeout);
+		if(request) {
+			g_variant_get(request, "(u)", &timeout);
 		}
-		return g_variant_new_int32((gint) lib3270_wait_for_ready(hSession,timeout));
+		ipc3270_response_append_int32(response, lib3270_wait_for_ready(hSession,timeout));
+		return;
+
 	}
 	else if(!g_ascii_strcasecmp(method_name,"connect"))
 	{
 		gchar *text = NULL;
-		g_variant_get(parameters, "(&s)", &text);
+		g_variant_get(request, "(&s)", &text);
 
 		g_autofree gchar * converted = ipc3270_convert_output_string(object, text, error);
 		if(lib3270_connect_url(hSession,converted,0))
@@ -153,7 +161,8 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		}
 
 		// Suceeded
-		return g_variant_new_int32(0);
+		ipc3270_response_append_int32(response, 0);
+		return;
 
 	}
 	else if(!g_ascii_strcasecmp(method_name,"disconnect"))
@@ -162,14 +171,39 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		{
 			// Failed!
 			ipc3270_set_error(object,errno,error);
-			return NULL;
+			return;
 		}
 
 		// Suceeded
-		return g_variant_new_int32(0);
+		ipc3270_response_append_int32(response, 0);
+		return;
+
 	}
+	else if(!g_ascii_strcasecmp(method_name,"getFieldAttributeAt"))
+	{
+		guint row,col;
+		g_variant_get(request, "(uu)", &row, &col);
+		ipc3270_response_append_int32(response, lib3270_get_field_attribute(hSession,lib3270_translate_to_address(hSession,row,col)));
+		return;
+	}
+	else if(!g_ascii_strcasecmp(method_name,"getFieldAttributeAtAddress"))
+	{
+		gint addr;
+		g_variant_get(request, "(i)", &addr);
 
+		ipc3270_response_append_int32(response, lib3270_get_field_attribute(hSession,addr));
+		return;
+	}
+	else if(!g_ascii_strcasecmp(method_name,"waitForUpdate"))
+	{
+		guint timeout = 1;
+		if(request) {
+			g_variant_get(request, "(u)", &timeout);
+		}
 
+		ipc3270_response_append_int32(response, lib3270_wait_for_update(hSession,timeout));
+		return;
+	}
 
 	// Check action table.
 	const LIB3270_ACTION_ENTRY * actions = lib3270_get_action_table();
@@ -182,11 +216,12 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 			{
 				// Failed
 				ipc3270_set_error(object,errno,error);
-				return NULL;
+				return;
  			}
 
 			// Suceeded
-			return g_variant_new_int32(0);
+			ipc3270_response_append_int32(response, 0);
+			return;
 
 		}
 	}
@@ -199,25 +234,25 @@ GVariant * ipc3270_method_call(GObject *object, const gchar *method_name, GVaria
 		if(!g_ascii_strcasecmp(int_methods[ix].name,method_name)) {
 
 			gint value;
-			g_variant_get(parameters, "(i)", &value);
+			g_variant_get(request, "(i)", &value);
 
 			int rc = int_methods[ix].call(hSession, value);
 			if(rc)
 			{
 				// Failed
 				ipc3270_set_error(object,errno,error);
-				return NULL;
+				return;
  			}
 
 			// Suceeded
-			return g_variant_new_int32(0);
+			ipc3270_response_append_int32(response, 0);
+			return;
 
 		}
 
 	}
 
 	g_message("Unknown method \"%s\"",method_name);
-
-	return NULL;
+	ipc3270_set_error(object,ENOENT,error);
 
 }

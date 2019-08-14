@@ -127,6 +127,7 @@
 	GModule   * module		= NULL;
 
 	gtk_widget_set_name(window,session_name);
+	v3270_set_session_name(terminal,session_name);
 
 #ifdef _WIN32
 	{

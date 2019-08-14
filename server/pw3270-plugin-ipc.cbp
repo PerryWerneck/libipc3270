@@ -73,13 +73,16 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/linux/gobject.h" />
+		<Unit filename="src/core/linux/response.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/linux/start.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/linux/stop.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/core/methods.c">
+		<Unit filename="src/core/methods/methods.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/setproperties.c">

@@ -447,6 +447,15 @@
 		int value;
 		getProperty("length",value);
 		return (unsigned short) value;
+
+	}
+
+	TN3270::SSLState Local::Session::getSSLState() const override {
+
+		int value;
+		getProperty("sslstate",value);
+		return (TN3270::SSLState) value;
+
 	}
 
  }

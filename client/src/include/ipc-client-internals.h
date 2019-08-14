@@ -192,6 +192,7 @@
 				std::string getRevision() const override;
 				std::string getLUName() const override;
 				std::string getHostURL() const override;
+				SSLState getSSLState() const override;
 
 				unsigned short getScreenWidth() const override;
 				unsigned short getScreenHeight() const override;
@@ -373,6 +374,7 @@
 				std::string getRevision() const override;
 				std::string getLUName() const override;
 				std::string getHostURL() const override;
+				SSLState getSSLState() const override;
 
 				unsigned short getScreenWidth() const override;
 				unsigned short getScreenHeight() const override;

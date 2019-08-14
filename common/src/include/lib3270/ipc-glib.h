@@ -61,6 +61,25 @@
 
 	G_BEGIN_DECLS
 
+	#define GLIB_TYPE_IPC3270_RESPONSE			(ipc3270Response_get_type ())
+	#define IPC3270_RESPONSE(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), GLIB_TYPE_IPC3270_RESPONSE, ipc3270Response))
+	#define IPC3270_RESPONSE_CLASS(klass)		(G_TYPE_CHECK_CLASS_CAST ((klass), GLIB_TYPE_IPC3270_RESPONSE, ipc3270ResponseClass))
+	#define IS_IPC3270_RESPONSE(obj)			(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GLIB_TYPE_IPC3270_RESPONSE))
+	#define IS_IPC3270_RESPONSE_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), GLIB_TYPE_IPC3270_RESPONSE))
+	#define IPC3270_RESPONSE_GET_CLASS(obj)		G_TYPE_INSTANCE_GET_CLASS ((obj), GLIB_TYPE_IPC3270_RESPONSE, ipc3270ResponseClass))
+
+	typedef struct _ipc3270Response				ipc3270Response;
+	typedef struct _ipc3270ResponseClass		ipc3270ResponseClass;
+
+	GObject		* ipc3270_response_new();
+
+	void		  ipc3270_response_append_int32(GObject *object, gint32 value);
+	void		  ipc3270_response_append_uint32(GObject *object, guint32 value);
+	void		  ipc3270_response_append_3270_string(GObject *object, const char *text, GError **error);
+	gboolean	  ipc3270_response_has_values(GObject *object);
+	GVariant	* ipc3270_response_steal_value(GObject *object);
+
+
 	#define GLIB_TYPE_IPC3270				(ipc3270_get_type ())
 	#define IPC3270(obj)					(G_TYPE_CHECK_INSTANCE_CAST ((obj), GLIB_TYPE_IPC3270, ipc3270))
 	#define IPC3270_CLASS(klass)			(G_TYPE_CHECK_CLASS_CAST ((klass), GLIB_TYPE_IPC3270, ipc3270Class))
@@ -121,7 +140,7 @@
 
 	void				  ipc3270_set_error(GObject *object, int errcode, GError **error);
 
-	GVariant			* ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *parameters, GError **error);
+	void				  ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *request, GObject *response, GError **error);
 	gboolean			  ipc3270_set_property(GObject *object, const gchar *property_name, GVariant *value, GError **error);
 	GVariant			* ipc3270_get_property(GObject *object, const gchar *property_name, GError **error);
 

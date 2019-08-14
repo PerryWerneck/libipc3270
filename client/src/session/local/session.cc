@@ -695,6 +695,10 @@
 		return (unsigned short) lib3270_get_length(hSession);
 	}
 
+	TN3270::SSLState Local::Session::getSSLState() const override {
+		return lib3270_get_secure(hSession);
+	}
+
  }
 
 

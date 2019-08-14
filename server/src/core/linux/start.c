@@ -50,28 +50,25 @@ static void
 		GDBusMethodInvocation *invocation,
 		gpointer               user_data) {
 
-	g_autoptr (GError)	  error = NULL;
-	GVariant			* rc;
+	g_autoptr(GError)	error = NULL;
+	g_autoptr(GObject)	response = ipc3270_response_new();
 
 	debug("%s(%s,%s)",__FUNCTION__,interface_name,object_path);
 
-	rc = ipc3270_method_call(G_OBJECT(user_data), method_name, parameters, &error);
+	ipc3270_method_call(G_OBJECT(user_data), method_name, parameters, response, &error);
 
 	if(error) {
 
-		if(rc) {
-			g_variant_unref(rc);
-		}
-
 		g_dbus_method_invocation_return_gerror(invocation, error);
 
-	} else if(rc) {
+	} else if(ipc3270_response_has_values(response)) {
 
 		// Convert rc to tuple.
 		// It is an error if parameters is not of the right format: it must be a tuple containing the out-parameters of the D-Bus method.
 		// Even if the method has a single out-parameter, it must be contained in a tuple.
 
-		g_dbus_method_invocation_return_value(invocation, g_variant_new_tuple(&rc,1));
+		GVariant *values[] = { ipc3270_response_steal_value(response) };
+		g_dbus_method_invocation_return_value(invocation, g_variant_new_tuple(values,1));
 
 	} else {
 

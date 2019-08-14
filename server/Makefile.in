@@ -32,6 +32,7 @@ PACKAGE_NAME=@PACKAGE_NAME@
 
 CORE_SOURCES= \
 	$(wildcard src/core/*.c) \
+	$(wildcard src/core/methods/*.c) \
 	$(wildcard src/core/@OSNAME@/*.c)
 
 PLUGIN_SOURCES= \

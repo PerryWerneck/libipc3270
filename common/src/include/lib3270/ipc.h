@@ -141,6 +141,14 @@
 			CONNECTED_TN3270E	= LIB3270_CONNECTED_TN3270E,			///< @brief connected in TN3270E mode, 3270 mode
 		};
 
+		enum SSLState : uint8_t {
+			SSL_UNSECURE	= LIB3270_SSL_UNSECURE,                   	///< @brief No secure connection
+			SSL_SECURE		= LIB3270_SSL_SECURE,						///< @brief Connection secure with CA check
+			SSL_NEGOTIATED	= LIB3270_SSL_NEGOTIATED,					///< @brief Connection secure, no CA, self-signed or expired CRL
+			SSL_NEGOTIATING	= LIB3270_SSL_NEGOTIATING,					///< @brief Negotiating SSL
+			SSL_UNDEFINED	= LIB3270_SSL_UNDEFINED						///< @brief Undefined
+		};
+
 		/// @brief PF Keys
 		enum PFKey : uint8_t {
 			PF_1,
@@ -270,8 +278,18 @@
 				return getConnectionState();
 			}
 
-			inline bool operator==(ConnectionState state) const noexcept {
+			inline bool operator==(ConnectionState state) const {
 				return this->getConnectionState() == state;
+			}
+
+			virtual SSLState getSSLState() const = 0;
+
+			inline operator SSLState() const {
+				return getSSLState();
+			}
+
+			inline bool operator==(SSLState state) const {
+				return this->getSSLState() == state;
 			}
 
 			// Set properties.
@@ -334,6 +352,19 @@
 
 			/// @brief Wait for update.
 			virtual Session & wait_for_update(unsigned short seconds) = 0;
+
+			/// @brief Wait for string.
+			///
+			/// @return 0 if the string was found, error code if not.
+			int wait(int row, int col, const char *key, unsigned short seconds);
+			int wait(int baddr, const char *key, unsigned short seconds);
+
+			/// @brief Search
+			size_t find(const char * str, size_t pos = 0) const;
+
+			/// @brief Compare contents.
+			int compare(size_t baddr, const char* s, size_t len) const;
+			int compare(int row, int col, const char* s, size_t len) const;
 
 		};
 

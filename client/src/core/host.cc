@@ -110,7 +110,7 @@
     }
 
 	bool Host::isReady() const {
-        this->session->waitForReady(this->timeout);
+//        this->session->waitForReady(this->timeout);
 		return getProgramMessage() == MESSAGE_NONE;
 	}
 

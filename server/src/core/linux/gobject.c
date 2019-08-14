@@ -133,7 +133,7 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='s' name='text' direction='out' />" \
 		"	</method>" \
 		"	<method name='setStringAtAddress'>" \
-		"		<arg type='u' name='addr' direction='in' />" \
+		"		<arg type='i' name='addr' direction='in' />" \
 		"		<arg type='s' name='text' direction='in' />" \
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>" \
@@ -143,19 +143,11 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='y' name='lf' direction='in' />" \
 		"		<arg type='s' name='text' direction='out' />" \
 		"	</method>" \
-		"	<method name= 'getFieldAt'>" \
-		"		<arg type='u' name='row' direction='in' />" \
-		"		<arg type='u' name='col' direction='in' />" \
-		"		<arg type='s' name='text' direction='out' />" \
-		"	</method>" \
-		"	<method name= 'getFieldAtAddress'>" \
-		"		<arg type='u' name='addr' direction='in' />" \
-		"		<arg type='s' name='text' direction='out' />" \
-		"	</method>" \
-		"	<method name= 'getFieldAtCursor'>" \
-		"		<arg type='s' name='text' direction='out' />" \
-		"	</method>" \
 		"	<method name= 'waitForReady'>" \
+		"		<arg type='u' name='seconds' direction='in' />" \
+		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>" \
+		"	<method name= 'waitForUpdate'>" \
 		"		<arg type='u' name='seconds' direction='in' />" \
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>" \
@@ -167,6 +159,15 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='u' name='row' direction='in' />" \
 		"		<arg type='u' name='col' direction='in' />" \
 		"		<arg type='s' name='text' direction='out' />" \
+		"	</method>" \
+		"	<method name= 'getFieldAttributeAt'>" \
+		"		<arg type='u' name='row' direction='in' />" \
+		"		<arg type='u' name='col' direction='in' />" \
+		"		<arg type='u' name='attribute' direction='out' />" \
+		"	</method>" \
+		"	<method name= 'getFieldAttributeAtAddress'>" \
+		"		<arg type='i' name='addr' direction='in' />" \
+		"		<arg type='u' name='attribute' direction='out' />" \
 		"	</method>" \
 		"	<property type='s' name='version' access='read'/>" \
 		"	<property type='s' name='revision' access='read'/>"
