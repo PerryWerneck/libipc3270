@@ -408,7 +408,12 @@
 
 		while(time(nullptr) < end) {
 
+#ifdef _WIN32
+			Sleep(1000);
+#else
 			sleep(1);
+#endif // _WIN32
+
 			if(getConnectionState() == TN3270::DISCONNECTED)
 				throw std::runtime_error("Disconnected");
 
