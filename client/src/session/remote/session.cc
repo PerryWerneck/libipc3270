@@ -39,6 +39,10 @@
  #include <ipc-client-internals.h>
  #include <cstring>
 
+#ifndef _WIN32
+	#include <unistd.h>	// sleep
+#endif // _WIN32
+
  using std::string;
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
@@ -78,6 +82,7 @@
 		}
 
 		throw std::system_error(ETIMEDOUT, std::system_category());
+
 	}
 
 	std::string	IPC::Session::toString(int baddr, size_t len, char lf) const {
@@ -399,13 +404,44 @@
 	/// @brief Wait.
 	TN3270::Session & IPC::Session::wait(unsigned short seconds) {
 
+		time_t end = time(nullptr) + seconds;
+
+		while(time(nullptr) < end) {
+
+			sleep(1);
+			if(getConnectionState() == TN3270::DISCONNECTED)
+				throw std::runtime_error("Disconnected");
+
+		}
+
 		return *this;
 	}
 
 	/// @brief Wait for update.
-	TN3270::Session & IPC::Session::wait_for_update(unsigned short seconds) {
+	TN3270::Session & IPC::Session::waitForChange(unsigned short seconds) {
 
-		return *this;
+		int rc;
+
+		time_t end = time(nullptr) + seconds;
+
+		while(time(nullptr) < end) {
+
+			debug("Running waitForUpdate request...");
+
+			Request(*this,"waitForUpdate")
+				.push((uint32_t) 1)
+				.call()
+				.pop(rc);
+
+			debug("Wait for update returned ",rc);
+
+			if(rc == 0)
+				return *this;
+
+		}
+
+		throw std::system_error(ETIMEDOUT, std::system_category());
+
 	}
 
 	void IPC::Session::setUnlockDelay(unsigned short delay) {
@@ -450,7 +486,7 @@
 
 	}
 
-	TN3270::SSLState Local::Session::getSSLState() const override {
+	TN3270::SSLState IPC::Session::getSSLState() const {
 
 		int value;
 		getProperty("sslstate",value);

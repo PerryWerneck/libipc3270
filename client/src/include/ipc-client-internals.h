@@ -235,7 +235,7 @@
 				TN3270::Session & wait(unsigned short seconds) override;
 
 				/// @brief Wait for update.
-				TN3270::Session & wait_for_update(unsigned short seconds) override;
+				TN3270::Session & waitForChange(unsigned short seconds) override;
 
 			};
 
@@ -424,7 +424,7 @@
 				TN3270::Session & wait(unsigned short seconds) override;
 
 				/// @brief Wait for update.
-				TN3270::Session & wait_for_update(unsigned short seconds) override;
+				TN3270::Session & waitForChange(unsigned short seconds) override;
 
 			};
 

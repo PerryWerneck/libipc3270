@@ -243,9 +243,6 @@
 			virtual void connect(const char *url) = 0;
 			virtual void disconnect() = 0;
 
-			// Wait for session state.
-			virtual void waitForReady(time_t timeout = DEFAULT_TIMEOUT) = 0;
-
 			// Gets
 			virtual std::string	toString(int baddr = 0, size_t len = -1, char lf = '\n') const = 0;
 			virtual std::string	toString(int row, int col, size_t sz, char lf = '\n') const = 0;
@@ -350,8 +347,11 @@
 			/// @brief Wait.
 			virtual Session & wait(unsigned short seconds) = 0;
 
-			/// @brief Wait for update.
-			virtual Session & wait_for_update(unsigned short seconds) = 0;
+			/// @brief Wait until session state changes to "ready".
+			virtual void waitForReady(time_t timeout = DEFAULT_TIMEOUT) = 0;
+
+			/// @brief Wait for screen changes.
+			virtual Session & waitForChange(unsigned short seconds) = 0;
 
 			/// @brief Wait for string.
 			///
@@ -495,6 +495,12 @@
 			/// @brief Wait.
 			inline Host & wait(unsigned short seconds) {
 				session->wait(seconds);
+				return *this;
+			}
+
+			/// @brief Wait for update.
+			inline Host & waitForChange(unsigned short seconds) {
+				session->waitForChange(seconds);
 				return *this;
 			}
 

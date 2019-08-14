@@ -464,7 +464,7 @@
 
 		string converted = convertToHost(text,length);
 
-		if(lib3270_set_string_at(this->hSession,row,col,(unsigned char *) converted.c_str())) {
+		if(lib3270_set_string_at(this->hSession,row,col,(unsigned char *) converted.c_str(),-1)) {
 			throw std::system_error(errno, std::system_category());
 		}
 
@@ -666,8 +666,8 @@
 	}
 
 	/// @brief Wait for update.
-	TN3270::Session & Local::Session::wait_for_update(unsigned short seconds) {
-		throw std::system_error(ENOTSUP, std::system_category());
+	TN3270::Session & Local::Session::waitForChange(unsigned short seconds) {
+		chkResponse(lib3270_wait_for_update(hSession,seconds));
 		return *this;
 	}
 
@@ -695,8 +695,8 @@
 		return (unsigned short) lib3270_get_length(hSession);
 	}
 
-	TN3270::SSLState Local::Session::getSSLState() const override {
-		return lib3270_get_secure(hSession);
+	TN3270::SSLState Local::Session::getSSLState() const {
+		return (TN3270::SSLState) lib3270_get_ssl_state(hSession);
 	}
 
  }
