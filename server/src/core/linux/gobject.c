@@ -255,7 +255,7 @@ H3270 * ipc3270_get_session(GObject *object) {
 }
 
 void ipc3270_set_error(GObject *object, int errcode, GError **error) {
-	if(!*error)
+	if(error && !*error)
 		g_set_error(error,IPC3270(object)->error_domain,errcode,"%s",strerror(errcode));
 }
 
