@@ -49,13 +49,12 @@
 
  namespace TN3270 {
 
-	/*
 	Host::Host(const char *id, const char *url, time_t timeout) {
 
 		debug("Creating host id=\"", id);
 
 		this->timeout = timeout;
-		this->session = Session::create(id);
+		this->session = Session::getInstance(id);
 		if(url) {
 			this->connect(url);
 		}
@@ -104,14 +103,7 @@
 
 	}
 
-    Host & Host::push(const Action action) {
-        session->push(action);
-        sync();
-        return *this;
-    }
-
 	bool Host::isReady() const {
-//        this->session->waitForReady(this->timeout);
 		return getProgramMessage() == MESSAGE_NONE;
 	}
 
@@ -194,27 +186,12 @@
 		return *this;
 	}
 
-	/// @brief Send PF.
-	Host & Host::pfkey(unsigned short value) {
-		this->session->pfkey(value);
-		return *this;
-	}
-
-	/// @brief Send PA.
-	Host & Host::pakey(unsigned short value) {
-		this->session->pakey(value);
-		return *this;
-	}
-
-	/// @brief Request print
-	Host & Host::print(LIB3270_CONTENT_OPTION option) {
-            throw std::system_error(ENOTSUP, std::system_category());
-	}
-
+	/*
 	Host & Host::input(const char *text, size_t sz) {
 		this->session->input(text, sz);
 		return *this;
 	}
+
 
 	Host & Host::input(const char *text, const char control_char) {
 
@@ -466,7 +443,6 @@
 
 	}
 	*/
-
 
  }
 

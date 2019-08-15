@@ -44,6 +44,7 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
+/*
  // Test "Session" object
  static void chkSession() {
 
@@ -81,37 +82,10 @@
 	delete hSession;
 
  }
+ */
 
- int main(int argc, char **argv) {
-
-	const char * session = ""; // "pw3270:a";
-
-	#pragma GCC diagnostic push
-	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
-	static struct option options[] = {
-		{ "session",	required_argument,	0,	's' },
-		{ 0, 0, 0, 0}
-
-	};
-	#pragma GCC diagnostic pop
-
-	int long_index =0;
-	int opt;
-	while((opt = getopt_long(argc, argv, "s:", options, &long_index )) != -1) {
-
-		switch(opt) {
-		case 's':
-			session = optarg;
-			break;
-
-		}
-
-	}
-
-	chkSession();
-
-	/*
-	cout << "Session: " << session << endl;
+ // test host object
+ static void testHost(const char *session) {
 
 	TN3270::Host host{session};
 
@@ -143,8 +117,37 @@
 		cerr << std::endl << e.what() << std::endl << std::endl;
 
 	}
-	*/
 
+ }
+
+ int main(int argc, char **argv) {
+
+	const char * session = ""; // "pw3270:a";
+
+	#pragma GCC diagnostic push
+	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+	static struct option options[] = {
+		{ "session",	required_argument,	0,	's' },
+		{ 0, 0, 0, 0}
+
+	};
+	#pragma GCC diagnostic pop
+
+	int long_index =0;
+	int opt;
+	while((opt = getopt_long(argc, argv, "s:", options, &long_index )) != -1) {
+
+		switch(opt) {
+		case 's':
+			session = optarg;
+			break;
+
+		}
+
+	}
+
+	cout << "Session: " << session << endl;
+	testHost(session);
 
 	return 0;
  }

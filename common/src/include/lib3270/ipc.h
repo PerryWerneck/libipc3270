@@ -255,12 +255,16 @@
 			virtual void push(int baddr, const char *text, int length) = 0;
 			virtual void push(int row, int col, const char *text, int length) = 0;
 
-			inline void push(int row, int col, const std::string &text) {
-				push(row,col,text.c_str(),text.size());
+			inline void push(const std::string &text) {
+				push(-1,text.c_str(),text.size());
 			}
 
 			inline void push(int baddr, const std::string &text) {
 				push(baddr,text.c_str(),text.size());
+			}
+
+			inline void push(int row, int col, const std::string &text) {
+				push(row,col,text.c_str(),text.size());
 			}
 
 			void push(const PFKey key);
@@ -354,7 +358,6 @@
 		};
 
 		/// @brief TN3270 Host
-		/*
 		class TN3270_PUBLIC Host : public std::basic_streambuf<char, std::char_traits<char> > {
 		private:
 
@@ -389,9 +392,32 @@
 				return session->getConnectionState() == state;
 			}
 
+			// Contents
+			Host & pop(int baddr, std::string &text);
+			Host & pop(int row, int col, std::string &text);
+			Host & pop(std::string &text);
+
+			std::string toString() const;
+			std::string toString(int baddr, size_t len = -1, char lf = '\n') const;
+			std::string toString(int row, int col, size_t len = -1, char lf = '\n') const;
+
+			template<typename T>
+			Host & push(T value) {
+				session->push(value);
+				sync();
+				return *this;
+			}
+
+			template<typename T>
+			Host & pop(T value) {
+				sync();
+				session->pop(value);
+				return *this;
+			}
+
+			// Actions
 			Host & connect(const char *url = nullptr, bool sync = true);
 			Host & disconnect();
-
 			Host & waitForReady(time_t timeout = DEFAULT_TIMEOUT);
 
 			/// @brief Execute action by name.
@@ -424,17 +450,16 @@
 			}
 
 			/// @brief Set cursor address.
-			inline void setCursor(unsigned short addr) {
+			inline Host & setCursor(unsigned short addr) {
 				session->setCursor(addr);
+				return *this;
 			}
 
-			inline void setCursorAddress(unsigned short addr) {
-				session->setCursor(addr);
-			}
 
 			/// @brief Set cursor position.
-			inline void setCursor(unsigned short row, unsigned short col) {
+			inline Host & setCursor(unsigned short row, unsigned short col) {
 				session->setCursor(row,col);
+				return *this;
 			}
 
 			/// @brief Get cursor address
@@ -470,13 +495,22 @@
 			// Actions
 
 			/// @brief Send PF.
-			Host & pfkey(unsigned short value);
+			inline Host & pfkey(unsigned short value) {
+				session->pfkey(value);
+				return *this;
+			}
 
 			/// @brief Send PA.
-			Host & pakey(unsigned short value);
+			inline Host & pakey(unsigned short value) {
+				session->pakey(value);
+				return *this;
+			}
 
 			/// @brief Request print
-			Host & print(LIB3270_CONTENT_OPTION option = LIB3270_CONTENT_ALL);
+			inline Host & print(LIB3270_CONTENT_OPTION option = LIB3270_CONTENT_ALL) {
+				session->print(option);
+				return *this;
+			}
 
 			/// @brief Wait.
 			inline Host & wait(unsigned short seconds) {
@@ -499,73 +533,26 @@
 			///
 			/// @param text			String with the text to input.
 			/// @param control_char	Control character used to identify commands.
-			Host & input(const char *text, const char control_char = '@');
+			// Host & input(const char *text, const char control_char = '@');
 
-			Host & input(const char *text, size_t sz);
+			// Host & input(const char *text, size_t sz);
 
-			/// @brief Set field at current posicion, jumps to next writable field.
+			/// @brief Set field at current position, jumps to next writable field.
 			inline Host & push(const char *text) {
-				session->push(text);
+				session->push(text,-1);
 				return *this;
 			};
 
-			inline Host & push(const std::string &text) {
-				session->push(text);
-				return *this;
-
-			}
-
-			inline Host & push(int baddr, const std::string &text) {
-				session->push(baddr,text);
-				return *this;
-			}
-
-			inline Host & push(int baddr, const char *text, int length = -1) {
-				session->push(baddr,text,length);
-				return *this;
-			}
-
-			inline Host & push(int row, int col, const std::string &text) {
-				session->push(row,col,text);
-				return *this;
-			}
-
-			inline Host & push(int row, int col, const char *text, int length = -1) {
-				session->push(row,col,text,length);
-				return *this;
-			}
-
-			inline Host & push(const PFKey key) {
-				session->push(key);
-				return *this;
-			}
-
-			inline Host & push(const PAKey key) {
-				session->push(key);
-				return *this;
-			}
-
-			Host & push(const Action action);
-
-			// Get contents.
-
-			Host & pop(int baddr, std::string &text);
-			Host & pop(int row, int col, std::string &text);
-			Host & pop(std::string &text);
-
-			std::string toString() const;
-			std::string toString(int baddr, size_t len = -1, char lf = '\n') const;
-			std::string toString(int row, int col, size_t sz, char lf = '\n') const;
-
+			/*
 			// Event listeners
 			inline Host & insert(Event::Type type, std::function <void(const Event &event)> listener) noexcept {
 				session->insert(type, listener);
 				return *this;
 			}
+			*/
 
 
 		};
-		*/
 
 	}
 
@@ -573,7 +560,6 @@
 	TN3270_PUBLIC const char * toCharString(const TN3270::ConnectionState connectionState);
 	TN3270_PUBLIC const char * toCharString(const TN3270::Action action);
 
-	/*
 	template <typename T>
 	inline TN3270_PUBLIC TN3270::Session & operator<<(TN3270::Session& session, const T value) {
 		return session.push(value);
@@ -593,7 +579,6 @@
         stream << host.toString();
         return stream;
 	}
-	*/
 
 
 #endif
