@@ -50,14 +50,11 @@ int ipc3270_method_set_string(GObject *session, GVariant *request, GObject *resp
 
 			if(text) {
 
-				g_autofree gchar * converted = ipc3270_convert_to_3270(session,text,error);
-
-				debug("Converted: \"%s\"",converted);
-
-				if(lib3270_input_string(hSession,(const unsigned char *) converted, -1)) {
+				if(lib3270_input_string(hSession,(const unsigned char *) text, -1)) {
 					debug("lib3270_input_string has failed: %s", strerror(errno));
 					return errno;
 				}
+
 			}
 
 		}
@@ -72,9 +69,7 @@ int ipc3270_method_set_string(GObject *session, GVariant *request, GObject *resp
 
 			if(text) {
 
-				g_autofree gchar * converted = ipc3270_convert_to_3270(session,text,error);
-
-				if(lib3270_set_string_at_address(hSession,addr,(unsigned char *) converted, -1) < 0)
+				if(lib3270_set_string_at_address(hSession,addr,(unsigned char *) text, -1) < 0)
 					return errno;
 
 			}
@@ -90,9 +85,7 @@ int ipc3270_method_set_string(GObject *session, GVariant *request, GObject *resp
 
 			if(text) {
 
-				g_autofree gchar * converted = ipc3270_convert_to_3270(session,text,error);
-
-				if(lib3270_set_string_at(hSession, row, col, (unsigned char *) converted, -1) < 0)
+				if(lib3270_set_string_at(hSession, row, col, (unsigned char *) text, -1) < 0)
 					return errno;
 
 			}

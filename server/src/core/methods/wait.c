@@ -29,7 +29,7 @@
 
 #include "private.h"
 
-int ipc3270_method_wait(GObject *session, GVariant *request, GObject *response, GError **error) {
+int ipc3270_method_wait(GObject *session, GVariant *request, GObject G_GNUC_UNUSED(*response), GError G_GNUC_UNUSED(**error)) {
 
 	guint seconds = 1;
 	g_variant_get(request, "(u)", &seconds);
@@ -37,7 +37,7 @@ int ipc3270_method_wait(GObject *session, GVariant *request, GObject *response, 
 
 }
 
-int ipc3270_method_wait_for_ready(GObject *session, GVariant *request, GObject *response, GError **error) {
+int ipc3270_method_wait_for_ready(GObject *session, GVariant *request, GObject G_GNUC_UNUSED(*response), GError G_GNUC_UNUSED(**error)) {
 
 	guint seconds = 1;
 	g_variant_get(request, "(u)", &seconds);
@@ -45,7 +45,7 @@ int ipc3270_method_wait_for_ready(GObject *session, GVariant *request, GObject *
 
 }
 
-int ipc3270_method_wait_for_update(GObject *session, GVariant *request, GObject *response, GError **error) {
+int ipc3270_method_wait_for_update(GObject *session, GVariant *request, GObject G_GNUC_UNUSED(*response), GError G_GNUC_UNUSED(**error)) {
 
 	guint seconds = 1;
 	g_variant_get(request, "(u)", &seconds);

@@ -168,6 +168,9 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='u' name='col' direction='in' />" \
 		"		<arg type='s' name='text' direction='out' />" \
 		"	</method>" \
+		"	<method name= 'getFieldAttribute'>" \
+		"		<arg type='u' name='attribute' direction='out' />" \
+		"	</method>" \
 		"	<method name= 'getFieldAttributeAt'>" \
 		"		<arg type='i' name='row' direction='in' />" \
 		"		<arg type='i' name='col' direction='in' />" \

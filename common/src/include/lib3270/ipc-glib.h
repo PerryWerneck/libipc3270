@@ -95,42 +95,6 @@
     void				  ipc3270_set_terminal_widget(GObject *object, GtkWidget *widget);
     void				  ipc3270_export_object(GObject *object, const char *name, GError **error);
 
-    /**
-     * @brief Convert from native charset to lib3270 charset.
-     *
-     * @param object	ipc3270 Object.
-     * @param string	UTF-8 string to convert.
-     * @param error		Pointer to error object.
-     *
-     * @return Converted string in lib3270 charset.
-     *
-     */
-	gchar * ipc3270_convert_to_3270(GObject *object, const gchar *string, GError **error);
-
-	/**
-	 * @brief Convert lib3270 received string to UTF-8.
-	 *
-	 * @param object	ipc3270 object.
-	 * @param string	String received from lib3270.
-     * @param error		Pointer to error object.
-     *
-     * @return The string converted to UTF-8.
-     *
-     */
-	gchar * ipc3270_convert_from_3270(GObject *object, const gchar *string, GError **error);
-
-	/**
-	 * @brief Create a GVariant from a lib3270 string.
-	 *
-	 * @param object	ipc3270 object.
-	 * @param string	String received from lib3270.
-     * @param error		Pointer to error object.
-     *
-     * @return GVariant with the string converted to UTF-8.
-     *
-     */
-	GVariant			* ipc3270_GVariant_from_input_string(GObject *object, char *string, GError **error);
-
 	void				  ipc3270_add_terminal_introspection(GString *string);
 
 	const gchar			* ipc3270_get_display_charset(GObject *object);

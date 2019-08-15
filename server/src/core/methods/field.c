@@ -29,10 +29,39 @@
 
 #include "private.h"
 
-int ipc3270_method_get_field_attribute(GObject *session, GVariant *request, GObject *response, GError **error) {
+int ipc3270_method_get_field_attribute(GObject *session, GVariant *request, GObject *response, GError G_GNUC_UNUSED(**error)) {
 
 	debug("%s childs=%u",__FUNCTION__,(unsigned int) g_variant_n_children(request));
 
-	return ENOTSUP;
+
+	H3270 *hSession = ipc3270_get_session(session);
+	guint row = 0, col = 0;
+	gint baddr = -1;
+
+	switch(g_variant_n_children(request)) {
+	case 0: // No arguments, get at the current cursor position
+		baddr = -1;
+		break;
+
+	case 1: // address
+		g_variant_get(request, "(i)", &baddr);
+		break;
+
+	case 2:	// row, col
+		g_variant_get(request, "(ii)", &row, &col);
+		baddr = lib3270_translate_to_address(hSession,row,col);
+		break;
+
+	default:
+		return EINVAL;
+	}
+
+	LIB3270_FIELD_ATTRIBUTE attr = lib3270_get_field_attribute(hSession,baddr);
+	if(attr == LIB3270_FIELD_ATTRIBUTE_INVALID)
+		return errno;
+
+	ipc3270_response_append_uint32(response, (guint32) attr);
+
+	return 0;
 }
 

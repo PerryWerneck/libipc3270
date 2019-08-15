@@ -29,7 +29,7 @@
 
 #include "private.h"
 
-int ipc3270_method_get_string(GObject *session, GVariant *request, GObject *response, GError **error) {
+int ipc3270_method_get_string(GObject *session, GVariant *request, GObject *response, GError G_GNUC_UNUSED(**error)) {
 
 	H3270 *hSession = ipc3270_get_session(session);
 
@@ -76,8 +76,7 @@ int ipc3270_method_get_string(GObject *session, GVariant *request, GObject *resp
 	if(!text)
 		return errno;
 
-	g_autofree gchar * converted = ipc3270_convert_from_3270(session,text,error);
-	ipc3270_response_append_string(response, converted);
+	ipc3270_response_append_string(response, text);
 
 	return 0;
 

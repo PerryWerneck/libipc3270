@@ -63,9 +63,6 @@
 		<Unit filename="src/core/constants.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src/core/convert.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/core/getproperties.c">
 			<Option compilerVar="CC" />
 		</Unit>
