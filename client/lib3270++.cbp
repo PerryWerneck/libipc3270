@@ -63,6 +63,7 @@
 		<Unit filename="src/session/local/set.cc" />
 		<Unit filename="src/session/local/tools.cc" />
 		<Unit filename="src/session/remote/session.cc" />
+		<Unit filename="src/session/set.cc" />
 		<Unit filename="src/testprogram/testprogram.cc" />
 		<Extensions>
 			<code_completion />

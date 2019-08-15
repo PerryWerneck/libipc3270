@@ -56,35 +56,6 @@
 
 	}
 
-	std::string Local::Session::getVersion() const {
-
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return lib3270_get_version();
-
-	}
-
-	std::string Local::Session::getRevision() const {
-
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return lib3270_get_revision();
-
-	}
-
-	std::string Local::Session::getLUName() const {
-
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return lib3270_get_luname(hSession);
-
-	}
-
-	std::string Local::Session::getHostURL() const {
-
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return lib3270_get_url(hSession);
-
-	}
-
-
 
  }
 

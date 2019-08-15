@@ -36,33 +36,23 @@
  *
  */
 
-#include <ipc-client-internals.h>
+ #include <ipc-client-internals.h>
+ #include <cstring>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
 
-	std::string	Abstract::Session::toString(int baddr, size_t len, char lf) const {
-		return convertFromHost(get(baddr,len,lf));
+	void Abstract::Session::push(const char *text, size_t length) {
+		set(convertToHost(text,length));
 	}
 
-	std::string	Abstract::Session::toString(int row, int col, size_t sz, char lf) const {
-		return convertFromHost(get(row,col,sz,lf));
+	void Abstract::Session::push(int baddr, const char *text, int length) {
+		set(baddr,convertToHost(text,length));
 	}
 
-	/// @brief Get contents of field ad address.
-	void Abstract::Session::pop(int baddr, std::string &text) {
-		throw std::system_error(ENOTSUP, std::system_category());
-	}
-
-	/// @brief Get contents of field at position.
-	void Abstract::Session::pop(int row, int col, std::string &text) {
-		throw std::system_error(ENOTSUP, std::system_category());
-	}
-
-	/// @brief Get contents of field at cursor position.
-	void Abstract::Session::pop(std::string &text) {
-		pop(-1,text);
+	void Abstract::Session::push(int row, int col, const char *text, int length) {
+		set(row,col,convertToHost(text,length));
 	}
 
  }

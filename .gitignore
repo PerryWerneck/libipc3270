@@ -20,3 +20,4 @@ src/plugin/windows/resources.rc
 *.pid
 resources.rc
 *.pc
+vgcore.*

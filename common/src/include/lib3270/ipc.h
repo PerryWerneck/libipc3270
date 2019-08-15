@@ -250,12 +250,49 @@
 			virtual std::string	toString(int baddr = 0, size_t len = -1, char lf = '\n') const = 0;
 			virtual std::string	toString(int row, int col, size_t sz, char lf = '\n') const = 0;
 
+			/// @brief Input string.
+			virtual void push(const char *text, size_t length) = 0;
+			virtual void push(int baddr, const char *text, int length) = 0;
+			virtual void push(int row, int col, const char *text, int length) = 0;
+
+			inline void push(int row, int col, const std::string &text) {
+				push(row,col,text.c_str(),text.size());
+			}
+
+			inline void push(int baddr, const std::string &text) {
+				push(baddr,text.c_str(),text.size());
+			}
+
+			void push(const PFKey key);
+			void push(const PAKey key);
+			virtual void push(const Action action) = 0;
+
+			/// @brief Get contents of field ad address.
+			virtual void pop(int baddr, std::string &text) = 0;
+
+			/// @brief Get contents of field at position.
+			virtual void pop(int row, int col, std::string &text) = 0;
+
+			/// @brief Get contents of field at cursor position.
+			virtual void pop(std::string &text) = 0;
+
+			/**
+			 * @brief Input string parsing control char.
+			 *
+			 */
+			void input(const char *text, const char control_char);
+
 			// Properties.
+			virtual void getProperty(const char *name, int &value) const = 0;
+			virtual void getProperty(const char *name, std::string &value) const = 0;
+			virtual void getProperty(const char *name, bool &value) const = 0;
 
 			virtual std::string getVersion() const = 0;
 			virtual std::string getRevision() const = 0;
 			virtual std::string getLUName() const = 0;
+
 			virtual std::string getHostURL() const = 0;
+			virtual void setHostURL(const char *url) = 0;
 
 			virtual void setUnlockDelay(unsigned short delay = 350) = 0;
 
@@ -277,6 +314,9 @@
 
 			// Actions
 
+			/// @brief Execute action by name.
+			virtual void action(const char *action_name) = 0;
+
 			// Connect/disconnect
 			virtual void connect(const char *url = nullptr, bool wait = true) = 0;
 			virtual void disconnect() = 0;
@@ -296,57 +336,13 @@
 			/// @brief Send PA.
 			virtual void pakey(unsigned short value) = 0;
 
-			/*
-
-			// Get properties.
-			virtual void getProperty(const char *name, int &value) const = 0;
-			virtual void getProperty(const char *name, std::string &value) const = 0;
-			virtual void getProperty(const char *name, bool &value) const = 0;
-
-
-			// Set properties.
-			virtual void setHostURL(const char *url) = 0;
-
-			// Set contents.
-
-			/// @brief Set field at current posicion, jumps to next writable field.
-			virtual Session & push(const char *text) = 0;
-			inline Session & push(const std::string &text) {
-				return push(text.c_str());
-			}
-
-			/// @brief Input string.
-			virtual Session & input(const char *text, size_t length) = 0;
-
-			virtual Session & push(int baddr, const char *text, int length) = 0;
-			virtual Session & push(int row, int col, const char *text, int length) = 0;
-
-			Session & push(int row, int col, const std::string &text);
-			Session & push(int baddr, const std::string &text);
-
-			Session & push(const PFKey key);
-			Session & push(const PAKey key);
-
-			virtual Session & push(const Action action) = 0;
-
-			// Get contents.
-			virtual Session & pop(int baddr, std::string &text) = 0;
-			virtual Session & pop(int row, int col, std::string &text) = 0;
-			virtual Session & pop(std::string &text) = 0;
+			/// @brief Request print
+			virtual void print(LIB3270_CONTENT_OPTION option = LIB3270_CONTENT_ALL) = 0;
 
 			/// @brief Insert event listener.
-			void insert(Event::Type type, std::function <void(const Event &event)> listener);
+			// void insert(Event::Type type, std::function <void(const Event &event)> listener);
 
 			// Misc
-
-			/// @brief Execute action by name.
-			virtual Session & action(const char *action_name) = 0;
-
-			/// @brief Wait for string.
-			///
-			/// @return 0 if the string was found, error code if not.
-			int wait(int row, int col, const char *key, unsigned short seconds);
-			int wait(int baddr, const char *key, unsigned short seconds);
 
 			/// @brief Search
 			size_t find(const char * str, size_t pos = 0) const;
@@ -355,7 +351,6 @@
 			int compare(size_t baddr, const char* s, size_t len) const;
 			int compare(int row, int col, const char* s, size_t len) const;
 
-			*/
 		};
 
 		/// @brief TN3270 Host

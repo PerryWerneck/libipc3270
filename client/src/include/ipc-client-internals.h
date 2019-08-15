@@ -115,7 +115,7 @@
 #endif
 
 				/// @brief Converte charset.
-				static std::string convertCharset(iconv_t &converter, const std::string &str);
+				static std::string convertCharset(iconv_t &converter, const char *str, int length);
 
 			protected:
 
@@ -130,6 +130,7 @@
 
 				/// @brief Converte string do charset atual para o charset do host.
 				std::string convertToHost(const std::string &str) const;
+				std::string convertToHost(const char *text, int length) const;
 
 				// Get strings from lib3270 without charset conversion.
 				virtual std::string	get() const = 0;
@@ -147,6 +148,13 @@
 				std::string	toString(int baddr = 0, size_t len = -1, char lf = '\n') const override;
 				std::string	toString(int row, int col, size_t sz, char lf = '\n') const override;
 
+				void push(const char *text, size_t length) override;
+				void push(int baddr, const char *text, int length) override;
+				void push(int row, int col, const char *text, int length) override;
+
+				void pop(int baddr, std::string &text) override;
+				void pop(int row, int col, std::string &text) override;
+				void pop(std::string &text) override;
 
 			};
 

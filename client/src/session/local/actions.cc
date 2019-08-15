@@ -43,6 +43,11 @@
 
  namespace TN3270 {
 
+	void Local::Session::action(const char *action_name) {
+		std::lock_guard<std::mutex> lock(sync);
+		chkResponse(lib3270_action(hSession,action_name));
+	}
+
  	void Local::Session::connect(const char *url, bool wait) {
 
 		std::lock_guard<std::mutex> lock(sync);
@@ -87,6 +92,73 @@
 
 		std::lock_guard<std::mutex> lock(sync);
 		chkResponse(lib3270_pakey(hSession,value));
+
+	}
+
+	void Local::Session::push(const Action action) {
+
+		typedef int (*ActionCallback)(H3270 *);
+
+		static const ActionCallback actions[] = {
+            lib3270_enter,			// ENTER
+            lib3270_erase,			// ERASE
+            lib3270_eraseeof,		// ERASE_EOF
+            lib3270_eraseeol,		// ERASE_EOL
+            lib3270_eraseinput,		// ERASE_INPUT
+            lib3270_kybdreset,		// KYBD_RESET
+            lib3270_newline,		// NEWLINE
+            lib3270_clear,			// CLEAR
+            lib3270_select_field,	// SELECT_FIELD
+            lib3270_select_all,		// SELECT_ALL
+            lib3270_unselect,		// UNSELECT
+            lib3270_reselect,		// RESELECT
+            lib3270_delete,			// DELETE
+            lib3270_dup,			// DUP
+            lib3270_fieldmark,		// FIELDMARK
+            lib3270_backspace,		// BACKSPACE
+            lib3270_previousword,	// WORD_PREVIOUS
+            lib3270_nextword,		// WORD_NEXT
+            lib3270_fieldend,		// FIELD_END
+            lib3270_firstfield,		// FIELD_FIRST
+            lib3270_nextfield,		// FIELD_NEXT
+            lib3270_previousfield,	// FIELD_PREVIOUS
+            lib3270_attn,			// ATTN
+            lib3270_break,			// BREAK
+            lib3270_deleteword,		// WORD_DELETE
+            lib3270_deletefield,	// FIELD_DELETE
+            lib3270_sysreq,			// SYSREQ
+		};
+
+		if( ((size_t) action) > (sizeof(actions)/sizeof(actions[0]))) {
+            throw std::system_error(EINVAL, std::system_category());
+		}
+
+		std::lock_guard<std::mutex> lock(sync);
+		chkResponse(actions[(size_t) action](hSession));
+
+	}
+
+	void Local::Session::print(LIB3270_CONTENT_OPTION option) {
+
+		std::lock_guard<std::mutex> lock(sync);
+
+		switch(option) {
+		case LIB3270_CONTENT_ALL:
+			chkResponse(lib3270_print_all(hSession));
+			break;
+
+		case LIB3270_CONTENT_COPY:
+			chkResponse(lib3270_print_copy(hSession));
+			break;
+
+		case LIB3270_CONTENT_SELECTED:
+			chkResponse(lib3270_print_selected(hSession));
+			break;
+
+		default:
+            throw std::system_error(EINVAL, std::system_category());
+
+		}
 
 	}
 

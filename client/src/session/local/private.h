@@ -92,10 +92,13 @@
 				virtual ~Session();
 
 				// Actions
+				void action(const char *action_name) override;
 				void connect(const char *url, bool wait) override;
 				void disconnect() override;
 				void pfkey(unsigned short value) override;
 				void pakey(unsigned short value) override;
+				void push(const Action action) override;
+				void print(LIB3270_CONTENT_OPTION option = LIB3270_CONTENT_ALL) override;
 
 				void wait(unsigned short seconds) const override;
 				void waitForReady(time_t timeout) const override;
@@ -107,10 +110,16 @@
 				SSLState getSSLState() const override;
 
 				// Properties.
+				void getProperty(const char *name, int &value) const override;
+				void getProperty(const char *name, std::string &value) const override;
+				void getProperty(const char *name, bool &value) const override;
 				std::string getVersion() const override;
 				std::string getRevision() const override;
 				std::string getLUName() const override;
+
 				std::string getHostURL() const override;
+				void setHostURL(const char *url) override;
+
 				unsigned short getScreenWidth() const override;
 				unsigned short getScreenHeight() const override;
 				unsigned short getScreenLength() const override;
