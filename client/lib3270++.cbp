@@ -53,8 +53,15 @@
 		<Unit filename="src/core/windows/resources.rc.in" />
 		<Unit filename="src/core/windows/session.cc" />
 		<Unit filename="src/include/ipc-client-internals.h" />
+		<Unit filename="src/session/get.cc" />
+		<Unit filename="src/session/local/actions.cc" />
 		<Unit filename="src/session/local/events.cc" />
-		<Unit filename="src/session/local/session.cc" />
+		<Unit filename="src/session/local/get.cc" />
+		<Unit filename="src/session/local/init.cc" />
+		<Unit filename="src/session/local/private.h" />
+		<Unit filename="src/session/local/properties.cc" />
+		<Unit filename="src/session/local/set.cc" />
+		<Unit filename="src/session/local/tools.cc" />
 		<Unit filename="src/session/remote/session.cc" />
 		<Unit filename="src/testprogram/testprogram.cc" />
 		<Extensions>

@@ -51,8 +51,6 @@
 		this->converter.host	= (iconv_t) (-1);
 #endif
 
-		this->baddr = 0;
-
 	}
 
 	Abstract::Session::~Session() {
@@ -71,6 +69,17 @@
 
 	/// @brief Setup charsets
 	void Abstract::Session::setCharSet(const char *remote, const char *local) {
+
+		if(!local) {
+
+			// TODO: Detect the current value (maybee something like g_charset)
+#ifdef _WIN32
+			local = "CP1252";
+#else
+			local = "UTF-8";
+#endif // _WIN32
+
+		}
 
 #ifdef HAVE_ICONV
 
@@ -101,24 +110,19 @@
 	}
 
 	/// @brief Converte charset.
-	std::string Abstract::Session::convertCharset(iconv_t &converter, const char *str, int length) {
+	std::string Abstract::Session::convertCharset(iconv_t &converter, const std::string &str) {
 
 		std::string rc;
 
 #ifdef HAVE_ICONV
-		size_t in;
-
-		if(length < 0)
-			in = (size_t) strlen(str);
-		else
-			in = (size_t) length;
+		size_t in = str.size();
 
 		if(in && converter != (iconv_t)(-1)) {
 
 			size_t				  out 		= (in << 1);
 			char				* ptr;
 			char				* outBuffer = (char *) malloc(out);
-			ICONV_CONST	char	* inBuffer	= (ICONV_CONST char *) str;
+			ICONV_CONST	char	* inBuffer	= (ICONV_CONST char *) str.c_str();
 
 			memset(ptr=outBuffer,0,out);
 
@@ -141,13 +145,13 @@
 	}
 
 	/// @brief Converte string recebida do host para o charset atual.
-	std::string Abstract::Session::convertFromHost(const char *str, int length) const {
-		return convertCharset(const_cast<Abstract::Session *>(this)->converter.local,str,length);
+	std::string Abstract::Session::convertFromHost(const std::string &str) const {
+		return convertCharset(const_cast<Abstract::Session *>(this)->converter.local,str);
 	}
 
 	/// @brief Converte string do charset atual para o charset do host.
-	std::string Abstract::Session::convertToHost(const char *str, int length) const {
-		return convertCharset(const_cast<Abstract::Session *>(this)->converter.host,str,length);
+	std::string Abstract::Session::convertToHost(const std::string &str) const {
+		return convertCharset(const_cast<Abstract::Session *>(this)->converter.host,str);
 	}
 
 

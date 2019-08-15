@@ -28,72 +28,63 @@
  */
 
 /**
- * @file src/os/linux/linux/session.cc
+ * @file
  *
- * @brief Implements Linux session methods.
+ * @brief
  *
  * @author perry.werneck@gmail.com
  *
  */
 
- #include <ipc-client-internals.h>
- #include <cstring>
- #include <lib3270/trace.h>
-
- using std::string;
+ #include "private.h"
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
- static void throws_if_error(DBusError &err) {
-
- 	if(dbus_error_is_set(&err)) {
-		string message = err.message;
-		dbus_error_free(&err);
-		throw std::runtime_error(message.c_str());
- 	}
-
- 	return;
-
- }
-
  namespace TN3270 {
 
-	/*
-	IPC::Session::Session(const char *id) : Abstract::Session() {
+	void Local::Session::chkResponse(int rc) {
 
-		// Create D-Bus session.
-		DBusError err;
+		if(rc == 0)
+				return;
 
-		dbus_error_init(&err);
-		this->conn = dbus_bus_get(DBUS_BUS_SESSION, &err);
+#ifdef _WIN32
+		if(rc == ENOTCONN)
+				throw std::runtime_error("Not connected");
+#endif // _WIN32
 
-		debug("dbus_bus_get conn=",conn);
-
-		throws_if_error(err);
-
-		if(!conn)
-			throw std::runtime_error("DBUS Connection failed");
-
-		auto sep = strchr(id,':');
-		if(!sep) {
-			throw std::system_error(EINVAL, std::system_category());
-		}
-
-		this->name = "br.com.bb.";
-		this->name += string(id,(sep - id));
-		this->name += ".";
-		this->name += (sep+1);
-		this->path = "/br/com/bb/tn3270/session";
-		this->interface = "br.com.bb.tn3270.session";
-
-		debug("D-Bus Object name=\"",this->name,"\" D-Bus Object path=\"",this->path,"\"");
+		throw std::system_error(rc, std::system_category());
 
 	}
 
-	IPC::Session::~Session() {
+	std::string Local::Session::getVersion() const {
+
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return lib3270_get_version();
 
 	}
-	*/
+
+	std::string Local::Session::getRevision() const {
+
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return lib3270_get_revision();
+
+	}
+
+	std::string Local::Session::getLUName() const {
+
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return lib3270_get_luname(hSession);
+
+	}
+
+	std::string Local::Session::getHostURL() const {
+
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return lib3270_get_url(hSession);
+
+	}
+
+
 
  }
 

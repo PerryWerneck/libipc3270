@@ -36,9 +36,9 @@
  *
  */
 
-#ifndef PRIVATE_H_INCLUDED
+#ifndef IPC_CLIENT_INTERNALS_INCLUDED
 
-	#define PRIVATE_H_INCLUDED
+	#define IPC_CLIENT_INTERNALS_INCLUDED
 
 	#include <config.h>
 
@@ -69,12 +69,6 @@
 #ifdef HAVE_ICONV
 	#include <iconv.h>
 #endif // HAVE_ICONV
-
-#ifdef WIN32
-	#define SYSTEM_CHARSET "CP1252"
-#else
-	#define SYSTEM_CHARSET "UTF-8"
-#endif // WIN32
 
 #ifdef DEBUG
 
@@ -121,28 +115,51 @@
 #endif
 
 				/// @brief Converte charset.
-				static std::string convertCharset(iconv_t &converter, const char *str, int length);
+				static std::string convertCharset(iconv_t &converter, const std::string &str);
 
 			protected:
-
-				/// @brief Current in/out position.
-				int baddr;
 
 				Session();
 				virtual ~Session();
 
 				/// @brief Setup charsets
-				void setCharSet(const char *remote, const char *local = SYSTEM_CHARSET);
+				void setCharSet(const char *remote, const char *local);
 
 				/// @brief Converte string recebida do host para o charset atual.
-				std::string convertFromHost(const char *str, int length = -1) const;
+				std::string convertFromHost(const std::string &str) const;
 
 				/// @brief Converte string do charset atual para o charset do host.
-				std::string convertToHost(const char *str, int length = -1) const;
+				std::string convertToHost(const std::string &str) const;
+
+				// Get strings from lib3270 without charset conversion.
+				virtual std::string	get() const = 0;
+				virtual std::string	get(int baddr, size_t len, char lf) const = 0;
+				virtual std::string	get(int row, int col, size_t sz, char lf) const = 0;
+
+				// Set strings to lib3270 without charset conversion.
+				virtual void set(const std::string &str) = 0;
+				virtual void set(int baddr, const std::string &str) = 0;
+				virtual void set(int row, int col, const std::string &str) = 0;
+
+			public:
+
+				// Contents
+				std::string	toString(int baddr = 0, size_t len = -1, char lf = '\n') const override;
+				std::string	toString(int row, int col, size_t sz, char lf = '\n') const override;
+
 
 			};
 
 		}
+
+		/// @brief lib3270 direct access objects (no IPC);
+		namespace Local {
+
+			TN3270_PRIVATE Session * getSessionInstance();
+
+		}
+
+		/*
 
 		/// @brief lib3270 direct access objects (no IPC);
 		namespace Local {
@@ -429,7 +446,8 @@
 			};
 
 		}
+		*/
 
 	}
 
-#endif // PRIVATE_H_INCLUDED
+#endif // IPC_CLIENT_INTERNALS_INCLUDED

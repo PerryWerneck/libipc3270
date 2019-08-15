@@ -28,72 +28,27 @@
  */
 
 /**
- * @file src/os/linux/linux/session.cc
+ * @file
  *
- * @brief Implements Linux session methods.
+ * @brief
  *
  * @author perry.werneck@gmail.com
  *
  */
 
- #include <ipc-client-internals.h>
- #include <cstring>
- #include <lib3270/trace.h>
-
- using std::string;
+#include <ipc-client-internals.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
- static void throws_if_error(DBusError &err) {
-
- 	if(dbus_error_is_set(&err)) {
-		string message = err.message;
-		dbus_error_free(&err);
-		throw std::runtime_error(message.c_str());
- 	}
-
- 	return;
-
- }
-
  namespace TN3270 {
 
-	/*
-	IPC::Session::Session(const char *id) : Abstract::Session() {
-
-		// Create D-Bus session.
-		DBusError err;
-
-		dbus_error_init(&err);
-		this->conn = dbus_bus_get(DBUS_BUS_SESSION, &err);
-
-		debug("dbus_bus_get conn=",conn);
-
-		throws_if_error(err);
-
-		if(!conn)
-			throw std::runtime_error("DBUS Connection failed");
-
-		auto sep = strchr(id,':');
-		if(!sep) {
-			throw std::system_error(EINVAL, std::system_category());
-		}
-
-		this->name = "br.com.bb.";
-		this->name += string(id,(sep - id));
-		this->name += ".";
-		this->name += (sep+1);
-		this->path = "/br/com/bb/tn3270/session";
-		this->interface = "br.com.bb.tn3270.session";
-
-		debug("D-Bus Object name=\"",this->name,"\" D-Bus Object path=\"",this->path,"\"");
-
+	std::string	Abstract::Session::toString(int baddr, size_t len, char lf) const {
+		return convertFromHost(get(baddr,len,lf));
 	}
 
-	IPC::Session::~Session() {
-
+	std::string	Abstract::Session::toString(int row, int col, size_t sz, char lf) const {
+		return convertFromHost(get(row,col,sz,lf));
 	}
-	*/
 
  }
 

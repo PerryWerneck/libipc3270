@@ -28,70 +28,60 @@
  */
 
 /**
- * @file src/core/session.cc
+ * @file
  *
- * @brief Implements common session object.
+ * @brief
  *
  * @author perry.werneck@gmail.com
  *
  */
 
- #include <ipc-client-internals.h>
-
+ #include "private.h"
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
 
-	Session * Session::getInstance(const char *id) {
-
-		if(!(id && *id)) {
-			return Local::getSessionInstance();
-		}
-
-		// return new IPC::Session(id);
-
-		return nullptr;
+	void Local::Session::setCharSet(const char *charset) {
+		Abstract::Session::setCharSet(lib3270_get_display_charset(this->hSession),charset);
 	}
 
-
-	Session::Session() {
+	unsigned short Local::Session::getScreenWidth() const {
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return (unsigned short) lib3270_get_width(hSession);
 	}
 
-	Session::~Session() {
+	unsigned short Local::Session::getScreenHeight() const {
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return (unsigned short) lib3270_get_height(hSession);
 	}
 
-	/// @brief Fire event.
-	void Session::fire(const Event &event) {
+	unsigned short Local::Session::getScreenLength() const {
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return (unsigned short) lib3270_get_length(hSession);
 	}
 
-	/*
-	void Session::insert(Event::Type type, std::function <void(const Event &event)> listener) {
+	void Local::Session::setUnlockDelay(unsigned short delay) {
+		std::lock_guard<std::mutex> lock(sync);
+		chkResponse(lib3270_set_unlock_delay(hSession,delay));
 	}
 
-
-	Session & Session::push(const PFKey key) {
-		return pfkey( ((unsigned short) key) + 1);
+	void Local::Session::setCursor(unsigned short addr) {
+		std::lock_guard<std::mutex> lock(sync);
+		chkResponse(lib3270_set_cursor_address(hSession,addr));
 	}
 
-	Session & Session::push(const PAKey key) {
-		return pakey( ((unsigned short) key) + 1);
+	void Local::Session::setCursor(unsigned short row, unsigned short col) {
+		std::lock_guard<std::mutex> lock(sync);
+		chkResponse(lib3270_set_cursor_position(hSession,row,col));
 	}
 
-	Session & Session::push(int row, int col, const std::string &text) {
-		return push(row,col,text.c_str(),text.size());
+	unsigned short Local::Session::getCursorAddress() {
+		std::lock_guard<std::mutex> lock(sync);
+		return lib3270_get_cursor_address(hSession);
 	}
 
-	Session & Session::push(int baddr, const std::string &text) {
-		return push(baddr,text.c_str(),text.size());
-	}
-
-	void Session::setCharSet(const char *charset) {
-	}
-
-	*/
 
  }
-
 
 

@@ -44,6 +44,7 @@
 
  namespace TN3270 {
 
+	/*
 	IPC::Request::Request(const Session &session) {
 		this->conn = session.conn;
 		this->msg.in = nullptr;
@@ -67,16 +68,6 @@
 
 	IPC::Request::Request(const Session &session, bool isSet, const char *property) : Request(session) {
 
-/*
-		dbus-send \
-			--session \
-			--dest=br.com.bb.pw3270.a\
-			--print-reply \
-			"/br/com/bb/tn3270/session" \
-			"org.freedesktop.DBus.Properties.Get" \
-			string:br.com.bb.tn3270.session \
-			string:${1}
-*/
 		this->msg.out = dbus_message_new_method_call(
 							session.name.c_str(),					// Destination
 							session.path.c_str(),					// Path
@@ -261,6 +252,8 @@
 		return *this;
 
 	}
+
+	*/
 
  }
 

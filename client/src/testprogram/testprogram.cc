@@ -44,6 +44,44 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
+ // Test "Session" object
+ static void chkSession() {
+
+	TN3270::Session * hSession = TN3270::Session::getInstance();
+
+	try {
+
+		cout
+			<< "Version: " << hSession->getVersion()
+			<< "\tRevision: " << hSession->getRevision()
+			<< endl;
+
+		hSession->connect("tn3270s://3270.df.bb:9023");
+		hSession->waitForReady(30);
+
+		cout
+			<< "Connection state is " << toCharString(hSession->getConnectionState()) << std::endl
+			<< "Program message is " << toCharString(hSession->getProgramMessage()) << std::endl
+			<< "Luname is " << hSession->getLUName() << std::endl
+			<< std::endl;
+
+		cout
+			<< endl << endl
+			<< hSession->toString()
+			<< endl << endl;
+
+		hSession->disconnect();
+
+	} catch(const std::exception &e) {
+
+		cerr << "Exception: " << e.what() << endl;
+
+	}
+
+	delete hSession;
+
+ }
+
  int main(int argc, char **argv) {
 
 	const char * session = ""; // "pw3270:a";
@@ -70,6 +108,9 @@
 
 	}
 
+	chkSession();
+
+	/*
 	cout << "Session: " << session << endl;
 
 	TN3270::Host host{session};
@@ -92,19 +133,17 @@
 
 		// host.input("test@0another line");
 
-		/*
-		host.connect();
-
-		if(host) {
-			cout << host << endl;
-		}
-		*/
+		//host.connect();
+		//if(host) {
+		//	cout << host << endl;
+		//}
 
 	} catch(const std::exception &e) {
 
 		cerr << std::endl << e.what() << std::endl << std::endl;
 
 	}
+	*/
 
 
 	return 0;

@@ -69,6 +69,9 @@
 
 		#define DEFAULT_TIMEOUT 5
 
+		TN3270_PUBLIC const char * getVersion();
+		TN3270_PUBLIC const char * getRevision();
+
 		class TN3270_PUBLIC Event {
 		public:
 			enum Type : uint8_t {
@@ -234,64 +237,74 @@
 
 		public:
 
-			/// @brief Create a tn3270 session.
-			static Session * create(const char *id = nullptr);
-
+			/// @brief Get an instance of the TN3270 session based on the supplied ID.
+			static Session * getInstance(const char *id = nullptr);
 			virtual ~Session();
 
-			// Connect/disconnect
-			virtual void connect(const char *url) = 0;
-			virtual void disconnect() = 0;
+			// States
+			virtual ProgramMessage getProgramMessage() const = 0;
+			virtual ConnectionState getConnectionState() const = 0;
+			virtual SSLState getSSLState() const = 0;
 
-			// Gets
+			// Contents
 			virtual std::string	toString(int baddr = 0, size_t len = -1, char lf = '\n') const = 0;
 			virtual std::string	toString(int row, int col, size_t sz, char lf = '\n') const = 0;
 
-			inline operator std::string() const {
-				return toString();
-			}
-
-			// Get properties.
-			virtual void getProperty(const char *name, int &value) const = 0;
-			virtual void getProperty(const char *name, std::string &value) const = 0;
-			virtual void getProperty(const char *name, bool &value) const = 0;
+			// Properties.
 
 			virtual std::string getVersion() const = 0;
 			virtual std::string getRevision() const = 0;
 			virtual std::string getLUName() const = 0;
 			virtual std::string getHostURL() const = 0;
 
+			virtual void setUnlockDelay(unsigned short delay = 350) = 0;
+
 			virtual unsigned short getScreenWidth() const = 0;
 			virtual unsigned short getScreenHeight() const = 0;
 			virtual unsigned short getScreenLength() const = 0;
 
-			virtual ProgramMessage getProgramMessage() const = 0;
-			inline operator ProgramMessage() const {
-				return getProgramMessage();
-			}
+			/// @brief Set cursor address.
+			virtual void setCursor(unsigned short addr) = 0;
 
-			virtual ConnectionState getConnectionState() const = 0;
-			inline operator ConnectionState() const {
-				return getConnectionState();
-			}
+			/// @brief Set cursor position.
+			virtual void setCursor(unsigned short row, unsigned short col) = 0;
 
-			inline bool operator==(ConnectionState state) const {
-				return this->getConnectionState() == state;
-			}
+			/// @brief Get cursor address
+			virtual unsigned short getCursorAddress() = 0;
 
-			virtual SSLState getSSLState() const = 0;
+			/// @brief Set local charset.
+			virtual void setCharSet(const char *charset = NULL) = 0;
 
-			inline operator SSLState() const {
-				return getSSLState();
-			}
+			// Actions
 
-			inline bool operator==(SSLState state) const {
-				return this->getSSLState() == state;
-			}
+			// Connect/disconnect
+			virtual void connect(const char *url = nullptr, bool wait = true) = 0;
+			virtual void disconnect() = 0;
+
+			/// @brief Wait.
+			virtual void wait(unsigned short seconds) const = 0;
+
+			/// @brief Wait until session state changes to "ready".
+			virtual void waitForReady(time_t timeout = DEFAULT_TIMEOUT) const = 0;
+
+			/// @brief Wait for screen changes.
+			virtual void waitForChange(unsigned short seconds) const = 0;
+
+			/// @brief Send PF.
+			virtual void pfkey(unsigned short value) = 0;
+
+			/// @brief Send PA.
+			virtual void pakey(unsigned short value) = 0;
+
+			/*
+
+			// Get properties.
+			virtual void getProperty(const char *name, int &value) const = 0;
+			virtual void getProperty(const char *name, std::string &value) const = 0;
+			virtual void getProperty(const char *name, bool &value) const = 0;
+
 
 			// Set properties.
-			virtual void setUnlockDelay(unsigned short delay = 350) = 0;
-			void setCharSet(const char *charset);
 			virtual void setHostURL(const char *url) = 0;
 
 			// Set contents.
@@ -304,21 +317,6 @@
 
 			/// @brief Input string.
 			virtual Session & input(const char *text, size_t length) = 0;
-
-			/// @brief Set cursor address.
-			virtual TN3270::Session & setCursor(unsigned short addr) = 0;
-
-			/// @brief Set cursor position.
-			virtual TN3270::Session & setCursor(unsigned short row, unsigned short col) = 0;
-
-			/// @brief Get cursor address
-			virtual unsigned short getCursorAddress() = 0;
-
-			/// @brief Send PF.
-			virtual Session & pfkey(unsigned short value) = 0;
-
-			/// @brief Send PA.
-			virtual Session & pakey(unsigned short value) = 0;
 
 			virtual Session & push(int baddr, const char *text, int length) = 0;
 			virtual Session & push(int row, int col, const char *text, int length) = 0;
@@ -344,15 +342,6 @@
 			/// @brief Execute action by name.
 			virtual Session & action(const char *action_name) = 0;
 
-			/// @brief Wait.
-			virtual Session & wait(unsigned short seconds) = 0;
-
-			/// @brief Wait until session state changes to "ready".
-			virtual void waitForReady(time_t timeout = DEFAULT_TIMEOUT) = 0;
-
-			/// @brief Wait for screen changes.
-			virtual Session & waitForChange(unsigned short seconds) = 0;
-
 			/// @brief Wait for string.
 			///
 			/// @return 0 if the string was found, error code if not.
@@ -366,9 +355,11 @@
 			int compare(size_t baddr, const char* s, size_t len) const;
 			int compare(int row, int col, const char* s, size_t len) const;
 
+			*/
 		};
 
 		/// @brief TN3270 Host
+		/*
 		class TN3270_PUBLIC Host : public std::basic_streambuf<char, std::char_traits<char> > {
 		private:
 
@@ -579,6 +570,7 @@
 
 
 		};
+		*/
 
 	}
 
@@ -586,6 +578,7 @@
 	TN3270_PUBLIC const char * toCharString(const TN3270::ConnectionState connectionState);
 	TN3270_PUBLIC const char * toCharString(const TN3270::Action action);
 
+	/*
 	template <typename T>
 	inline TN3270_PUBLIC TN3270::Session & operator<<(TN3270::Session& session, const T value) {
 		return session.push(value);
@@ -605,6 +598,7 @@
         stream << host.toString();
         return stream;
 	}
+	*/
 
 
 #endif

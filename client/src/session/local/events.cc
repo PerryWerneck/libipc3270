@@ -36,11 +36,7 @@
  *
  */
 
- #include <config.h>
- #include <cstdio>
- #include <ipc-client-internals.h>
- #include <cstring>
- #include <malloc.h>
+ #include "private.h"
 
  extern "C" {
 	 #include <lib3270/actions.h>
@@ -178,7 +174,6 @@
 		session->fire(ConnectionEvent(connected));
 
 	}
-
 
  }
 

@@ -28,72 +28,67 @@
  */
 
 /**
- * @file src/os/linux/linux/session.cc
+ * @file
  *
- * @brief Implements Linux session methods.
+ * @brief
  *
  * @author perry.werneck@gmail.com
  *
  */
 
- #include <ipc-client-internals.h>
- #include <cstring>
- #include <lib3270/trace.h>
-
- using std::string;
+ #include "private.h"
+ #include <lib3270/actions.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
- static void throws_if_error(DBusError &err) {
-
- 	if(dbus_error_is_set(&err)) {
-		string message = err.message;
-		dbus_error_free(&err);
-		throw std::runtime_error(message.c_str());
- 	}
-
- 	return;
-
- }
-
  namespace TN3270 {
 
-	/*
-	IPC::Session::Session(const char *id) : Abstract::Session() {
+ 	void Local::Session::connect(const char *url, bool wait) {
 
-		// Create D-Bus session.
-		DBusError err;
+		std::lock_guard<std::mutex> lock(sync);
+		chkResponse(lib3270_connect_url(hSession,url,(wait ? 1 : 0)));
+	}
 
-		dbus_error_init(&err);
-		this->conn = dbus_bus_get(DBUS_BUS_SESSION, &err);
+	void Local::Session::disconnect() {
 
-		debug("dbus_bus_get conn=",conn);
+		std::lock_guard<std::mutex> lock(sync);
+		chkResponse(lib3270_disconnect(hSession));
+	}
 
-		throws_if_error(err);
+	void Local::Session::wait(unsigned short seconds) const {
 
-		if(!conn)
-			throw std::runtime_error("DBUS Connection failed");
-
-		auto sep = strchr(id,':');
-		if(!sep) {
-			throw std::system_error(EINVAL, std::system_category());
-		}
-
-		this->name = "br.com.bb.";
-		this->name += string(id,(sep - id));
-		this->name += ".";
-		this->name += (sep+1);
-		this->path = "/br/com/bb/tn3270/session";
-		this->interface = "br.com.bb.tn3270.session";
-
-		debug("D-Bus Object name=\"",this->name,"\" D-Bus Object path=\"",this->path,"\"");
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		chkResponse(lib3270_wait(this->hSession, seconds));
 
 	}
 
-	IPC::Session::~Session() {
+	void Local::Session::waitForReady(time_t timeout) const {
+
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		chkResponse(lib3270_wait_for_ready(this->hSession, timeout));
 
 	}
-	*/
+
+	void Local::Session::waitForChange(unsigned short seconds) const {
+
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		chkResponse(lib3270_wait_for_update(this->hSession, seconds));
+
+	}
+
+	void Local::Session::pfkey(unsigned short value) {
+
+		std::lock_guard<std::mutex> lock(sync);
+		chkResponse(lib3270_pfkey(hSession,value));
+
+	}
+
+	void Local::Session::pakey(unsigned short value) {
+
+		std::lock_guard<std::mutex> lock(sync);
+		chkResponse(lib3270_pakey(hSession,value));
+
+	}
 
  }
 

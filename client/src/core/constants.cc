@@ -36,10 +36,19 @@
  *
  */
 
- #include <ipc-client-internals.h>
 
+ #include <ipc-client-internals.h>
+ #include <lib3270.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
+
+TN3270_PUBLIC const char * getVersion() {
+	return PACKAGE_VERSION;
+}
+
+TN3270_PUBLIC const char * getRevision() {
+	return LIB3270_STRINGIZE_VALUE_OF(PACKAGE_RELEASE);
+}
 
 TN3270_PUBLIC const char * toCharString(const TN3270::Action action) {
 

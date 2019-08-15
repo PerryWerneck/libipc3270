@@ -49,6 +49,7 @@
 
  namespace TN3270 {
 
+	/*
 	Host::Host(const char *id, const char *url, time_t timeout) {
 
 		debug("Creating host id=\"", id);
@@ -464,7 +465,7 @@
 		return *this;
 
 	}
-
+	*/
 
 
  }
