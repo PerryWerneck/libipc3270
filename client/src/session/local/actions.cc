@@ -48,10 +48,10 @@
 		chkResponse(lib3270_action(hSession,action_name));
 	}
 
- 	void Local::Session::connect(const char *url, bool wait) {
+ 	void Local::Session::connect(const char *url, int seconds) {
 
 		std::lock_guard<std::mutex> lock(sync);
-		chkResponse(lib3270_connect_url(hSession,url,(wait ? 1 : 0)));
+		chkResponse(lib3270_connect_url(hSession,url,seconds));
 	}
 
 	void Local::Session::disconnect() {

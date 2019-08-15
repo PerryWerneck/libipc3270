@@ -65,11 +65,9 @@
 		this->session = nullptr;
 	}
 
-    Host & Host::connect(const char *url, bool sync) {
-        this->session->connect(url);
-        if(sync) {
-			this->sync();
-        }
+    Host & Host::connect(const char *url) {
+        this->session->connect(url,timeout);
+        this->sync();
         return *this;
     }
 

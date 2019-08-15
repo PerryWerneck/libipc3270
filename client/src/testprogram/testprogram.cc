@@ -87,7 +87,7 @@
  // test host object
  static void testHost(const char *session) {
 
-	TN3270::Host host{session};
+	TN3270::Host host{session,nullptr,10};
 
 	try {
 
@@ -96,7 +96,7 @@
 			<< "\tRevision: " << host.getRevision()
 			<< std::endl;
 
-		host.connect();
+		host.connect(nullptr);
 
 		cout
 			<< "Connection state is " << toCharString(host.getConnectionState()) << std::endl

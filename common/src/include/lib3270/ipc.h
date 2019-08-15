@@ -322,7 +322,7 @@
 			virtual void action(const char *action_name) = 0;
 
 			// Connect/disconnect
-			virtual void connect(const char *url = nullptr, bool wait = true) = 0;
+			virtual void connect(const char *url = nullptr, int seconds = DEFAULT_TIMEOUT) = 0;
 			virtual void disconnect() = 0;
 
 			/// @brief Wait.
@@ -416,7 +416,7 @@
 			}
 
 			// Actions
-			Host & connect(const char *url = nullptr, bool sync = true);
+			Host & connect(const char *url = nullptr);
 			Host & disconnect();
 			Host & waitForReady(time_t timeout = DEFAULT_TIMEOUT);
 
