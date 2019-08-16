@@ -55,6 +55,7 @@
 		<Unit filename="src/host/init.cc" />
 		<Unit filename="src/host/pop.cc" />
 		<Unit filename="src/host/private.h" />
+		<Unit filename="src/host/push.cc" />
 		<Unit filename="src/host/states.cc" />
 		<Unit filename="src/host/stream.cc" />
 		<Unit filename="src/host/string.cc" />

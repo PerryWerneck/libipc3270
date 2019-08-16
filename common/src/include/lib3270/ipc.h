@@ -282,7 +282,6 @@
 
 			/**
 			 * @brief Input string parsing control char.
-			 *
 			 */
 			void input(const char *text, const char control_char);
 
@@ -377,6 +376,7 @@
 			/// @brief Writes characters to the associated output sequence from the put area.
 			int overflow(int c) override;
 
+			/*
 			/// @brief Write information to log file.
 			void info(const char *fmt, ...) const;
 
@@ -385,6 +385,7 @@
 
 			/// @brief Write error to log file.
 			void error(const char *fmt, ...) const;
+			*/
 
 		public:
 			Host(const char *id = nullptr, const char *url = nullptr, time_t timeout = DEFAULT_TIMEOUT);
@@ -395,9 +396,15 @@
 			}
 
 			// Contents
-			Host & push(int baddr, std::string &text);
-			Host & push(int row, int col, std::string &text);
-			Host & push(std::string &text);
+
+			/**
+			 * @brief Input string parsing control char.
+			 */
+			Host & input(const char *text, const char control_char);
+
+			Host & push(int baddr, const std::string &text);
+			Host & push(int row, int col, const std::string &text);
+			Host & push(const std::string &text);
 
 			Host & push(int baddr, const char *str, int len = -1);
 			Host & push(int row, int col, const char *str, int len = -1);
