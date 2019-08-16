@@ -113,6 +113,9 @@
 				void getProperty(const char *name, int &value) const override;
 				void getProperty(const char *name, std::string &value) const override;
 				void getProperty(const char *name, bool &value) const override;
+				void setProperty(const char *name, const int value) override;
+				void setProperty(const char *name, const char *value) override;
+
 				std::string getVersion() const override;
 				std::string getRevision() const override;
 				std::string getLUName() const override;

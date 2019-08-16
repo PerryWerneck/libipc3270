@@ -43,12 +43,51 @@
  namespace TN3270 {
 
  	void IPC::Session::set(const std::string &str) {
+
+		int rc;
+
+		Request(*this,"setString")
+			.push(str.c_str())
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
 	}
 
 	void IPC::Session::set(int baddr, const std::string &str) {
+
+		int rc;
+
+		Request(*this,"setStringAtAddress")
+			.push((int32_t) baddr)
+			.push(str.c_str())
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
 	}
 
 	void IPC::Session::set(int row, int col, const std::string &str) {
+
+		int32_t rc;
+
+		Request(*this,"setStringAt")
+			.push((uint32_t) row)
+			.push((uint32_t) col)
+			.push(str.c_str())
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
 	}
 
  }

@@ -29,15 +29,15 @@
 
 #include "private.h"
 
-int ipc3270_method_connect(GObject *session, GVariant *request, GObject G_GNUC_UNUSED(*response), GError G_GNUC_UNUSED(**error)) {
+int ipc3270_method_connect(GObject *session, GVariant *request, GObject *response, GError G_GNUC_UNUSED(**error)) {
 
 	gchar *text = NULL;
 	g_variant_get(request, "(&s)", &text);
-
-	return lib3270_connect_url(ipc3270_get_session(session),text,0);
-
+	ipc3270_response_append_int32(response, lib3270_connect_url(ipc3270_get_session(session),text,0));
+	return 0;
 }
 
-int ipc3270_method_disconnect(GObject *session, GVariant G_GNUC_UNUSED(*request), GObject G_GNUC_UNUSED(*response), GError G_GNUC_UNUSED(**error)) {
-	return lib3270_disconnect(ipc3270_get_session(session));
+int ipc3270_method_disconnect(GObject *session, GVariant G_GNUC_UNUSED(*request), GObject *response, GError G_GNUC_UNUSED(**error)) {
+	ipc3270_response_append_int32(response, lib3270_disconnect(ipc3270_get_session(session)));
+	return 0;
 }

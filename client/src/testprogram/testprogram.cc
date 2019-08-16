@@ -96,7 +96,7 @@
 			<< "\tRevision: " << host.getRevision()
 			<< std::endl;
 
-		host.connect(nullptr);
+//		host.connect(nullptr);
 
 		cout
 			<< "Connection state is " << toCharString(host.getConnectionState()) << std::endl
@@ -110,9 +110,6 @@
 
 		// host.input("test@0another line");
 
-		//host.connect();
-		//if(host) {
-		//}
 
 	} catch(const std::exception &e) {
 
@@ -124,7 +121,7 @@
 
  int main(int argc, char **argv) {
 
-	const char * session = ""; // "pw3270:a";
+	const char * session = "pw3270:a";
 
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"

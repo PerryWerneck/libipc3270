@@ -39,35 +39,153 @@
  #include "private.h"
  #include <lib3270/actions.h>
 
+#ifndef _WIN32
+	#include <unistd.h>
+#endif // _WIN32
+
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
 
 	void IPC::Session::action(const char *action_name) {
+
+		int32_t rc;
+
+		Request(*this,"action")
+			.push(action_name)
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
 	}
 
  	void IPC::Session::connect(const char *url, int seconds) {
+
+		if(!url)
+			url = "";
+
+		Request(*this,"connect")
+			.push(url)
+			.call();
+
+		if(seconds)
+			this->waitForReady(seconds);
+
 	}
 
 	void IPC::Session::disconnect() {
+
+		Request(*this,"disconnect")
+			.call();
+
 	}
 
 	void IPC::Session::wait(unsigned short seconds) const {
+
+		time_t end = time(nullptr) + seconds;
+
+		while(time(nullptr) < end) {
+
+#ifdef _WIN32
+			Sleep(1000);
+#else
+			sleep(1);
+#endif // _WIN32
+
+			if(getConnectionState() == TN3270::DISCONNECTED)
+				throw std::runtime_error("Disconnected");
+
+		}
+
 	}
 
 	void IPC::Session::waitForReady(time_t timeout) const {
+
+		int rc;
+
+		time_t end = time(nullptr) + timeout;
+
+		while(time(nullptr) < end) {
+
+			debug("Running waitForReady request...");
+
+			Request(*this,"waitForReady")
+				.push((uint32_t) 1)
+				.call()
+				.pop(rc);
+
+			debug("Wait for ready returned ",rc);
+
+			if(rc == 0)
+				return;
+
+		}
+
+		throw std::system_error(ETIMEDOUT, std::system_category());
+
 	}
 
 	void IPC::Session::waitForChange(unsigned short seconds) const {
+
+		int rc;
+
+		time_t end = time(nullptr) + seconds;
+
+		while(time(nullptr) < end) {
+
+			debug("Running waitForUpdate request...");
+
+			Request(*this,"waitForUpdate")
+				.push((uint32_t) 1)
+				.call()
+				.pop(rc);
+
+			debug("Wait for update returned ",rc);
+
+			if(rc == 0)
+				return;
+
+		}
+
+		throw std::system_error(ETIMEDOUT, std::system_category());
+
 	}
 
 	void IPC::Session::pfkey(unsigned short value) {
+
+		int32_t rc;
+
+		Request(*this,"pfkey")
+			.push((uint32_t) value)
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
 	}
 
 	void IPC::Session::pakey(unsigned short value) {
+
+		int32_t rc;
+
+		Request(*this,"pakey")
+			.push((uint32_t) value)
+			.call()
+			.pop(rc);
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
 	}
 
 	void IPC::Session::push(const Action action) {
+		this->action(toCharString(action));
 	}
 
 	void IPC::Session::print(LIB3270_CONTENT_OPTION option) {

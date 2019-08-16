@@ -72,6 +72,7 @@ static void
 
 	} else {
 
+		g_message("%s: Invalid or unexpected method call",method_name);
 		g_dbus_method_invocation_return_error(invocation, G_DBUS_ERROR, G_DBUS_ERROR_UNKNOWN_METHOD, "Invalid or unexpected method call");
 
 	}

@@ -43,21 +43,70 @@
  namespace TN3270 {
 
  	std::string	IPC::Session::get() const {
+
+		std::string rc;
+
+		Request(*this,"getString")
+			.call()
+			.pop(rc);
+
+		return rc;
+
 	}
 
 	std::string	IPC::Session::get(int baddr, size_t len, char lf) const {
+
+		std::string rc;
+
+		Request(*this,"getStringAtAddress")
+			.push((int32_t) baddr)
+			.push((int32_t) len)
+			.push((uint8_t) lf)
+			.call()
+			.pop(rc);
+
+		return rc;
+
 	}
 
 	std::string	IPC::Session::get(int row, int col, size_t sz, char lf) const {
+
+		std::string rc;
+
+		Request(*this,"getStringAt")
+			.push((uint32_t) row)
+			.push((uint32_t) col)
+			.push((uint32_t) sz)
+			.push((uint8_t) lf)
+			.call()
+			.pop(rc);
+
+		return rc;
+
 	}
 
 	ProgramMessage IPC::Session::getProgramMessage() const {
+
+		int program_message;
+		getProperty("program_message",program_message);
+		return (ProgramMessage) program_message;
+
 	}
 
 	ConnectionState IPC::Session::getConnectionState() const {
+
+		int cstate;
+		getProperty("cstate",cstate);
+		return (ConnectionState) cstate;
+
 	}
 
 	SSLState IPC::Session::getSSLState() const {
+
+		int value;
+		getProperty("sslstate",value);
+		return (TN3270::SSLState) value;
+
 	}
 
 

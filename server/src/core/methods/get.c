@@ -68,10 +68,9 @@ int ipc3270_method_get_string(GObject *session, GVariant *request, GObject *resp
 		break;
 
 	default:
+		g_message("getstring was called with %u arguments.",(unsigned int) g_variant_n_children(request));
 		return EINVAL;
 	}
-
-	debug("text:\n%s\n",text);
 
 	if(!text)
 		return errno;

@@ -44,46 +44,6 @@
 
  namespace TN3270 {
 
-	#define PIPE_BUFFER_LENGTH 8192
-
-	IPC::Request::Request(const Session &session) {
-
-		this->hPipe = session.hPipe;
-
-		in.length = PIPE_BUFFER_LENGTH;
-		in.used = 0;
-		in.block = new uint8_t[in.length];
-
-		out.length = PIPE_BUFFER_LENGTH;
-		out.used = 0;
-		out.block = new uint8_t[out.length];
-
-	}
-
-	IPC::Request::Request(const Session &session, const char *method) : Request(session) {
-
-		// Add name
-		strcpy((char *) out.block, method);
-		out.used += strlen((char *) method) + 1;
-
-		// Add ID
-		*((uint16_t *) (out.block + out.used)) = (uint16_t) 3;
-		out.used += sizeof(uint16_t);
-
-	}
-
-	IPC::Request::Request(const Session &session, bool isSet, const char *property) : Request(session) {
-
-		// Add name
-		strcpy((char *) out.block, property);
-		out.used += strlen((char *) property) + 1;
-
-		// Add ID (SetProperty = 2, getProperty = 1)
-		*((uint16_t *) (out.block + out.used)) = (uint16_t) (isSet ? 2 : 1);
-		out.used += sizeof(uint16_t);
-
-	}
-
 	IPC::Request::~Request() {
 
 		delete[] ((uint8_t *) in.block);
@@ -182,6 +142,49 @@
 		default:
 			throw std::runtime_error("Invalid format");
 		}
+
+		return *this;
+	}
+
+	IPC::Request & IPC::Request::call() {
+
+#ifdef DEBUG
+		// lib3270_trace_data(NULL,"Request block",(const char *) this->out.block, this->out.used);
+#endif // DEBUG
+
+		in.current = 0;
+
+		if(!TransactNamedPipe(
+				this->hPipe,
+				this->out.block,
+				this->out.used,
+				this->in.block,
+				this->in.length,
+				&this->in.used,
+				NULL)
+			) {
+
+			throw std::runtime_error("Can't transact on IPC Channel");
+
+		}
+
+		debug("Received response \"", in.block, "\" with ", in.used, " bytes");
+#ifdef DEBUG
+		// lib3270_trace_data(NULL,"Response block",(const char *) this->in.block, this->in.used);
+#endif // DEBUG
+
+		// Extract response name
+		in.current = strlen((const char *) in.block)+1;
+
+		// Extract return code
+		uint16_t rc = *((uint16_t *) (in.block + in.current));
+		in.current += sizeof(uint16_t);
+
+		// Extract argc
+		uint16_t argc = *((uint16_t *) (in.block + in.current));
+		in.current += sizeof(uint16_t);
+
+		debug("Received response \"", ((const char *) in.block), "\" with rc=", rc, " and ", argc, " arguments");
 
 		return *this;
 	}

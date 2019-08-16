@@ -29,26 +29,29 @@
 
 #include "private.h"
 
-int ipc3270_method_wait(GObject *session, GVariant *request, GObject G_GNUC_UNUSED(*response), GError G_GNUC_UNUSED(**error)) {
+int ipc3270_method_wait(GObject *session, GVariant *request, GObject *response, GError G_GNUC_UNUSED(**error)) {
 
 	guint seconds = 1;
 	g_variant_get(request, "(u)", &seconds);
-	return lib3270_wait(ipc3270_get_session(session),seconds);
+	ipc3270_response_append_int32(response, lib3270_wait(ipc3270_get_session(session),seconds));
+	return 0;
 
 }
 
-int ipc3270_method_wait_for_ready(GObject *session, GVariant *request, GObject G_GNUC_UNUSED(*response), GError G_GNUC_UNUSED(**error)) {
+int ipc3270_method_wait_for_ready(GObject *session, GVariant *request, GObject *response, GError G_GNUC_UNUSED(**error)) {
 
 	guint seconds = 1;
 	g_variant_get(request, "(u)", &seconds);
-	return lib3270_wait_for_ready(ipc3270_get_session(session),seconds);
+	ipc3270_response_append_int32(response, lib3270_wait_for_ready(ipc3270_get_session(session),seconds));
+	return 0;
 
 }
 
-int ipc3270_method_wait_for_update(GObject *session, GVariant *request, GObject G_GNUC_UNUSED(*response), GError G_GNUC_UNUSED(**error)) {
+int ipc3270_method_wait_for_update(GObject *session, GVariant *request, GObject *response, GError G_GNUC_UNUSED(**error)) {
 
 	guint seconds = 1;
 	g_variant_get(request, "(u)", &seconds);
-	return lib3270_wait_for_update(ipc3270_get_session(session),seconds);
+	ipc3270_response_append_int32(response, lib3270_wait_for_update(ipc3270_get_session(session),seconds));
+	return 0;
 
 }

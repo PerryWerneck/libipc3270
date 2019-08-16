@@ -35,7 +35,8 @@ MAIN_SOURCES= \
 	$(wildcard src/core/@OSNAME@/*.rc) \
 	$(wildcard src/session/*.cc) \
 	$(wildcard src/session/local/*.cc) \
-	$(wildcard src/session/remote/*.cc)
+	$(wildcard src/session/remote/*.cc) \
+	$(wildcard src/session/remote/@OSNAME@/*.cc)
 
 TEST_SOURCES= \
 	$(wildcard src/testprogram/*.cc)

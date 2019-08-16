@@ -49,11 +49,9 @@
 			return Local::getSessionInstance();
 		}
 
-		// return new IPC::Session(id);
+		return IPC::getSessionInstance(id);
 
-		return nullptr;
 	}
-
 
 	Session::Session() {
 	}

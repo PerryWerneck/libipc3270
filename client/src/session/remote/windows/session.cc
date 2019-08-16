@@ -28,9 +28,9 @@
  */
 
 /**
- * @file src/os/linux/linux/session.cc
+ * @file src/os/windows/session.cc
  *
- * @brief Implements Linux session methods.
+ * @brief Implements WIN32 remote session methods.
  *
  * @author perry.werneck@gmail.com
  *
@@ -39,61 +39,58 @@
  #include <ipc-client-internals.h>
  #include <cstring>
  #include <lib3270/trace.h>
+ #include <algorithm>
 
  using std::string;
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
- static void throws_if_error(DBusError &err) {
-
- 	if(dbus_error_is_set(&err)) {
-		string message = err.message;
-		dbus_error_free(&err);
-		throw std::runtime_error(message.c_str());
- 	}
-
- 	return;
-
- }
-
  namespace TN3270 {
 
-	/*
 	IPC::Session::Session(const char *id) : Abstract::Session() {
 
-		// Create D-Bus session.
-		DBusError err;
+		char *ptr = strchr(id,':');
 
-		dbus_error_init(&err);
-		this->conn = dbus_bus_get(DBUS_BUS_SESSION, &err);
-
-		debug("dbus_bus_get conn=",conn);
-
-		throws_if_error(err);
-
-		if(!conn)
-			throw std::runtime_error("DBUS Connection failed");
-
-		auto sep = strchr(id,':');
-		if(!sep) {
+		if(!ptr)
 			throw std::system_error(EINVAL, std::system_category());
+
+		string pipename{"\\\\.\\pipe\\"};
+
+		pipename += string(id,ptr - id);
+		pipename += "\\";
+		pipename += (ptr+1);
+
+		std::transform(pipename.begin(), pipename.end(), pipename.begin(), ::tolower);
+
+		debug("id: \"", id, "\" pipename: \"", pipename , "\"");
+
+		this->hPipe = CreateFile(
+			TEXT(pipename.c_str()),		// pipe name
+			GENERIC_READ |  			// read and write access
+			GENERIC_WRITE,
+			0,              			// no sharing
+			NULL,           			// default security attributes
+			OPEN_EXISTING,  			// opens existing pipe
+			0,              			// default attributes
+			NULL						// no template file
+		);
+
+		if (hPipe == INVALID_HANDLE_VALUE) {
+			throw std::runtime_error("Can't open IPC Channel");
 		}
 
-		this->name = "br.com.bb.";
-		this->name += string(id,(sep - id));
-		this->name += ".";
-		this->name += (sep+1);
-		this->path = "/br/com/bb/tn3270/session";
-		this->interface = "br.com.bb.tn3270.session";
+		// The pipe connected; change to message-read mode.
+		DWORD dwMode = PIPE_READMODE_MESSAGE;
+		if(!SetNamedPipeHandleState(hPipe,&dwMode,NULL,NULL)) {
+			throw std::runtime_error("Can't set IPC Channel mode");
+		}
 
-		debug("D-Bus Object name=\"",this->name,"\" D-Bus Object path=\"",this->path,"\"");
-
+		setCharSet();
 	}
 
 	IPC::Session::~Session() {
-
+		CloseHandle(this->hPipe);
 	}
-	*/
 
  }
 

@@ -111,6 +111,14 @@
 
 	}
 
+	void Local::Session::setProperty(const char *name, const int value) {
+		throw std::system_error(ENOTSUP, std::system_category());
+	}
+
+	void Local::Session::setProperty(const char *name, const char *value) {
+		throw std::system_error(ENOTSUP, std::system_category());
+	}
+
 	void Local::Session::setCharSet(const char *charset) {
 		Abstract::Session::setCharSet(lib3270_get_display_charset(this->hSession),charset);
 	}

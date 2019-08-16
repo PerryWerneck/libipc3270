@@ -61,52 +61,12 @@
 #ifdef _WIN32
 				/// @brief Pipe Handle.
 				HANDLE hPipe;
-
-				/// @brief IPC Data type.
-				enum Type : uint8_t {
-					String	= 's',
-					Boolean	= 'b',
-					Uchar	= 'y',
-					Int16	= 'n',
-					Uint16	= 'q',
-					Int32	= 'i',
-					Int32x	= 'h',
-					Uint32	= 'u',
-					Int64	= 'x',
-					Uint64	= 't'
-				};
-
-				struct {
-					DWORD 	  length;	///< @brief Length of input buffer.
-					DWORD	  used;		///< @brief Length of used block.
-					DWORD	  current;	///< @brief Offset of the current argument.
-					uint8_t * block;
-				} in;
-
-				struct {
-					DWORD 	  length;
-					DWORD	  used;
-					uint8_t * block;
-				} out;
-
-				struct DataBlock {
-					Type type;
-				};
-
-				/// @brief Store value on data block.
-				DataBlock * pushBlock(const void *ptr, size_t len);
-
-				/// @brief Get next argument.
-				DataBlock * getNextBlock() const;
-
 #else
-				struct {
-					DBusMessage		* in;
-					DBusMessage		* out;
-					DBusMessageIter	  iter;
 
-				} msg;
 				DBusConnection	* conn;
+				std::string		  name;			///< @brief D-Bus Object name.
+				std::string		  path;			///< @brief D-Bus Object path.
+				std::string		  interface;	///< @brief D-Bus interface.
 
 #endif // _WIN32
 
@@ -126,7 +86,7 @@
 
 			public:
 
-				Session();
+				Session(const char *id);
 				virtual ~Session();
 
 				// Actions
@@ -151,6 +111,9 @@
 				void getProperty(const char *name, int &value) const override;
 				void getProperty(const char *name, std::string &value) const override;
 				void getProperty(const char *name, bool &value) const override;
+				void setProperty(const char *name, const int value) override;
+				void setProperty(const char *name, const char *value) override;
+
 				std::string getVersion() const override;
 				std::string getRevision() const override;
 				std::string getLUName() const override;

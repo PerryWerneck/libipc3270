@@ -28,33 +28,60 @@
  */
 
 /**
- * @file src/session/local/init.cc
+ * @file
  *
- * @brief Implement lib3270 direct access layout (NO IPC).
+ * @brief Implements WIN32 request constructors based on TN3270::IPC::Session.
  *
  * @author perry.werneck@gmail.com
  *
  */
 
- #include "private.h"
+ #include "../private.h"
 
- extern "C" {
-	 #include <lib3270/session.h>
- }
-
+ using std::string;
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
 
-	Session * IPC::getSessionInstance() {
-		return new IPC::Session();
+	#define PIPE_BUFFER_LENGTH 8192
+
+	IPC::Request::Request(const Session &session) {
+
+		this->hPipe = session.hPipe;
+
+		in.length = PIPE_BUFFER_LENGTH;
+		in.used = 0;
+		in.block = new uint8_t[in.length];
+
+		out.length = PIPE_BUFFER_LENGTH;
+		out.used = 0;
+		out.block = new uint8_t[out.length];
+
 	}
 
- 	IPC::Session::Session() : Abstract::Session() {
+	IPC::Request::Request(const Session &session, const char *method) : Request(session) {
+
+		// Add name
+		strcpy((char *) out.block, method);
+		out.used += strlen((char *) method) + 1;
+
+		// Add ID
+		*((uint16_t *) (out.block + out.used)) = (uint16_t) 3;
+		out.used += sizeof(uint16_t);
+
 	}
 
-	IPC::Session::~Session() {
+	IPC::Request::Request(const Session &session, bool isSet, const char *property) : Request(session) {
+
+		// Add name
+		strcpy((char *) out.block, property);
+		out.used += strlen((char *) property) + 1;
+
+		// Add ID (SetProperty = 2, getProperty = 1)
+		*((uint16_t *) (out.block + out.used)) = (uint16_t) (isSet ? 2 : 1);
+		out.used += sizeof(uint16_t);
+
 	}
 
  }
