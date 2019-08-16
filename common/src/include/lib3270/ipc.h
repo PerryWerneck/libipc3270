@@ -395,6 +395,14 @@
 			}
 
 			// Contents
+			Host & push(int baddr, std::string &text);
+			Host & push(int row, int col, std::string &text);
+			Host & push(std::string &text);
+
+			Host & push(int baddr, const char *str, int len = -1);
+			Host & push(int row, int col, const char *str, int len = -1);
+			Host & push(const char *str, int len = -1);
+
 			Host & pop(int baddr, std::string &text);
 			Host & pop(int row, int col, std::string &text);
 			Host & pop(std::string &text);
@@ -454,7 +462,6 @@
 				session->setCursor(addr);
 				return *this;
 			}
-
 
 			/// @brief Set cursor position.
 			inline Host & setCursor(unsigned short row, unsigned short col) {

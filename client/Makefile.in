@@ -33,6 +33,7 @@ MAIN_SOURCES= \
 	$(wildcard src/core/*.cc) \
 	$(wildcard src/core/@OSNAME@/*.cc) \
 	$(wildcard src/core/@OSNAME@/*.rc) \
+	$(wildcard src/host/*.cc) \
 	$(wildcard src/session/*.cc) \
 	$(wildcard src/session/local/*.cc) \
 	$(wildcard src/session/remote/*.cc) \
