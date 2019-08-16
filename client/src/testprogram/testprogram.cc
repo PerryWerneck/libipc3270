@@ -104,12 +104,14 @@
 			<< "Luname is " << host.getLUName() << std::endl
 			<< std::endl;
 
+		if(host) {
+			cout << host << endl;
+		}
 
 		// host.input("test@0another line");
 
 		//host.connect();
 		//if(host) {
-		//	cout << host << endl;
 		//}
 
 	} catch(const std::exception &e) {

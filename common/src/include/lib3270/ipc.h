@@ -209,7 +209,7 @@
 			WORD_NEXT,
 			FIELD_END,		///< @brief Move the cursor to the first blank after the last nonblank in the field.
 			FIELD_FIRST,	///< @brief Move to first unprotected field on screen.
-			FIELD_NEXT,
+			FIELD_NEXT,		///< @brief Jump to the next field.
 			FIELD_PREVIOUS,	///< @brief Tab backward to previous field.
 			ATTN,			///< @brief ATTN key, per RFC 2355.  Sends IP, regardless.
 			BREAK,
@@ -430,9 +430,7 @@
 				return session->getProgramMessage();
 			}
 
-			inline operator bool() const {
-				return isReady();
-			}
+			operator bool() const;
 
 			inline operator ProgramMessage() const {
 				return getProgramMessage();

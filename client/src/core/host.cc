@@ -67,7 +67,6 @@
 
     Host & Host::connect(const char *url) {
         this->session->connect(url,timeout);
-        this->sync();
         return *this;
     }
 
@@ -99,6 +98,11 @@
 
 		return c;
 
+	}
+
+	Host::operator bool() const {
+		const_cast<Host *>(this)->sync();
+		return isReady();
 	}
 
 	bool Host::isReady() const {

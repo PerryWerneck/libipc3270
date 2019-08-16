@@ -71,7 +71,6 @@
 
 		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
 		chkResponse(lib3270_wait_for_ready(this->hSession, timeout));
-
 	}
 
 	void Local::Session::waitForChange(unsigned short seconds) const {
