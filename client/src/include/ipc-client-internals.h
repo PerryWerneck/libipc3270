@@ -167,107 +167,10 @@
 
 		}
 
-		/*
-
-		/// @brief lib3270 direct access objects (no IPC);
-		namespace Local {
-
-			class TN3270_PRIVATE Session : public TN3270::Abstract::Session {
-			private:
-
-				/// @brief Handle of the related instance of lib3270
-				H3270 * hSession;
-
-				/// @brief Mutex to serialize access to lib3270
-				std::mutex sync;
-
-				/// @brief Popup Handler.
-				static void popupHandler(H3270 *session, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg);
-
-				/// @brief Connect Handler.
-				static void connectHandler(H3270 *session, unsigned char connected);
-
-				/// @brief Wait for network events
-				void wait(time_t timeout = 5);
-
-				/// @brief Check lib3270 return codes, launch exception when failed.
-				static void chkResponse(int rc);
-
-			public:
-				Session();
-				virtual ~Session();
-
-				// Connect/disconnect
-				void connect(const char *url) override;
-				void disconnect() override;
-
-				// Wait for session state.
-				void waitForReady(time_t timeout = 5)  throw() override;
-
-				// Get properties.
-				void getProperty(const char *name, int &value) const override;
-				void getProperty(const char *name, std::string &value) const override;
-				void getProperty(const char *name, bool &value) const override;
-
-				// Set properties.
-				void setUnlockDelay(unsigned short delay = 350) override;
-				void setHostURL(const char *url) override;
-
-				std::string getVersion() const override;
-				std::string getRevision() const override;
-				std::string getLUName() const override;
-				std::string getHostURL() const override;
-				SSLState getSSLState() const override;
-
-				unsigned short getScreenWidth() const override;
-				unsigned short getScreenHeight() const override;
-				unsigned short getScreenLength() const override;
-
-				// Gets
-				std::string	toString(int baddr, size_t len, char lf) const override;
-				std::string	toString(int row, int col, size_t sz, char lf) const override;
-
-				ProgramMessage getProgramMessage() const override;
-
-				ConnectionState getConnectionState() const override;
-
-				TN3270::Session & setCursor(unsigned short addr) override;
-				TN3270::Session & setCursor(unsigned short row, unsigned short col) override;
-				unsigned short getCursorAddress() override;
-
-				TN3270::Session & pfkey(unsigned short value);
-				TN3270::Session & pakey(unsigned short value);
-
-				TN3270::Session & input(const char *text, size_t length) override;
-
-				/// @brief Set field at current posicion, jumps to next writable field.
-				TN3270::Session & push(const char *text) override;
-
-				TN3270::Session & push(int baddr, const char *text, int length = -1) override;
-				TN3270::Session & push(int row, int col, const char *text, int length = -1) override;
-
-				TN3270::Session & push(const Action action) override;
-
-				// Get contents.
-				TN3270::Session & pop(int baddr, std::string &text) override;
-				TN3270::Session & pop(int row, int col, std::string &text) override;
-				TN3270::Session & pop(std::string &text) override;
-
-				/// @brief Execute action by name.
-				TN3270::Session & action(const char *action_name) override;
-
-				/// @brief Wait.
-				TN3270::Session & wait(unsigned short seconds) override;
-
-				/// @brief Wait for update.
-				TN3270::Session & waitForChange(unsigned short seconds) override;
-
-			};
-
-		}
-
 		/// @brief IPC Based acess (Access an active instance of pw3270 or pw3270d)
 		namespace IPC {
+
+			TN3270_PRIVATE Session * getSessionInstance();
 
 			class Session;
 
@@ -275,59 +178,6 @@
 			class Request {
 			private:
 
-#ifdef _WIN32
-				/// @brief Pipe Handle.
-				HANDLE hPipe;
-
-				/// @brief IPC Data type.
-				enum Type : uint8_t {
-					String	= 's',
-					Boolean	= 'b',
-					Uchar	= 'y',
-					Int16	= 'n',
-					Uint16	= 'q',
-					Int32	= 'i',
-					Int32x	= 'h',
-					Uint32	= 'u',
-					Int64	= 'x',
-					Uint64	= 't'
-				};
-
-				struct {
-					DWORD 	  length;	///< @brief Length of input buffer.
-					DWORD	  used;		///< @brief Length of used block.
-					DWORD	  current;	///< @brief Offset of the current argument.
-					uint8_t * block;
-				} in;
-
-				struct {
-					DWORD 	  length;
-					DWORD	  used;
-					uint8_t * block;
-				} out;
-
-				struct DataBlock {
-					Type type;
-				};
-
-				/// @brief Store value on data block.
-				DataBlock * pushBlock(const void *ptr, size_t len);
-
-				/// @brief Get next argument.
-				DataBlock * getNextBlock() const;
-
-#else
-				struct {
-					DBusMessage		* in;
-					DBusMessage		* out;
-					DBusMessageIter	  iter;
-
-				} msg;
-				DBusConnection	* conn;
-
-#endif // _WIN32
-
-				Request(const Session &session);
 
 			public:
 
@@ -358,6 +208,9 @@
 				Request & pop(int &value);
 
 			};
+
+		/*
+
 
 			class TN3270_PRIVATE Session : public TN3270::Abstract::Session {
 			private:
@@ -453,8 +306,8 @@
 
 			};
 
-		}
 		*/
+		}
 
 	}
 
