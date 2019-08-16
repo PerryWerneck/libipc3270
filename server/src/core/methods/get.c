@@ -29,7 +29,7 @@
 
 #include "private.h"
 
-int ipc3270_method_get_string(GObject *session, GVariant *request, GObject *response, GError G_GNUC_UNUSED(**error)) {
+int ipc3270_method_get_string(GObject *session, GVariant *request, GObject *response, GError **error) {
 
 	H3270 *hSession = ipc3270_get_session(session);
 
@@ -75,7 +75,9 @@ int ipc3270_method_get_string(GObject *session, GVariant *request, GObject *resp
 	if(!text)
 		return errno;
 
-	ipc3270_response_append_string(response, text);
+	// Send response as UTF-8.
+	g_autofree gchar * converted = g_convert_with_fallback(text,-1,"UTF-8",lib3270_get_display_charset(hSession),"?",NULL,NULL,error);
+	ipc3270_response_append_string(response, converted);
 
 	return 0;
 

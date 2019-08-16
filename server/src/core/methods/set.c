@@ -38,7 +38,6 @@ int ipc3270_method_set_string(GObject *session, GVariant *request, GObject *resp
 	gchar *text = NULL;
 	g_variant_get(request, "(&s)", &text);
 
-
 	if(*error)
 		return 0;
 
@@ -50,7 +49,9 @@ int ipc3270_method_set_string(GObject *session, GVariant *request, GObject *resp
 
 			if(text) {
 
-				if(lib3270_input_string(hSession,(const unsigned char *) text, -1)) {
+				g_autofree gchar * converted = g_convert_with_fallback(text,-1,lib3270_get_display_charset(hSession),"UTF-8","?",NULL,NULL,error);
+
+				if(lib3270_input_string(hSession,(const unsigned char *) converted, -1)) {
 					debug("lib3270_input_string has failed: %s", strerror(errno));
 					return errno;
 				}
@@ -69,7 +70,9 @@ int ipc3270_method_set_string(GObject *session, GVariant *request, GObject *resp
 
 			if(text) {
 
-				if(lib3270_set_string_at_address(hSession,addr,(unsigned char *) text, -1) < 0)
+				g_autofree gchar * converted = g_convert_with_fallback(text,-1,lib3270_get_display_charset(hSession),"UTF-8","?",NULL,NULL,error);
+
+				if(lib3270_set_string_at_address(hSession,addr,(unsigned char *) converted, -1) < 0)
 					return errno;
 
 			}
@@ -85,7 +88,9 @@ int ipc3270_method_set_string(GObject *session, GVariant *request, GObject *resp
 
 			if(text) {
 
-				if(lib3270_set_string_at(hSession, row, col, (unsigned char *) text, -1) < 0)
+				g_autofree gchar * converted = g_convert_with_fallback(text,-1,lib3270_get_display_charset(hSession),"UTF-8","?",NULL,NULL,error);
+
+				if(lib3270_set_string_at(hSession, row, col, (unsigned char *) converted, -1) < 0)
 					return errno;
 
 			}
@@ -94,6 +99,7 @@ int ipc3270_method_set_string(GObject *session, GVariant *request, GObject *resp
 		break;
 
 	default:
+		g_message("setstring was called with %u arguments.",(unsigned int) g_variant_n_children(request));
 		return EINVAL;
 	}
 

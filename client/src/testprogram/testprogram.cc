@@ -96,7 +96,7 @@
 			<< "\tRevision: " << host.getRevision()
 			<< std::endl;
 
-//		host.connect(nullptr);
+		host.connect(nullptr);
 
 		cout
 			<< "Connection state is " << toCharString(host.getConnectionState()) << std::endl

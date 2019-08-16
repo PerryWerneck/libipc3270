@@ -96,6 +96,8 @@
 	}
 
 	void IPC::Session::setCharSet(const char *charset) {
+		// D-Bus calls are always UTF-8
+		Abstract::Session::setCharSet("UTF-8",charset);
 	}
 
 	unsigned short IPC::Session::getScreenWidth() const {
