@@ -327,13 +327,16 @@
 			virtual void disconnect() = 0;
 
 			/// @brief Wait.
-			virtual void wait(unsigned short seconds) const = 0;
+			virtual void wait(time_t seconds) const = 0;
 
 			/// @brief Wait until session state changes to "ready".
 			virtual void waitForReady(time_t timeout = DEFAULT_TIMEOUT) const = 0;
 
 			/// @brief Wait for screen changes.
-			virtual void waitForChange(unsigned short seconds) const = 0;
+			virtual void waitForChange(time_t seconds = DEFAULT_TIMEOUT) const = 0;
+
+			/// @brief Wait for screen changes.
+			virtual void waitForUnlock(time_t seconds = DEFAULT_TIMEOUT) const = 0;
 
 			/// @brief Send PF.
 			virtual void pfkey(unsigned short value) = 0;
@@ -436,6 +439,7 @@
 			Host & connect(const char *url = nullptr);
 			Host & disconnect();
 			Host & waitForReady(time_t timeout = DEFAULT_TIMEOUT);
+			Host & waitForUnlock(time_t timeout = DEFAULT_TIMEOUT);
 
 			/// @brief Execute action by name.
 			inline Host & action(const char *action_name) {

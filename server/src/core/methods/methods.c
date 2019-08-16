@@ -49,6 +49,7 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 		{ "wait",						ipc3270_method_wait						},
 		{ "waitforready",				ipc3270_method_wait_for_ready			},
 		{ "waitforupdate",				ipc3270_method_wait_for_update			},
+		{ "waitforunlock",				ipc3270_method_wait_for_unlock			},
 
 		{ "getString",					ipc3270_method_get_string				},
 		{ "getStringAt",				ipc3270_method_get_string				},

@@ -83,7 +83,7 @@
 
 	}
 
-	void IPC::Session::wait(unsigned short seconds) const {
+	void IPC::Session::wait(time_t seconds) const {
 
 		time_t end = time(nullptr) + seconds;
 
@@ -128,7 +128,33 @@
 
 	}
 
-	void IPC::Session::waitForChange(unsigned short seconds) const {
+	void IPC::Session::waitForUnlock(time_t timeout) const {
+
+		int rc;
+
+		time_t end = time(nullptr) + timeout;
+
+		while(time(nullptr) < end) {
+
+			debug("Running waitForUnlock request...");
+
+			Request(*this,"waitForUnlock")
+				.push((uint32_t) 1)
+				.call()
+				.pop(rc);
+
+			debug("Wait for unlock returned ",rc);
+
+			if(rc == 0)
+				return;
+
+		}
+
+		throw std::runtime_error("Keyboard is locked");
+
+	}
+
+	void IPC::Session::waitForChange(time_t seconds) const {
 
 		int rc;
 

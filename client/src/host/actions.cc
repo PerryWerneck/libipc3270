@@ -55,3 +55,9 @@ TN3270::Host & TN3270::Host::waitForReady(time_t timeout) {
 	return *this;
 }
 
+TN3270::Host & TN3270::Host::waitForUnlock(time_t timeout) {
+	this->session->waitForUnlock(timeout);
+	return *this;
+}
+
+

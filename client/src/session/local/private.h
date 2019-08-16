@@ -100,9 +100,10 @@
 				void push(const Action action) override;
 				void print(LIB3270_CONTENT_OPTION option = LIB3270_CONTENT_ALL) override;
 
-				void wait(unsigned short seconds) const override;
+				void wait(time_t seconds) const override;
 				void waitForReady(time_t timeout) const override;
-				void waitForChange(unsigned short seconds) const override;
+				void waitForChange(time_t timeout) const override;
+				void waitForUnlock(time_t seconds) const override;
 
 				// States
 				ProgramMessage getProgramMessage() const override;
