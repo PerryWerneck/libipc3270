@@ -73,10 +73,10 @@
 		chkResponse(lib3270_wait_for_ready(this->hSession, timeout));
 	}
 
-	LIB3270_KEYBOARD_LOCK_STATE Local::Session::waitForUnlock(time_t timeout) const {
+	LIB3270_KEYBOARD_LOCK_STATE Local::Session::waitForKeyboardUnlock(time_t timeout) const {
 
 		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return lib3270_wait_for_unlock(this->hSession, timeout);
+		return lib3270_wait_for_keyboard_unlock(this->hSession, timeout);
 	}
 
 	void Local::Session::waitForChange(time_t seconds) const {

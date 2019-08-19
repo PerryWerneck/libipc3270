@@ -57,11 +57,11 @@ int ipc3270_method_wait_for_update(GObject *session, GVariant *request, GObject 
 
 }
 
-int ipc3270_method_wait_for_unlock(GObject *session, GVariant *request, GObject *response, GError G_GNUC_UNUSED(**error)) {
+int ipc3270_method_wait_for_keyboard_unlock(GObject *session, GVariant *request, GObject *response, GError G_GNUC_UNUSED(**error)) {
 
 	guint seconds = 1;
 	g_variant_get(request, "(u)", &seconds);
-	ipc3270_response_append_int32(response, (int32_t) lib3270_wait_for_unlock(ipc3270_get_session(session),seconds));
+	ipc3270_response_append_int32(response, (int32_t) lib3270_wait_for_keyboard_unlock(ipc3270_get_session(session),seconds));
 	return 0;
 
 }

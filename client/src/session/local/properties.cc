@@ -68,6 +68,29 @@
 		throw std::system_error(ENOENT, std::system_category());
 	}
 
+	void Local::Session::getProperty(const char *name, unsigned int &value) const {
+
+		const LIB3270_UINT_PROPERTY * intprop = lib3270_get_unsigned_properties_list();
+		for(size_t ix = 0; intprop[ix].name; ix++) {
+
+			if(!strcasecmp(name,intprop[ix].name)) {
+
+				std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+
+				value = intprop[ix].get(hSession);
+
+				if(value < 0 && errno != 0) {
+					throw std::system_error(errno, std::system_category());
+				}
+
+
+			}
+
+		}
+
+		throw std::system_error(ENOENT, std::system_category());
+	}
+
 	void Local::Session::getProperty(const char *name, std::string &value) const {
 
 		const LIB3270_STRING_PROPERTY * strprop = lib3270_get_string_properties_list();

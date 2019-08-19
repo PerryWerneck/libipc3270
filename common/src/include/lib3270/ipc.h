@@ -288,6 +288,7 @@
 
 			// Properties.
 			virtual void getProperty(const char *name, int &value) const = 0;
+			virtual void getProperty(const char *name, unsigned int &value) const = 0;
 			virtual void getProperty(const char *name, std::string &value) const = 0;
 			virtual void getProperty(const char *name, bool &value) const = 0;
 			virtual void setProperty(const char *name, const int value) = 0;
@@ -296,6 +297,7 @@
 			virtual std::string getVersion() const = 0;
 			virtual std::string getRevision() const = 0;
 			virtual std::string getLUName() const = 0;
+			virtual LIB3270_KEYBOARD_LOCK_STATE getKeyboardUnlock() const = 0;
 
 			virtual std::string getHostURL() const = 0;
 			virtual void setHostURL(const char *url) = 0;
@@ -337,7 +339,7 @@
 			virtual void waitForChange(time_t seconds = DEFAULT_TIMEOUT) const = 0;
 
 			/// @brief Wait for screen changes.
-			virtual LIB3270_KEYBOARD_LOCK_STATE waitForUnlock(time_t seconds = DEFAULT_TIMEOUT) const = 0;
+			virtual LIB3270_KEYBOARD_LOCK_STATE waitForKeyboardUnlock(time_t seconds = DEFAULT_TIMEOUT) const = 0;
 
 			/// @brief Send PF.
 			virtual void pfkey(unsigned short value) = 0;
@@ -424,8 +426,8 @@
 
 			template<typename T>
 			Host & push(T value) {
-				session->push(value);
 				sync();
+				session->push(value);
 				return *this;
 			}
 
@@ -440,7 +442,7 @@
 			Host & connect(const char *url = nullptr);
 			Host & disconnect();
 			Host & waitForReady(time_t timeout = DEFAULT_TIMEOUT);
-			Host & waitForUnlock(time_t timeout = DEFAULT_TIMEOUT);
+			Host & waitForKeyboardUnlock(time_t timeout = DEFAULT_TIMEOUT);
 
 			/// @brief Execute action by name.
 			inline Host & action(const char *action_name) {
@@ -509,6 +511,10 @@
 			/// @brief Get LU Name.
 			std::string getLUName() const {
 				return session->getLUName();
+			}
+
+			inline LIB3270_KEYBOARD_LOCK_STATE getKeyboardUnlock() const {
+				return session->getKeyboardUnlock();
 			}
 
 			// Actions

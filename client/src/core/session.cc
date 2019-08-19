@@ -81,7 +81,7 @@
 			// Wait for unlock, ignore errors.
 			sz = (size_t) (ptr-text);
 			if(sz) {
-				if( (rc = waitForUnlock()) != 0) {
+				if( (rc = waitForKeyboardUnlock()) != 0) {
 					return rc;
 				}
 				push(text,sz);
@@ -94,7 +94,7 @@
 
 			case 'E':	// Enter
 				push(ENTER);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'F':	// Erase EOF
@@ -103,122 +103,122 @@
 
 			case '1':	// PF1
 				push(PF_1);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case '2':	// PF2
 				push(PF_2);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case '3':	// PF3
 				push(PF_3);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case '4':	// PF4
 				push(PF_4);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case '5':	// PF5
 				push(PF_5);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case '6':	// PF6
 				push(PF_6);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case '7':	// PF7
 				push(PF_7);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case '8':	// PF8
 				push(PF_8);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case '9':	// PF9
 				push(PF_9);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'a':	// PF10
 				push(PF_10);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'b':	// PF11
 				push(PF_11);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'c':	// PF12
 				push(PF_12);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'd':	// PF13
 				push(PF_13);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'e':	// PF14
 				push(PF_14);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'f':	// PF15
 				push(PF_15);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'g':	// PF16
 				push(PF_16);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'h':	// PF17
 				push(PF_17);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'i':	// PF18
 				push(PF_18);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'j':	// PF19
 				push(PF_19);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'k':	// PF20
 				push(PF_20);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'l':	// PF21
 				push(PF_21);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'm':	// PF22
 				push(PF_22);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'n':	// PF23
 				push(PF_23);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'o':	// PF24
 				push(PF_24);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case '@':	// Send '@' character
@@ -227,17 +227,17 @@
 
 			case 'x':	// PA1
 				push(PA_1);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'y':	// PA2
 				push(PA_2);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'z':	// PA3
 				push(PA_3);
-				rc = waitForUnlock();
+				rc = waitForKeyboardUnlock();
 				break;
 
 			case 'B':	// PC_LEFTTAB = "@B"
@@ -356,8 +356,9 @@
 
 		sz = strlen(text);
 		if(sz) {
-			waitForUnlock();
-			push(text,sz);
+			rc = waitForKeyboardUnlock();
+			if(!rc)
+				push(text,sz);
 		}
 
 		return rc;

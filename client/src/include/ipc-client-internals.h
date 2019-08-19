@@ -258,6 +258,7 @@
 				// Pop values
 				Request & pop(std::string &value);
 				Request & pop(int &value);
+				Request & pop(unsigned int &value);
 
 			};
 

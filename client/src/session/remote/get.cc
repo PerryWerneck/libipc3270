@@ -109,6 +109,12 @@
 
 	}
 
+	LIB3270_KEYBOARD_LOCK_STATE IPC::Session::getKeyboardUnlock() const {
+		unsigned int value;
+		getProperty("kybdlock",value);
+		return (LIB3270_KEYBOARD_LOCK_STATE) value;
+	}
+
 
  }
 

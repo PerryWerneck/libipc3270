@@ -50,7 +50,7 @@
 	G_GNUC_INTERNAL int ipc3270_method_wait(GObject *session, GVariant *request, GObject *response, GError **error);
 	G_GNUC_INTERNAL int ipc3270_method_wait_for_ready(GObject *session, GVariant *request, GObject *response, GError **error);
 	G_GNUC_INTERNAL int ipc3270_method_wait_for_update(GObject *session, GVariant *request, GObject *response, GError **error);
-	G_GNUC_INTERNAL int ipc3270_method_wait_for_unlock(GObject *session, GVariant *request, GObject *response, GError **error);
+	G_GNUC_INTERNAL int ipc3270_method_wait_for_keyboard_unlock(GObject *session, GVariant *request, GObject *response, GError **error);
 
 	G_GNUC_INTERNAL int ipc3270_method_get_field_attribute(GObject *session, GVariant *request, GObject *response, GError **error);
 

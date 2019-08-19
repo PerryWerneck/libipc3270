@@ -155,7 +155,7 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='u' name='seconds' direction='in' />" \
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>" \
-		"	<method name= 'waitForUnlock'>" \
+		"	<method name= 'waitForKeyboardUnlock'>" \
 		"		<arg type='u' name='seconds' direction='in' />" \
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>" \

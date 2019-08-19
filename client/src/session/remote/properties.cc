@@ -53,6 +53,14 @@
 
 	}
 
+	void IPC::Session::getProperty(const char *name, unsigned int &value) const {
+
+		Request(*this,false,name)
+			.call()
+			.pop(value);
+
+	}
+
 	void IPC::Session::getProperty(const char *name, std::string &value) const {
 
 		Request(*this,false,name)

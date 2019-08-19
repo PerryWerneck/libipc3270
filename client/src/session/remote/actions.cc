@@ -128,7 +128,7 @@
 
 	}
 
-	LIB3270_KEYBOARD_LOCK_STATE IPC::Session::waitForUnlock(time_t timeout) const {
+	LIB3270_KEYBOARD_LOCK_STATE IPC::Session::waitForKeyboardUnlock(time_t timeout) const {
 
 		int rc;
 
@@ -136,9 +136,9 @@
 
 		while(time(nullptr) < end) {
 
-			debug("Running waitForUnlock request...");
+			debug("Running waitForKeyboardUnlock request...");
 
-			Request(*this,"waitForUnlock")
+			Request(*this,"waitForKeyboardUnlock")
 				.push((uint32_t) 1)
 				.call()
 				.pop(rc);

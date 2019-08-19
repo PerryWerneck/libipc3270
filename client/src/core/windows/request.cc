@@ -146,6 +146,33 @@
 		return *this;
 	}
 
+	IPC::Request & IPC::Request::Request::pop(unsigned int &value) {
+
+		DataBlock * block = getNextBlock();
+
+		switch(block->type) {
+		case IPC::Request::UInt16:
+			value = * ((uint16_t *) (block+1));
+			in.current += sizeof(uint16_t) + sizeof(DataBlock);
+			break;
+
+		case IPC::Request::UInt32:
+			value = * ((uint32_t *) (block+1));
+			in.current += sizeof(uint32_t) + sizeof(DataBlock);
+			break;
+
+		case IPC::Request::UInt64:
+			value = * ((uint64_t *) (block+1));
+			in.current += sizeof(uint64_t) + sizeof(DataBlock);
+			break;
+
+		default:
+			throw std::runtime_error("Invalid format");
+		}
+
+		return *this;
+	}
+
 	IPC::Request & IPC::Request::call() {
 
 #ifdef DEBUG

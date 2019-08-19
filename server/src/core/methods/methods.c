@@ -46,22 +46,22 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 		{ "connect", 					ipc3270_method_connect					},
 		{ "disconnect",					ipc3270_method_disconnect				},
 
-		{ "wait",						ipc3270_method_wait						},
-		{ "waitforready",				ipc3270_method_wait_for_ready			},
-		{ "waitforupdate",				ipc3270_method_wait_for_update			},
-		{ "waitforunlock",				ipc3270_method_wait_for_unlock			},
+		{ "wait",						ipc3270_method_wait							},
+		{ "waitforready",				ipc3270_method_wait_for_ready				},
+		{ "waitforupdate",				ipc3270_method_wait_for_update				},
+		{ "waitforkeyboardunlock",		ipc3270_method_wait_for_keyboard_unlock		},
 
-		{ "getString",					ipc3270_method_get_string				},
-		{ "getStringAt",				ipc3270_method_get_string				},
-		{ "getStringAtAddress",			ipc3270_method_get_string				},
+		{ "getString",					ipc3270_method_get_string					},
+		{ "getStringAt",				ipc3270_method_get_string					},
+		{ "getStringAtAddress",			ipc3270_method_get_string					},
 
-		{ "setString",					ipc3270_method_set_string				},
-		{ "setStringAt",				ipc3270_method_set_string				},
-		{ "setStringAtAddress",			ipc3270_method_set_string				},
+		{ "setString",					ipc3270_method_set_string					},
+		{ "setStringAt",				ipc3270_method_set_string					},
+		{ "setStringAtAddress",			ipc3270_method_set_string					},
 
-		{ "getFieldAttribute",			ipc3270_method_get_field_attribute		},
-		{ "getFieldAttributeAt",		ipc3270_method_get_field_attribute		},
-		{ "getFieldAttributeAtAddress",	ipc3270_method_get_field_attribute		},
+		{ "getFieldAttribute",			ipc3270_method_get_field_attribute			},
+		{ "getFieldAttributeAt",		ipc3270_method_get_field_attribute			},
+		{ "getFieldAttributeAtAddress",	ipc3270_method_get_field_attribute			},
 
 	};
 

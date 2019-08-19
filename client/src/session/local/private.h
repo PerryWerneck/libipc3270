@@ -103,7 +103,7 @@
 				void wait(time_t seconds) const override;
 				void waitForReady(time_t timeout) const override;
 				void waitForChange(time_t timeout) const override;
-				LIB3270_KEYBOARD_LOCK_STATE waitForUnlock(time_t seconds) const override;
+				LIB3270_KEYBOARD_LOCK_STATE waitForKeyboardUnlock(time_t seconds) const override;
 
 				// States
 				ProgramMessage getProgramMessage() const override;
@@ -112,6 +112,7 @@
 
 				// Properties.
 				void getProperty(const char *name, int &value) const override;
+				void getProperty(const char *name, unsigned int &value) const override;
 				void getProperty(const char *name, std::string &value) const override;
 				void getProperty(const char *name, bool &value) const override;
 				void setProperty(const char *name, const int value) override;
@@ -120,6 +121,7 @@
 				std::string getVersion() const override;
 				std::string getRevision() const override;
 				std::string getLUName() const override;
+				LIB3270_KEYBOARD_LOCK_STATE getKeyboardUnlock() const override;
 
 				std::string getHostURL() const override;
 				void setHostURL(const char *url) override;
