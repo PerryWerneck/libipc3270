@@ -36,6 +36,7 @@
 	#include <vector>
 	#include <functional>
 	#include <lib3270.h>
+	#include <lib3270/keyboard.h>
 
 	#if defined(_WIN32)
 
@@ -336,7 +337,7 @@
 			virtual void waitForChange(time_t seconds = DEFAULT_TIMEOUT) const = 0;
 
 			/// @brief Wait for screen changes.
-			virtual void waitForUnlock(time_t seconds = DEFAULT_TIMEOUT) const = 0;
+			virtual LIB3270_KEYBOARD_LOCK_STATE waitForUnlock(time_t seconds = DEFAULT_TIMEOUT) const = 0;
 
 			/// @brief Send PF.
 			virtual void pfkey(unsigned short value) = 0;

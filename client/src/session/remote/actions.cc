@@ -128,7 +128,7 @@
 
 	}
 
-	void IPC::Session::waitForUnlock(time_t timeout) const {
+	LIB3270_KEYBOARD_LOCK_STATE IPC::Session::waitForUnlock(time_t timeout) const {
 
 		int rc;
 
@@ -146,11 +146,11 @@
 			debug("Wait for unlock returned ",rc);
 
 			if(rc == 0)
-				return;
+				return (LIB3270_KEYBOARD_LOCK_STATE) 0;
 
 		}
 
-		throw std::runtime_error("Keyboard is locked");
+		return (LIB3270_KEYBOARD_LOCK_STATE) rc;
 
 	}
 
