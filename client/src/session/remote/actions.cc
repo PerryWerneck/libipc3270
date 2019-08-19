@@ -215,6 +215,7 @@
 	}
 
 	void IPC::Session::print(LIB3270_CONTENT_OPTION option) {
+		throw std::system_error(ENOTSUP, std::system_category());
 	}
 
  }

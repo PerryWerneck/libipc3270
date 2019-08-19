@@ -284,7 +284,7 @@
 			/**
 			 * @brief Input string parsing control char.
 			 */
-			void input(const char *text, const char control_char);
+			LIB3270_KEYBOARD_LOCK_STATE input(const char *text, const char control_char);
 
 			// Properties.
 			virtual void getProperty(const char *name, int &value) const = 0;

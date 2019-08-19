@@ -71,16 +71,19 @@
 		pakey( ((unsigned short) key) + 1);
 	}
 
-	void Session::input(const char *text, const char control_char) {
+	LIB3270_KEYBOARD_LOCK_STATE Session::input(const char *text, const char control_char) {
 
 		size_t sz;
+		LIB3270_KEYBOARD_LOCK_STATE rc = (LIB3270_KEYBOARD_LOCK_STATE) 0;
 
 		for(const char * ptr = strchr(text,control_char); ptr; ptr = strchr(text,control_char)) {
 
 			// Wait for unlock, ignore errors.
 			sz = (size_t) (ptr-text);
 			if(sz) {
-				waitForUnlock();
+				if( (rc = waitForUnlock()) != 0) {
+					return rc;
+				}
 				push(text,sz);
 			}
 
@@ -91,7 +94,7 @@
 
 			case 'E':	// Enter
 				push(ENTER);
-				waitForUnlock();
+				rc = waitForUnlock();
 				break;
 
 			case 'F':	// Erase EOF
@@ -100,98 +103,122 @@
 
 			case '1':	// PF1
 				push(PF_1);
+				rc = waitForUnlock();
 				break;
 
 			case '2':	// PF2
 				push(PF_2);
+				rc = waitForUnlock();
 				break;
 
 			case '3':	// PF3
 				push(PF_3);
+				rc = waitForUnlock();
 				break;
 
 			case '4':	// PF4
 				push(PF_4);
+				rc = waitForUnlock();
 				break;
 
 			case '5':	// PF5
 				push(PF_5);
+				rc = waitForUnlock();
 				break;
 
 			case '6':	// PF6
 				push(PF_6);
+				rc = waitForUnlock();
 				break;
 
 			case '7':	// PF7
 				push(PF_7);
+				rc = waitForUnlock();
 				break;
 
 			case '8':	// PF8
 				push(PF_8);
+				rc = waitForUnlock();
 				break;
 
 			case '9':	// PF9
 				push(PF_9);
+				rc = waitForUnlock();
 				break;
 
 			case 'a':	// PF10
 				push(PF_10);
+				rc = waitForUnlock();
 				break;
 
 			case 'b':	// PF11
 				push(PF_11);
+				rc = waitForUnlock();
 				break;
 
 			case 'c':	// PF12
 				push(PF_12);
+				rc = waitForUnlock();
 				break;
 
 			case 'd':	// PF13
 				push(PF_13);
+				rc = waitForUnlock();
 				break;
 
 			case 'e':	// PF14
 				push(PF_14);
+				rc = waitForUnlock();
 				break;
 
 			case 'f':	// PF15
 				push(PF_15);
+				rc = waitForUnlock();
 				break;
 
 			case 'g':	// PF16
 				push(PF_16);
+				rc = waitForUnlock();
 				break;
 
 			case 'h':	// PF17
 				push(PF_17);
+				rc = waitForUnlock();
 				break;
 
 			case 'i':	// PF18
 				push(PF_18);
+				rc = waitForUnlock();
 				break;
 
 			case 'j':	// PF19
 				push(PF_19);
+				rc = waitForUnlock();
 				break;
 
 			case 'k':	// PF20
 				push(PF_20);
+				rc = waitForUnlock();
 				break;
 
 			case 'l':	// PF21
 				push(PF_21);
+				rc = waitForUnlock();
 				break;
 
 			case 'm':	// PF22
 				push(PF_22);
+				rc = waitForUnlock();
 				break;
 
 			case 'n':	// PF23
 				push(PF_23);
+				rc = waitForUnlock();
 				break;
 
 			case 'o':	// PF24
 				push(PF_24);
+				rc = waitForUnlock();
 				break;
 
 			case '@':	// Send '@' character
@@ -200,14 +227,17 @@
 
 			case 'x':	// PA1
 				push(PA_1);
+				rc = waitForUnlock();
 				break;
 
 			case 'y':	// PA2
 				push(PA_2);
+				rc = waitForUnlock();
 				break;
 
 			case 'z':	// PA3
 				push(PA_3);
+				rc = waitForUnlock();
 				break;
 
 			case 'B':	// PC_LEFTTAB = "@B"
@@ -318,6 +348,9 @@
 			// Global Const PC_FIELDPLUS = "@A@+"
 			}
 
+			if(rc)
+				return rc;
+
 			text = (ptr+1);
 		}
 
@@ -327,6 +360,7 @@
 			push(text,sz);
 		}
 
+		return rc;
 	}
 
 	/// @brief Search
