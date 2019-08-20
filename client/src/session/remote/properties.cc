@@ -133,15 +133,15 @@
 	}
 
 	void IPC::Session::setUnlockDelay(unsigned short delay) {
-
 		setProperty("unlock_delay", (uint32_t) delay);
+	}
 
+	void IPC::Session::setLockOnOperatorError(bool lock) {
+		setProperty("oerrlock", (uint32_t) lock);
 	}
 
 	void IPC::Session::setCursor(unsigned short addr) {
-
-		setProperty("setCursorAddress", (uint32_t) addr);
-
+		setProperty("cursor_address", (uint32_t) addr);
 	}
 
 	void IPC::Session::setCursor(unsigned short row, unsigned short col) {

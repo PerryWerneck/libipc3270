@@ -79,7 +79,8 @@ TN3270_PUBLIC const char * toCharString(const TN3270::Action action) {
         "break",
         "deleteword",
         "deletefield",
-        "sysreq"
+        "sysreq",
+        "kybdunlock"
     };
 
     if( ((size_t) action) > (sizeof(actions)/sizeof(actions[0]))) {

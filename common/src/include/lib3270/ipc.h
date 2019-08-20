@@ -216,7 +216,8 @@
 			BREAK,
 			WORD_DELETE,	///< @brief Backspaces the cursor until it hits the front of a word (does a ^W).
 			FIELD_DELETE,	///< @brief Delete field key (does a ^U).
-			SYSREQ
+			SYSREQ,
+			KYBD_UNLOCK,	///< @brief Unlock the keyboard if it was locked by operator error.
 		};
 
 		/// @brief TN3270 Session.
@@ -303,6 +304,7 @@
 			virtual void setHostURL(const char *url) = 0;
 
 			virtual void setUnlockDelay(unsigned short delay = 350) = 0;
+			virtual void setLockOnOperatorError(bool lock = true) = 0;
 
 			virtual unsigned short getScreenWidth() const = 0;
 			virtual unsigned short getScreenHeight() const = 0;
@@ -490,6 +492,10 @@
 
 			inline void setUnlockDelay(unsigned short delay) {
 				return session->setUnlockDelay(delay);
+			}
+
+			inline void setLockOnOperatorError(bool lock = true) {
+				return session->setLockOnOperatorError(lock);
 			}
 
 			inline void setCharSet(const char *charset) {

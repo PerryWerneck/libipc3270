@@ -128,6 +128,7 @@
 				unsigned short getScreenHeight() const override;
 				unsigned short getScreenLength() const override;
 				void setUnlockDelay(unsigned short delay) override;
+				void setLockOnOperatorError(bool lock) override;
 				void setCharSet(const char *charset = NULL) override;
 				void setCursor(unsigned short addr) override;
 				void setCursor(unsigned short row, unsigned short col) override;
