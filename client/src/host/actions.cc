@@ -55,9 +55,5 @@ TN3270::Host & TN3270::Host::waitForReady() {
 	return *this;
 }
 
-TN3270::Host & TN3270::Host::waitForKeyboardUnlock() {
-	this->session->waitForKeyboardUnlock(timeout);
-	return *this;
-}
 
 

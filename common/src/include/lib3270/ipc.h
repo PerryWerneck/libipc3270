@@ -361,8 +361,8 @@
 			size_t find(const char * str, size_t pos = 0) const;
 
 			/// @brief Compare contents.
-			int compare(size_t baddr, const char* s, size_t len) const;
-			int compare(int row, int col, const char* s, size_t len) const;
+			int compare(size_t baddr, const char* s, int len = -1) const;
+			int compare(int row, int col, const char* s, int len = -1) const;
 
 		};
 
@@ -444,7 +444,10 @@
 			Host & connect(const char *url = nullptr);
 			Host & disconnect();
 			Host & waitForReady();
-			Host & waitForKeyboardUnlock();
+
+			inline LIB3270_KEYBOARD_LOCK_STATE waitForKeyboardUnlock() noexcept {
+				return this->session->waitForKeyboardUnlock(timeout);
+			}
 
 			/// @brief Execute action by name.
 			inline Host & action(const char *action_name) {

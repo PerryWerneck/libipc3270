@@ -370,16 +370,25 @@
 
 	/// @brief Search
 	size_t Session::find(const char * str, size_t pos) const {
-		throw std::system_error(ENOTSUP, std::system_category());
+		return toString(0,-1,0).find(str,pos);
 	}
 
 	/// @brief Compare contents.
-	int Session::compare(size_t baddr, const char* s, size_t len) const {
-		throw std::system_error(ENOTSUP, std::system_category());
+	int Session::compare(size_t baddr, const char* s, int len) const {
+
+		if(len < 0)
+			len = strlen(s);
+
+		toString(baddr,len,0).compare(0,len,s);
 	}
 
-	int Session::compare(int row, int col, const char* s, size_t len) const {
-		throw std::system_error(ENOTSUP, std::system_category());
+	int Session::compare(int row, int col, const char* s, int len) const {
+
+		if(len < 0)
+			len = strlen(s);
+
+		return toString(row, col, len, 0).compare(0,len,s);
+
 	}
 
 
