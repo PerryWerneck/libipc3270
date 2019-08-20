@@ -50,8 +50,8 @@ TN3270::Host & TN3270::Host::disconnect() {
 	return *this;
 }
 
-TN3270::Host & TN3270::Host::waitForReady() {
-	this->session->waitForReady(timeout);
+TN3270::Host & TN3270::Host::waitForReady(time_t seconds) {
+	this->session->waitForReady(seconds);
 	return *this;
 }
 

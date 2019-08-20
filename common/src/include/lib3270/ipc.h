@@ -443,7 +443,11 @@
 			// Actions
 			Host & connect(const char *url = nullptr);
 			Host & disconnect();
-			Host & waitForReady();
+			Host & waitForReady(time_t seconds);
+
+			inline Host & waitForReady() {
+				return waitForReady(this->timeout);
+			}
 
 			inline LIB3270_KEYBOARD_LOCK_STATE waitForKeyboardUnlock() noexcept {
 				return this->session->waitForKeyboardUnlock(timeout);
