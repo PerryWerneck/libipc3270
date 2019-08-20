@@ -284,7 +284,7 @@
 			/**
 			 * @brief Input string parsing control char.
 			 */
-			LIB3270_KEYBOARD_LOCK_STATE input(const char *text, const char control_char);
+			LIB3270_KEYBOARD_LOCK_STATE input(const std::string &str, const char control_char = '@');
 
 			// Properties.
 			virtual void getProperty(const char *name, int &value) const = 0;
@@ -297,7 +297,7 @@
 			virtual std::string getVersion() const = 0;
 			virtual std::string getRevision() const = 0;
 			virtual std::string getLUName() const = 0;
-			virtual LIB3270_KEYBOARD_LOCK_STATE getKeyboardUnlock() const = 0;
+			virtual LIB3270_KEYBOARD_LOCK_STATE getKeyboardLockState() const = 0;
 
 			virtual std::string getHostURL() const = 0;
 			virtual void setHostURL(const char *url) = 0;
@@ -406,7 +406,7 @@
 			/**
 			 * @brief Input string parsing control char.
 			 */
-			Host & input(const char *text, const char control_char);
+			LIB3270_KEYBOARD_LOCK_STATE input(const char *text, int length = -1, const char control_char = '@');
 
 			Host & push(int baddr, const std::string &text);
 			Host & push(int row, int col, const std::string &text);
@@ -441,8 +441,8 @@
 			// Actions
 			Host & connect(const char *url = nullptr);
 			Host & disconnect();
-			Host & waitForReady(time_t timeout = DEFAULT_TIMEOUT);
-			Host & waitForKeyboardUnlock(time_t timeout = DEFAULT_TIMEOUT);
+			Host & waitForReady();
+			Host & waitForKeyboardUnlock();
 
 			/// @brief Execute action by name.
 			inline Host & action(const char *action_name) {
@@ -513,8 +513,8 @@
 				return session->getLUName();
 			}
 
-			inline LIB3270_KEYBOARD_LOCK_STATE getKeyboardUnlock() const {
-				return session->getKeyboardUnlock();
+			inline LIB3270_KEYBOARD_LOCK_STATE getKeyboardLockState() const {
+				return session->getKeyboardLockState();
 			}
 
 			// Actions

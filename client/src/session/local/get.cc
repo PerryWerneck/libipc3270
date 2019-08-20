@@ -103,7 +103,7 @@
 
 	}
 
-	LIB3270_KEYBOARD_LOCK_STATE Local::Session::getKeyboardUnlock() const {
+	LIB3270_KEYBOARD_LOCK_STATE Local::Session::getKeyboardLockState() const {
 		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
 		return lib3270_get_keyboard_lock_state(hSession);
 	}

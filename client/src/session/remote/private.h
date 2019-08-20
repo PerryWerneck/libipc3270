@@ -119,7 +119,7 @@
 				std::string getVersion() const override;
 				std::string getRevision() const override;
 				std::string getLUName() const override;
-				LIB3270_KEYBOARD_LOCK_STATE getKeyboardUnlock() const override;
+				LIB3270_KEYBOARD_LOCK_STATE getKeyboardLockState() const override;
 
 				std::string getHostURL() const override;
 				void setHostURL(const char *url) override;

@@ -50,12 +50,12 @@ TN3270::Host & TN3270::Host::disconnect() {
 	return *this;
 }
 
-TN3270::Host & TN3270::Host::waitForReady(time_t timeout) {
+TN3270::Host & TN3270::Host::waitForReady() {
 	this->session->waitForReady(timeout);
 	return *this;
 }
 
-TN3270::Host & TN3270::Host::waitForKeyboardUnlock(time_t timeout) {
+TN3270::Host & TN3270::Host::waitForKeyboardUnlock() {
 	this->session->waitForKeyboardUnlock(timeout);
 	return *this;
 }

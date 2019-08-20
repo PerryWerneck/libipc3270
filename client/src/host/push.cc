@@ -70,8 +70,7 @@ TN3270::Host & TN3270::Host::push(const std::string &text) {
 	return *this;
 }
 
-TN3270::Host & TN3270::Host::input(const char *text, const char control_char) {
-	session->input(text,control_char);
-	return *this;
+LIB3270_KEYBOARD_LOCK_STATE TN3270::Host::input(const char *text, int length, const char control_char) {
+	return session->input(string(text,(size_t) length),control_char);
 }
 

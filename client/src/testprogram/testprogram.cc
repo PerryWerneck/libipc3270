@@ -99,7 +99,7 @@
 		host.connect(nullptr);
 
 		cout
-			<< "Wait for unlock returns " << host.getKeyboardUnlock() << std::endl
+			<< "Wait for unlock returns " << host.getKeyboardLockState() << std::endl
 			<< "Connection state is " << toCharString(host.getConnectionState()) << std::endl
 			<< "Program message is " << toCharString(host.getProgramMessage()) << std::endl
 			<< "Luname is " << host.getLUName() << std::endl

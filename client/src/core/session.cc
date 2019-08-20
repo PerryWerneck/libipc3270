@@ -71,16 +71,19 @@
 		pakey( ((unsigned short) key) + 1);
 	}
 
-	LIB3270_KEYBOARD_LOCK_STATE Session::input(const char *text, const char control_char) {
+	LIB3270_KEYBOARD_LOCK_STATE Session::input(const std::string &str, const char control_char) {
+
+		LIB3270_KEYBOARD_LOCK_STATE rc = (LIB3270_KEYBOARD_LOCK_STATE) 0;
 
 		size_t sz;
-		LIB3270_KEYBOARD_LOCK_STATE rc = (LIB3270_KEYBOARD_LOCK_STATE) 0;
+		const char * text = str.c_str();
 
 		for(const char * ptr = strchr(text,control_char); ptr; ptr = strchr(text,control_char)) {
 
-			// Wait for unlock, ignore errors.
 			sz = (size_t) (ptr-text);
 			if(sz) {
+
+				// Wait for unlock, insert text.
 				if( (rc = waitForKeyboardUnlock()) != 0) {
 					return rc;
 				}
@@ -356,9 +359,10 @@
 
 		sz = strlen(text);
 		if(sz) {
-			rc = waitForKeyboardUnlock();
-			if(!rc)
-				push(text,sz);
+			if( (rc = waitForKeyboardUnlock()) != 0) {
+				return rc;
+			}
+			push(text,sz);
 		}
 
 		return rc;
