@@ -379,7 +379,7 @@
 		if(len < 0)
 			len = strlen(s);
 
-		toString(baddr,len,0).compare(0,len,s);
+		return toString(baddr,len,0).compare(0,len,s);
 	}
 
 	int Session::compare(int row, int col, const char* s, int len) const {
