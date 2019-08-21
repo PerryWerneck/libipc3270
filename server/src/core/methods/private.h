@@ -52,6 +52,10 @@
 	G_GNUC_INTERNAL int ipc3270_method_wait_for_update(GObject *session, GVariant *request, GObject *response, GError **error);
 	G_GNUC_INTERNAL int ipc3270_method_wait_for_keyboard_unlock(GObject *session, GVariant *request, GObject *response, GError **error);
 
+	G_GNUC_INTERNAL int ipc3270_method_set_cursor(GObject *session, GVariant *request, GObject *response, GError **error);
+
+	G_GNUC_INTERNAL int ipc3270_method_action(GObject *session, GVariant *request, GObject *response, GError **error);
+
 	G_GNUC_INTERNAL int ipc3270_method_get_field_attribute(GObject *session, GVariant *request, GObject *response, GError **error);
 
 #endif // IPC_METHODS_H_INCLUDED

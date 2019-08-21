@@ -109,8 +109,18 @@
 			cout << host << endl;
 		}
 
+		host.setCursor(10,10);
+
+		host.wait(10);
+
 		// host.input("test@0another line");
 
+		host.push(TN3270::ENTER);
+
+		cout << endl << "[" << host.toString((unsigned int) 1, (unsigned int) 3,7) << "]" << endl;
+		cout << endl << "[" << host.toString((int) 15, (int) 10) << "]" << endl;
+
+		host.disconnect();
 
 	} catch(const std::exception &e) {
 

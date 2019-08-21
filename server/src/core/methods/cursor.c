@@ -27,48 +27,42 @@
  *
  */
 
-/**
- * @file
- *
- * @brief
- *
- * @author perry.werneck@gmail.com
- *
- */
+#include "private.h"
+#include <errno.h>
+#include <string.h>
 
- #include "private.h"
+int ipc3270_method_set_cursor(GObject *session, GVariant *request, GObject *response, GError **error) {
 
-/*---[ Implement ]----------------------------------------------------------------------------------*/
+	H3270 *hSession = ipc3270_get_session(session);
+	gint rc = -EINVAL;
 
- namespace TN3270 {
+	if(*error)
+		return 0;
 
- 	void Local::Session::set(const std::string &str) {
+	switch(g_variant_n_children(request)) {
+	case 1:	// Just only addr
+		{
+			gint addr;
+			g_variant_get(request, "(i)", &addr);
+			rc = lib3270_set_cursor_address(hSession,addr);
+		}
+		break;
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
-		chkResponse(lib3270_input_string(hSession,(unsigned char *) str.c_str(),str.length()));
+	case 2:	// Row & Col
+		{
+			guint row, col;
+			g_variant_get(request, "(uu)", &row, &col);
+			rc = lib3270_set_cursor_position(hSession, row, col);
+		}
+		break;
 
+	default:
+		g_message("setcursor was called with %u arguments.",(unsigned int) g_variant_n_children(request));
+		return EINVAL;
 	}
 
-	void Local::Session::set(int baddr, const std::string &str) {
+	ipc3270_response_append_int32(response, rc);
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
-
-		int rc = lib3270_set_string_at_address(hSession,baddr,(unsigned char *) str.c_str(),str.length());
-		if(rc < 0)
-			chkResponse(-rc);
-
-	}
-
-	void Local::Session::set(int row, int col, const std::string &str) {
-
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
-
-		int rc = lib3270_set_string_at(hSession,row,col,(unsigned char *) str.c_str(),str.length());
-		if(rc < 0)
-			chkResponse(-rc);
-
-	}
-
- }
-
+	return 0;
+}
 

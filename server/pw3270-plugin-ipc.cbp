@@ -79,6 +79,12 @@
 		<Unit filename="src/core/linux/stop.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="src/core/methods/action.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/methods/cursor.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="src/core/methods/field.c">
 			<Option compilerVar="CC" />
 		</Unit>

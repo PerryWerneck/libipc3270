@@ -54,7 +54,7 @@
 
 	}
 
-	std::string	IPC::Session::get(int baddr, size_t len, char lf) const {
+	std::string	IPC::Session::get(int baddr, int len, char lf) const {
 
 		std::string rc;
 
@@ -69,14 +69,14 @@
 
 	}
 
-	std::string	IPC::Session::get(int row, int col, size_t sz, char lf) const {
+	std::string	IPC::Session::get(unsigned int row, unsigned int col, int len, char lf) const {
 
 		std::string rc;
 
 		Request(*this,"getStringAt")
 			.push((uint32_t) row)
 			.push((uint32_t) col)
-			.push((uint32_t) sz)
+			.push((int32_t) len)
 			.push((uint8_t) lf)
 			.call()
 			.pop(rc);

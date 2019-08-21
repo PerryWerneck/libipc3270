@@ -171,19 +171,37 @@
 		chkResponse(lib3270_set_lock_on_operator_error(hSession,lock ? 1 : 0));
 	}
 
-	void Local::Session::setCursor(unsigned short addr) {
+	unsigned short Local::Session::setCursor(int addr) {
 		std::lock_guard<std::mutex> lock(sync);
-		chkResponse(lib3270_set_cursor_address(hSession,addr));
+
+		int rc = lib3270_set_cursor_address(hSession,addr);
+		if(rc < 0)
+			chkResponse(-rc);
+
+		return (unsigned short) rc;
+
 	}
 
-	void Local::Session::setCursor(unsigned short row, unsigned short col) {
+	unsigned short Local::Session::setCursor(unsigned short row, unsigned short col) {
 		std::lock_guard<std::mutex> lock(sync);
-		chkResponse(lib3270_set_cursor_position(hSession,row,col));
+
+		int rc = lib3270_set_cursor_position(hSession,row,col);
+		if(rc < 0)
+			chkResponse(-rc);
+
+		return (unsigned short) rc;
+
 	}
 
 	unsigned short Local::Session::getCursorAddress() {
 		std::lock_guard<std::mutex> lock(sync);
-		return lib3270_get_cursor_address(hSession);
+
+		int rc = lib3270_get_cursor_address(hSession);
+
+		if(!rc)
+			chkResponse(errno);
+
+		return rc;
 	}
 
 	std::string Local::Session::getVersion() const {

@@ -42,12 +42,12 @@
 
  namespace TN3270 {
 
-	std::string	Abstract::Session::toString(int baddr, size_t len, char lf) const {
+	std::string	Abstract::Session::toString(int baddr, int len, char lf) const {
 		return convertFromHost(get(baddr,len,lf));
 	}
 
-	std::string	Abstract::Session::toString(int row, int col, size_t sz, char lf) const {
-		return convertFromHost(get(row,col,sz,lf));
+	std::string	Abstract::Session::toString(unsigned int row, unsigned int col, int len, char lf) const {
+		return convertFromHost(get(row,col,len,lf));
 	}
 
 	/// @brief Get contents of field ad address.

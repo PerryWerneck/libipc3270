@@ -140,11 +140,23 @@
 		setProperty("oerrlock", (uint32_t) lock);
 	}
 
-	void IPC::Session::setCursor(unsigned short addr) {
-		setProperty("cursor_address", (uint32_t) addr);
+	unsigned short IPC::Session::setCursor(int addr) {
+
+		int32_t rc;
+
+		Request(*this,"setCursorAddress")
+			.push((int32_t) addr)
+			.call()
+			.pop(rc);
+
+		if(rc < 0)
+			chkResponse(-rc);
+
+		return (unsigned short) rc;
+
 	}
 
-	void IPC::Session::setCursor(unsigned short row, unsigned short col) {
+	unsigned short IPC::Session::setCursor(unsigned short row, unsigned short col) {
 
 		int32_t rc;
 
@@ -154,9 +166,10 @@
 			.call()
 			.pop(rc);
 
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
+		if(rc < 0)
+			chkResponse(-rc);
+
+		return (unsigned short) rc;
 
 	}
 

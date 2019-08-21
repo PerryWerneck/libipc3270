@@ -27,48 +27,21 @@
  *
  */
 
-/**
- * @file
- *
- * @brief
- *
- * @author perry.werneck@gmail.com
- *
- */
+#include "private.h"
+#include <lib3270/actions.h>
 
- #include "private.h"
+int ipc3270_method_action(GObject *session, GVariant *request, GObject *response, GError G_GNUC_UNUSED(**error)) {
 
-/*---[ Implement ]----------------------------------------------------------------------------------*/
-
- namespace TN3270 {
-
- 	void Local::Session::set(const std::string &str) {
-
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
-		chkResponse(lib3270_input_string(hSession,(unsigned char *) str.c_str(),str.length()));
-
+	if(g_variant_n_children(request) != 1) {
+		g_message("action was called with %u arguments.",(unsigned int) g_variant_n_children(request));
+		ipc3270_response_append_int32(response, EINVAL);
 	}
 
-	void Local::Session::set(int baddr, const std::string &str) {
+	GVariant *value = g_variant_get_child_value(request,0);
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+	ipc3270_response_append_int32(response, lib3270_action(ipc3270_get_session(session),g_variant_get_string(value,NULL)));
 
-		int rc = lib3270_set_string_at_address(hSession,baddr,(unsigned char *) str.c_str(),str.length());
-		if(rc < 0)
-			chkResponse(-rc);
+	g_variant_unref(value);
 
-	}
-
-	void Local::Session::set(int row, int col, const std::string &str) {
-
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
-
-		int rc = lib3270_set_string_at(hSession,row,col,(unsigned char *) str.c_str(),str.length());
-		if(rc < 0)
-			chkResponse(-rc);
-
-	}
-
- }
-
-
+	return 0;
+}

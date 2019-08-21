@@ -53,7 +53,7 @@ std::string TN3270::Host::toString(int baddr, size_t len, char lf) const {
 
 }
 
-std::string TN3270::Host::toString(int row, int col, size_t sz, char lf) const {
+std::string TN3270::Host::toString(unsigned int row, unsigned int col, size_t sz, char lf) const {
 
 	this->session->waitForReady(this->timeout);
 	return this->session->toString(row,col,sz,lf);

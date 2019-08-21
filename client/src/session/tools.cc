@@ -36,20 +36,32 @@
  *
  */
 
- #include "private.h"
+ #include <ipc-client-internals.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
 
-	void Local::Session::chkResponse(int rc) {
+	void Abstract::Session::chkResponse(int rc) {
 
 		if(rc == 0)
-				return;
+			return;
 
 #ifdef _WIN32
+		class Win32NotConnected : public std::system_error {
+		public:
+			Win32NotConnected() : std::system_error(ENOTCONN, std::system_category()) {
+			}
+
+			const char * what() const noexcept override {
+				return "Disconnected from host";
+			}
+
+		};
+
 		if(rc == ENOTCONN)
-				throw std::runtime_error("Not connected");
+			throw Win32NotConnected();
+
 #endif // _WIN32
 
 		throw std::system_error(rc, std::system_category());

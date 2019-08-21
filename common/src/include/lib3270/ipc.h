@@ -249,8 +249,8 @@
 			virtual SSLState getSSLState() const = 0;
 
 			// Contents
-			virtual std::string	toString(int baddr = 0, size_t len = -1, char lf = '\n') const = 0;
-			virtual std::string	toString(int row, int col, size_t sz, char lf = '\n') const = 0;
+			virtual std::string	toString(int baddr = 0, int len = -1, char lf = '\n') const = 0;
+			virtual std::string	toString(unsigned int row, unsigned int col, int len, char lf = '\n') const = 0;
 
 			/// @brief Input string.
 			virtual void push(const char *text, size_t length) = 0;
@@ -311,10 +311,10 @@
 			virtual unsigned short getScreenLength() const = 0;
 
 			/// @brief Set cursor address.
-			virtual void setCursor(unsigned short addr) = 0;
+			virtual unsigned short setCursor(int addr = -1) = 0;
 
 			/// @brief Set cursor position.
-			virtual void setCursor(unsigned short row, unsigned short col) = 0;
+			virtual unsigned short setCursor(unsigned short row, unsigned short col) = 0;
 
 			/// @brief Get cursor address
 			virtual unsigned short getCursorAddress() = 0;
@@ -361,8 +361,8 @@
 			size_t find(const char * str, size_t pos = 0) const;
 
 			/// @brief Compare contents.
-			int compare(size_t baddr, const char* s, int len = -1) const;
-			int compare(int row, int col, const char* s, int len = -1) const;
+			int compare(int baddr, const char* s, int len = -1) const;
+			int compare(unsigned int row, unsigned int col, const char* s, int len = -1) const;
 
 		};
 
@@ -424,12 +424,12 @@
 
 			std::string toString() const;
 			std::string toString(int baddr, size_t len = -1, char lf = '\n') const;
-			std::string toString(int row, int col, size_t len = -1, char lf = '\n') const;
+			std::string toString(unsigned int row, unsigned int col, size_t len = -1, char lf = '\n') const;
 
 			template<typename T>
 			Host & push(T value) {
-				sync();
 				session->push(value);
+				sync();
 				return *this;
 			}
 

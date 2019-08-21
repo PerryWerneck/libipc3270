@@ -51,7 +51,6 @@
 		<Unit filename="src/core/windows/resources.rc" />
 		<Unit filename="src/core/windows/resources.rc.in" />
 		<Unit filename="src/host/actions.cc" />
-		<Unit filename="src/host/host.cc" />
 		<Unit filename="src/host/init.cc" />
 		<Unit filename="src/host/pop.cc" />
 		<Unit filename="src/host/private.h" />
@@ -68,7 +67,6 @@
 		<Unit filename="src/session/local/private.h" />
 		<Unit filename="src/session/local/properties.cc" />
 		<Unit filename="src/session/local/set.cc" />
-		<Unit filename="src/session/local/tools.cc" />
 		<Unit filename="src/session/remote/actions.cc" />
 		<Unit filename="src/session/remote/get.cc" />
 		<Unit filename="src/session/remote/linux/request.cc" />
@@ -80,6 +78,7 @@
 		<Unit filename="src/session/remote/windows/request.cc" />
 		<Unit filename="src/session/remote/windows/session.cc" />
 		<Unit filename="src/session/set.cc" />
+		<Unit filename="src/session/tools.cc" />
 		<Unit filename="src/testprogram/testprogram.cc" />
 		<Extensions>
 			<code_completion />

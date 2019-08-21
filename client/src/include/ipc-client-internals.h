@@ -134,19 +134,22 @@
 
 				// Get strings from lib3270 without charset conversion.
 				virtual std::string	get() const = 0;
-				virtual std::string	get(int baddr, size_t len, char lf) const = 0;
-				virtual std::string	get(int row, int col, size_t sz, char lf) const = 0;
+				virtual std::string	get(int baddr, int len, char lf) const = 0;
+				virtual std::string	get(unsigned int row, unsigned int col, int sz, char lf) const = 0;
 
 				// Set strings to lib3270 without charset conversion.
 				virtual void set(const std::string &str) = 0;
 				virtual void set(int baddr, const std::string &str) = 0;
 				virtual void set(int row, int col, const std::string &str) = 0;
 
+				/// @brief Check lib3270 return codes, launch exception when failed.
+				static void chkResponse(int rc);
+
 			public:
 
 				// Contents
-				std::string	toString(int baddr = 0, size_t len = -1, char lf = '\n') const override;
-				std::string	toString(int row, int col, size_t sz, char lf = '\n') const override;
+				std::string	toString(int baddr, int len, char lf) const override;
+				std::string	toString(unsigned int row, unsigned int col, int len, char lf) const override;
 
 				void push(const char *text, size_t length) override;
 				void push(int baddr, const char *text, int length) override;

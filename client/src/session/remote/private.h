@@ -70,14 +70,12 @@
 
 #endif // _WIN32
 
-//				Request(const Session &session);
-
 			protected:
 
 				// Get strings from lib3270 without charset conversion.
 				std::string	get() const override;
-				std::string	get(int baddr, size_t len, char lf) const override;
-				std::string	get(int row, int col, size_t sz, char lf) const override;
+				std::string	get(int baddr, int len, char lf) const override;
+				std::string	get(unsigned int row, unsigned int col, int len, char lf) const override;
 
 				// Set strings to lib3270 without charset conversion.
 				void set(const std::string &str) override;
@@ -130,8 +128,8 @@
 				void setUnlockDelay(unsigned short delay) override;
 				void setLockOnOperatorError(bool lock) override;
 				void setCharSet(const char *charset = NULL) override;
-				void setCursor(unsigned short addr) override;
-				void setCursor(unsigned short row, unsigned short col) override;
+				unsigned short setCursor(int addr) override;
+				unsigned short setCursor(unsigned short row, unsigned short col) override;
 				unsigned short getCursorAddress() override;
 
 			};

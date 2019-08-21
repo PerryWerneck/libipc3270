@@ -38,6 +38,10 @@
 
  #include "private.h"
 
+#ifdef _WIN32
+ #include <lmcons.h>
+#endif // _WIN32
+
  extern "C" {
 	 #include <lib3270/session.h>
  }

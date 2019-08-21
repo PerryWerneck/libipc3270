@@ -151,17 +151,17 @@
 		DataBlock * block = getNextBlock();
 
 		switch(block->type) {
-		case IPC::Request::UInt16:
+		case IPC::Request::Uint16:
 			value = * ((uint16_t *) (block+1));
 			in.current += sizeof(uint16_t) + sizeof(DataBlock);
 			break;
 
-		case IPC::Request::UInt32:
+		case IPC::Request::Uint32:
 			value = * ((uint32_t *) (block+1));
 			in.current += sizeof(uint32_t) + sizeof(DataBlock);
 			break;
 
-		case IPC::Request::UInt64:
+		case IPC::Request::Uint64:
 			value = * ((uint64_t *) (block+1));
 			in.current += sizeof(uint64_t) + sizeof(DataBlock);
 			break;

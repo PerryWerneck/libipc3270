@@ -35,9 +35,6 @@ int ipc3270_method_set_string(GObject *session, GVariant *request, GObject *resp
 
 	H3270 *hSession = ipc3270_get_session(session);
 
-	gchar *text = NULL;
-	g_variant_get(request, "(&s)", &text);
-
 	if(*error)
 		return 0;
 

@@ -370,24 +370,24 @@
 
 	/// @brief Search
 	size_t Session::find(const char * str, size_t pos) const {
-		return toString(0,-1,0).find(str,pos);
+		return toString((int) 0,(int) -1, '\0').find(str,pos);
 	}
 
 	/// @brief Compare contents.
-	int Session::compare(size_t baddr, const char* s, int len) const {
+	int Session::compare(int baddr, const char* s, int len) const {
 
 		if(len < 0)
 			len = strlen(s);
 
-		return toString(baddr,len,0).compare(0,len,s);
+		return toString(baddr,len,'\0').compare(0,len,s);
 	}
 
-	int Session::compare(int row, int col, const char* s, int len) const {
+	int Session::compare(unsigned int row, unsigned int col, const char* s, int len) const {
 
 		if(len < 0)
 			len = strlen(s);
 
-		return toString(row, col, len, 0).compare(0,len,s);
+		return toString(row, col, len, '\0').compare(0,len,s);
 
 	}
 
