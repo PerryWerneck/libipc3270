@@ -106,34 +106,46 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 	debug("Received packet \"%s\" with %u bytes", request_name, (unsigned int) cbRead);
 
 	g_autoptr (GError) error = NULL;
-	g_autoptr (GVariant) parameters = ipc3270_unpack(source->buffer, &request_type);
 	g_autoptr (GVariant) response = NULL;
+	g_autoptr (GVariant) parameters = ipc3270_unpack(source->buffer, &request_type);
 
-	// Process query
-	switch(request_type) {
-	case 1: // getProperty
-		response = ipc3270_get_property(source->object, request_name, &error);
-		break;
+	if(parameters) {
 
-	case 2: // setProperty
-		ipc3270_set_property(source->object, request_name, parameters, &error);
-		response = g_variant_new_int32(0);
-		break;
+		// Process query
+		switch(request_type) {
+		case 1: // getProperty
+			response = ipc3270_get_property(source->object, request_name, &error);
+			break;
 
-	case 3: // method
-		{
-			g_autoptr(GObject) rsp = ipc3270_response_new();
-			ipc3270_method_call(source->object, request_name, parameters, response, &error);
+		case 2: // setProperty
+			ipc3270_set_property(source->object, request_name, parameters, &error);
+			response = g_variant_new_int32(0);
+			break;
 
-			if(ipc3270_response_has_values(rsp))
-				response = ipc3270_response_steal_value(rsp);
+		case 3: // method
+			{
+				g_autoptr(GObject) rsp = ipc3270_response_new();
+
+				debug("Parameters: %p", parameters);
+				debug("rsp: %p", rsp);
+
+				ipc3270_method_call(source->object, request_name, parameters, rsp, &error);
+
+				if(ipc3270_response_has_values(rsp))
+					response = ipc3270_response_steal_value(rsp);
+
+			}
+			break;
+
+		default:
+			g_message("Rejecting request \"%s\": Invalid type %d",request_name, request_type);
+			g_set_error(&error,IPC3270(source->object)->error_domain,EINVAL,"Invalid or unexpected type %d",request_type);
 
 		}
-		break;
 
-	default:
-		g_message("Rejecting request \"%s\": Invalid type %d",request_name, request_type);
-		g_set_error(&error,IPC3270(source->object)->error_domain,EINVAL,"Invalid or unexpected type %d",request_type);
+	} else if(!error) {
+
+		g_set_error(&error,IPC3270(source->object)->error_domain,errno ? errno : EINVAL,"Can't parse parameter list");
 
 	}
 

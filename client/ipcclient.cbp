@@ -47,6 +47,8 @@
 		<Unit filename="src/core/events.cc" />
 		<Unit filename="src/core/linux/request.cc" />
 		<Unit filename="src/core/session.cc" />
+		<Unit filename="src/core/windows/pop.cc" />
+		<Unit filename="src/core/windows/push.cc" />
 		<Unit filename="src/core/windows/request.cc" />
 		<Unit filename="src/core/windows/resources.rc" />
 		<Unit filename="src/core/windows/resources.rc.in" />

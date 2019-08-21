@@ -44,6 +44,39 @@
 
  namespace TN3270 {
 
+	#define PIPE_BUFFER_LENGTH 8192
+
+	IPC::Request::Request(HANDLE hPipe, const char *name, uint16_t type) {
+
+		this->hPipe = hPipe;
+
+		// Create buffers
+		in.length = PIPE_BUFFER_LENGTH;
+		in.used = 0;
+		in.block = new uint8_t[in.length];
+
+		out.length = PIPE_BUFFER_LENGTH;
+		out.used = 0;
+		out.block = new uint8_t[out.length];
+
+		// Add name
+		strcpy((char *) out.block, name);
+		out.used += strlen((char *) name) + 1;
+
+		// Add type
+		debug("Request type stored @",out.used);
+
+		*((uint16_t *) (out.block + out.used)) = type;
+		out.used += sizeof(uint16_t);
+
+		// Add argument counter.
+		this->outvalues = (uint16_t *) (out.block + out.used);
+		out.used += sizeof(uint16_t);
+
+		*this->outvalues = 0;
+
+	}
+
 	IPC::Request::~Request() {
 
 		delete[] ((uint8_t *) in.block);
@@ -78,106 +111,13 @@
 
 	}
 
-	IPC::Request & IPC::Request::push(const char *arg) {
-		pushBlock(arg, strlen(arg)+1)->type = IPC::Request::String;
-		return *this;
-	}
-
-	IPC::Request & IPC::Request::push(const bool arg) {
-		uint8_t value = (uint8_t) (arg ? 0xff : 0);
-		pushBlock(&value, sizeof(value))->type = IPC::Request::Boolean;
-		return *this;
-	}
-
-	IPC::Request & IPC::Request::push(const uint8_t arg) {
-		pushBlock(&arg, sizeof(arg))->type = IPC::Request::Uchar;
-		return *this;
-	}
-
-	IPC::Request & IPC::Request::push(const int32_t arg) {
-		pushBlock(&arg, sizeof(arg))->type = IPC::Request::Int32;
-		return *this;
-	}
-
-	IPC::Request & IPC::Request::push(const uint32_t arg) {
-		pushBlock(&arg, sizeof(arg))->type = IPC::Request::Uint32;
-		return *this;
-	}
-
-	IPC::Request & IPC::Request::pop(std::string &value) {
-		DataBlock * block = getNextBlock();
-
-		if(block->type != IPC::Request::String)
-			throw std::runtime_error("Invalid format");
-
-		const char *ptr = (const char *) (block+1);
-
-		in.current += (strlen(ptr)+1+sizeof(DataBlock));
-
-		value.assign(ptr);
-
-		return *this;
-	}
-
-	IPC::Request & IPC::Request::Request::pop(int &value) {
-
-		DataBlock * block = getNextBlock();
-
-		switch(block->type) {
-		case IPC::Request::Int16:
-			value = * ((int16_t *) (block+1));
-			in.current += sizeof(int16_t) + sizeof(DataBlock);
-			break;
-
-		case IPC::Request::Int32:
-			value = * ((int32_t *) (block+1));
-			in.current += sizeof(int32_t) + sizeof(DataBlock);
-			break;
-
-		case IPC::Request::Int64:
-			value = * ((int64_t *) (block+1));
-			in.current += sizeof(int64_t) + sizeof(DataBlock);
-			break;
-
-		default:
-			throw std::runtime_error("Invalid format");
-		}
-
-		return *this;
-	}
-
-	IPC::Request & IPC::Request::Request::pop(unsigned int &value) {
-
-		DataBlock * block = getNextBlock();
-
-		switch(block->type) {
-		case IPC::Request::Uint16:
-			value = * ((uint16_t *) (block+1));
-			in.current += sizeof(uint16_t) + sizeof(DataBlock);
-			break;
-
-		case IPC::Request::Uint32:
-			value = * ((uint32_t *) (block+1));
-			in.current += sizeof(uint32_t) + sizeof(DataBlock);
-			break;
-
-		case IPC::Request::Uint64:
-			value = * ((uint64_t *) (block+1));
-			in.current += sizeof(uint64_t) + sizeof(DataBlock);
-			break;
-
-		default:
-			throw std::runtime_error("Invalid format");
-		}
-
-		return *this;
-	}
-
 	IPC::Request & IPC::Request::call() {
 
 #ifdef DEBUG
 		// lib3270_trace_data(NULL,"Request block",(const char *) this->out.block, this->out.used);
 #endif // DEBUG
+
+		debug("Sending request with ", *this->outvalues, " elements");
 
 		in.current = 0;
 

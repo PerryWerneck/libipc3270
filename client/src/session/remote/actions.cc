@@ -71,8 +71,10 @@
 			.push(url)
 			.call();
 
+		/*
 		if(seconds)
 			this->waitForReady(seconds);
+		*/
 
 	}
 

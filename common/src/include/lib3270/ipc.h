@@ -423,8 +423,8 @@
 			Host & pop(std::string &text);
 
 			std::string toString() const;
-			std::string toString(int baddr, size_t len = -1, char lf = '\n') const;
-			std::string toString(unsigned int row, unsigned int col, size_t len = -1, char lf = '\n') const;
+			std::string toString(int baddr, int len = -1, char lf = '\n') const;
+			std::string toString(unsigned int row, unsigned int col, int len = -1, char lf = '\n') const;
 
 			template<typename T>
 			Host & push(T value) {

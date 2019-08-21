@@ -73,7 +73,7 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 	size_t	  ix;
 	H3270	* hSession = ipc3270_get_session(object);
 
-	debug("%s(%s)",__FUNCTION__,method_name);
+	debug("%s(%s,request=%p,response=%p)",__FUNCTION__,method_name,request,response);
 
 	lib3270_trace_event(hSession,"Method %s called on session %c\n",method_name,lib3270_get_session_id(hSession));
 
@@ -82,6 +82,8 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 		if(!g_ascii_strcasecmp(methods[ix].name,method_name)) {
 
 			int rc = methods[ix].call(object,request,response,error);
+
+			debug("rc=%d",rc);
 
 			if(rc)
 				ipc3270_set_error(object,rc,error);

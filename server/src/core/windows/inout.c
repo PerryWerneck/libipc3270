@@ -232,6 +232,8 @@ GVariant * ipc3270_unpack(const unsigned char *packet, int *id) {
 	packet += strlen((const char *) packet)+1;
 
 	// Get Packet ID or error code.
+	debug("Request type is %u",(unsigned int) *((guint16 *) packet));
+
 	if(id) {
 		*id = (int) *((guint16 *) packet);
 	}
@@ -291,6 +293,7 @@ GVariant * ipc3270_unpack(const unsigned char *packet, int *id) {
 			break;
 
 		default:
+			g_message("Unexpected format for argument %d: \"%c\"",ix,descrs[ix+1]);
 			errno = EINVAL;
 			return NULL;
 		}

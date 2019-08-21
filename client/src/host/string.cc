@@ -46,16 +46,16 @@ std::string TN3270::Host::toString() const {
 	return this->session->toString();
 }
 
-std::string TN3270::Host::toString(int baddr, size_t len, char lf) const {
+std::string TN3270::Host::toString(int baddr, int len, char lf) const {
 
 	this->session->waitForReady(this->timeout);
 	return this->session->toString(baddr,len,lf);
 
 }
 
-std::string TN3270::Host::toString(unsigned int row, unsigned int col, size_t sz, char lf) const {
+std::string TN3270::Host::toString(unsigned int row, unsigned int col, int len, char lf) const {
 
 	this->session->waitForReady(this->timeout);
-	return this->session->toString(row,col,sz,lf);
+	return this->session->toString(row,col,len,lf);
 
 }

@@ -180,7 +180,6 @@
 			/// @brief PW3270 IPC Request/Response.
 			class Request {
 			private:
-				Request(const IPC::Session &session);
 
 #ifdef _WIN32
 				/// @brief Pipe Handle.
@@ -223,6 +222,9 @@
 				/// @brief Get next argument.
 				DataBlock * getNextBlock() const;
 
+				/// @brief Pointer to number of variants in the output buffer.
+				uint16_t * outvalues;
+
 #else
 				struct {
 					DBusMessage		* in;
@@ -232,6 +234,12 @@
 				} msg;
 				DBusConnection	* conn;
 
+#endif // _WIN32
+
+			protected:
+
+#ifdef _WIN32
+				Request(HANDLE hPipe, const char *name, uint16_t type);
 #endif // _WIN32
 
 			public:

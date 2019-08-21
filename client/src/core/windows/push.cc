@@ -30,13 +30,13 @@
 /**
  * @file
  *
- * @brief Implements WIN32 request constructors based on TN3270::IPC::Session.
+ * @brief Implements WIN32 request "push" methods.
  *
  * @author perry.werneck@gmail.com
  *
  */
 
- #include "../private.h"
+ #include <ipc-client-internals.h>
 
  using std::string;
 
@@ -44,10 +44,35 @@
 
  namespace TN3270 {
 
-	IPC::Request::Request(const Session &session, const char *method) : Request(session.hPipe, method, 3) {
+	IPC::Request & IPC::Request::push(const char *arg) {
+		(*this->outvalues)++;
+		pushBlock(arg, strlen(arg)+1)->type = IPC::Request::String;
+		return *this;
 	}
 
-	IPC::Request::Request(const Session &session, bool isSet, const char *property) : Request(session.hPipe, property, (isSet ? 2 : 1)) {
+	IPC::Request & IPC::Request::push(const bool arg) {
+		(*this->outvalues)++;
+		uint8_t value = (uint8_t) (arg ? 0xff : 0);
+		pushBlock(&value, sizeof(value))->type = IPC::Request::Boolean;
+		return *this;
+	}
+
+	IPC::Request & IPC::Request::push(const uint8_t arg) {
+		(*this->outvalues)++;
+		pushBlock(&arg, sizeof(arg))->type = IPC::Request::Uchar;
+		return *this;
+	}
+
+	IPC::Request & IPC::Request::push(const int32_t arg) {
+		(*this->outvalues)++;
+		pushBlock(&arg, sizeof(arg))->type = IPC::Request::Int32;
+		return *this;
+	}
+
+	IPC::Request & IPC::Request::push(const uint32_t arg) {
+		(*this->outvalues)++;
+		pushBlock(&arg, sizeof(arg))->type = IPC::Request::Uint32;
+		return *this;
 	}
 
  }
