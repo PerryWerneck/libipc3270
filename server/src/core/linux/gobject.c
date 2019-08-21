@@ -113,11 +113,11 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>"
 		"	<method name='pfkey'>" \
-		"		<arg type='u' name='keycode' direction='in'/>" \
+		"		<arg type='i' name='keycode' direction='in'/>" \
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>"
 		"	<method name='pakey'>" \
-		"		<arg type='u' name='keycode' direction='in'/>" \
+		"		<arg type='i' name='keycode' direction='in'/>" \
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>"
 		"	<method name='getString'>" \

@@ -40,6 +40,7 @@
  #include <ipc-client-internals.h>
  #include <cstring>
  #include <lib3270/trace.h>
+ #include <algorithm>
 
  using std::string;
 
@@ -83,6 +84,9 @@
 		this->name += string(id,(sep - id));
 		this->name += ".";
 		this->name += (sep+1);
+
+		std::transform(this->name.begin(), this->name.end(), this->name.begin(),[](unsigned char c){ return std::tolower(c); });
+
 		this->path = "/br/com/bb/tn3270/session";
 		this->interface = "br.com.bb.tn3270.session";
 

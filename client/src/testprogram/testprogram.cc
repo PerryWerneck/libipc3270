@@ -120,7 +120,9 @@
 		cout << endl << "[" << host.toString((unsigned int) 1, (unsigned int) 3,7) << "]" << endl;
 		cout << endl << "[" << host.toString((int) 15, (int) 10) << "]" << endl;
 
-		host.disconnect();
+		host.pfkey(3);
+
+		// host.disconnect();
 
 	} catch(const std::exception &e) {
 

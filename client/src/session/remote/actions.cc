@@ -185,7 +185,7 @@
 		int32_t rc;
 
 		Request(*this,"pfkey")
-			.push((uint32_t) value)
+			.push((int32_t) value)
 			.call()
 			.pop(rc);
 
@@ -200,7 +200,7 @@
 		int32_t rc;
 
 		Request(*this,"pakey")
-			.push((uint32_t) value)
+			.push((int32_t) value)
 			.call()
 			.pop(rc);
 

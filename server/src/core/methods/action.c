@@ -45,3 +45,4 @@ int ipc3270_method_action(GObject *session, GVariant *request, GObject *response
 
 	return 0;
 }
+
