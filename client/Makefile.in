@@ -255,9 +255,17 @@ install-devel:
 	@$(MKDIR) \
 		$(DESTDIR)/$(includedir)/lib3270
 
+	@$(MKDIR) \
+		$(DESTDIR)/$(includedir)/lib3270/ipc
+
+
 	@$(INSTALL_DATA) \
-		$(BASEDIR)/common/src/include/lib3270/ipc.h \
+		src/include/lib3270/ipc.h \
 		$(DESTDIR)/$(includedir)/lib3270
+
+	@$(INSTALL_DATA) \
+		src/include/lib3270/ipc/*.h \
+		$(DESTDIR)/$(includedir)/lib3270/ipc
 
 	# Install PKG-CONFIG files
 	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
