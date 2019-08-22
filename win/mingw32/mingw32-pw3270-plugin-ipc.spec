@@ -69,7 +69,6 @@ BuildRequires:	mingw32(lib:intl)
 
 BuildRequires:	mingw32(pkg:gtk+-win32-3.0)
 BuildRequires:	mingw32(pkg:lib3270)
-BuildRequires:	mingw32(pkg:lib3270-static)
 BuildRequires:	mingw32(pkg:libv3270)
 
 %description
@@ -111,8 +110,7 @@ Designed as a support tool for language bindings.
 
 NOCONFIGURE=1 ./autogen.sh
 
-%{_mingw32_configure} \
-	--without-static-lib3270
+%{_mingw32_configure}
 
 %build
 make clean
@@ -150,6 +148,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -n mingw32-libipc3270-devel
 %defattr(-,root,root)
 %{_mingw32_includedir}/lib3270/ipc.h
+%dir %{_mingw32_includedir}/lib3270/ipc
+%{_mingw32_includedir}/lib3270/ipc/*.h
 %{_mingw32_libdir}/*.a
 %{_mingw32_libdir}/pkgconfig/*.pc
 

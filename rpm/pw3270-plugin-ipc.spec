@@ -149,6 +149,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -n libipc3270-devel
 %defattr(-,root,root)
 %{_includedir}/lib3270/ipc.h
+%dir %{_includedir}/lib3270/ipc
+%{_includedir}/lib3270/ipc/*.h
 %{_libdir}/libipc3270.so
 %{_libdir}/pkgconfig/ipc3270.pc
 
