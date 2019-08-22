@@ -151,6 +151,10 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='y' name='lf' direction='in' />" \
 		"		<arg type='s' name='text' direction='out' />" \
 		"	</method>" \
+		"	<method name= 'wait'>" \
+		"		<arg type='u' name='seconds' direction='in' />" \
+		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>" \
 		"	<method name= 'waitForReady'>" \
 		"		<arg type='u' name='seconds' direction='in' />" \
 		"		<arg type='i' name='result' direction='out' />" \
@@ -184,6 +188,21 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='i' name='addr' direction='in' />" \
 		"		<arg type='u' name='attribute' direction='out' />" \
 		"	</method>" \
+
+		"	<method name= 'waitForStringAt'>" \
+		"		<arg type='i' name='row' direction='in' />" \
+		"		<arg type='i' name='col' direction='in' />" \
+		"		<arg type='s' name='text' direction='in' />" \
+		"		<arg type='u' name='seconds' direction='in' />" \
+		"		<arg type='u' name='attribute' direction='out' />" \
+		"	</method>" \
+		"	<method name= 'waitForStringAtAddress'>" \
+		"		<arg type='i' name='addr' direction='in' />" \
+		"		<arg type='s' name='text' direction='in' />" \
+		"		<arg type='u' name='seconds' direction='in' />" \
+		"		<arg type='u' name='attribute' direction='out' />" \
+		"	</method>" \
+
 		"	<property type='s' name='version' access='read'/>" \
 		"	<property type='s' name='revision' access='read'/>"
 	);

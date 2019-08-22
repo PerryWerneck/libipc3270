@@ -413,6 +413,15 @@
 			/// @brief Wait for screen changes.
 			virtual LIB3270_KEYBOARD_LOCK_STATE waitForKeyboardUnlock(time_t seconds = DEFAULT_TIMEOUT) const = 0;
 
+			/// @brief Wait for string.
+			virtual void wait(const char *text, int seconds = DEFAULT_TIMEOUT) = 0;
+
+			/// @brief Wait for string.
+			virtual void wait(unsigned int row, unsigned int col, const char *text, int seconds = DEFAULT_TIMEOUT) = 0;
+
+			/// @brief Wait for string.
+			virtual void wait(int addr, const char *text, int seconds = DEFAULT_TIMEOUT) = 0;
+
 			/// @brief Send PF.
 			virtual void pfkey(unsigned short value) = 0;
 

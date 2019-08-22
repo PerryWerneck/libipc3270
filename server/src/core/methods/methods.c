@@ -59,6 +59,10 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 		{ "setStringAt",				ipc3270_method_set_string					},
 		{ "setStringAtAddress",			ipc3270_method_set_string					},
 
+		{ "waitForString",				ipc3270_method_wait_for_string				},
+		{ "waitForStringAt",			ipc3270_method_wait_for_string				},
+		{ "waitForStringAtAddress",		ipc3270_method_wait_for_string				},
+
 		{ "getFieldAttribute",			ipc3270_method_get_field_attribute			},
 		{ "getFieldAttributeAt",		ipc3270_method_get_field_attribute			},
 		{ "getFieldAttributeAtAddress",	ipc3270_method_get_field_attribute			},

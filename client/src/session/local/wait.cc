@@ -39,86 +39,55 @@
  #include "private.h"
  #include <lib3270/actions.h>
 
-#ifndef _WIN32
-	#include <unistd.h>
-#endif // _WIN32
-
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
 
-	void IPC::Session::action(const char *action_name) {
+	void Local::Session::wait(time_t seconds) const {
 
-		int32_t rc;
-
-		Request(*this,"action")
-			.push(action_name)
-			.call()
-			.pop(rc);
-
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		chkResponse(lib3270_wait(this->hSession, seconds));
 
 	}
 
- 	void IPC::Session::connect(const char *url, int seconds) {
+	void Local::Session::waitForReady(time_t timeout) const {
 
-		if(!url)
-			url = "";
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		chkResponse(lib3270_wait_for_ready(this->hSession, timeout));
+	}
 
-		Request(*this,"connect")
-			.push(url)
-			.call();
+	LIB3270_KEYBOARD_LOCK_STATE Local::Session::waitForKeyboardUnlock(time_t timeout) const {
 
-		if(seconds)
-			this->waitForReady(seconds);
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return lib3270_wait_for_keyboard_unlock(this->hSession, timeout);
+	}
+
+	void Local::Session::waitForChange(time_t seconds) const {
+
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		chkResponse(lib3270_wait_for_update(this->hSession, seconds));
 
 	}
 
-	void IPC::Session::disconnect() {
+	void Local::Session::wait(const char *text, int seconds) {
 
-		Request(*this,"disconnect")
-			.call();
-
-	}
-
-	void IPC::Session::pfkey(unsigned short value) {
-
-		int32_t rc;
-
-		Request(*this,"pfkey")
-			.push((int32_t) value)
-			.call()
-			.pop(rc);
-
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
+		std::lock_guard<std::mutex> lock(sync);
+		chkResponse(lib3270_wait_for_string(hSession,convertToHost(text,-1).c_str(),seconds));
 
 	}
 
-	void IPC::Session::pakey(unsigned short value) {
+	void Local::Session::wait(unsigned int row, unsigned int col, const char *text, int seconds) {
 
-		int32_t rc;
-
-		Request(*this,"pakey")
-			.push((int32_t) value)
-			.call()
-			.pop(rc);
-
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
+		std::lock_guard<std::mutex> lock(sync);
+		chkResponse(lib3270_wait_for_string_at(hSession,row,col,convertToHost(text,-1).c_str(),seconds));
 
 	}
 
-	void IPC::Session::push(const Action action) {
-		this->action(toCharString(action));
-	}
+	void Local::Session::wait(int addr, const char *text, int seconds) {
 
-	void IPC::Session::print(LIB3270_CONTENT_OPTION option) {
-		throw std::system_error(ENOTSUP, std::system_category());
+		std::lock_guard<std::mutex> lock(sync);
+		chkResponse(lib3270_wait_for_string_at_address(hSession,addr,convertToHost(text,-1).c_str(),seconds));
+
 	}
 
  }

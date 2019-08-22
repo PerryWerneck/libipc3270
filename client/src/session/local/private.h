@@ -100,7 +100,12 @@
 				void wait(time_t seconds) const override;
 				void waitForReady(time_t timeout) const override;
 				void waitForChange(time_t timeout) const override;
+
 				LIB3270_KEYBOARD_LOCK_STATE waitForKeyboardUnlock(time_t seconds) const override;
+
+				void wait(const char *text, int seconds) override;
+				void wait(int addr, const char *text, int seconds) override;
+				void wait(unsigned int row, unsigned int col, const char *text, int seconds) override;
 
 				// States
 				ProgramMessage getProgramMessage() const override;
