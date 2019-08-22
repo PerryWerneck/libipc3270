@@ -21,3 +21,6 @@ src/plugin/windows/resources.rc
 resources.rc
 *.pc
 vgcore.*
+doxygen/doxyfile
+doxygen/html
+

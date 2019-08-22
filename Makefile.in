@@ -50,6 +50,7 @@ MKDIR=@MKDIR_P@
 INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
+DOXYGEN=@DOXYGEN@
 
 #---[ Release Targets ]------------------------------------------------------------------
 
@@ -88,6 +89,9 @@ install-plugin: \
 
 install-library:
 	@$(MAKE) -C client DESTDIR=$(DESTDIR) install
+
+doc:
+	@$(DOXYGEN) ./doxygen/doxyfile
 
 #---[ Clean Targets ]--------------------------------------------------------------------
 
