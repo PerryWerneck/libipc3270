@@ -98,8 +98,6 @@
 
 		host.connect(nullptr);
 
-		/*
-
 		cout
 			<< "Wait for unlock returns " << host.getKeyboardLockState() << std::endl
 			<< "Connection state is " << toCharString(host.getConnectionState()) << std::endl
@@ -124,8 +122,9 @@
 
 		host.pfkey(3);
 
-		// host.disconnect();
-		*/
+		host.wait(10);
+
+		host.disconnect();
 
 	} catch(const std::exception &e) {
 

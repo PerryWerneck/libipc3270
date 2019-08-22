@@ -97,6 +97,9 @@
 
 	namespace TN3270 {
 
+		/// @brief Check lib3270 return codes, launch exception when failed.
+		TN3270_PRIVATE void chkResponse(int rc);
+
 		namespace Abstract {
 
 			class TN3270_PRIVATE Session : public TN3270::Session {
@@ -141,9 +144,6 @@
 				virtual void set(const std::string &str) = 0;
 				virtual void set(int baddr, const std::string &str) = 0;
 				virtual void set(int row, int col, const std::string &str) = 0;
-
-				/// @brief Check lib3270 return codes, launch exception when failed.
-				static void chkResponse(int rc);
 
 			public:
 

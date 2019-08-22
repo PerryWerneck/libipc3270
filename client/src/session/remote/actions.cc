@@ -71,10 +71,8 @@
 			.push(url)
 			.call();
 
-		/*
 		if(seconds)
 			this->waitForReady(seconds);
-		*/
 
 	}
 
@@ -98,7 +96,7 @@
 #endif // _WIN32
 
 			if(getConnectionState() == TN3270::DISCONNECTED)
-				throw std::runtime_error("Disconnected");
+				chkResponse(ENOTCONN);
 
 		}
 

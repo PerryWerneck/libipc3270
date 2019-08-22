@@ -42,7 +42,7 @@
 
  namespace TN3270 {
 
-	void Abstract::Session::chkResponse(int rc) {
+	void chkResponse(int rc) {
 
 		if(rc == 0)
 			return;

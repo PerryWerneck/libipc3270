@@ -45,7 +45,7 @@ TN3270::Host & TN3270::Host::pop(int baddr, std::string &text) {
 	this->session->waitForReady(this->timeout);
 
 	if(this->session->getConnectionState() == TN3270::DISCONNECTED) {
-		throw std::system_error(ENOTCONN, std::system_category());
+		chkResponse(ENOTCONN);
 	}
 
 	session->pop(baddr, text);
@@ -58,7 +58,7 @@ TN3270::Host & TN3270::Host::pop(int row, int col, std::string &text) {
 	this->session->waitForReady(this->timeout);
 
 	if(this->session->getConnectionState() == TN3270::DISCONNECTED) {
-		throw std::system_error(ENOTCONN, std::system_category());
+		chkResponse(ENOTCONN);
 	}
 
 	session->pop(row,col,text);
@@ -71,7 +71,7 @@ TN3270::Host & TN3270::Host::pop(std::string &text) {
 	this->session->waitForReady(this->timeout);
 
 	if(this->session->getConnectionState() == TN3270::DISCONNECTED) {
-		throw std::system_error(ENOTCONN, std::system_category());
+		chkResponse(ENOTCONN);
 	}
 
 	session->pop(text);
