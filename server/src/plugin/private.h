@@ -38,7 +38,7 @@
 	#define PRIVATE_H_INCLUDED
 
 	#include <config.h>
-	#include <lib3270/ipc-glib.h>
+	#include <ipc-glib.h>
 
 	int pw3270_plugin_start(GtkWidget *window, GtkWidget *terminal);
 	int pw3270_plugin_stop(GtkWidget *window, GtkWidget *terminal);

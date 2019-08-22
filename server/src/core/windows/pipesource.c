@@ -28,7 +28,7 @@
  */
 
 #include "gobject.h"
-#include <lib3270/ipc-glib.h>
+#include <ipc-glib.h>
 #include <lib3270/trace.h>
 #include <lib3270/toggle.h>
 

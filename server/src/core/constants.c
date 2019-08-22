@@ -34,7 +34,7 @@
 
 #include <lib3270.h>
 #include <lib3270/actions.h>
-#include <lib3270/ipc-glib.h>
+#include <ipc-glib.h>
 
 const IPC_METHOD_INT_ARG * ipc3270_get_int_arg_methods() {
 

@@ -91,7 +91,8 @@ DEPENDS= \
 	Makefile \
 	src/include/*.h \
 	$(BASEDIR)/common/src/include/*.h \
-	$(BASEDIR)/common/src/include/lib3270/*.h
+	$(BASEDIR)/client/src/include/lib3270/*.h \
+	$(BASEDIR)/client/src/include/lib3270/ipc/*.h \
 
 CFLAGS= \
 	@CFLAGS@ \

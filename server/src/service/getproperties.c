@@ -34,7 +34,7 @@
 
 #include <config.h>
 #include "private.h"
-#include <lib3270/ipc-glib.h>
+#include <ipc-glib.h>
 #include <lib3270.h>
 #include <lib3270/properties.h>
 

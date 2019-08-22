@@ -48,7 +48,7 @@
 	#include <gio/gio.h>
 
 	#include <lib3270.h>
-	#include <lib3270/ipc-glib.h>
+	#include <ipc-glib.h>
 
 	#define PIPE_BUFFER_LENGTH 8192
 

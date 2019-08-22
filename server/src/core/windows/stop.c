@@ -34,7 +34,7 @@
 
 #include "gobject.h"
 #include <lib3270.h>
-#include <lib3270/ipc-glib.h>
+#include <ipc-glib.h>
 
 void ipc3270_release_object(ipc3270 *object) {
 

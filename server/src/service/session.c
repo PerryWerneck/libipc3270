@@ -28,7 +28,7 @@
  */
 
 #include "private.h"
-#include <lib3270/ipc-glib.h>
+#include <ipc-glib.h>
 
 struct _session {
 	GObject			  parent;

@@ -43,7 +43,7 @@
 
  #include "private.h"
  #include <v3270.h>
- #include <lib3270/ipc-glib.h>
+ #include <ipc-glib.h>
 
  int pw3270_plugin_stop(GtkWidget G_GNUC_UNUSED(*window), GtkWidget *terminal) {
 	debug("%s(%p)",__FUNCTION__,g_object_get_data(G_OBJECT(terminal),"ipc-object-info"));

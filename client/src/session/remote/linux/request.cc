@@ -47,13 +47,7 @@
 
  namespace TN3270 {
 
-	IPC::Request::Request(const IPC::Session &session) {
-		this->conn = session.conn;
-		this->msg.in = nullptr;
-		this->msg.out = nullptr;
-	}
-
-	IPC::Request::Request(const IPC::Session &session, const char *method) : Request(session) {
+	IPC::Request::Request(const IPC::Session &session, const char *method) : Request(session.conn) {
 
 #ifdef DEBUG
 		clog << "Creating request \"" << method << "\"" << endl;
@@ -72,7 +66,7 @@
 
 	}
 
-	IPC::Request::Request(const IPC::Session &session, bool isSet, const char *property) : Request(session) {
+	IPC::Request::Request(const IPC::Session &session, bool isSet, const char *property) : Request(session.conn) {
 
 		this->msg.out = dbus_message_new_method_call(
 							session.name.c_str(),					// Destination

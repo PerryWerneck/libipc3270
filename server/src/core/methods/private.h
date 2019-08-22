@@ -38,7 +38,7 @@
 
 	#include <config.h>
 	#include <lib3270.h>
-	#include <lib3270/ipc-glib.h>
+	#include <ipc-glib.h>
 
 	G_GNUC_INTERNAL int ipc3270_method_connect(GObject *session, GVariant *request, GObject *response, GError **error);
 	G_GNUC_INTERNAL int ipc3270_method_disconnect(GObject *session, GVariant *request, GObject *response, GError **error);

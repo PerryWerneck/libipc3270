@@ -53,6 +53,7 @@
 	#include <iostream>
 	#include <mutex>
 	#include <lib3270/ipc.h>
+	#include <lib3270/ipc/request.h>
 	#include <lib3270/popup.h>
 	#include <system_error>
 	#include <stdexcept>
@@ -174,104 +175,7 @@
 		namespace IPC {
 
 			TN3270_PRIVATE TN3270::Session * getSessionInstance(const char *id);
-
 			class Session;
-
-			/// @brief PW3270 IPC Request/Response.
-			class Request {
-			private:
-
-#ifdef _WIN32
-				/// @brief Pipe Handle.
-				HANDLE hPipe;
-
-				/// @brief IPC Data type.
-				enum Type : uint8_t {
-					String	= 's',
-					Boolean	= 'b',
-					Uchar	= 'y',
-					Int16	= 'n',
-					Uint16	= 'q',
-					Int32	= 'i',
-					Int32x	= 'h',
-					Uint32	= 'u',
-					Int64	= 'x',
-					Uint64	= 't'
-				};
-
-				struct {
-					DWORD 	  length;	///< @brief Length of input buffer.
-					DWORD	  used;		///< @brief Length of used block.
-					DWORD	  current;	///< @brief Offset of the current argument.
-					uint8_t * block;
-				} in;
-
-				struct {
-					DWORD 	  length;
-					DWORD	  used;
-					uint8_t * block;
-				} out;
-
-				struct DataBlock {
-					Type type;
-				};
-
-				/// @brief Store value on data block.
-				DataBlock * pushBlock(const void *ptr, size_t len);
-
-				/// @brief Get next argument.
-				DataBlock * getNextBlock() const;
-
-				/// @brief Pointer to number of variants in the output buffer.
-				uint16_t * outvalues;
-
-#else
-				struct {
-					DBusMessage		* in;
-					DBusMessage		* out;
-					DBusMessageIter	  iter;
-
-				} msg;
-				DBusConnection	* conn;
-
-#endif // _WIN32
-
-			protected:
-
-#ifdef _WIN32
-				Request(HANDLE hPipe, const char *name, uint16_t type);
-#endif // _WIN32
-
-			public:
-
-				/// @brief Create a method call.
-				Request(const IPC::Session &session, const char *method);
-
-				/// @brief Create a get/set property call.
-				///
-				/// @param session	Session object.
-				/// @param isSet	true if this is a setProperty call.
-				/// @param property	Property name.
-				//
-				Request(const IPC::Session &session, bool isSet, const char *property);
-
-				~Request();
-
-				Request & call();
-
-				// Push values
-				Request & push(const char *arg);
-				Request & push(const bool arg);
-				Request & push(const int32_t arg);
-				Request & push(const uint32_t arg);
-				Request & push(const uint8_t arg);
-
-				// Pop values
-				Request & pop(std::string &value);
-				Request & pop(int &value);
-				Request & pop(unsigned int &value);
-
-			};
 
 		}
 

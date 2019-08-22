@@ -32,7 +32,7 @@
  */
 
 #include <config.h>
-#include <lib3270/ipc-glib.h>
+#include <ipc-glib.h>
 #include "../private.h"
 
 static GDBusNodeInfo *introspection_data = NULL;

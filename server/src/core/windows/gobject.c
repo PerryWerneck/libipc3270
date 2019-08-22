@@ -31,7 +31,7 @@
 #include <lib3270.h>
 #include <lib3270/actions.h>
 #include <lib3270/properties.h>
-#include <lib3270/ipc-glib.h>
+#include <ipc-glib.h>
 #include <v3270.h>
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/

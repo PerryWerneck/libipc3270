@@ -44,6 +44,12 @@
 
  namespace TN3270 {
 
+	IPC::Request::Request(DBusConnection * conn) {
+		this->conn = conn;
+		this->msg.in = nullptr;
+		this->msg.out = nullptr;
+	}
+
 	IPC::Request::~Request() {
 		if(msg.out) {
 			dbus_message_unref(msg.out);

@@ -91,11 +91,11 @@ BINRLS=$(BINDIR)/Release
 
 DEPENDS= \
 	Makefile \
-	$(BASEDIR)/common/src/include/*.h \
-	$(BASEDIR)/common/src/include/lib3270/*.h
+	$(BASEDIR)/common/src/include/*.h
 
 CFLAGS= \
 	@CFLAGS@ \
+	-I$(BASEDIR)/server/src/include \
 	-I$(BASEDIR)/common/src/include \
 	-DBUILD_DATE=`date +%Y%m%d` \
 	@LIB3270_CFLAGS@ \
