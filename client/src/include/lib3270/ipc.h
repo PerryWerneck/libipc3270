@@ -70,11 +70,26 @@
 
 		#define DEFAULT_TIMEOUT 5
 
+		/**
+		 * @brief Get IPC module library version.
+		 *
+		 * @return Constant string with the IPC module library version (It's not the same of lib3270).
+		 *
+		 */
 		TN3270_PUBLIC const char * getVersion();
+
+		/**
+		 * @brief Get IPC module library revision.
+		 *
+		 * @return Constant string with the IPC module library revision (It's not the same of lib3270).
+		 *
+		 */
 		TN3270_PUBLIC const char * getRevision();
 
 		class TN3270_PUBLIC Event {
 		public:
+
+			/// @brief Event type.
 			enum Type : uint8_t {
 				All,			///< @brief All events (undefined).
 				Popup,			///< @brief Popup message.
@@ -87,6 +102,10 @@
 			Type type;
 
 		protected:
+
+			/// @brief Creates an event.
+			///
+			/// @param Type of the event.
 			Event(enum Type type);
 
 		public:
@@ -111,6 +130,7 @@
 
 		};
 
+		/// @brief TN3270 Program message.
 		enum ProgramMessage : uint8_t {
 			MESSAGE_NONE			= LIB3270_MESSAGE_NONE,				///< @brief No message
 			MESSAGE_SYSWAIT			= LIB3270_MESSAGE_SYSWAIT,			///< @brief --
@@ -145,6 +165,7 @@
 			CONNECTED_TN3270E	= LIB3270_CONNECTED_TN3270E,			///< @brief connected in TN3270E mode, 3270 mode
 		};
 
+		/// @brief Security state of the connection with the host.
 		enum SSLState : uint8_t {
 			SSL_UNSECURE	= LIB3270_SSL_UNSECURE,                   	///< @brief No secure connection
 			SSL_SECURE		= LIB3270_SSL_SECURE,						///< @brief Connection secure with CA check
@@ -153,7 +174,7 @@
 			SSL_UNDEFINED	= LIB3270_SSL_UNDEFINED						///< @brief Undefined
 		};
 
-		/// @brief PF Keys
+		/// @brief PF Key
 		enum PFKey : uint8_t {
 			PF_1,
 			PF_2,
@@ -181,14 +202,14 @@
 			PF_24
 		};
 
-		/// @brief PF Keys
+		/// @brief PA Key
 		enum PAKey : uint8_t {
 			PA_1,
 			PA_2,
 			PA_3
 		};
 
-		/// @brief Actions keys
+		/// @brief LIB3270 Action.
 		enum Action : uint8_t {
 			ENTER,				///< @brief Enter key
 			ERASE,
@@ -282,9 +303,51 @@
 			/// @brief Get contents of field at cursor position.
 			virtual void pop(std::string &text) = 0;
 
-			/**
-			 * @brief Input string parsing control char.
-			 */
+			/// @brief Input string parsing control char.
+			///
+			/// Insert string parsing the action codes prefixed with the defined control character.
+			///
+			/// Value | Action      | Description                                                |
+			/// :----:|:------------|:-----------------------------------------------------------|
+			///  @@P  | -           | Print the screen contents (if available)                   |
+			///  @@@@ | -           | Input the @@ char.                                         |
+			///  @@E  | ENTER       | -                                                          |
+			///  @@F  | ERASE_EOF   | -                                                          |
+			///  @@1  | PF1         | Send the PF1 key.                                          |
+			///  @@2  | PF2         | Send the PF2 key.                                          |
+			///  @@3  | PF3         | Send the PF3 key.                                          |
+			///  @@4  | PF4         | Send the PF4 key.                                          |
+			///  @@5  | PF5         | Send the PF5 key.                                          |
+			///  @@6  | PF6         | Send the PF6 key.                                          |
+			///  @@7  | PF7         | Send the PF7 key.                                          |
+			///  @@8  | PF8         | Send the PF8 key.                                          |
+			///  @@9  | PF9         | Send the PF9 key.                                          |
+			///  @@a  | PF10        | Send the PF10 key.                                         |
+			///  @@b  | PF11        | Send the PF11 key.                                         |
+			///  @@c  | PF12        | Send the PF12 key.                                         |
+			///  @@d  | PF13        | Send the PF13 key.                                         |
+			///  @@e  | PF14        | Send the PF14 key.                                         |
+			///  @@f  | PF15        | Send the PF15 key.                                         |
+			///  @@g  | PF16        | Send the PF16 key.                                         |
+			///  @@h  | PF17        | Send the PF17 key.                                         |
+			///  @@u  | PF18        | Send the PF18 key.                                         |
+			///  @@j  | PF19        | Send the PF19 key.                                         |
+			///  @@k  | PF20        | Send the PF20 key.                                         |
+			///  @@l  | PF21        | Send the PF21 key.                                         |
+			///  @@m  | PF22        | Send the PF22 key.                                         |
+			///  @@n  | PF23        | Send the PF23 key.                                         |
+			///  @@o  | PF24        | Send the PF24 key.                                         |
+			///  @@x  | PA1         | Send the PA1 key.                                          |
+			///  @@y  | PA2         | Send the PA2 key.                                          |
+			///  @@z  | PA3         | Send the PA3 key.                                          |
+			///  @@D  | CHAR_DELETE |                                                            |
+			///  @@N  | NEWLINE     |                                                            |
+			///  @@C  | CLEAR       |                                                            |
+			///  @@R  | KYBD_RESET  |                                                            |
+			///  @@<  | BACKSPACE   |                                                            |
+			///
+			/// @return The keyboard lock state.
+			///
 			LIB3270_KEYBOARD_LOCK_STATE input(const std::string &str, const char control_char = '@');
 
 			// Properties.
@@ -295,9 +358,16 @@
 			virtual void setProperty(const char *name, const int value) = 0;
 			virtual void setProperty(const char *name, const char *value) = 0;
 
+			/// @brief Get the lib3270 version string.
 			virtual std::string getVersion() const = 0;
+
+			/// @brief Get the lib3270 revision string.
 			virtual std::string getRevision() const = 0;
+
+			/// @brief Get the LU name.
 			virtual std::string getLUName() const = 0;
+
+			/// @brief Get the terminal lock state code.
 			virtual LIB3270_KEYBOARD_LOCK_STATE getKeyboardLockState() const = 0;
 
 			virtual std::string getHostURL() const = 0;
@@ -594,8 +664,25 @@
 
 	}
 
+	/// @brief Convert the program message to a human readable string.
+	///
+	/// @param programMessage	The program message code.
+	///
+	/// @return Description of the program message.
 	TN3270_PUBLIC const char * toCharString(const TN3270::ProgramMessage programMessage);
+
+	/// @brief Convert the connection state to a human readable string.
+	///
+	/// @param connectionState	The conection state code.
+	///
+	/// @return Description of the connection state.
 	TN3270_PUBLIC const char * toCharString(const TN3270::ConnectionState connectionState);
+
+	/// @brief Convert the action's description.
+	///
+	/// @param The action code.
+	///
+	/// @return The action description.
 	TN3270_PUBLIC const char * toCharString(const TN3270::Action action);
 
 	template <typename T>
