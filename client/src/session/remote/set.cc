@@ -51,15 +51,13 @@
 			.call()
 			.pop(rc);
 
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
+		chkResponse(rc);
 
 	}
 
 	void IPC::Session::set(int baddr, const std::string &str) {
 
-		int rc;
+		int32_t rc;
 
 		Request(*this,"setStringAtAddress")
 			.push((int32_t) baddr)
@@ -67,9 +65,8 @@
 			.call()
 			.pop(rc);
 
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
+		if(rc < 0)
+			chkResponse(-rc);
 
 	}
 
@@ -84,9 +81,8 @@
 			.call()
 			.pop(rc);
 
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
+		if(rc < 0)
+			chkResponse(-rc);
 
 	}
 
