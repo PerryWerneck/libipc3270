@@ -95,7 +95,7 @@ DEPENDS= \
 	$(BASEDIR)/client/src/include/lib3270/ipc/*.h \
 
 CFLAGS= \
-	@CFLAGS@ \
+	@CXXFLAGS@ \
 	-I$(BASEDIR)/common/src/include \
 	-Isrc/include \
 	-DBUILD_DATE=`date +%Y%m%d` \
