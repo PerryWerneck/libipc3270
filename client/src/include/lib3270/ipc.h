@@ -576,17 +576,10 @@
 				return session->getCursorAddress();
 			}
 
-			inline void setUnlockDelay(unsigned short delay) {
-				return session->setUnlockDelay(delay);
+			inline void setHostURL(const char *url) {
+				session->setHostURL(url);
 			}
 
-			inline void setLockOnOperatorError(bool lock = true) {
-				return session->setLockOnOperatorError(lock);
-			}
-
-			inline void setCharSet(const char *charset) {
-				return session->setCharSet(charset);
-			}
 
 			// Get properties
 
@@ -608,6 +601,20 @@
 			inline LIB3270_KEYBOARD_LOCK_STATE getKeyboardLockState() const {
 				return session->getKeyboardLockState();
 			}
+
+			// Set properties
+			inline void setUnlockDelay(unsigned short delay = 350) {
+				session->setUnlockDelay(delay);
+			}
+
+			inline void setLockOnOperatorError(bool lock = true) {
+				session->setLockOnOperatorError(lock);
+			}
+
+			inline void setCharSet(const char *charset = NULL) {
+				session->setCharSet(charset);
+			}
+
 
 			// Actions
 
@@ -639,6 +646,29 @@
 			inline Host & waitForChange(unsigned short seconds) {
 				session->waitForChange(seconds);
 				return *this;
+			}
+
+			/// @brief Wait for string.
+			inline void wait(const char *text) {
+				return session->wait(text,this->timeout);
+			}
+
+			/// @brief Wait for string.
+			inline void wait(unsigned int row, unsigned int col, const char *text) {
+				return session->wait(row,col,text,this->timeout);
+			}
+
+			inline void wait(unsigned int row, unsigned int col, const char *text, time_t timeout) {
+				return session->wait(row,col,text,timeout);
+			}
+
+			/// @brief Wait for string.
+			inline void wait(int addr, const char *text) {
+				return session->wait(addr,text,this->timeout);
+			}
+
+			inline void wait(int addr, const char *text, time_t timeout) {
+				return session->wait(addr,text,timeout);
 			}
 
 			/// @brief Search
