@@ -64,7 +64,7 @@ std::string TN3270::Host::toString(unsigned int row, unsigned int col, int len, 
 size_t TN3270::Host::find(const char * str, size_t pos) const {
 
 	this->session->waitForReady(this->timeout);
-	this->session->find(str,pos);
+	return this->session->find(str,pos);
 
 }
 
