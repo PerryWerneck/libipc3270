@@ -641,6 +641,11 @@
 				return *this;
 			}
 
+			/// @brief Search
+			inline size_t find(const char * str, size_t pos = 0) const {
+				return session->find(str,pos);
+			}
+
 			// Set contents.
 
 			/// @brief Input string.
