@@ -598,8 +598,28 @@
 				return session->getLUName();
 			}
 
+			inline std::string getHostURL() const {
+				return session->getHostURL();
+			}
+
 			inline LIB3270_KEYBOARD_LOCK_STATE getKeyboardLockState() const {
 				return session->getKeyboardLockState();
+			}
+
+			inline SSLState getSSLState() const {
+				return session->getSSLState();
+			}
+
+			inline unsigned short getScreenWidth() const {
+				return session->getScreenWidth();
+			}
+
+			inline unsigned short getScreenHeight() const {
+				return session->getScreenHeight();
+			}
+
+			inline unsigned short getScreenLength() const {
+				return session->getScreenLength();
 			}
 
 			// Set properties
