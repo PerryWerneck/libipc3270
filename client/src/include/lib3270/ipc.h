@@ -642,9 +642,11 @@
 			}
 
 			/// @brief Search
-			inline size_t find(const char * str, size_t pos = 0) const {
-				return session->find(str,pos);
-			}
+			size_t find(const char * str, size_t pos = 0) const;
+
+			/// @brief Compare contents.
+			int compare(int baddr, const char* s, int len = -1) const;
+			int compare(unsigned int row, unsigned int col, const char* s, int len = -1) const;
 
 			// Set contents.
 

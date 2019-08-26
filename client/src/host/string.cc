@@ -59,3 +59,26 @@ std::string TN3270::Host::toString(unsigned int row, unsigned int col, int len, 
 	return this->session->toString(row,col,len,lf);
 
 }
+
+/// @brief Search
+size_t TN3270::Host::find(const char * str, size_t pos) const {
+
+	this->session->waitForReady(this->timeout);
+	this->session->find(str,pos);
+
+}
+
+/// @brief Compare contents.
+int TN3270::Host::compare(int baddr, const char* s, int len) const {
+
+	this->session->waitForReady(this->timeout);
+	return this->session->compare(baddr, s, len);
+
+}
+
+int TN3270::Host::compare(unsigned int row, unsigned int col, const char* s, int len) const {
+
+	this->session->waitForReady(this->timeout);
+	return this->session->compare(row,col,s,len);
+
+}
