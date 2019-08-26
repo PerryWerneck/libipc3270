@@ -58,8 +58,6 @@
 		<Linker>
 			<Add option="`pkg-config --libs gtk+-3.0 lib3270 v3270 gio-2.0 dbus-1 dbus-glib-1`" />
 		</Linker>
-		<Unit filename="../common/src/include/lib3270/ipc-glib.h" />
-		<Unit filename="../common/src/include/lib3270/ipc.h" />
 		<Unit filename="src/core/constants.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -130,6 +128,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/include/config.h.in" />
+		<Unit filename="src/include/ipc-glib.h" />
 		<Unit filename="src/plugin/plugin.c">
 			<Option compilerVar="CC" />
 		</Unit>

@@ -103,6 +103,7 @@
 			<< "Connection state is " << toCharString(host.getConnectionState()) << std::endl
 			<< "Program message is " << toCharString(host.getProgramMessage()) << std::endl
 			<< "Luname is " << host.getLUName() << std::endl
+			<< "Screen size is " << host.getScreenWidth() << "x" << host.getScreenHeight() << " (" << host.getScreenLength() << ")"
 			<< std::endl;
 
 		if(host) {

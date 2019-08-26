@@ -110,7 +110,7 @@
 
 	unsigned short IPC::Session::getScreenWidth() const {
 
-		int value;
+		uint32_t value;
 		getProperty("width",value);
 		return (unsigned short) value;
 
@@ -118,7 +118,7 @@
 
 	unsigned short IPC::Session::getScreenHeight() const {
 
-		int value;
+		uint32_t value;
 		getProperty("height",value);
 		return (unsigned short) value;
 
@@ -126,7 +126,7 @@
 
 	unsigned short IPC::Session::getScreenLength() const {
 
-		int value;
+		uint32_t value;
 		getProperty("length",value);
 		return (unsigned short) value;
 

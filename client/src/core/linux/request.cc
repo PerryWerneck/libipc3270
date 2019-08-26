@@ -150,19 +150,19 @@
 		return *this;
 	}
 
-	static int getUIntValue(DBusMessageIter &iter) {
+	static unsigned int getUIntValue(DBusMessageIter &iter) {
 
 		if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_UINT32) {
 
 			dbus_uint32_t rc = 0;
 			dbus_message_iter_get_basic(&iter, &rc);
-			return (int) rc;
+			return (unsigned int) rc;
 
 		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_UINT16) {
 
 			dbus_uint16_t rc = 0;
 			dbus_message_iter_get_basic(&iter, &rc);
-			return (int) rc;
+			return (unsigned int) rc;
 
 		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_VARIANT) {
 
@@ -177,14 +177,15 @@
 
 					dbus_uint32_t rc = 0;
 					dbus_message_iter_get_basic(&sub, &rc);
-					return (int) rc;
+					return (unsigned int) rc;
 
 				} else if (current_type == DBUS_TYPE_UINT16) {
 					dbus_uint16_t rc = 0;
 					dbus_message_iter_get_basic(&sub, &rc);
-					return (int) rc;
+					return (unsigned int) rc;
 
 				}
+
 				dbus_message_iter_next(&sub);
 			}
 
@@ -217,6 +218,8 @@
 			dbus_message_iter_recurse(&iter, &sub);
 
 			while ((current_type = dbus_message_iter_get_arg_type(&sub)) != DBUS_TYPE_INVALID) {
+
+				debug("Current_type=",(char) current_type);
 
 				if (current_type == DBUS_TYPE_INT32) {
 
