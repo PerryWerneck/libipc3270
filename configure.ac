@@ -141,6 +141,11 @@ dnl ---------------------------------------------------------------------------
 
 AC_SUBST(PACKAGE_DESCRIPTION,"PW3270 IPC Module")
 
+AC_ARG_WITH([product-name], [AS_HELP_STRING([--with-product-name], [Set product name])], [ app_cv_product="$withval" ],[ app_cv_product="pw3270" ])
+
+AC_DEFINE_UNQUOTED(PRODUCT_NAME, $app_cv_product)
+AC_SUBST(PRODUCT_NAME,$app_cv_product)
+
 app_vrs_major=$(echo $VERSION | cut -d. -f1)
 app_vrs_minor=$(echo $VERSION | cut -d. -f2)
 
