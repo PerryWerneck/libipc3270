@@ -3,6 +3,8 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
+product_name=@PRODUCT_NAME@
+
 Name: @PACKAGE_NAME@-static
 Description: @PACKAGE_DESCRIPTION@ (static library)
 Version: @PACKAGE_VERSION@
