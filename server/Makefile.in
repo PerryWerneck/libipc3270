@@ -185,8 +185,7 @@ all: \
 	$(POTDIR)/$(MODULE_NAME).pot
 
 Release: \
-	$(BINRLS)/$(MODULE_NAME)@DLLEXT@ \
-	$(BINRLS)/$(PACKAGE_NAME)d@EXEEXT@
+	$(BINRLS)/$(MODULE_NAME)@DLLEXT@
 
 $(BINRLS)/$(MODULE_NAME)@DLLEXT@: \
 	$(foreach SRC, $(basename $(PLUGIN_SOURCES)), $(OBJRLS)/$(SRC).o) \

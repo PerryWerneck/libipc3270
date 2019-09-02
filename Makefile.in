@@ -76,15 +76,8 @@ install: \
 	install-plugin \
 	install-library
 
-install-plugin: \
-	$(BINRLS)/ipcserver@DLLEXT@
-
-	@$(MKDIR) \
-		$(DESTDIR)$(libdir)/pw3270-plugins
-
-	@$(INSTALL_PROGRAM) \
-		$(BINRLS)/ipcserver@DLLEXT@ \
-		$(DESTDIR)$(libdir)/pw3270-plugins
+install-plugin:
+	@$(MAKE) -C server DESTDIR=$(DESTDIR) install
 		
 
 install-library:
