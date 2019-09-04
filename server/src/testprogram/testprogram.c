@@ -95,28 +95,7 @@
  }
 
  static void session_changed(GtkWidget *widget, GtkWidget *window) {
-
-	g_autofree gchar	* title = NULL;
-	const gchar			* name = v3270_get_session_name(widget);
-
- 	g_message("Session name was changed to \"%s\"", name);
-
-	if(v3270_is_connected(widget)) {
-		const gchar *host = v3270_get_hostname(widget);
-
-		if(host && *host)
-			title = g_strdup_printf("%s - %s",name,host);
-		else
-			title = g_strdup_printf("%s",name);
-
-	} else {
-
-		title = g_strdup_printf("%s - Disconnected",name);
-	}
-
-	gtk_window_set_title(GTK_WINDOW(window),title);
-
-
+	gtk_window_set_title(GTK_WINDOW(window),v3270_get_session_name(widget));
  }
 
  static void activate(GtkApplication* app, G_GNUC_UNUSED gpointer user_data) {
