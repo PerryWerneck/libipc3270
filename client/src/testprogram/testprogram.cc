@@ -28,7 +28,7 @@
  */
 
 /**
- * @file src/lib3270++/testprogram/testprogram.cc
+ * @file client/src/testprogram/testprogram.cc
  *
  * @brief
  *
@@ -36,6 +36,7 @@
  *
  */
 
+ #include <config.h>
  #include <getopt.h>
  #include <cstdlib>
  #include <lib3270/ipc.h>
@@ -137,7 +138,7 @@
 
  int main(int argc, char **argv) {
 
-	const char * session = "pw3270:a";
+	const char * session = LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME) ":a";
 
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
