@@ -24,6 +24,8 @@
 # erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
 #
 
+PRODUCT_NAME=@PRODUCT_NAME@
+
 #---[ Paths ]----------------------------------------------------------------------------
 
 prefix=@prefix@

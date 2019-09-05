@@ -29,6 +29,7 @@
 MODULE_NAME=ipcserver
 SERVICE_NAME=ipc3270d
 PACKAGE_NAME=@PACKAGE_NAME@
+PRODUCT_NAME=@PRODUCT_NAME@
 
 CORE_SOURCES= \
 	$(wildcard src/core/*.c) \
@@ -218,11 +219,11 @@ install: \
 install-plugin: \
 	$(BINRLS)/$(MODULE_NAME)@DLLEXT@
 
-	@$(MKDIR) $(DESTDIR)$(libdir)/pw3270-plugins
+	@$(MKDIR) $(DESTDIR)$(libdir)/$(PRODUCT_NAME)-plugins
 
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/$(MODULE_NAME)@DLLEXT@ \
-		$(DESTDIR)$(libdir)/pw3270-plugins
+		$(DESTDIR)$(libdir)/$(PRODUCT_NAME)-plugins
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 
