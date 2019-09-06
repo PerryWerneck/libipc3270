@@ -22,6 +22,7 @@
 %define MINOR_VERSION 2
 
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
+%define _product %(i686-w64-mingw32-pkg-config --variable=product_name lib3270)
 
 %define __strip %{_mingw32_strip}
 %define __objdump %{_mingw32_objdump}
@@ -136,8 +137,8 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS README.md LICENSE
 %endif
 
-%dir %{_mingw32_libdir}/pw3270-plugins
-%{_mingw32_libdir}/pw3270-plugins/ipcserver.dll
+%dir %{_mingw32_libdir}/%{_product}-plugins
+%{_mingw32_libdir}/%{_product}-plugins/ipcserver.dll
 
 %files -n mingw32-libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
 %defattr(-,root,root)
