@@ -94,6 +94,9 @@ DEPENDS= \
 	Makefile \
 	$(BASEDIR)/common/src/include/*.h
 
+LDFLAGS= \
+	@LDFLAGS@
+
 CFLAGS= \
 	@CFLAGS@ \
 	-I$(BASEDIR)/server/src/include \
