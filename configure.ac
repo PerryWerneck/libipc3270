@@ -252,7 +252,7 @@ dnl ---------------------------------------------------------------------------
 dnl Check for LIBV3270
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES( [V3270], [libv3270 lib3270], AC_DEFINE(HAVE_V3270), AC_MSG_ERROR([V3270 not present.]))
+PKG_CHECK_MODULES( [V3270], [libv3270], AC_DEFINE(HAVE_V3270), AC_MSG_ERROR([V3270 not present.]))
 
 AC_SUBST(V3270_LIBS)
 AC_SUBST(V3270_CFLAGS)
