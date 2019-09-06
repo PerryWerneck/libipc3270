@@ -109,6 +109,7 @@ LIBS= \
 	@LIBICONV@ \
 	@INTL_LIBS@ \
 	@V3270_LIBS@ \
+	@LIB3270_LIBS@ \
 	@GTK_LIBS@ \
 	@GLIB_LIBS@
 
