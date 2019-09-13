@@ -105,7 +105,9 @@ CFLAGS= \
 	@LIB3270_CFLAGS@ \
 	@V3270_CFLAGS@ \
 	@GTK_CFLAGS@ \
-	@GLIB_CFLAGS@
+	@GLIB_CFLAGS@ \
+	@DBUS_CFLAGS@ \
+	@GDBUS_CFLAGS@
 
 LIBS= \
 	@LIBS@ \
@@ -114,7 +116,9 @@ LIBS= \
 	@V3270_LIBS@ \
 	@LIB3270_LIBS@ \
 	@GTK_LIBS@ \
-	@GLIB_LIBS@
+	@GLIB_LIBS@ \
+	@DBUS_LIBS@ \
+	@GDBUS_LIBS@
 
 #---[ Debug Rules ]----------------------------------------------------------------------
 
