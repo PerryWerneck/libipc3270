@@ -59,6 +59,39 @@
 	#include <gtk/gtk.h>
 	#include <lib3270.h>
 
+#if ! GLIB_CHECK_VERSION(2,44,0)
+
+	LIB3270_EXPORT void ipc_3270_autoptr_cleanup_generic_gfree(void *p);
+
+	#define g_autofree __attribute__((cleanup(ipc_3270_autoptr_cleanup_generic_gfree)))
+
+	static inline void ipc_3270_autoptr_cleanup_GError(GError **error) {
+		if(*error) {
+			g_error_free(*error);
+			*error = NULL;
+		}
+	}
+
+	static inline void ipc_3270_autoptr_cleanup_GObject(GObject **object) {
+		if(*object) {
+			g_object_unref(*object);
+			*object = NULL;
+		}
+	}
+
+	static inline void ipc_3270_autoptr_cleanup_GVariant(GVariant **variant) {
+		if(*variant) {
+			g_variant_unref(*variant);
+		}
+	}
+
+	#define IPC_3270_AUTOPTR_FUNC_NAME(TypeName) ipc_3270_autoptr_cleanup_##TypeName
+	#define g_autoptr(TypeName) TypeName * __attribute__ ((__cleanup__(IPC_3270_AUTOPTR_FUNC_NAME(TypeName))))
+
+#endif // ! GLIB(2,44,0)
+
+
+
 	G_BEGIN_DECLS
 
 	#define GLIB_TYPE_IPC3270_RESPONSE			(ipc3270Response_get_type ())
