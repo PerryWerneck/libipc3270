@@ -37,6 +37,7 @@
  */
 
  #include <ipc-client-internals.h>
+ #include <string>
  #include <cstring>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
@@ -47,6 +48,15 @@
 
 		if(!(id && *id)) {
 			return Local::getSessionInstance();
+		}
+
+		if(*id == ':') {
+
+			std::string name{LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME)};
+			name += id;
+
+			return IPC::getSessionInstance(name.c_str());
+
 		}
 
 		return IPC::getSessionInstance(id);
