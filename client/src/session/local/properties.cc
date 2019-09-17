@@ -132,7 +132,7 @@
 				if(!strcasecmp(name,intprop[ix].name)) {
 
 					errno = 0;
-					int value = intprop[ix].get(hSession);
+					bool value = (intprop[ix].get(hSession) != 0);
 
 					if(errno != 0) {
 						throw std::system_error(errno, std::system_category());
