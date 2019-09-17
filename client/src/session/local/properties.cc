@@ -37,6 +37,7 @@
  */
 
  #include "private.h"
+ #include <lib3270/ipc.h>
  #include <lib3270/properties.h>
  #include <lib3270/toggle.h>
  #include <cstring>
@@ -44,6 +45,93 @@
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
+
+	Property * Local::Session::getProperty(const char *name) const {
+
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+
+		// Check for integer properties.
+		{
+			const LIB3270_INT_PROPERTY * intprop = lib3270_get_int_properties_list();
+			for(size_t ix = 0; intprop[ix].name; ix++) {
+
+				if(!strcasecmp(name,intprop[ix].name)) {
+
+					errno = 0;
+					int value = intprop[ix].get(hSession);
+
+					if(errno != 0) {
+						throw std::system_error(errno, std::system_category());
+					}
+
+					return TN3270::Property::create(value);
+
+				}
+
+			}
+		}
+
+		// Check for unsigned int properties
+		{
+			const LIB3270_UINT_PROPERTY * intprop = lib3270_get_unsigned_properties_list();
+			for(size_t ix = 0; intprop[ix].name; ix++) {
+
+				if(!strcasecmp(name,intprop[ix].name)) {
+
+					errno = 0;
+					unsigned int value = intprop[ix].get(hSession);
+
+					if(errno != 0) {
+						throw std::system_error(errno, std::system_category());
+					}
+
+					return Property::create(value);
+
+				}
+
+			}
+
+		}
+
+		// Check for string properties
+		{
+			const LIB3270_STRING_PROPERTY * strprop = lib3270_get_string_properties_list();
+
+			for(size_t ix = 0; strprop[ix].name; ix++) {
+
+				if(!strcasecmp(name,strprop[ix].name)) {
+
+					// Found it!
+					const char * str = strprop[ix].get(hSession);
+
+					if(str) {
+						return Property::create(str);
+					}
+
+					throw std::system_error(errno, std::system_category());
+
+				}
+
+			}
+
+		}
+
+		// Check for boolean properties
+		{
+			LIB3270_TOGGLE toggle = lib3270_get_toggle_id(name);
+			if(toggle != (LIB3270_TOGGLE) -1) {
+
+				// Is a Tn3270 toggle, get it!
+				return Property::create((bool) lib3270_get_toggle(hSession,toggle));
+
+			}
+
+		}
+
+		// Not found!
+		throw std::system_error(ENOENT, std::system_category());
+
+	}
 
 	void Local::Session::getProperty(const char *name, int &value) const {
 

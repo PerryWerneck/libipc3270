@@ -92,6 +92,10 @@
 
 	try {
 
+		auto version = host["version"];
+		cout << "Property[version]: " << version->toString() << endl;
+		delete version;
+
 		cout
 			<< "Version: " << host.getVersion()
 			<< "\tRevision: " << host.getRevision()
@@ -136,9 +140,28 @@
 
  }
 
+ TN3270::Property * chk() {
+
+	class Test : public TN3270::Property {
+	private:
+		int val;
+
+	public:
+		Test(int value) : TN3270::Property(TN3270::Property::Uint32) {
+			val = value;
+		}
+
+		virtual ~Test() { }
+	};
+
+	return new Test{10};
+
+ }
+
  int main(int argc, char **argv) {
 
-	const char * session = LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME) ":a";
+
+	const char * session = ""; // ":a";
 
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"

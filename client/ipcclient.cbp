@@ -45,6 +45,7 @@
 		<Unit filename="src/core/constants.cc" />
 		<Unit filename="src/core/events.cc" />
 		<Unit filename="src/core/linux/request.cc" />
+		<Unit filename="src/core/property.cc" />
 		<Unit filename="src/core/session.cc" />
 		<Unit filename="src/core/windows/pop.cc" />
 		<Unit filename="src/core/windows/push.cc" />
@@ -55,6 +56,7 @@
 		<Unit filename="src/host/init.cc" />
 		<Unit filename="src/host/pop.cc" />
 		<Unit filename="src/host/private.h" />
+		<Unit filename="src/host/properties.cc" />
 		<Unit filename="src/host/push.cc" />
 		<Unit filename="src/host/states.cc" />
 		<Unit filename="src/host/stream.cc" />

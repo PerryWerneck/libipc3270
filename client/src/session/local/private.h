@@ -113,6 +113,7 @@
 				SSLState getSSLState() const override;
 
 				// Properties.
+				Property * getProperty(const char *name) const override;
 				void getProperty(const char *name, int &value) const override;
 				void getProperty(const char *name, unsigned int &value) const override;
 				void getProperty(const char *name, std::string &value) const override;

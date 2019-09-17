@@ -401,6 +401,9 @@
 
 	}
 
+	Property * Session::getProperty(const char *name) const {
+		throw std::system_error(ENOTSUP, std::system_category());
+	}
 
  }
 

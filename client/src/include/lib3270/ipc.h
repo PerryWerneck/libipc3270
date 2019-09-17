@@ -241,6 +241,58 @@
 			KYBD_UNLOCK,	///< @brief Unlock the keyboard if it was locked by operator error.
 		};
 
+		/// @brief Dynamic Data type
+		class TN3270_PUBLIC Property {
+		public:
+
+			/// @brief IPC Data type.
+			enum Type : uint8_t {
+				String	= 's',
+				Boolean	= 'b',
+				Uchar	= 'y',
+				Int16	= 'n',
+				Uint16	= 'q',
+				Int32	= 'i',
+				Int32x	= 'h',
+				Uint32	= 'u',
+				Int64	= 'x',
+				Uint64	= 't'
+			};
+
+		private:
+			Type type;
+
+		protected:
+			Property(Type type);
+
+		public:
+			inline bool operator==(Type type) const noexcept {
+				return this->type == type;
+			}
+
+			static Property * create(const char *str);
+			static Property * create(const std::string &str);
+			static Property * create(const int value);
+			static Property * create(const unsigned int value);
+			static Property * create(const bool value);
+
+			inline Type getType() const {
+				return this->type;
+			}
+
+			inline operator Type() const {
+				return this->type;
+			}
+
+			virtual std::string toString() const;
+			virtual int32_t toInt32() const;
+			virtual uint32_t toUint32() const;
+			virtual bool toBool() const;
+
+			virtual ~Property();
+
+		};
+
 		/// @brief TN3270 Session.
 		class TN3270_PUBLIC Session {
 		protected:
@@ -351,6 +403,7 @@
 			LIB3270_KEYBOARD_LOCK_STATE input(const std::string &str, const char control_char = '@');
 
 			// Properties.
+			virtual Property * getProperty(const char *name) const;
 			virtual void getProperty(const char *name, int &value) const = 0;
 			virtual void getProperty(const char *name, unsigned int &value) const = 0;
 			virtual void getProperty(const char *name, std::string &value) const = 0;
@@ -582,6 +635,7 @@
 
 
 			// Get properties
+			Property * operator[](const char *name) const;
 
 			/// @brief Get lib3270 version.
 			inline std::string getVersion() const {
