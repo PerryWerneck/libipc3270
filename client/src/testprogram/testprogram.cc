@@ -96,6 +96,10 @@
 		cout << "Property[version]: " << version->toString() << endl;
 		delete version;
 
+		auto connected = host["connected"];
+		cout << "Property[connected]: " << connected->toString() << endl;
+		delete connected;
+
 		cout
 			<< "Version: " << host.getVersion()
 			<< "\tRevision: " << host.getRevision()

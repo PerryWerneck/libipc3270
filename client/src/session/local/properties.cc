@@ -126,6 +126,25 @@
 
 			}
 
+			const LIB3270_INT_PROPERTY * intprop = lib3270_get_boolean_properties_list();
+			for(size_t ix = 0; intprop[ix].name; ix++) {
+
+				if(!strcasecmp(name,intprop[ix].name)) {
+
+					errno = 0;
+					int value = intprop[ix].get(hSession);
+
+					if(errno != 0) {
+						throw std::system_error(errno, std::system_category());
+					}
+
+					return TN3270::Property::create(value);
+
+				}
+
+			}
+
+
 		}
 
 		// Not found!
@@ -165,12 +184,14 @@
 
 				std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
 
+				errno = 0;
 				value = intprop[ix].get(hSession);
 
-				if(value < 0 && errno != 0) {
-					throw std::system_error(errno, std::system_category());
+				if(errno == 0) {
+					return;
 				}
 
+				throw std::system_error(errno, std::system_category());
 
 			}
 
