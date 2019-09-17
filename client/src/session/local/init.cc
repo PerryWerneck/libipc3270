@@ -111,10 +111,15 @@
 		HKEY hKey = 0;
 
 		static const char * keys[] = {
+
+			"Software\\" LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),
+			"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\"  LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME),
+
 #ifdef LIB3270_NAME
 			"Software\\" LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME),
 			"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\"  LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME),
 #endif
+
 			"Software\\pw3270",
 			"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\pw3270"
 		};
