@@ -40,7 +40,7 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-TN3270::Property * TN3270::Host::operator[](const char *name) const {
+TN3270::Property * TN3270::Host::getProperty(const char *name) const {
 
 	if(!this->session)
 		throw std::system_error(ENODATA, std::system_category());

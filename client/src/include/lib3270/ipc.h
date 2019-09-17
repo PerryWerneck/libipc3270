@@ -635,7 +635,11 @@
 
 
 			// Get properties
-			Property * operator[](const char *name) const;
+			Property * getProperty(const char *name) const;
+
+			inline Property * operator[](const char *name) const {
+				return getProperty(name);
+			}
 
 			/// @brief Get lib3270 version.
 			inline std::string getVersion() const {
