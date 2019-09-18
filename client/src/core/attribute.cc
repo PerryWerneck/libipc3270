@@ -47,10 +47,39 @@
 
  namespace TN3270 {
 
+	Attribute::Attribute(H3270 *hSession, Type type, void * worker) {
+
+		this->hSession	= hSession;
+		this->type		= type;
+		this->worker	= worker;
+
+		get.asString = [](const Attribute &attr, const void *worker) {
+
+			throw std::system_error(ENOTSUP, std::system_category());
+			return "";
+		};
+
+		get.asInt32 = [](const Attribute &attr, const void *worker) {
+			throw std::system_error(ENOTSUP, std::system_category());
+			return (int32_t) 0;
+		};
+
+		get.asUint32 = [](const Attribute &attr, const void *worker) {
+			return (uint32_t) attr.get.asInt32(attr, worker);
+		};
+
+		get.asBoolean = [](const Attribute &attr, const void *worker) {
+			return (bool) attr.get.asInt32(attr, worker) != 0;
+		};
+
+	}
+
 	Attribute::~Attribute() {
 	}
 
+	/*
 	std::string Attribute::getString() const {
+		printf("*************** %s\n",__FUNCTION__);
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 
@@ -65,170 +94,6 @@
 	bool Attribute::getBool() const {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
-
-
-	/*
-	class StringProperty : public Property, std::string {
-	public:
-		StringProperty(const char *str) : Property(Property::String), std::string(str) {
-		}
-
-		StringProperty(const std::string &str) : Property(Property::String), std::string(str) {
-		}
-
-		std::string toString() const override {
-			return std::string(this->c_str());
-		}
-
-		int32_t toInt32() const override {
-			return (int32_t) atoi(this->c_str());
-		}
-
-		uint32_t toUint32() const override {
-			return (uint32_t) atoi(this->c_str());
-		}
-
-		bool toBool() const override {
-			return atoi(this->c_str()) != 0;
-		}
-
-	};
-
-	Property::Property(Property::Type type) {
-		this->type = type;
-
-	}
-
-	Property::~Property() {
-	}
-
-	std::string Property::toString() const {
-		throw runtime_error("The value can't be converted to string");
-	}
-
-	int32_t Property::toInt32() const {
-		throw runtime_error("The value can't be converted to a signed integer");
-	}
-
-	uint32_t Property::toUint32() const {
-		throw runtime_error("The value can't be converted to an unsigned integer");
-	}
-
-	bool Property::toBool() const {
-		throw runtime_error("The value can't be converted to boolean");
-	}
-
-
-	Property * Property::create(const char *str) {
-		return new StringProperty(str);
-	}
-
-	Property * Property::create(const std::string &str) {
-		return new StringProperty(str);
-	}
-
-	Property * Property::create(const int value) {
-
-		class Value : public Property {
-		private:
-			int32_t value;
-
-		public:
-			Value(int value) : Property(Property::Int32) {
-				this->value = (int32_t) value;
-			}
-
-			std::string toString() const override {
-				return std::to_string(value);
-			}
-
-			int32_t toInt32() const override {
-				return (int32_t) value;
-			}
-
-			uint32_t toUint32() const override {
-				return (uint32_t) value;
-			}
-
-			bool toBool() const override {
-				return value != 0;
-			}
-
-		};
-
-		return new Value(value);
-
-	}
-
-	Property * Property::create(const unsigned int value) {
-
-		class Value : public Property {
-		private:
-			uint32_t value;
-
-		public:
-			Value(unsigned int value) : Property(Property::Uint32) {
-				this->value = (uint32_t) value;
-			}
-
-			std::string toString() const override {
-				return std::to_string(value);
-			}
-
-			int32_t toInt32() const override {
-				return (int32_t) value;
-			}
-
-			uint32_t toUint32() const override {
-				return (uint32_t) value;
-			}
-
-			bool toBool() const override {
-				return value != 0;
-			}
-
-		};
-
-		return new Value(value);
-
-	}
-
-	Property * Property::create(const bool value) {
-
-		class Value : public Property {
-		private:
-			bool value;
-
-		public:
-			Value(bool value) : Property(Property::Boolean) {
-				this->value = value;
-			}
-
-			std::string toString() const override {
-				return std::to_string(value);
-			}
-
-			int32_t toInt32() const override {
-				return (int32_t) value;
-			}
-
-			uint32_t toUint32() const override {
-				return (uint32_t) value;
-			}
-
-			bool toBool() const override {
-				return value;
-			}
-
-		};
-
-		return new Value(value);
-
-	}
 	*/
 
-
  }
-
-
-

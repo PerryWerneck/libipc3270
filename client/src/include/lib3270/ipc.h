@@ -259,22 +259,47 @@
 				Uint64	= 't'
 			};
 
-		private:
-			Type type;
+			Type 	  type;			///< @brief Data type.
+			H3270	* hSession;		///< @brief TN3270 Session which "owns" this attribute.
+			void	* worker;		///< @brief Internal worker.
 
 		protected:
-			Attribute(Type type) {
-				this->type = type;
-			}
+
+			struct {
+				std::function <std::string (const Attribute & attr, const void *worker)> asString;
+				std::function <int32_t (const Attribute & attr, const void *worker)> asInt32;
+				std::function <uint32_t (const Attribute & attr, const void *worker)> asUint32;
+				std::function <bool (const Attribute & attr, const void *worker)> asBoolean;
+			} get;
+
+			Attribute(H3270 *hSession, Type type, void * worker);
 
 		public:
+			~Attribute();
 
-			virtual std::string getString() const;
-			virtual int32_t getInt32() const;
-			virtual uint32_t getUint32() const;
-			virtual bool getBool() const;
+			inline const H3270 * getTN3270Session() const {
+				return this->hSession;
+			}
 
-			virtual ~Attribute();
+			inline std::string getString() const {
+				return get.asString(*this,worker);
+			}
+
+			inline int32_t getInt32() const {
+				return get.asInt32(*this,worker);
+			}
+
+			inline uint32_t getUint32() const {
+				return get.asUint32(*this,worker);
+			}
+
+			inline bool getBoolean() const {
+				return get.asBoolean(*this,worker);
+			}
+
+			inline std::string toString() const {
+				return get.asString(*this, worker);
+			}
 
 			inline bool operator==(Type type) const noexcept {
 				return this->type == type;
@@ -401,7 +426,7 @@
 			LIB3270_KEYBOARD_LOCK_STATE input(const std::string &str, const char control_char = '@');
 
 			// Attributes
-			virtual Attribute * getAttribute(const char *name) const;
+			virtual Attribute getAttribute(const char *name) const;
 
 			virtual void getAttribute(const char *name, int &value) const;
 			virtual void getAttribute(const char *name, unsigned int &value) const;
@@ -635,9 +660,9 @@
 
 
 			// Get properties
-			Attribute * getAttribute(const char *name) const;
+			Attribute getAttribute(const char *name) const;
 
-			inline Attribute * operator[](const char *name) const {
+			inline Attribute operator[](const char *name) const {
 				return getAttribute(name);
 			}
 
@@ -829,6 +854,10 @@
         return stream;
 	}
 
+	inline std::ostream & operator<<(std::ostream &stream, const TN3270::Attribute& attribute) {
+        stream << attribute.toString();
+        return stream;
+	}
 
 #endif
 

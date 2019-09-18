@@ -113,7 +113,7 @@
 				SSLState getSSLState() const override;
 
 				// Attributes
-				Attribute * getAttribute(const char *name) const override;
+				Attribute getAttribute(const char *name) const override;
 
 				std::string getVersion() const override;
 				std::string getRevision() const override;

@@ -46,143 +46,141 @@
 
  namespace TN3270 {
 
-	Attribute * Local::Session::getAttribute(const char *name) const {
+	Attribute Local::Session::getAttribute(const char *name) const {
 
 		// Signed int attribute
 		class IntAttribute : public Attribute {
-		private:
-			H3270 						* hSession;
-			const LIB3270_INT_PROPERTY	* descriptor;
-
 		public:
-			IntAttribute(H3270 *hSession, const LIB3270_INT_PROPERTY *descriptor) : Attribute(Attribute::Int32) {
-				this->hSession = hSession;
-				this->descriptor = descriptor;
-			}
+			IntAttribute(H3270 *hSession, const LIB3270_INT_PROPERTY *worker) : Attribute(hSession, Attribute::Int32, (void *) worker) {
 
-			std::string getString() const override {
-				return std::to_string(getInt32());
-			}
+				get.asString = [](const Attribute & attr, const void *worker) {
+					return std::to_string(attr.getInt32());
+				};
 
-			int32_t getInt32() const override {
+				get.asInt32 = [](const Attribute & attr, const void *worker) {
 
-				errno = 0;
-				int value = descriptor->get(hSession);
+					errno = 0;
+					int value = ((const LIB3270_INT_PROPERTY *) worker)->get(attr.getTN3270Session());
 
-				if(errno != 0) {
-					throw std::system_error(errno, std::system_category());
-				}
+					if(errno != 0) {
+						throw std::system_error(errno, std::system_category());
+					}
 
-				return ((int32_t) value) != 0;
+					return (int32_t) value;
 
-			}
+				};
 
-			uint32_t getUint32() const override {
-				return (uint32_t) descriptor->get(this->hSession);
-			}
+				get.asUint32 = [](const Attribute & attr, const void *worker) {
+					return (uint32_t) attr.getInt32();
+				};
 
-			bool getBool() const override {
-				return getInt32() != 0;
+				get.asBoolean = [](const Attribute & attr, const void *worker) {
+					return (attr.getInt32() != 0);
+				};
+
 			}
 
 		};
 
 		// Unsigned int attribute
 		class UnsignedIntAttribute : public Attribute {
-		private:
-			H3270 						* hSession;
-			const LIB3270_UINT_PROPERTY	* descriptor;
-
 		public:
-			UnsignedIntAttribute(H3270 *hSession, const LIB3270_UINT_PROPERTY *descriptor) : Attribute(Attribute::Uint32) {
-				this->hSession = hSession;
-				this->descriptor = descriptor;
-			}
+			UnsignedIntAttribute(H3270 *hSession, const LIB3270_UINT_PROPERTY *worker) : Attribute(hSession, Attribute::Uint32, (void *) worker) {
 
-			std::string getString() const override {
-				return std::to_string(getInt32());
-			}
+				get.asString = [](const Attribute & attr, const void *worker) {
+					return std::to_string(attr.getUint32());
+				};
 
-			int32_t getInt32() const override {
+				get.asInt32 = [](const Attribute & attr, const void *worker) {
+					return (int32_t) attr.getUint32();
+				};
 
-				return (int32_t) getUint32();
-			}
+				get.asUint32 = [](const Attribute & attr, const void *worker) {
 
-			uint32_t getUint32() const override {
+					errno = 0;
+					unsigned int value = ((const LIB3270_UINT_PROPERTY *) worker)->get(attr.getTN3270Session());
 
-				errno = 0;
-				unsigned int value = descriptor->get(hSession);
+					if(errno != 0) {
+						throw std::system_error(errno, std::system_category());
+					}
 
-				if(errno != 0) {
-					throw std::system_error(errno, std::system_category());
-				}
+					return (uint32_t) value;
 
-				return ((uint32_t) value) != 0;
-			}
+				};
 
-			bool getBool() const override {
-				return getUint32() != 0;
+				get.asBoolean = [](const Attribute & attr, const void *worker) {
+					return (attr.getUint32() != 0);
+				};
+
 			}
 
 		};
 
 		// String attribute
 		class StringAttribute : public Attribute {
-		private:
-			H3270 							* hSession;
-			const LIB3270_STRING_PROPERTY	* descriptor;
-
 		public:
-			StringAttribute(H3270 *hSession, const LIB3270_STRING_PROPERTY *descriptor) : Attribute(Attribute::String) {
-				this->hSession = hSession;
-				this->descriptor = descriptor;
-			}
+			StringAttribute(H3270 *hSession, const LIB3270_STRING_PROPERTY *worker) : Attribute(hSession, Attribute::String, (void *) worker) {
 
-			std::string getString() const override {
+				get.asString = [](const Attribute & attr, const void *worker) {
 
-				const char * str = descriptor->get(hSession);
+					const char * str = ((const LIB3270_STRING_PROPERTY *) worker)->get(attr.getTN3270Session());
 
-				if(str) {
-					return string(str);
-				}
+					if(str) {
+						return string(str);
+					}
 
-				throw std::system_error(errno, std::system_category());
+					throw std::system_error(errno, std::system_category());
 
-			}
+				};
 
-			int32_t getInt32() const override {
-				return (int32_t) atoi(getString().c_str());
-			}
+				get.asInt32 = [](const Attribute & attr, const void *worker) {
 
-			uint32_t getUint32() const override {
-				return (uint32_t) atol(getString().c_str());
-			}
+					const char * str = ((const LIB3270_STRING_PROPERTY *) worker)->get(attr.getTN3270Session());
 
-			bool getBool() const override {
-				return getUint32() != 0;
+					if(str) {
+						return (int32_t) atoi(str);
+					}
+
+					throw std::system_error(errno, std::system_category());
+				};
+
+
 			}
 
 		};
 
 		// Boolean attribute
 		class BooleanAttribute : public Attribute {
-			H3270 						* hSession;
-			const LIB3270_INT_PROPERTY	* descriptor;
-
 		public:
-			BooleanAttribute(H3270 *hSession, const LIB3270_INT_PROPERTY *descriptor) : Attribute(Attribute::Boolean) {
-				this->hSession = hSession;
-				this->descriptor = descriptor;
+			BooleanAttribute(H3270 *hSession, const LIB3270_INT_PROPERTY *worker) : Attribute(hSession, Attribute::Boolean, (void *) worker) {
+
+				get.asString = [](const Attribute & attr, const void *worker) {
+					return attr.getBoolean() ? "true" : "false";
+				};
+
+				get.asInt32 = [](const Attribute & attr, const void *worker) {
+
+					errno = 0;
+					int value = ((const LIB3270_INT_PROPERTY *) worker)->get(attr.getTN3270Session());
+
+					if(errno != 0) {
+						throw std::system_error(errno, std::system_category());
+					}
+
+					return (int32_t) value;
+
+				};
+
 			}
 
+			/*
 			std::string getString() const override {
-				return std::to_string(getInt32());
 			}
 
 			int32_t getInt32() const override {
 
 				errno = 0;
-				int value = descriptor->get(hSession);
+				int value = ((const LIB3270_INT_PROPERTY *) worker)->get(hSession);
 
 				if(errno != 0) {
 					throw std::system_error(errno, std::system_category());
@@ -199,35 +197,7 @@
 			bool getBool() const override {
 				return getInt32() != 0;
 			}
-
-		};
-
-		// Toogle attribute
-		class ToggleAttribute : public Attribute {
-			H3270 			* hSession;
-			LIB3270_TOGGLE	  toggle;
-
-		public:
-			ToggleAttribute(H3270 *hSession, const LIB3270_TOGGLE toggle) : Attribute(Attribute::Boolean) {
-				this->hSession = hSession;
-				this->toggle = toggle;
-			}
-
-			std::string getString() const override {
-				return (lib3270_get_toggle(hSession, toggle) ? "1" : "0");
-			}
-
-			int32_t getInt32() const override {
-				return (int32_t) lib3270_get_toggle(hSession, toggle);
-			}
-
-			uint32_t getUint32() const override {
-				return (uint32_t) lib3270_get_toggle(hSession, toggle);
-			}
-
-			bool getBool() const override {
-				return (lib3270_get_toggle(hSession, toggle) != 0);
-			}
+			*/
 
 		};
 
@@ -239,7 +209,7 @@
 			for(size_t ix = 0; intprop[ix].name; ix++) {
 
 				if(!strcasecmp(name,intprop[ix].name)) {
-					return new IntAttribute(hSession,&intprop[ix]);
+					return IntAttribute(hSession,&intprop[ix]);
 				}
 
 			}
@@ -251,7 +221,7 @@
 			for(size_t ix = 0; intprop[ix].name; ix++) {
 
 				if(!strcasecmp(name,intprop[ix].name)) {
-					return new UnsignedIntAttribute(hSession,&intprop[ix]);
+					return UnsignedIntAttribute(hSession,&intprop[ix]);
 				}
 
 			}
@@ -265,7 +235,7 @@
 			for(size_t ix = 0; strprop[ix].name; ix++) {
 
 				if(!strcasecmp(name,strprop[ix].name)) {
-					return new StringAttribute(hSession,&strprop[ix]);
+					return StringAttribute(hSession,&strprop[ix]);
 				}
 
 			}
@@ -278,7 +248,7 @@
 			if(toggle != (LIB3270_TOGGLE) -1) {
 
 				// Is a Tn3270 toggle, get it!
-				return new ToggleAttribute(hSession,toggle);
+				throw std::system_error(ENOTSUP, std::system_category());
 
 			}
 
@@ -288,7 +258,7 @@
 				if(!strcasecmp(name,intprop[ix].name)) {
 
 					if(!strcasecmp(name,intprop[ix].name)) {
-						return new BooleanAttribute(hSession,&intprop[ix]);
+						return BooleanAttribute(hSession,&intprop[ix]);
 					}
 
 				}

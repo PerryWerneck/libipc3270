@@ -409,84 +409,24 @@
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 
-	Attribute * Session::getAttribute(const char *name) const {
+	Attribute Session::getAttribute(const char *name) const {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 
 	void Session::getAttribute(const char *name, int &value) const {
-
-		Attribute *attr = getAttribute(name);
-
-		try {
-
-			value = attr->getInt32();
-
-		} catch(...) {
-
-			delete attr;
-			throw;
-
-		}
-
-		delete attr;
-
+		value = getAttribute(name).getInt32();
 	}
 
 	void Session::getAttribute(const char *name, unsigned int &value) const {
-
-		Attribute *attr = getAttribute(name);
-
-		try {
-
-			value = attr->getUint32();
-
-		} catch(...) {
-
-			delete attr;
-			throw;
-
-		}
-
-		delete attr;
-
+		value = getAttribute(name).getUint32();
 	}
 
 	void Session::getAttribute(const char *name, std::string &value) const {
-
-		Attribute *attr = getAttribute(name);
-
-		try {
-
-			value.assign(attr->getString().c_str());
-
-		} catch(...) {
-
-			delete attr;
-			throw;
-
-		}
-
-		delete attr;
-
+		value.assign(value = getAttribute(name).getString().c_str());
 	}
 
 	void Session::getAttribute(const char *name, bool &value) const {
-
-		Attribute *attr = getAttribute(name);
-
-		try {
-
-			value = attr->getBool();
-
-		} catch(...) {
-
-			delete attr;
-			throw;
-
-		}
-
-		delete attr;
-
+		value = getAttribute(name).getBoolean();
 	}
 
 

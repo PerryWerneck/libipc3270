@@ -92,19 +92,13 @@
 
 	try {
 
-		auto version = host["version"];
-		cout << "Property[version]: " << version->getString() << endl;
-		delete version;
-
-		auto connected = host["connected"];
-		cout << "Property[connected]: " << connected->getString() << endl;
-		delete connected;
-
 		cout
-			<< "Version: " << host.getVersion()
-			<< "\tRevision: " << host.getRevision()
+			<< "Version: " << host["version"]
+			<< "\tRevision: " << host["Revision"]
+			<< "\tConnected: " << host["Connected"]
 			<< std::endl;
 
+		/*
 		host.connect(nullptr);
 
 		cout
@@ -135,6 +129,8 @@
 		host.wait(10);
 
 		host.disconnect();
+
+		*/
 
 	} catch(const std::exception &e) {
 
@@ -172,6 +168,7 @@
 	}
 
 	cout << "Session: " << session << endl;
+
 	testHost(session);
 
 	return 0;
