@@ -40,11 +40,11 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-TN3270::Property * TN3270::Host::getProperty(const char *name) const {
+TN3270::Attribute * TN3270::Host::getAttribute(const char *name) const {
 
 	if(!this->session)
 		throw std::system_error(ENODATA, std::system_category());
 
-	return this->session->getProperty(name);
+	return this->session->getAttribute(name);
 
 }

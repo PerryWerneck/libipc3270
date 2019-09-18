@@ -242,7 +242,7 @@
 		};
 
 		/// @brief Dynamic Data type
-		class TN3270_PUBLIC Property {
+		class TN3270_PUBLIC Attribute {
 		public:
 
 			/// @brief IPC Data type.
@@ -263,18 +263,22 @@
 			Type type;
 
 		protected:
-			Property(Type type);
+			Attribute(Type type) {
+				this->type = type;
+			}
 
 		public:
+
+			virtual std::string getString() const;
+			virtual int32_t getInt32() const;
+			virtual uint32_t getUint32() const;
+			virtual bool getBool() const;
+
+			virtual ~Attribute();
+
 			inline bool operator==(Type type) const noexcept {
 				return this->type == type;
 			}
-
-			static Property * create(const char *str);
-			static Property * create(const std::string &str);
-			static Property * create(const int value);
-			static Property * create(const unsigned int value);
-			static Property * create(const bool value);
 
 			inline Type getType() const {
 				return this->type;
@@ -284,12 +288,6 @@
 				return this->type;
 			}
 
-			virtual std::string toString() const;
-			virtual int32_t toInt32() const;
-			virtual uint32_t toUint32() const;
-			virtual bool toBool() const;
-
-			virtual ~Property();
 
 		};
 
@@ -402,14 +400,16 @@
 			///
 			LIB3270_KEYBOARD_LOCK_STATE input(const std::string &str, const char control_char = '@');
 
-			// Properties.
-			virtual Property * getProperty(const char *name) const;
-			virtual void getProperty(const char *name, int &value) const = 0;
-			virtual void getProperty(const char *name, unsigned int &value) const = 0;
-			virtual void getProperty(const char *name, std::string &value) const = 0;
-			virtual void getProperty(const char *name, bool &value) const = 0;
-			virtual void setProperty(const char *name, const int value) = 0;
-			virtual void setProperty(const char *name, const char *value) = 0;
+			// Attributes
+			virtual Attribute * getAttribute(const char *name) const;
+
+			virtual void getAttribute(const char *name, int &value) const;
+			virtual void getAttribute(const char *name, unsigned int &value) const;
+			virtual void getAttribute(const char *name, std::string &value) const;
+			virtual void getAttribute(const char *name, bool &value) const;
+
+			virtual void setAttribute(const char *name, const int value);
+			virtual void setAttribute(const char *name, const char *value);
 
 			/// @brief Get the lib3270 version string.
 			virtual std::string getVersion() const = 0;
@@ -635,10 +635,10 @@
 
 
 			// Get properties
-			Property * getProperty(const char *name) const;
+			Attribute * getAttribute(const char *name) const;
 
-			inline Property * operator[](const char *name) const {
-				return getProperty(name);
+			inline Attribute * operator[](const char *name) const {
+				return getAttribute(name);
 			}
 
 			/// @brief Get lib3270 version.

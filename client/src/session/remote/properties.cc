@@ -45,7 +45,7 @@
 
  namespace TN3270 {
 
-	void IPC::Session::getProperty(const char *name, int &value) const {
+	void IPC::Session::getAttribute(const char *name, int &value) const {
 
 		Request(*this,false,name)
 			.call()
@@ -53,7 +53,7 @@
 
 	}
 
-	void IPC::Session::getProperty(const char *name, unsigned int &value) const {
+	void IPC::Session::getAttribute(const char *name, unsigned int &value) const {
 
 		Request(*this,false,name)
 			.call()
@@ -61,7 +61,7 @@
 
 	}
 
-	void IPC::Session::getProperty(const char *name, std::string &value) const {
+	void IPC::Session::getAttribute(const char *name, std::string &value) const {
 
 		Request(*this,false,name)
 			.call()
@@ -69,11 +69,11 @@
 
 	}
 
-	void IPC::Session::getProperty(const char *name, bool &value) const {
+	void IPC::Session::getAttribute(const char *name, bool &value) const {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 
-	void IPC::Session::setProperty(const char *name, const int value) {
+	void IPC::Session::setAttribute(const char *name, const int value) {
 
 		int32_t rc;
 
@@ -88,7 +88,7 @@
 
 	}
 
-	void IPC::Session::setProperty(const char *name, const char *value) {
+	void IPC::Session::setAttribute(const char *name, const char *value) {
 
 		int32_t rc;
 
@@ -111,7 +111,7 @@
 	unsigned short IPC::Session::getScreenWidth() const {
 
 		uint32_t value;
-		getProperty("width",value);
+		getAttribute("width",value);
 		return (unsigned short) value;
 
 	}
@@ -119,7 +119,7 @@
 	unsigned short IPC::Session::getScreenHeight() const {
 
 		uint32_t value;
-		getProperty("height",value);
+		getAttribute("height",value);
 		return (unsigned short) value;
 
 	}
@@ -127,17 +127,17 @@
 	unsigned short IPC::Session::getScreenLength() const {
 
 		uint32_t value;
-		getProperty("length",value);
+		getAttribute("length",value);
 		return (unsigned short) value;
 
 	}
 
 	void IPC::Session::setUnlockDelay(unsigned short delay) {
-		setProperty("unlock_delay", (uint32_t) delay);
+		setAttribute("unlock_delay", (uint32_t) delay);
 	}
 
 	void IPC::Session::setLockOnOperatorError(bool lock) {
-		setProperty("oerrlock", (uint32_t) lock);
+		setAttribute("oerrlock", (uint32_t) lock);
 	}
 
 	unsigned short IPC::Session::setCursor(int addr) {
@@ -176,7 +176,7 @@
 	unsigned short IPC::Session::getCursorAddress() {
 
 		int32_t address;
-		getProperty("cursor_address",address);
+		getAttribute("cursor_address",address);
 		return (unsigned short) address;
 
 	}
@@ -184,7 +184,7 @@
 	std::string IPC::Session::getVersion() const {
 
 		string rc;
-		getProperty("version",rc);
+		getAttribute("version",rc);
 		return rc;
 
 	}
@@ -192,7 +192,7 @@
 	std::string IPC::Session::getRevision() const {
 
 		string rc;
-		getProperty("revision",rc);
+		getAttribute("revision",rc);
 		return rc;
 
 	}
@@ -200,7 +200,7 @@
 	std::string IPC::Session::getLUName() const {
 
 		string rc;
-		getProperty("luname",rc);
+		getAttribute("luname",rc);
 		return rc;
 
 	}
@@ -208,14 +208,14 @@
 	std::string IPC::Session::getHostURL() const {
 
 		std::string value;
-		getProperty("url",value);
+		getAttribute("url",value);
 		return value;
 
 	}
 
 	void IPC::Session::setHostURL(const char *url) {
 
-		setProperty("url",url);
+		setAttribute("url",url);
 
 	}
 

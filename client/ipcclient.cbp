@@ -42,10 +42,10 @@
 		</Linker>
 		<Unit filename="../include/config.h.in" />
 		<Unit filename="src/core/abstract.cc" />
+		<Unit filename="src/core/attribute.cc" />
 		<Unit filename="src/core/constants.cc" />
 		<Unit filename="src/core/events.cc" />
 		<Unit filename="src/core/linux/request.cc" />
-		<Unit filename="src/core/property.cc" />
 		<Unit filename="src/core/session.cc" />
 		<Unit filename="src/core/windows/pop.cc" />
 		<Unit filename="src/core/windows/push.cc" />
@@ -66,11 +66,11 @@
 		<Unit filename="src/include/lib3270/ipc/request.h" />
 		<Unit filename="src/session/get.cc" />
 		<Unit filename="src/session/local/actions.cc" />
+		<Unit filename="src/session/local/attribute.cc" />
 		<Unit filename="src/session/local/events.cc" />
 		<Unit filename="src/session/local/get.cc" />
 		<Unit filename="src/session/local/init.cc" />
 		<Unit filename="src/session/local/private.h" />
-		<Unit filename="src/session/local/properties.cc" />
 		<Unit filename="src/session/local/set.cc" />
 		<Unit filename="src/session/local/wait.cc" />
 		<Unit filename="src/session/remote/actions.cc" />

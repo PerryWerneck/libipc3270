@@ -28,7 +28,7 @@
  */
 
 /**
- * @file src/core/property.cc
+ * @file src/core/attribute.cc
  *
  * @brief Implements type independent property object.
  *
@@ -47,6 +47,27 @@
 
  namespace TN3270 {
 
+	Attribute::~Attribute() {
+	}
+
+	std::string Attribute::getString() const {
+		throw std::system_error(ENOTSUP, std::system_category());
+	}
+
+	int32_t Attribute::getInt32() const {
+		throw std::system_error(ENOTSUP, std::system_category());
+	}
+
+	uint32_t Attribute::getUint32() const {
+		throw std::system_error(ENOTSUP, std::system_category());
+	}
+
+	bool Attribute::getBool() const {
+		throw std::system_error(ENOTSUP, std::system_category());
+	}
+
+
+	/*
 	class StringProperty : public Property, std::string {
 	public:
 		StringProperty(const char *str) : Property(Property::String), std::string(str) {
@@ -204,6 +225,7 @@
 		return new Value(value);
 
 	}
+	*/
 
 
  }

@@ -93,11 +93,11 @@
 	try {
 
 		auto version = host["version"];
-		cout << "Property[version]: " << version->toString() << endl;
+		cout << "Property[version]: " << version->getString() << endl;
 		delete version;
 
 		auto connected = host["connected"];
-		cout << "Property[connected]: " << connected->toString() << endl;
+		cout << "Property[connected]: " << connected->getString() << endl;
 		delete connected;
 
 		cout
@@ -141,24 +141,6 @@
 		cerr << std::endl << e.what() << std::endl << std::endl;
 
 	}
-
- }
-
- TN3270::Property * chk() {
-
-	class Test : public TN3270::Property {
-	private:
-		int val;
-
-	public:
-		Test(int value) : TN3270::Property(TN3270::Property::Uint32) {
-			val = value;
-		}
-
-		virtual ~Test() { }
-	};
-
-	return new Test{10};
 
  }
 

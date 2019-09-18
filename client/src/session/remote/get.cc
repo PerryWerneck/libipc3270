@@ -88,7 +88,7 @@
 	ProgramMessage IPC::Session::getProgramMessage() const {
 
 		int program_message;
-		getProperty("program_message",program_message);
+		getAttribute("program_message",program_message);
 		return (ProgramMessage) program_message;
 
 	}
@@ -96,7 +96,7 @@
 	ConnectionState IPC::Session::getConnectionState() const {
 
 		int cstate;
-		getProperty("cstate",cstate);
+		getAttribute("cstate",cstate);
 		return (ConnectionState) cstate;
 
 	}
@@ -104,14 +104,14 @@
 	SSLState IPC::Session::getSSLState() const {
 
 		int value;
-		getProperty("sslstate",value);
+		getAttribute("sslstate",value);
 		return (TN3270::SSLState) value;
 
 	}
 
 	LIB3270_KEYBOARD_LOCK_STATE IPC::Session::getKeyboardLockState() const {
 		unsigned int value;
-		getProperty("kybdlock",value);
+		getAttribute("kybdlock",value);
 		return (LIB3270_KEYBOARD_LOCK_STATE) value;
 	}
 

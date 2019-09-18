@@ -401,9 +401,94 @@
 
 	}
 
-	Property * Session::getProperty(const char *name) const {
+	void Session::setAttribute(const char *name, const int value) {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
+
+	void Session::setAttribute(const char *name, const char *value) {
+		throw std::system_error(ENOTSUP, std::system_category());
+	}
+
+	Attribute * Session::getAttribute(const char *name) const {
+		throw std::system_error(ENOTSUP, std::system_category());
+	}
+
+	void Session::getAttribute(const char *name, int &value) const {
+
+		Attribute *attr = getAttribute(name);
+
+		try {
+
+			value = attr->getInt32();
+
+		} catch(...) {
+
+			delete attr;
+			throw;
+
+		}
+
+		delete attr;
+
+	}
+
+	void Session::getAttribute(const char *name, unsigned int &value) const {
+
+		Attribute *attr = getAttribute(name);
+
+		try {
+
+			value = attr->getUint32();
+
+		} catch(...) {
+
+			delete attr;
+			throw;
+
+		}
+
+		delete attr;
+
+	}
+
+	void Session::getAttribute(const char *name, std::string &value) const {
+
+		Attribute *attr = getAttribute(name);
+
+		try {
+
+			value.assign(attr->getString().c_str());
+
+		} catch(...) {
+
+			delete attr;
+			throw;
+
+		}
+
+		delete attr;
+
+	}
+
+	void Session::getAttribute(const char *name, bool &value) const {
+
+		Attribute *attr = getAttribute(name);
+
+		try {
+
+			value = attr->getBool();
+
+		} catch(...) {
+
+			delete attr;
+			throw;
+
+		}
+
+		delete attr;
+
+	}
+
 
  }
 
