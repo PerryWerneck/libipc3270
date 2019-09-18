@@ -98,7 +98,6 @@
 			<< "\tConnected: " << host["Connected"]
 			<< std::endl;
 
-		/*
 		host.connect(nullptr);
 
 		cout
@@ -129,8 +128,6 @@
 		host.wait(10);
 
 		host.disconnect();
-
-		*/
 
 	} catch(const std::exception &e) {
 

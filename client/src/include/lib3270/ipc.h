@@ -272,12 +272,19 @@
 				std::function <bool (const Attribute & attr, const void *worker)> asBoolean;
 			} get;
 
+			struct {
+				std::function <void (const Attribute & attr, const void *worker, const char *value)> asString;
+				std::function <void (const Attribute & attr, const void *worker, const int32_t value)> asInt32;
+				std::function <void (const Attribute & attr, const void *worker, const uint32_t value)> asUint32;
+				std::function <void (const Attribute & attr, const void *worker, const bool value)> asBoolean;
+			} set;
+
 			Attribute(H3270 *hSession, Type type, void * worker);
 
 		public:
 			~Attribute();
 
-			inline const H3270 * getTN3270Session() const {
+			inline H3270 * getTN3270Session() const {
 				return this->hSession;
 			}
 
@@ -299,6 +306,42 @@
 
 			inline std::string toString() const {
 				return get.asString(*this, worker);
+			}
+
+			inline void setString(const char * value) {
+				set.asString(*this,worker,value);
+			}
+
+			inline void setInt32(const int32_t value) {
+				set.asInt32(*this,worker,value);
+			}
+
+			inline void setUint32(const uint32_t value) {
+				set.asUint32(*this,worker,value);
+			}
+
+			inline void setBoolean(const bool value) {
+				set.asBoolean(*this,worker,value);
+			}
+
+			inline Attribute & operator=(const char * value) {
+				set.asString(*this,worker,value);
+				return *this;
+			}
+
+			inline Attribute & operator=(const int32_t value) {
+				set.asInt32(*this,worker,value);
+				return *this;
+			}
+
+			inline Attribute & operator=(const uint32_t value) {
+				set.asUint32(*this,worker,value);
+				return *this;
+			}
+
+			inline Attribute & operator=(const bool value) {
+				set.asBoolean(*this,worker,value);
+				return *this;
 			}
 
 			inline bool operator==(Type type) const noexcept {

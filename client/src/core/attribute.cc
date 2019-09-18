@@ -72,28 +72,25 @@
 			return (bool) attr.get.asInt32(attr, worker) != 0;
 		};
 
+		set.asString = [](const Attribute & attr, const void *worker, const char *value) {
+			throw std::system_error(ENOTSUP, std::system_category());
+		};
+
+		set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+			throw std::system_error(ENOTSUP, std::system_category());
+		};
+
+		set.asUint32 = [](const Attribute & attr, const void *worker, const uint32_t value) {
+			attr.set.asInt32(attr,worker,(int32_t) value);
+		};
+
+		set.asBoolean = [](const Attribute & attr, const void *worker, const bool value) {
+			attr.set.asInt32(attr,worker,(int32_t) value);
+		};
+
 	}
 
 	Attribute::~Attribute() {
 	}
-
-	/*
-	std::string Attribute::getString() const {
-		printf("*************** %s\n",__FUNCTION__);
-		throw std::system_error(ENOTSUP, std::system_category());
-	}
-
-	int32_t Attribute::getInt32() const {
-		throw std::system_error(ENOTSUP, std::system_category());
-	}
-
-	uint32_t Attribute::getUint32() const {
-		throw std::system_error(ENOTSUP, std::system_category());
-	}
-
-	bool Attribute::getBool() const {
-		throw std::system_error(ENOTSUP, std::system_category());
-	}
-	*/
 
  }
