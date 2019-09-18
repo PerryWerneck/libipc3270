@@ -85,6 +85,30 @@
  }
  */
 
+ // Test Attributes
+ static void testAttributes(const char *session) {
+
+	TN3270::Host host{session,nullptr,10};
+
+	for(auto attribute : host.getAttributes()) {
+
+		cout << attribute.getName() << ":\t";
+
+		try {
+
+			cout << attribute.toString();
+
+		} catch(const std::exception &e) {
+
+			cout << e.what();
+		}
+
+		cout << endl;
+
+	}
+
+ }
+
  // test host object
  static void testHost(const char *session) {
 
@@ -166,7 +190,8 @@
 
 	cout << "Session: " << session << endl;
 
-	testHost(session);
+	// testHost(session);
+	testAttributes(session);
 
 	return 0;
  }

@@ -266,6 +266,8 @@
 		protected:
 
 			struct {
+				std::function<const char *(const void *worker)> name;
+
 				std::function <std::string (const Attribute & attr, const void *worker)> asString;
 				std::function <int32_t (const Attribute & attr, const void *worker)> asInt32;
 				std::function <uint32_t (const Attribute & attr, const void *worker)> asUint32;
@@ -286,6 +288,10 @@
 
 			inline H3270 * getTN3270Session() const {
 				return this->hSession;
+			}
+
+			inline const char * getName() const {
+				return this->get.name(this->worker);
 			}
 
 			inline std::string getString() const {
@@ -470,7 +476,8 @@
 
 			// Attributes
 			virtual Attribute getAttribute(const char *name) const;
-			virtual void getAttributes(std::vector<Attribute> attributes) const;
+			virtual void getAttributes(std::vector<Attribute> & attributes) const;
+			std::vector<Attribute> getAttributes() const;
 
 			virtual void getAttribute(const char *name, int &value) const;
 			virtual void getAttribute(const char *name, unsigned int &value) const;
@@ -705,6 +712,7 @@
 
 			// Get properties
 			Attribute getAttribute(const char *name) const;
+			std::vector<Attribute> getAttributes() const;
 
 			inline Attribute operator[](const char *name) const {
 				return getAttribute(name);

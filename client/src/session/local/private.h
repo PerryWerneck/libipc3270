@@ -114,7 +114,7 @@
 
 				// Attributes
 				Attribute getAttribute(const char *name) const override;
-				void getAttributes(std::vector<Attribute> attributes) const override;
+				void getAttributes(std::vector<Attribute> & attributes) const override;
 
 				std::string getVersion() const override;
 				std::string getRevision() const override;

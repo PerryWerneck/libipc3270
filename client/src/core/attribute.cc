@@ -53,6 +53,10 @@
 		this->type		= type;
 		this->worker	= worker;
 
+		get.name = [](const void *worker) {
+			return "unnamed";
+		};
+
 		get.asString = [](const Attribute &attr, const void *worker) {
 
 			throw std::system_error(ENOTSUP, std::system_category());

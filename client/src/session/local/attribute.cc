@@ -51,6 +51,10 @@
 	public:
 		IntAttribute(H3270 *hSession, const LIB3270_INT_PROPERTY *worker) : Attribute(hSession, Attribute::Int32, (void *) worker) {
 
+			get.name = [](const void *worker) {
+				return ((const LIB3270_INT_PROPERTY *) worker)->name;
+			};
+
 			get.asString = [](const Attribute & attr, const void *worker) {
 				return std::to_string(attr.getInt32());
 			};
@@ -84,6 +88,10 @@
 	class UnsignedIntAttribute : public Attribute {
 	public:
 		UnsignedIntAttribute(H3270 *hSession, const LIB3270_UINT_PROPERTY *worker) : Attribute(hSession, Attribute::Uint32, (void *) worker) {
+
+			get.name = [](const void *worker) {
+				return ((const LIB3270_UINT_PROPERTY *) worker)->name;
+			};
 
 			get.asString = [](const Attribute & attr, const void *worker) {
 				return std::to_string(attr.getUint32());
@@ -119,6 +127,10 @@
 	public:
 		StringAttribute(H3270 *hSession, const LIB3270_STRING_PROPERTY *worker) : Attribute(hSession, Attribute::String, (void *) worker) {
 
+			get.name = [](const void *worker) {
+				return ((const LIB3270_STRING_PROPERTY *) worker)->name;
+			};
+
 			get.asString = [](const Attribute & attr, const void *worker) {
 
 				const char * str = ((const LIB3270_STRING_PROPERTY *) worker)->get(attr.getTN3270Session());
@@ -152,6 +164,10 @@
 	public:
 		BooleanAttribute(H3270 *hSession, const LIB3270_INT_PROPERTY *worker) : Attribute(hSession, Attribute::Boolean, (void *) worker) {
 
+			get.name = [](const void *worker) {
+				return ((const LIB3270_INT_PROPERTY *) worker)->name;
+			};
+
 			get.asString = [](const Attribute & attr, const void *worker) {
 				return attr.getBoolean() ? "true" : "false";
 			};
@@ -177,6 +193,10 @@
 	class ToggleAttribute : public Attribute {
 	public:
 		ToggleAttribute(H3270 *hSession, const LIB3270_TOGGLE_ENTRY *worker) : Attribute(hSession, Attribute::Boolean, (void *) worker) {
+
+			get.name = [](const void *worker) {
+				return ((const LIB3270_TOGGLE_ENTRY *) worker)->name;
+			};
 
 			get.asString = [](const Attribute & attr, const void *worker) {
 				return attr.getBoolean() ? "true" : "false";
@@ -278,7 +298,7 @@
 
 	}
 
-	void Local::Session::getAttributes(std::vector<Attribute> attributes) const {
+	void Local::Session::getAttributes(std::vector<Attribute> & attributes) const {
 
 		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
 
