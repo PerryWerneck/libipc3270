@@ -470,6 +470,7 @@
 
 			// Attributes
 			virtual Attribute getAttribute(const char *name) const;
+			virtual void getAttributes(std::vector<Attribute> attributes) const;
 
 			virtual void getAttribute(const char *name, int &value) const;
 			virtual void getAttribute(const char *name, unsigned int &value) const;

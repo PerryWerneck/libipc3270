@@ -46,169 +46,169 @@
 
  namespace TN3270 {
 
+	// Signed int attribute
+	class IntAttribute : public Attribute {
+	public:
+		IntAttribute(H3270 *hSession, const LIB3270_INT_PROPERTY *worker) : Attribute(hSession, Attribute::Int32, (void *) worker) {
+
+			get.asString = [](const Attribute & attr, const void *worker) {
+				return std::to_string(attr.getInt32());
+			};
+
+			get.asInt32 = [](const Attribute & attr, const void *worker) {
+
+				errno = 0;
+				int value = ((const LIB3270_INT_PROPERTY *) worker)->get(attr.getTN3270Session());
+
+				if(errno != 0) {
+					throw std::system_error(errno, std::system_category());
+				}
+
+				return (int32_t) value;
+
+			};
+
+			get.asUint32 = [](const Attribute & attr, const void *worker) {
+				return (uint32_t) attr.getInt32();
+			};
+
+			get.asBoolean = [](const Attribute & attr, const void *worker) {
+				return (attr.getInt32() != 0);
+			};
+
+		}
+
+	};
+
+	// Unsigned int attribute
+	class UnsignedIntAttribute : public Attribute {
+	public:
+		UnsignedIntAttribute(H3270 *hSession, const LIB3270_UINT_PROPERTY *worker) : Attribute(hSession, Attribute::Uint32, (void *) worker) {
+
+			get.asString = [](const Attribute & attr, const void *worker) {
+				return std::to_string(attr.getUint32());
+			};
+
+			get.asInt32 = [](const Attribute & attr, const void *worker) {
+				return (int32_t) attr.getUint32();
+			};
+
+			get.asUint32 = [](const Attribute & attr, const void *worker) {
+
+				errno = 0;
+				unsigned int value = ((const LIB3270_UINT_PROPERTY *) worker)->get(attr.getTN3270Session());
+
+				if(errno != 0) {
+					throw std::system_error(errno, std::system_category());
+				}
+
+				return (uint32_t) value;
+
+			};
+
+			get.asBoolean = [](const Attribute & attr, const void *worker) {
+				return (attr.getUint32() != 0);
+			};
+
+		}
+
+	};
+
+	// String attribute
+	class StringAttribute : public Attribute {
+	public:
+		StringAttribute(H3270 *hSession, const LIB3270_STRING_PROPERTY *worker) : Attribute(hSession, Attribute::String, (void *) worker) {
+
+			get.asString = [](const Attribute & attr, const void *worker) {
+
+				const char * str = ((const LIB3270_STRING_PROPERTY *) worker)->get(attr.getTN3270Session());
+
+				if(str) {
+					return string(str);
+				}
+
+				throw std::system_error(errno, std::system_category());
+
+			};
+
+			get.asInt32 = [](const Attribute & attr, const void *worker) {
+
+				const char * str = ((const LIB3270_STRING_PROPERTY *) worker)->get(attr.getTN3270Session());
+
+				if(str) {
+					return (int32_t) atoi(str);
+				}
+
+				throw std::system_error(errno, std::system_category());
+			};
+
+
+		}
+
+	};
+
+	// Boolean attribute
+	class BooleanAttribute : public Attribute {
+	public:
+		BooleanAttribute(H3270 *hSession, const LIB3270_INT_PROPERTY *worker) : Attribute(hSession, Attribute::Boolean, (void *) worker) {
+
+			get.asString = [](const Attribute & attr, const void *worker) {
+				return attr.getBoolean() ? "true" : "false";
+			};
+
+			get.asInt32 = [](const Attribute & attr, const void *worker) {
+
+				errno = 0;
+				int value = ((const LIB3270_INT_PROPERTY *) worker)->get(attr.getTN3270Session());
+
+				if(errno != 0) {
+					throw std::system_error(errno, std::system_category());
+				}
+
+				return (int32_t) value;
+
+			};
+
+		}
+
+	};
+
+	// Toggle attribute
+	class ToggleAttribute : public Attribute {
+	public:
+		ToggleAttribute(H3270 *hSession, const LIB3270_TOGGLE_ENTRY *worker) : Attribute(hSession, Attribute::Boolean, (void *) worker) {
+
+			get.asString = [](const Attribute & attr, const void *worker) {
+				return attr.getBoolean() ? "true" : "false";
+			};
+
+			get.asInt32 = [](const Attribute & attr, const void *worker) {
+
+				errno = 0;
+
+				int value = lib3270_get_toggle(attr.getTN3270Session(),((const LIB3270_TOGGLE_ENTRY *) worker)->id);
+
+				if(errno != 0) {
+					throw std::system_error(errno, std::system_category());
+				}
+
+				return (int32_t) value;
+
+			};
+
+			set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+				lib3270_set_toggle(attr.getTN3270Session(),((const LIB3270_TOGGLE_ENTRY *) worker)->id, (int) value);
+			};
+
+			set.asBoolean = [](const Attribute & attr, const void *worker, const bool value) {
+				lib3270_set_toggle(attr.getTN3270Session(),((const LIB3270_TOGGLE_ENTRY *) worker)->id, (int) value);
+			};
+
+		}
+
+	};
+
 	Attribute Local::Session::getAttribute(const char *name) const {
-
-		// Signed int attribute
-		class IntAttribute : public Attribute {
-		public:
-			IntAttribute(H3270 *hSession, const LIB3270_INT_PROPERTY *worker) : Attribute(hSession, Attribute::Int32, (void *) worker) {
-
-				get.asString = [](const Attribute & attr, const void *worker) {
-					return std::to_string(attr.getInt32());
-				};
-
-				get.asInt32 = [](const Attribute & attr, const void *worker) {
-
-					errno = 0;
-					int value = ((const LIB3270_INT_PROPERTY *) worker)->get(attr.getTN3270Session());
-
-					if(errno != 0) {
-						throw std::system_error(errno, std::system_category());
-					}
-
-					return (int32_t) value;
-
-				};
-
-				get.asUint32 = [](const Attribute & attr, const void *worker) {
-					return (uint32_t) attr.getInt32();
-				};
-
-				get.asBoolean = [](const Attribute & attr, const void *worker) {
-					return (attr.getInt32() != 0);
-				};
-
-			}
-
-		};
-
-		// Unsigned int attribute
-		class UnsignedIntAttribute : public Attribute {
-		public:
-			UnsignedIntAttribute(H3270 *hSession, const LIB3270_UINT_PROPERTY *worker) : Attribute(hSession, Attribute::Uint32, (void *) worker) {
-
-				get.asString = [](const Attribute & attr, const void *worker) {
-					return std::to_string(attr.getUint32());
-				};
-
-				get.asInt32 = [](const Attribute & attr, const void *worker) {
-					return (int32_t) attr.getUint32();
-				};
-
-				get.asUint32 = [](const Attribute & attr, const void *worker) {
-
-					errno = 0;
-					unsigned int value = ((const LIB3270_UINT_PROPERTY *) worker)->get(attr.getTN3270Session());
-
-					if(errno != 0) {
-						throw std::system_error(errno, std::system_category());
-					}
-
-					return (uint32_t) value;
-
-				};
-
-				get.asBoolean = [](const Attribute & attr, const void *worker) {
-					return (attr.getUint32() != 0);
-				};
-
-			}
-
-		};
-
-		// String attribute
-		class StringAttribute : public Attribute {
-		public:
-			StringAttribute(H3270 *hSession, const LIB3270_STRING_PROPERTY *worker) : Attribute(hSession, Attribute::String, (void *) worker) {
-
-				get.asString = [](const Attribute & attr, const void *worker) {
-
-					const char * str = ((const LIB3270_STRING_PROPERTY *) worker)->get(attr.getTN3270Session());
-
-					if(str) {
-						return string(str);
-					}
-
-					throw std::system_error(errno, std::system_category());
-
-				};
-
-				get.asInt32 = [](const Attribute & attr, const void *worker) {
-
-					const char * str = ((const LIB3270_STRING_PROPERTY *) worker)->get(attr.getTN3270Session());
-
-					if(str) {
-						return (int32_t) atoi(str);
-					}
-
-					throw std::system_error(errno, std::system_category());
-				};
-
-
-			}
-
-		};
-
-		// Boolean attribute
-		class BooleanAttribute : public Attribute {
-		public:
-			BooleanAttribute(H3270 *hSession, const LIB3270_INT_PROPERTY *worker) : Attribute(hSession, Attribute::Boolean, (void *) worker) {
-
-				get.asString = [](const Attribute & attr, const void *worker) {
-					return attr.getBoolean() ? "true" : "false";
-				};
-
-				get.asInt32 = [](const Attribute & attr, const void *worker) {
-
-					errno = 0;
-					int value = ((const LIB3270_INT_PROPERTY *) worker)->get(attr.getTN3270Session());
-
-					if(errno != 0) {
-						throw std::system_error(errno, std::system_category());
-					}
-
-					return (int32_t) value;
-
-				};
-
-			}
-
-		};
-
-		// Toggle attribute
-		class ToggleAttribute : public Attribute {
-		public:
-			ToggleAttribute(H3270 *hSession, const LIB3270_TOGGLE_ENTRY *worker) : Attribute(hSession, Attribute::Boolean, (void *) worker) {
-
-				get.asString = [](const Attribute & attr, const void *worker) {
-					return attr.getBoolean() ? "true" : "false";
-				};
-
-				get.asInt32 = [](const Attribute & attr, const void *worker) {
-
-					errno = 0;
-
-					int value = lib3270_get_toggle(attr.getTN3270Session(),((const LIB3270_TOGGLE_ENTRY *) worker)->id);
-
-					if(errno != 0) {
-						throw std::system_error(errno, std::system_category());
-					}
-
-					return (int32_t) value;
-
-				};
-
-				set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
-					lib3270_set_toggle(attr.getTN3270Session(),((const LIB3270_TOGGLE_ENTRY *) worker)->id, (int) value);
-				};
-
-				set.asBoolean = [](const Attribute & attr, const void *worker, const bool value) {
-					lib3270_set_toggle(attr.getTN3270Session(),((const LIB3270_TOGGLE_ENTRY *) worker)->id, (int) value);
-				};
-
-			}
-
-		};
 
 		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
 
@@ -253,11 +253,12 @@
 
 		// Check for boolean properties
 		{
-			LIB3270_TOGGLE toggle = lib3270_get_toggle_id(name);
-			if(toggle != (LIB3270_TOGGLE) -1) {
+			const LIB3270_TOGGLE_ENTRY *toggles = lib3270_get_toggle_list();
+			for(size_t ix = 0; toggles[ix].name; ix++) {
 
-				// Is a Tn3270 toggle, get it!
-				throw std::system_error(ENOTSUP, std::system_category());
+				if(!strcasecmp(name,toggles[ix].name)) {
+					return ToggleAttribute(hSession,&toggles[ix]);
+				}
 
 			}
 
@@ -265,11 +266,7 @@
 			for(size_t ix = 0; intprop[ix].name; ix++) {
 
 				if(!strcasecmp(name,intprop[ix].name)) {
-
-					if(!strcasecmp(name,intprop[ix].name)) {
-						return BooleanAttribute(hSession,&intprop[ix]);
-					}
-
+					return BooleanAttribute(hSession,&intprop[ix]);
 				}
 
 			}
@@ -277,7 +274,54 @@
 		}
 
 		// Not found!
-		throw std::runtime_error("Invalid property");
+		throw std::runtime_error("Invalid attribute");
+
+	}
+
+	void Local::Session::getAttributes(std::vector<Attribute> attributes) const {
+
+		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+
+		// Add integer properties.
+		{
+			const LIB3270_INT_PROPERTY * intprop = lib3270_get_int_properties_list();
+			for(size_t ix = 0; intprop[ix].name; ix++) {
+				attributes.push_back(IntAttribute(hSession,&intprop[ix]));
+			}
+		}
+
+		// Add unsigned int properties
+		{
+			const LIB3270_UINT_PROPERTY * intprop = lib3270_get_unsigned_properties_list();
+			for(size_t ix = 0; intprop[ix].name; ix++) {
+				attributes.push_back(UnsignedIntAttribute(hSession,&intprop[ix]));
+			}
+
+		}
+
+		// Add string properties
+		{
+			const LIB3270_STRING_PROPERTY * strprop = lib3270_get_string_properties_list();
+
+			for(size_t ix = 0; strprop[ix].name; ix++) {
+				attributes.push_back(StringAttribute(hSession,&strprop[ix]));
+			}
+
+		}
+
+		// Add boolean properties
+		{
+			const LIB3270_TOGGLE_ENTRY *toggles = lib3270_get_toggle_list();
+			for(size_t ix = 0; toggles[ix].name; ix++) {
+				attributes.push_back(ToggleAttribute(hSession,&toggles[ix]));
+			}
+
+			const LIB3270_INT_PROPERTY * intprop = lib3270_get_boolean_properties_list();
+			for(size_t ix = 0; intprop[ix].name; ix++) {
+				attributes.push_back(BooleanAttribute(hSession,&intprop[ix]));
+			}
+
+		}
 
 	}
 
