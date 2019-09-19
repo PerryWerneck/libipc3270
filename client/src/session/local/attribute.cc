@@ -196,11 +196,15 @@
 
 			get.asString = [](const Attribute & attr, const void *worker) {
 
+				errno = 0;
+
 				const struct Worker * w = (const struct Worker *) worker;
 				const char * str = w->methods->get(w->hSession);
 
 				if(str) {
 					return string(str);
+				} else if(!errno) {
+					return string();
 				}
 				throw std::system_error(errno, std::system_category());
 
