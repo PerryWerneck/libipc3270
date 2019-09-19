@@ -86,6 +86,12 @@
 		 */
 		TN3270_PUBLIC const char * getRevision();
 
+		/**
+		 * @brief Get list of attributes.
+		 *
+		 */
+		TN3270_PUBLIC std::vector<const LIB3270_PROPERTY *> getAttributes() noexcept;
+
 		class TN3270_PUBLIC Event {
 		public:
 
@@ -259,14 +265,17 @@
 				Uint64	= 't'
 			};
 
+		private:
 			Type 	  type;			///< @brief Data type.
-			H3270	* hSession;		///< @brief TN3270 Session which "owns" this attribute.
-			void	* worker;		///< @brief Internal worker.
 
 		protected:
 
+			size_t	  szData;
+			uint8_t	* data;			///< @brief Internal worker.
+
 			struct {
 				std::function<const char *(const void *worker)> name;
+				std::function<const char *(const void *worker)> description;
 
 				std::function <std::string (const Attribute & attr, const void *worker)> asString;
 				std::function <int32_t (const Attribute & attr, const void *worker)> asInt32;
@@ -281,72 +290,76 @@
 				std::function <void (const Attribute & attr, const void *worker, const bool value)> asBoolean;
 			} set;
 
-			Attribute(H3270 *hSession, Type type, void * worker);
+			Attribute(Type type, size_t szWorker = 0);
 
 		public:
+
+			Attribute(const Attribute &src);
+			Attribute(const Attribute *src);
+
 			~Attribute();
 
-			inline H3270 * getTN3270Session() const {
-				return this->hSession;
+			inline const char * getName() const {
+				return this->get.name(this->data);
 			}
 
-			inline const char * getName() const {
-				return this->get.name(this->worker);
+			inline const char * getDescription() const {
+				return this->get.description(this->data);
 			}
 
 			inline std::string getString() const {
-				return get.asString(*this,worker);
+				return get.asString(*this,data);
 			}
 
 			inline int32_t getInt32() const {
-				return get.asInt32(*this,worker);
+				return get.asInt32(*this,data);
 			}
 
 			inline uint32_t getUint32() const {
-				return get.asUint32(*this,worker);
+				return get.asUint32(*this,data);
 			}
 
 			inline bool getBoolean() const {
-				return get.asBoolean(*this,worker);
+				return get.asBoolean(*this,data);
 			}
 
 			inline std::string toString() const {
-				return get.asString(*this, worker);
+				return get.asString(*this, data);
 			}
 
 			inline void setString(const char * value) {
-				set.asString(*this,worker,value);
+				set.asString(*this,data,value);
 			}
 
 			inline void setInt32(const int32_t value) {
-				set.asInt32(*this,worker,value);
+				set.asInt32(*this,data,value);
 			}
 
 			inline void setUint32(const uint32_t value) {
-				set.asUint32(*this,worker,value);
+				set.asUint32(*this,data,value);
 			}
 
 			inline void setBoolean(const bool value) {
-				set.asBoolean(*this,worker,value);
+				set.asBoolean(*this,data,value);
 			}
 
 			inline Attribute & operator=(const char * value) {
-				set.asString(*this,worker,value);
+				set.asString(*this,data,value);
 				return *this;
 			}
 
 			inline Attribute & operator=(const int32_t value) {
-				set.asInt32(*this,worker,value);
+				set.asInt32(*this,data,value);
 				return *this;
 			}
 
 			inline Attribute & operator=(const uint32_t value) {
-				set.asUint32(*this,worker,value);
+				set.asUint32(*this,data,value);
 				return *this;
 			}
 
 			inline Attribute & operator=(const bool value) {
-				set.asBoolean(*this,worker,value);
+				set.asBoolean(*this,data,value);
 				return *this;
 			}
 

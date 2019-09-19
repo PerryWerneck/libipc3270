@@ -47,11 +47,52 @@
 
  namespace TN3270 {
 
-	Attribute::Attribute(H3270 *hSession, Type type, void * worker) {
+	Attribute::Attribute(const Attribute &src) {
 
-		this->hSession	= hSession;
-		this->type		= type;
-		this->worker	= worker;
+		this->type = src.type;
+		this->szData = src.szData;
+		this->get = src.get;
+		this->set = src.set;
+
+		if(this->szData) {
+			this->data = new uint8_t[this->szData];
+			memcpy(this->data,src.data,this->szData);
+		} else {
+			this->data = nullptr;
+		}
+
+	}
+
+	Attribute::Attribute(const Attribute *src) {
+
+		this->type = src->type;
+		this->szData = src->szData;
+
+		this->get = src->get;
+		this->set = src->set;
+
+		if(this->szData) {
+			this->data = new uint8_t[this->szData];
+			memcpy(this->data,src->data,this->szData);
+		} else {
+			this->data = nullptr;
+		}
+
+	}
+
+	Attribute::Attribute(Type type, size_t szWorker) {
+
+		this->type = type;
+		this->szData = szWorker;
+
+		if(this->szData) {
+			this->data = new uint8_t[this->szData];
+			memset(this->data,0,this->szData);
+		} else {
+			this->data = nullptr;
+		}
+
+		debug("worker=",((void *) this->data)," length=",szWorker);
 
 		get.name = [](const void *worker) {
 			return "unnamed";
@@ -95,6 +136,11 @@
 	}
 
 	Attribute::~Attribute() {
+
+		if(data) {
+			delete[] data;
+		}
+
 	}
 
  }

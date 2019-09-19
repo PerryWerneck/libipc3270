@@ -39,6 +39,7 @@
  #include <config.h>
  #include <getopt.h>
  #include <cstdlib>
+ #include <lib3270.h>
  #include <lib3270/ipc.h>
 
  using namespace std;
@@ -118,10 +119,11 @@
 
 		cout
 			<< "Version: " << host["version"]
-			<< "\tRevision: " << host["Revision"]
-			<< "\tConnected: " << host["Connected"]
+//			<< "\tRevision: " << host["Revision"]
+//			<< "\tConnected: " << host["Connected"]
 			<< std::endl;
 
+			/*
 		host.connect(nullptr);
 
 		cout
@@ -152,6 +154,7 @@
 		host.wait(10);
 
 		host.disconnect();
+		*/
 
 	} catch(const std::exception &e) {
 
@@ -190,8 +193,16 @@
 
 	cout << "Session: " << session << endl;
 
-	// testHost(session);
+	//testHost(session);
 	testAttributes(session);
+
+	/*
+	for(auto attribute : TN3270::getAttributes()) {
+
+        cout << attribute->name << ":\t" << attribute->description << endl;
+
+	}
+	*/
 
 	return 0;
  }

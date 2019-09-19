@@ -46,14 +46,46 @@
 
  namespace TN3270 {
 
-	// Signed int attribute
-	class IntAttribute : public Attribute {
+	// Class template
+	template<typename T>
+	class TN3270_PRIVATE TemplateAttribute : public Attribute {
+	protected:
+
+		struct Worker {
+			H3270 *hSession;
+			const T *methods;
+		};
+
 	public:
-		IntAttribute(H3270 *hSession, const LIB3270_INT_PROPERTY *worker) : Attribute(hSession, Attribute::Int32, (void *) worker) {
+
+		TemplateAttribute(H3270 *hSession, Attribute::Type type, const T *methods) : Attribute(type, sizeof(struct Worker)) {
+
+			getWorker()->hSession = hSession;
+			getWorker()->methods = methods;
+
+			debug("hSession=",hSession," methods=",methods);
 
 			get.name = [](const void *worker) {
-				return ((const LIB3270_INT_PROPERTY *) worker)->name;
+				return ((const struct Worker *) worker)->methods->name;
 			};
+
+			get.description = [](const void *worker) {
+				return ((const struct Worker *) worker)->methods->description;
+			};
+
+		}
+
+		inline struct Worker * getWorker() {
+			return (struct Worker *) this->data;
+		}
+
+	};
+
+
+	// Signed int attribute
+	class TN3270_PRIVATE IntAttribute : public TemplateAttribute<LIB3270_INT_PROPERTY> {
+	public:
+		IntAttribute(H3270 *hSession, const LIB3270_INT_PROPERTY *worker) : TemplateAttribute<LIB3270_INT_PROPERTY>(hSession, Attribute::Int32, worker) {
 
 			get.asString = [](const Attribute & attr, const void *worker) {
 				return std::to_string(attr.getInt32());
@@ -61,8 +93,10 @@
 
 			get.asInt32 = [](const Attribute & attr, const void *worker) {
 
+				const struct Worker * w = (const struct Worker *) worker;
+
 				errno = 0;
-				int value = ((const LIB3270_INT_PROPERTY *) worker)->get(attr.getTN3270Session());
+				int value = w->methods->get(w->hSession);
 
 				if(errno != 0) {
 					throw std::system_error(errno, std::system_category());
@@ -80,18 +114,51 @@
 				return (attr.getInt32() != 0);
 			};
 
+
 		}
 
 	};
 
-	// Unsigned int attribute
-	class UnsignedIntAttribute : public Attribute {
+	// Boolean attribute
+	class TN3270_PRIVATE BooleanAttribute : public TemplateAttribute<LIB3270_INT_PROPERTY> {
 	public:
-		UnsignedIntAttribute(H3270 *hSession, const LIB3270_UINT_PROPERTY *worker) : Attribute(hSession, Attribute::Uint32, (void *) worker) {
+		BooleanAttribute(H3270 *hSession, const LIB3270_INT_PROPERTY *worker) : TemplateAttribute<LIB3270_INT_PROPERTY>(hSession, Attribute::Boolean, worker) {
 
-			get.name = [](const void *worker) {
-				return ((const LIB3270_UINT_PROPERTY *) worker)->name;
+			get.asString = [](const Attribute & attr, const void *worker) {
+				return attr.getInt32() ? "true" : "false";
 			};
+
+			get.asInt32 = [](const Attribute & attr, const void *worker) {
+
+				const struct Worker * w = (const struct Worker *) worker;
+
+				errno = 0;
+				int value = w->methods->get(w->hSession);
+
+				if(errno != 0) {
+					throw std::system_error(errno, std::system_category());
+				}
+
+				return (int32_t) value;
+
+			};
+
+			get.asUint32 = [](const Attribute & attr, const void *worker) {
+				return (uint32_t) attr.getInt32();
+			};
+
+			get.asBoolean = [](const Attribute & attr, const void *worker) {
+				return (attr.getInt32() != 0);
+			};
+
+
+		}
+
+	};
+
+	class TN3270_PRIVATE UnsignedIntAttribute : public TemplateAttribute<LIB3270_UINT_PROPERTY> {
+	public:
+		UnsignedIntAttribute(H3270 *hSession, const LIB3270_UINT_PROPERTY *worker) : TemplateAttribute<LIB3270_UINT_PROPERTY>(hSession, Attribute::Boolean, worker) {
 
 			get.asString = [](const Attribute & attr, const void *worker) {
 				return std::to_string(attr.getUint32());
@@ -103,8 +170,10 @@
 
 			get.asUint32 = [](const Attribute & attr, const void *worker) {
 
+				const struct Worker * w = (const struct Worker *) worker;
+
 				errno = 0;
-				unsigned int value = ((const LIB3270_UINT_PROPERTY *) worker)->get(attr.getTN3270Session());
+				unsigned int value = w->methods->get(w->hSession);
 
 				if(errno != 0) {
 					throw std::system_error(errno, std::system_category());
@@ -119,33 +188,28 @@
 			};
 
 		}
-
 	};
 
-	// String attribute
-	class StringAttribute : public Attribute {
+	class TN3270_PRIVATE StringAttribute : public TemplateAttribute<LIB3270_STRING_PROPERTY> {
 	public:
-		StringAttribute(H3270 *hSession, const LIB3270_STRING_PROPERTY *worker) : Attribute(hSession, Attribute::String, (void *) worker) {
-
-			get.name = [](const void *worker) {
-				return ((const LIB3270_STRING_PROPERTY *) worker)->name;
-			};
+		StringAttribute(H3270 *hSession, const LIB3270_STRING_PROPERTY *worker) :  TemplateAttribute<LIB3270_STRING_PROPERTY>(hSession, Attribute::String, worker) {
 
 			get.asString = [](const Attribute & attr, const void *worker) {
 
-				const char * str = ((const LIB3270_STRING_PROPERTY *) worker)->get(attr.getTN3270Session());
+				const struct Worker * w = (const struct Worker *) worker;
+				const char * str = w->methods->get(w->hSession);
 
 				if(str) {
 					return string(str);
 				}
-
 				throw std::system_error(errno, std::system_category());
 
 			};
 
 			get.asInt32 = [](const Attribute & attr, const void *worker) {
 
-				const char * str = ((const LIB3270_STRING_PROPERTY *) worker)->get(attr.getTN3270Session());
+				const struct Worker * w = (const struct Worker *) worker;
+				const char * str = w->methods->get(w->hSession);
 
 				if(str) {
 					return (int32_t) atoi(str);
@@ -156,17 +220,11 @@
 
 
 		}
-
 	};
 
-	// Boolean attribute
-	class BooleanAttribute : public Attribute {
+	class TN3270_PRIVATE ToggleAttribute : public TemplateAttribute<LIB3270_TOGGLE_ENTRY> {
 	public:
-		BooleanAttribute(H3270 *hSession, const LIB3270_INT_PROPERTY *worker) : Attribute(hSession, Attribute::Boolean, (void *) worker) {
-
-			get.name = [](const void *worker) {
-				return ((const LIB3270_INT_PROPERTY *) worker)->name;
-			};
+		ToggleAttribute(H3270 *hSession, const LIB3270_TOGGLE_ENTRY *worker) :  TemplateAttribute<LIB3270_TOGGLE_ENTRY>(hSession, Attribute::Boolean, worker) {
 
 			get.asString = [](const Attribute & attr, const void *worker) {
 				return attr.getBoolean() ? "true" : "false";
@@ -174,39 +232,11 @@
 
 			get.asInt32 = [](const Attribute & attr, const void *worker) {
 
-				errno = 0;
-				int value = ((const LIB3270_INT_PROPERTY *) worker)->get(attr.getTN3270Session());
-
-				if(errno != 0) {
-					throw std::system_error(errno, std::system_category());
-				}
-
-				return (int32_t) value;
-
-			};
-
-		}
-
-	};
-
-	// Toggle attribute
-	class ToggleAttribute : public Attribute {
-	public:
-		ToggleAttribute(H3270 *hSession, const LIB3270_TOGGLE_ENTRY *worker) : Attribute(hSession, Attribute::Boolean, (void *) worker) {
-
-			get.name = [](const void *worker) {
-				return ((const LIB3270_TOGGLE_ENTRY *) worker)->name;
-			};
-
-			get.asString = [](const Attribute & attr, const void *worker) {
-				return attr.getBoolean() ? "true" : "false";
-			};
-
-			get.asInt32 = [](const Attribute & attr, const void *worker) {
+				const struct Worker * w = (const struct Worker *) worker;
 
 				errno = 0;
 
-				int value = lib3270_get_toggle(attr.getTN3270Session(),((const LIB3270_TOGGLE_ENTRY *) worker)->id);
+				int value = lib3270_get_toggle(w->hSession,w->methods->id);
 
 				if(errno != 0) {
 					throw std::system_error(errno, std::system_category());
@@ -217,15 +247,16 @@
 			};
 
 			set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
-				lib3270_set_toggle(attr.getTN3270Session(),((const LIB3270_TOGGLE_ENTRY *) worker)->id, (int) value);
+				const struct Worker * w = (const struct Worker *) worker;
+				lib3270_set_toggle(w->hSession,w->methods->id, (int) value);
 			};
 
 			set.asBoolean = [](const Attribute & attr, const void *worker, const bool value) {
-				lib3270_set_toggle(attr.getTN3270Session(),((const LIB3270_TOGGLE_ENTRY *) worker)->id, (int) value);
+				const struct Worker * w = (const struct Worker *) worker;
+				lib3270_set_toggle(w->hSession,w->methods->id, (int) value);
 			};
 
 		}
-
 	};
 
 	Attribute Local::Session::getAttribute(const char *name) const {
