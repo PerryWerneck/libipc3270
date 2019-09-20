@@ -48,11 +48,13 @@
 		<Unit filename="src/core/linux/attribute.cc" />
 		<Unit filename="src/core/linux/request.cc" />
 		<Unit filename="src/core/session.cc" />
+		<Unit filename="src/core/windows/attribute.cc" />
 		<Unit filename="src/core/windows/pop.cc" />
 		<Unit filename="src/core/windows/push.cc" />
 		<Unit filename="src/core/windows/request.cc" />
 		<Unit filename="src/core/windows/resources.rc" />
 		<Unit filename="src/core/windows/resources.rc.in" />
+		<Unit filename="src/core/windows/tools.cc" />
 		<Unit filename="src/host/actions.cc" />
 		<Unit filename="src/host/init.cc" />
 		<Unit filename="src/host/pop.cc" />

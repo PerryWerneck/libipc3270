@@ -57,6 +57,7 @@
 	#include <lib3270/popup.h>
 	#include <system_error>
 	#include <stdexcept>
+	#include <string>
 
 #ifdef HAVE_LIBINTL
         #include <libintl.h>
@@ -100,6 +101,14 @@
 
 		/// @brief Check lib3270 return codes, launch exception when failed.
 		TN3270_PRIVATE void chkResponse(int rc);
+
+#ifdef _WIN32
+
+		/// @brief Get protocol library install location.
+		TN3270_PRIVATE std::string getInstallLocation();
+		TN3270_PRIVATE std::string getUserName();
+
+#endif // _WIN32
 
 		namespace Abstract {
 

@@ -40,6 +40,8 @@
 
 	#if defined(_WIN32)
 
+		#include <delayimp.h>
+
 		#define TN3270_PUBLIC	__declspec (dllexport)
 		#define TN3270_PRIVATE
 
@@ -62,6 +64,19 @@
 #ifdef __cplusplus
 
 	#include <string>
+
+#ifdef _WIN32
+
+	extern "C" {
+
+		extern __declspec (dllexport) PfnDliHook __pfnDliNotifyHook2;
+		extern __declspec (dllexport) PfnDliHook __pfnDliFailureHook2;
+
+		FARPROC WINAPI IPC3270_DelayLoadHook(unsigned reason, DelayLoadInfo * info);
+
+	}
+
+#endif // _WIN32
 
 	namespace TN3270 {
 
