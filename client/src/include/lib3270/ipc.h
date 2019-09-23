@@ -65,19 +65,6 @@
 
 	#include <string>
 
-#ifdef _WIN32
-
-	extern "C" {
-
-		extern __declspec (dllexport) PfnDliHook __pfnDliNotifyHook2;
-		extern __declspec (dllexport) PfnDliHook __pfnDliFailureHook2;
-
-		FARPROC WINAPI IPC3270_DelayLoadHook(unsigned reason, DelayLoadInfo * info);
-
-	}
-
-#endif // _WIN32
-
 	namespace TN3270 {
 
 		class Host;

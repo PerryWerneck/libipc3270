@@ -39,6 +39,9 @@ MAIN_SOURCES= \
 	$(wildcard src/session/remote/*.cc) \
 	$(wildcard src/session/remote/@OSNAME@/*.cc)
 
+DYNAMIC_SOURCES= \
+	$(wildcard src/core/@OSNAME@/dynamic/*.cc)
+
 TEST_SOURCES= \
 	$(wildcard src/testprogram/*.cc)
 
@@ -191,7 +194,8 @@ Release: \
 	$(BINRLS)/lib$(MODULE_NAME).static.a
 
 $(BINRLS)/lib$(MODULE_NAME)@LIBEXT@: \
-	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o)
+	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
+	$(foreach SRC, $(basename $(DYNAMIC_SOURCES)), $(OBJRLS)/$(SRC).o)
 
 	@$(MKDIR) $(@D)
 	@echo $< ...
@@ -308,7 +312,8 @@ $(BINDBG)/$(MODULE_NAME)-client@EXEEXT@: \
 
 
 $(BINDBG)/lib$(MODULE_NAME)@LIBEXT@: \
-	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJDBG)/$(SRC).o)
+	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJDBG)/$(SRC).o) \
+	$(foreach SRC, $(basename $(DYNAMIC_SOURCES)), $(OBJDBG)/$(SRC).o)
 
 	@$(MKDIR) $(@D)
 	@echo $< ...

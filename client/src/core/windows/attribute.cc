@@ -28,64 +28,47 @@
  */
 
 /**
- * @file src/session/local/init.cc
+ * @file src/os/linux/attribute.cc
  *
- * @brief Implement lib3270 direct access layout (NO IPC).
+ * @brief Implements methods for static attribute management.
  *
  * @author perry.werneck@gmail.com
  *
  */
 
- #include "private.h"
-
-#ifdef _WIN32
- #include <lmcons.h>
-#endif // _WIN32
-
- extern "C" {
-	 #include <lib3270/session.h>
- }
-
+ #include <lib3270/ipc.h>
+ #include <lib3270/toggle.h>
+ #include <lib3270/properties.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
- namespace TN3270 {
+ std::vector<const LIB3270_PROPERTY *> TN3270::getAttributes() noexcept {
 
-	Session * Local::getSessionInstance() {
-		return new Local::Session();
+	std::vector<const LIB3270_PROPERTY *> attributes;
+
+	for(auto prop = lib3270_get_int_properties_list(); prop->name; prop++) {
+		attributes.push_back((const LIB3270_PROPERTY *) prop);
 	}
 
- 	Local::Session::Session() : Abstract::Session() {
-
-		std::lock_guard<std::mutex> lock(sync);
-
-		this->hSession = lib3270_session_new("");
-
-		lib3270_set_user_data(this->hSession,(void *) this);
-		setCharSet();
-		lib3270_set_popup_handler(this->hSession, popupHandler);
-
-		// Setup callbacks
-		struct lib3270_session_callbacks *cbk;
-
-		cbk = lib3270_get_session_callbacks(this->hSession,sizeof(struct lib3270_session_callbacks));
-		if(!cbk) {
-			throw runtime_error( _("Invalid callback table, possible version mismatch in lib3270") );
-		}
-
-		cbk->update_connect	= connectHandler;
-
+	for(auto prop = lib3270_get_unsigned_properties_list(); prop->name; prop++) {
+		attributes.push_back((const LIB3270_PROPERTY *) prop);
 	}
 
-	Local::Session::~Session() {
-
-		std::lock_guard<std::mutex> lock(sync);
-
-		lib3270_session_free(this->hSession);
-		this->hSession = nullptr;
-
+	for(auto prop = lib3270_get_string_properties_list(); prop->name; prop++) {
+		attributes.push_back((const LIB3270_PROPERTY *) prop);
 	}
+
+	for(auto prop = lib3270_get_toggle_list(); prop->name; prop++) {
+		attributes.push_back((const LIB3270_PROPERTY *) prop);
+	}
+
+	for(auto prop = lib3270_get_boolean_properties_list(); prop->name; prop++) {
+		attributes.push_back((const LIB3270_PROPERTY *) prop);
+	}
+
+	return attributes;
 
  }
+
 
 
