@@ -181,9 +181,6 @@
 		}
 		return (FARPROC) dummyProc;
 
-	default:
-		debug(__FUNCTION__,"::default")
-
 	}
 
 	// Returning NULL causes the delay load machinery to perform default
