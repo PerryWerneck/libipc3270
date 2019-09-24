@@ -45,7 +45,7 @@ TN3270::Host & TN3270::Host::push(int baddr, const char *str, int len) {
 	return *this;
 }
 
-TN3270::Host & TN3270::Host::push(int row, int col, const char *str, int len) {
+TN3270::Host & TN3270::Host::push(unsigned short row, unsigned short col, const char *str, int len) {
 	session->push(row,col,str,len);
 	return *this;
 }
@@ -60,7 +60,7 @@ TN3270::Host & TN3270::Host::push(int baddr, const std::string &text) {
 	return *this;
 }
 
-TN3270::Host & TN3270::Host::push(int row, int col, const std::string &text) {
+TN3270::Host & TN3270::Host::push(unsigned short row, unsigned short col, const std::string &text) {
 	session->push(row,col,text);
 	return *this;
 }

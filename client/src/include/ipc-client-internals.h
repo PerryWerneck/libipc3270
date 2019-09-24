@@ -159,14 +159,14 @@
 
 				// Contents
 				std::string	toString(int baddr, int len, char lf) const override;
-				std::string	toString(unsigned int row, unsigned int col, int len, char lf) const override;
+				std::string	toString(unsigned short row, unsigned short col, int len, char lf) const override;
 
 				void push(const char *text, size_t length) override;
 				void push(int baddr, const char *text, int length) override;
-				void push(int row, int col, const char *text, int length) override;
+				void push(unsigned short row, unsigned short col, const char *text, int length) override;
 
 				void pop(int baddr, std::string &text) override;
-				void pop(int row, int col, std::string &text) override;
+				void pop(unsigned short row, unsigned short col, std::string &text) override;
 				void pop(std::string &text) override;
 
 			};

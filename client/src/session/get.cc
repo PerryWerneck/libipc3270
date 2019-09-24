@@ -46,7 +46,7 @@
 		return convertFromHost(get(baddr,len,lf));
 	}
 
-	std::string	Abstract::Session::toString(unsigned int row, unsigned int col, int len, char lf) const {
+	std::string	Abstract::Session::toString(unsigned short row, unsigned short col, int len, char lf) const {
 		return convertFromHost(get(row,col,len,lf));
 	}
 
@@ -56,7 +56,7 @@
 	}
 
 	/// @brief Get contents of field at position.
-	void Abstract::Session::pop(int row, int col, std::string &text) {
+	void Abstract::Session::pop(unsigned short row, unsigned short col, std::string &text) {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 

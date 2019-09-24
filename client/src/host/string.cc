@@ -53,7 +53,7 @@ std::string TN3270::Host::toString(int baddr, int len, char lf) const {
 
 }
 
-std::string TN3270::Host::toString(unsigned int row, unsigned int col, int len, char lf) const {
+std::string TN3270::Host::toString(unsigned short row, unsigned short col, int len, char lf) const {
 
 	this->session->waitForReady(this->timeout);
 	return this->session->toString(row,col,len,lf);
@@ -76,7 +76,7 @@ int TN3270::Host::compare(int baddr, const char* s, int len) const {
 
 }
 
-int TN3270::Host::compare(unsigned int row, unsigned int col, const char* s, int len) const {
+int TN3270::Host::compare(unsigned short row, unsigned short col, const char* s, int len) const {
 
 	this->session->waitForReady(this->timeout);
 	return this->session->compare(row,col,s,len);

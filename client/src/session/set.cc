@@ -51,7 +51,7 @@
 		set(baddr,convertToHost(text,length));
 	}
 
-	void Abstract::Session::push(int row, int col, const char *text, int length) {
+	void Abstract::Session::push(unsigned short row, unsigned short col, const char *text, int length) {
 		set(row,col,convertToHost(text,length));
 	}
 

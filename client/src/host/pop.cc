@@ -53,7 +53,7 @@ TN3270::Host & TN3270::Host::pop(int baddr, std::string &text) {
 	return *this;
 }
 
-TN3270::Host & TN3270::Host::pop(int row, int col, std::string &text) {
+TN3270::Host & TN3270::Host::pop(unsigned short row, unsigned short col, std::string &text) {
 
 	this->session->waitForReady(this->timeout);
 

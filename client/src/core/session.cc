@@ -392,7 +392,7 @@
 		return toString(baddr,len,'\0').compare(0,len,s);
 	}
 
-	int Session::compare(unsigned int row, unsigned int col, const char* s, int len) const {
+	int Session::compare(unsigned short row, unsigned short col, const char* s, int len) const {
 
 		if(len < 0)
 			len = strlen(s);

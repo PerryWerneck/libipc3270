@@ -408,12 +408,12 @@
 
 			// Contents
 			virtual std::string	toString(int baddr = 0, int len = -1, char lf = '\n') const = 0;
-			virtual std::string	toString(unsigned int row, unsigned int col, int len, char lf = '\n') const = 0;
+			virtual std::string	toString(unsigned short row, unsigned short col, int len, char lf = '\n') const = 0;
 
 			/// @brief Input string.
 			virtual void push(const char *text, size_t length) = 0;
 			virtual void push(int baddr, const char *text, int length) = 0;
-			virtual void push(int row, int col, const char *text, int length) = 0;
+			virtual void push(unsigned short row, unsigned short col, const char *text, int length) = 0;
 
 			inline void push(const std::string &text) {
 				push(-1,text.c_str(),text.size());
@@ -423,7 +423,7 @@
 				push(baddr,text.c_str(),text.size());
 			}
 
-			inline void push(int row, int col, const std::string &text) {
+			inline void push(unsigned short row, unsigned short col, const std::string &text) {
 				push(row,col,text.c_str(),text.size());
 			}
 
@@ -435,7 +435,7 @@
 			virtual void pop(int baddr, std::string &text) = 0;
 
 			/// @brief Get contents of field at position.
-			virtual void pop(int row, int col, std::string &text) = 0;
+			virtual void pop(unsigned short row, unsigned short col, std::string &text) = 0;
 
 			/// @brief Get contents of field at cursor position.
 			virtual void pop(std::string &text) = 0;
@@ -559,7 +559,7 @@
 			virtual void wait(const char *text, int seconds = DEFAULT_TIMEOUT) = 0;
 
 			/// @brief Wait for string.
-			virtual void wait(unsigned int row, unsigned int col, const char *text, int seconds = DEFAULT_TIMEOUT) = 0;
+			virtual void wait(unsigned short row, unsigned short col, const char *text, int seconds = DEFAULT_TIMEOUT) = 0;
 
 			/// @brief Wait for string.
 			virtual void wait(int addr, const char *text, int seconds = DEFAULT_TIMEOUT) = 0;
@@ -583,7 +583,7 @@
 
 			/// @brief Compare contents.
 			int compare(int baddr, const char* s, int len = -1) const;
-			int compare(unsigned int row, unsigned int col, const char* s, int len = -1) const;
+			int compare(unsigned short row, unsigned short col, const char* s, int len = -1) const;
 
 		};
 
@@ -632,20 +632,21 @@
 			LIB3270_KEYBOARD_LOCK_STATE input(const char *text, int length = -1, const char control_char = '@');
 
 			Host & push(int baddr, const std::string &text);
-			Host & push(int row, int col, const std::string &text);
+			Host & push(unsigned short row, unsigned short col, const std::string &text);
 			Host & push(const std::string &text);
 
+			Host & push(const char *text);
 			Host & push(int baddr, const char *str, int len = -1);
-			Host & push(int row, int col, const char *str, int len = -1);
+			Host & push(unsigned short row, unsigned short col, const char *str, int len = -1);
 			Host & push(const char *str, int len = -1);
 
 			Host & pop(int baddr, std::string &text);
-			Host & pop(int row, int col, std::string &text);
+			Host & pop(unsigned short row, unsigned short col, std::string &text);
 			Host & pop(std::string &text);
 
 			std::string toString() const;
 			std::string toString(int baddr, int len = -1, char lf = '\n') const;
-			std::string toString(unsigned int row, unsigned int col, int len = -1, char lf = '\n') const;
+			std::string toString(unsigned short row, unsigned short col, int len = -1, char lf = '\n') const;
 
 			template<typename T>
 			Host & push(T value) {
@@ -822,11 +823,11 @@
 			}
 
 			/// @brief Wait for string.
-			inline void wait(unsigned int row, unsigned int col, const char *text) {
+			inline void wait(unsigned short row, unsigned short col, const char *text) {
 				return session->wait(row,col,text,this->timeout);
 			}
 
-			inline void wait(unsigned int row, unsigned int col, const char *text, time_t timeout) {
+			inline void wait(unsigned short row, unsigned short col, const char *text, time_t timeout) {
 				return session->wait(row,col,text,timeout);
 			}
 
@@ -844,7 +845,7 @@
 
 			/// @brief Compare contents.
 			int compare(int baddr, const char* s, int len = -1) const;
-			int compare(unsigned int row, unsigned int col, const char* s, int len = -1) const;
+			int compare(unsigned short row, unsigned short col, const char* s, int len = -1) const;
 
 			// Set contents.
 
@@ -859,11 +860,6 @@
 
 			// Host & input(const char *text, size_t sz);
 
-			/// @brief Set field at current position, jumps to next writable field.
-			inline Host & push(const char *text) {
-				session->push(text,-1);
-				return *this;
-			};
 
 			/*
 			// Event listeners

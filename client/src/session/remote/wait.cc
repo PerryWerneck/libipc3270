@@ -174,7 +174,7 @@
 
 	}
 
-	void IPC::Session::wait(unsigned int row, unsigned int col, const char *text, int seconds) {
+	void IPC::Session::wait(unsigned short row, unsigned short col, const char *text, int seconds) {
 
 		string key = convertToHost(text,-1);
 

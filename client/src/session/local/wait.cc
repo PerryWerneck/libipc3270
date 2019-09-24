@@ -76,7 +76,7 @@
 
 	}
 
-	void Local::Session::wait(unsigned int row, unsigned int col, const char *text, int seconds) {
+	void Local::Session::wait(unsigned short row, unsigned short col, const char *text, int seconds) {
 
 		std::lock_guard<std::mutex> lock(sync);
 		chkResponse(lib3270_wait_for_string_at(hSession,row,col,convertToHost(text,-1).c_str(),seconds));
