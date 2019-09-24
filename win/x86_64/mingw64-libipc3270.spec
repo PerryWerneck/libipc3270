@@ -1,5 +1,5 @@
 #
-# spec file for packages mingw64-pw3270-plugin-ipc
+# spec file for packages mingw64-libipc3270
 #
 # Copyright (c) 2015 SUSE LINUX GmbH, Nuernberg, Germany.
 # Copyright (C) <2008> <Banco do Brasil S.A.>
@@ -26,8 +26,8 @@
 
 #---[ Main package ]--------------------------------------------------------------------------------------------------
 
-Summary:	D-Bus based IPC plugin for pw3270
-Name:		mingw64-pw3270-plugin-ipc
+Name:		mingw64-libipc3270
+Summary:	lib3270/pw3270 IPC client library.
 Version:	5.2
 
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
@@ -35,18 +35,13 @@ Version:	5.2
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 %define _product %(x86_64-w64-mingw32-pkg-config --variable=product_name lib3270)
 
-
 Release:	0
 License:	LGPL-3.0
-Source:		pw3270-plugin-ipc-%{version}.tar.xz
+Source:		libipc3270-%{version}.tar.xz
 
-Url:		https://portal.softwarepublico.gov.br/social/pw3270/
+Url:		https://github.com/PerryWerneck/libipc3270.git
 
-Group:		System/X11/Terminals
-BuildRoot:	/var/tmp/%{name}-%{version}
-
-Provides:	mingw64-lib3270-ipc-service
-Conflicts:	otherproviders(mingw64-lib3270-ipc-service)
+Group:		Development/Libraries/C and C++
 
 BuildRequires:  autoconf >= 2.61
 BuildRequires:  automake
@@ -71,47 +66,66 @@ BuildRequires:	mingw64(pkg:libv3270)
 
 %description
 
-PW3270 IPC plugin.
+IPC client library for lib3270/pw3270.
+
+Designed as framework for language bindings.
 
 See more details at https://softwarepublico.gov.br/social/pw3270/
 
-#---[ IPC Library Package ]-------------------------------------------------------------------------------------------
+#---[ Library ]-------------------------------------------------------------------------------------------------------
 
-%package -n mingw64-libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
-Summary: IPC Library for pw3270
+%define product %(pkg-config --variable=product_name lib3270)
+%define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
+%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
+%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
-Recommends: mingw64-lib3270-ipc-service
-Provides:	mingw64(lib:ipc3270)
+%package -n %{name}-%{_libvrs}
+Summary:	IPC Library for pw3270
+Group:		Development/Libraries/C and C++
 
-%description -n mingw64-libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
+%description -n %{name}-%{_libvrs}
 
 IPC client library for lib3270/pw3270.
 
-Designed as a support tool for language bindings.
+Designed as framework for language bindings.
 
-%package -n mingw64-libipc3270-devel
-Summary: Development files for ipc3270
-Requires: libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
-Requires: pkgconfig(lib3270)
+See more details at https://softwarepublico.gov.br/social/pw3270/
 
-%description -n mingw64-libipc3270-devel
+#---[ Development ]---------------------------------------------------------------------------------------------------
+
+%package devel
+Summary: Development files for %{name}
+Requires: mingw64(pkg:lib3270)
+
+%description devel
 
 Development files for lib3270/pw3270 IPC client library.
 
 Designed as a support tool for language bindings.
 
+#---[ Plugin module for pw3270 main application ]----------------------------------------------------------------------
+
+%package -n mingw64-%{_product}-plugin-ipc
+Summary: IPC service plugin for %{_product}
+Requires: mingw64-%{_product} >= 5.2
+
+%description -n mingw64-%{_product}-plugin-ipc
+
+PW3270 plugin exporting D-Bus objects for every tn3270 session.
+
+See more details at https://softwarepublico.gov.br/social/pw3270/
 
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
-%setup -n pw3270-plugin-ipc-%{version}
+%setup -n libipc3270-%{version}
 
-NOCONFIGURE=1 ./autogen.sh
+NOCONFIGURE=1 \
+	./autogen.sh
 
 %{_mingw64_configure}
 
 %build
-make clean
 make all
 
 %{_mingw64_strip} \
@@ -123,27 +137,24 @@ rm -rf $RPM_BUILD_ROOT
 
 %makeinstall
 
-%files
+%files -n %{name}-%{_libvrs}
 %defattr(-,root,root)
 
 # https://en.opensuse.org/openSUSE:Packaging_for_Leap#RPM_Distro_Version_Macros
-%if 0%{?sle_version} > 120200
 %doc AUTHORS README.md
 %license LICENSE
-%else
-%doc AUTHORS README.md LICENSE
-%endif
 
-%dir %{_mingw64_libdir}/%{_product}-plugins
-%{_mingw64_libdir}/%{_product}-plugins/ipcserver.dll
-
-%files -n mingw64-libipc3270-%{MAJOR_VERSION}_%{MINOR_VERSION}
-%defattr(-,root,root)
 %{_mingw64_libdir}/libipc3270.dll
 %{_mingw64_libdir}/libipc3270.dll.%{MAJOR_VERSION}
 %{_mingw64_libdir}/libipc3270.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
-%files -n mingw64-libipc3270-devel
+%files -n mingw64-%{_product}-plugin-ipc
+%defattr(-,root,root)
+
+%dir %{_mingw64_libdir}/%{_product}-plugins
+%{_mingw64_libdir}/%{_product}-plugins/ipcserver.dll
+
+%files devel
 %defattr(-,root,root)
 %{_mingw64_includedir}/lib3270/ipc.h
 %dir %{_mingw64_includedir}/lib3270/ipc
