@@ -67,8 +67,8 @@ APP_RESOURCES=""
 APP_LDFLAGS=""
 DLL_LDFLAGS="-shared"
 STATIC_LDFLAGS=""
+STATIC_LIBS=""
 CLIENT_TARGETS="shared devel"
-
 
 dnl ---------------------------------------------------------------------------
 dnl Check for OS specifics
@@ -83,6 +83,7 @@ case "$host" in
 		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32 -lkernel32"
 		LDFLAGS="$LDFLAGS"
 		STATIC_LDFLAGS="-static -static-libgcc -static-libstdc++"
+		STATIC_LIBS="-Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive,-Bdynamic"
 		DLLEXT=".dll"
 		DLLPREFIX=""
 
@@ -123,6 +124,7 @@ AC_SUBST(LOGDIR)
 AC_SUBST(DLLEXT)
 AC_SUBST(DLLPREFIX)
 AC_SUBST(STATIC_LDFLAGS)
+AC_SUBST(STATIC_LIBS)
 
 AC_CHECK_FUNC(vasprintf, AC_DEFINE(HAVE_VASPRINTF) )
 
