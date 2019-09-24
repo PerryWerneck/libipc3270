@@ -16,14 +16,6 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-#---[ Versions ]------------------------------------------------------------------------------------------------------
-
-%define MAJOR_VERSION 5
-%define MINOR_VERSION 2
-
-%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
-%define _product %(i686-w64-mingw32-pkg-config --variable=product_name lib3270)
-
 %define __strip %{_mingw32_strip}
 %define __objdump %{_mingw32_objdump}
 %define _use_internal_dependency_generator 0
@@ -37,6 +29,12 @@
 Summary:	D-Bus based IPC plugin for pw3270
 Name:		mingw32-pw3270-plugin-ipc
 Version:	5.2
+
+%define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
+%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
+%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
+%define _product %(i686-w64-mingw32-pkg-config --variable=product_name lib3270)
+
 Release:	0
 License:	LGPL-3.0
 Source:		pw3270-plugin-ipc-%{version}.tar.xz
@@ -49,8 +47,6 @@ BuildRoot:	/var/tmp/%{name}-%{version}
 Provides:	mingw32-lib3270-ipc-service
 Conflicts:	otherproviders(mingw32-lib3270-ipc-service)
 
-BuildRequires:	mingw32-lib3270-devel >= 5.2
-BuildRequires:	mingw32-libv3270-devel >= 5.2
 BuildRequires:  autoconf >= 2.61
 BuildRequires:  automake
 BuildRequires:  binutils

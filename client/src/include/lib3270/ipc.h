@@ -40,8 +40,6 @@
 
 	#if defined(_WIN32)
 
-		#include <delayimp.h>
-
 		#define TN3270_PUBLIC	__declspec (dllexport)
 		#define TN3270_PRIVATE
 
