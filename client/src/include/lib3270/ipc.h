@@ -635,7 +635,6 @@
 			Host & push(unsigned short row, unsigned short col, const std::string &text);
 			Host & push(const std::string &text);
 
-			Host & push(const char *text);
 			Host & push(int baddr, const char *str, int len = -1);
 			Host & push(unsigned short row, unsigned short col, const char *str, int len = -1);
 			Host & push(const char *str, int len = -1);

@@ -46,7 +46,7 @@
 
 		int rc;
 
-		Request(*this,"setString")
+		Request(*this,"setField")
 			.push(str.c_str())
 			.call()
 			.pop(rc);
