@@ -31,6 +31,37 @@
 #include <errno.h>
 #include <string.h>
 
+int ipc3270_method_set_field_contents(GObject *session, GVariant *request, GObject *response, GError **error)
+{
+	H3270 *hSession = ipc3270_get_session(session);
+
+	if(*error)
+		return 0;
+
+	if(g_variant_n_children(request) != 1)
+		return EINVAL;
+
+	gchar *text = NULL;
+	g_variant_get(request, "(&s)", &text);
+
+	if(!text)
+		return EINVAL;
+
+	g_autofree gchar * converted = g_convert_with_fallback(text,-1,lib3270_get_display_charset(hSession),"UTF-8","?",NULL,NULL,error);
+
+	int rc = lib3270_set_field(hSession,converted,-1);
+
+	if(rc < 0) {
+		debug("lib3270_set_field has failed: %s", strerror(-rc));
+		return -rc;
+	}
+
+	ipc3270_response_append_int32(response, rc);
+
+	return 0;
+
+}
+
 int ipc3270_method_set_string(GObject *session, GVariant *request, GObject *response, GError **error) {
 
 	H3270 *hSession = ipc3270_get_session(session);

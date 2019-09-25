@@ -140,6 +140,10 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='y' name='lf' direction='in' />" \
 		"		<arg type='s' name='text' direction='out' />" \
 		"	</method>" \
+		"	<method name='setField'>" \
+		"		<arg type='s' name='text' direction='in' />" \
+		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>" \
 		"	<method name='setStringAtAddress'>" \
 		"		<arg type='i' name='addr' direction='in' />" \
 		"		<arg type='s' name='text' direction='in' />" \

@@ -46,6 +46,7 @@
 	G_GNUC_INTERNAL int ipc3270_method_get_string(GObject *session, GVariant *request, GObject *response, GError **error);
 
 	G_GNUC_INTERNAL int ipc3270_method_set_string(GObject *session, GVariant *request, GObject *response, GError **error);
+	G_GNUC_INTERNAL int ipc3270_method_set_field_contents(GObject *session, GVariant *request, GObject *response, GError **error);
 
 	G_GNUC_INTERNAL int ipc3270_method_wait_for_string(GObject *session, GVariant *request, GObject *response, GError **error);
 
