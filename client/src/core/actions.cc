@@ -28,9 +28,9 @@
  */
 
 /**
- * @file src/os/linux/attribute.cc
+ * @file src/os/linux/actions.cc
  *
- * @brief Implements methods for static attribute management.
+ * @brief Implements methods for static action management.
  *
  * @author perry.werneck@gmail.com
  *
@@ -38,37 +38,18 @@
 
  #include <lib3270/ipc.h>
  #include <lib3270/toggle.h>
- #include <lib3270/properties.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
- std::vector<const LIB3270_PROPERTY *> TN3270::getAttributes() {
+ std::vector<const LIB3270_ACTION *> TN3270::getActions() {
 
-	std::vector<const LIB3270_PROPERTY *> attributes;
+ 	std::vector<const LIB3270_ACTION *> actions;
 
-	for(auto prop = lib3270_get_int_properties_list(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
+	for(auto action = lib3270_get_actions(); action->name; action++) {
+		actions.push_back(action);
 	}
 
-	for(auto prop = lib3270_get_unsigned_properties_list(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
-	}
-
-	for(auto prop = lib3270_get_string_properties_list(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
-	}
-
-	for(auto prop = lib3270_get_toggle_list(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
-	}
-
-	for(auto prop = lib3270_get_boolean_properties_list(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
-	}
-
-	return attributes;
+ 	return actions;
 
  }
-
-
 

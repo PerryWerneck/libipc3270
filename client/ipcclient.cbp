@@ -42,6 +42,7 @@
 		</Linker>
 		<Unit filename="../include/config.h.in" />
 		<Unit filename="src/core/abstract.cc" />
+		<Unit filename="src/core/actions.cc" />
 		<Unit filename="src/core/attribute.cc" />
 		<Unit filename="src/core/constants.cc" />
 		<Unit filename="src/core/events.cc" />

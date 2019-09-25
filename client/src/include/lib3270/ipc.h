@@ -37,6 +37,7 @@
 	#include <functional>
 	#include <lib3270.h>
 	#include <lib3270/keyboard.h>
+	#include <lib3270/actions.h>
 
 	#if defined(_WIN32)
 
@@ -90,7 +91,13 @@
 		 * @brief Get list of attributes.
 		 *
 		 */
-		TN3270_PUBLIC std::vector<const LIB3270_PROPERTY *> getAttributes() noexcept;
+		TN3270_PUBLIC std::vector<const LIB3270_PROPERTY *> getAttributes();
+
+		/**
+		 * @brief Get list of actions.
+		 *
+		 */
+		TN3270_PUBLIC std::vector<const LIB3270_ACTION *> getActions();
 
 		class TN3270_PUBLIC Event {
 		public:
