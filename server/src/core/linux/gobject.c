@@ -212,7 +212,7 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 	);
 
 	// Constrói métodos usando a tabela de controle
-	const LIB3270_ACTION_ENTRY * actions = lib3270_get_action_table();
+	const LIB3270_ACTION * actions = lib3270_get_actions();
 	for(ix = 0; actions[ix].name; ix++)
 	{
 		g_string_append_printf(

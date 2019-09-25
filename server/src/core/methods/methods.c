@@ -98,12 +98,14 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 	}
 
 	// Check actions table.
-	const LIB3270_ACTION_ENTRY * actions = lib3270_get_action_table();
+	const LIB3270_ACTION * actions = lib3270_get_actions();
 	for(ix = 0; actions[ix].name; ix++) {
 
 		if(!g_ascii_strcasecmp(actions[ix].name,method_name)) {
 
-			if(actions[ix].call(hSession))
+			if(!actions[ix].enabled(hSession))
+				ipc3270_set_error(object,EPERM,error);
+			else if(actions[ix].activate(hSession))
 				ipc3270_set_error(object,errno,error);
 			else
 				ipc3270_response_append_int32(response, 0);
