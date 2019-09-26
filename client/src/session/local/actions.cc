@@ -55,16 +55,16 @@
 		return lib3270_action_is_activatable(this->descriptor,this->session->hSession);
 	}
 
-	void Local::Action::activate(time_t seconds) {
+	void Local::Action::activate() {
 		std::lock_guard<std::mutex> lock(this->session->sync);
-
-		debug(__FUNCTION__,"(",(void *) descriptor,")");
 
 		chkResponse(lib3270_action_activate(this->descriptor,this->session->hSession));
 
-		if(seconds)
-			chkResponse(lib3270_wait_for_ready(this->session->hSession,seconds));
+	}
 
+	void Local::Action::wait(time_t seconds) {
+		std::lock_guard<std::mutex> lock(this->session->sync);
+		chkResponse(lib3270_wait_for_ready(this->session->hSession,seconds));
 	}
 
 	TN3270::Action * Local::Session::getAction(const LIB3270_ACTION *descriptor) {

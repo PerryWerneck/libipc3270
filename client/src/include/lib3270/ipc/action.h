@@ -54,7 +54,8 @@
 
 		public:
 			virtual bool activatable() const noexcept = 0;
-			virtual void activate(time_t seconds = 0) = 0;
+			virtual void activate() = 0;
+			virtual void wait(time_t seconds = 0) = 0;
 			virtual ~Action();
 
 			inline operator bool() const noexcept {
