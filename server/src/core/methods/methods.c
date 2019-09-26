@@ -98,6 +98,14 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 	}
 
 	// Check actions table.
+	const LIB3270_ACTION * action = lib3270_get_action(method_name);
+	if(action) {
+		if(lib3270_action_activate(action,hSession)) {
+			ipc3270_set_error(object,errno,error);
+		}
+        return 0;
+	}
+	/*
 	const LIB3270_ACTION * actions = lib3270_get_actions();
 	for(ix = 0; actions[ix].name; ix++) {
 
@@ -114,6 +122,7 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 
 		}
 	}
+	*/
 
 	// Check lib3270 internal methods
 	const IPC_METHOD_INT_ARG * int_methods = ipc3270_get_int_arg_methods();
