@@ -793,6 +793,15 @@
 
 			// Actions
 
+			/// @brief Create new action object.
+			///
+			/// Alocate a new action object associated with the session, delete it
+			/// when no longer necessary.
+			///
+			inline TN3270::Action * getAction(const LIB3270_ACTION *descriptor) {
+				return session->getAction(descriptor);
+			}
+
 			/// @brief Send PF.
 			inline Host & pfkey(unsigned short value) {
 				session->pfkey(value);
