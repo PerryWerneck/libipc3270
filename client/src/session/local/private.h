@@ -63,7 +63,7 @@
 			public:
 				Action(Session *hSession, const LIB3270_ACTION *descriptor);
 				bool activatable() const noexcept override;
-				void activate() override;
+				void activate(time_t seconds) override;
 
 			};
 
