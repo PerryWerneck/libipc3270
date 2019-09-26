@@ -59,7 +59,6 @@
 			class Action : public TN3270::Action {
 			private:
 				Session *session;
-				const LIB3270_ACTION *descriptor;
 
 			public:
 				Action(Session *hSession, const LIB3270_ACTION *descriptor);

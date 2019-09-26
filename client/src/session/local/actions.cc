@@ -45,16 +45,19 @@
  namespace TN3270 {
 
 	Local::Action::Action(Session *session, const LIB3270_ACTION *descriptor) : TN3270::Action(descriptor) {
+		debug(__FUNCTION__,"(",(void *) descriptor,")");
 		this->session = session;
 	}
 
 	bool Local::Action::activatable() const noexcept {
 		std::lock_guard<std::mutex> lock(this->session->sync);
+		debug(__FUNCTION__,"(",(void *) descriptor,")");
 		return lib3270_action_is_activatable(this->descriptor,this->session->hSession);
 	}
 
 	void Local::Action::activate() {
 		std::lock_guard<std::mutex> lock(this->session->sync);
+		debug(__FUNCTION__,"(",(void *) descriptor,")");
 		chkResponse(lib3270_action_activate(this->descriptor,this->session->hSession));
 	}
 

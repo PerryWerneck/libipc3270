@@ -36,6 +36,7 @@
  *
  */
 
+ #include <ipc-client-internals.h>
  #include <lib3270/ipc.h>
  #include <lib3270/toggle.h>
  #include <lib3270/properties.h>
@@ -44,6 +45,7 @@
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  TN3270::Action::Action(const LIB3270_ACTION *descriptor) {
+	debug(__FUNCTION__,"(",(void *) descriptor,",",descriptor->name,",",descriptor->summary,")");
  	this->descriptor = descriptor;
  }
 
@@ -51,10 +53,12 @@
  }
 
  const char * TN3270::Action::getDescription() const noexcept {
+	debug(__FUNCTION__,"(",(void *) descriptor,")");
  	return lib3270_property_get_description((const LIB3270_PROPERTY *) this->descriptor);
  }
 
  const char * TN3270::Action::getSummary() const noexcept {
+	debug(__FUNCTION__,"(",(void *) descriptor,")");
  	return lib3270_property_get_summary((const LIB3270_PROPERTY *) this->descriptor);
  }
 
