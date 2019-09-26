@@ -41,18 +41,28 @@
 	#define IPC3270_ACTION_H_INCLUDED
 
 	#include <lib3270/ipc.h>
+	#include <string.h>
 
 	namespace TN3270 {
 
 		/// @brief TN3270 Action
 		class TN3270_PUBLIC Action {
+		protected:
+			const LIB3270_ACTION *descriptor;
+
+			Action(const LIB3270_ACTION *descriptor);
+
 		public:
 			virtual bool activatable() const noexcept = 0;
 			virtual void activate() = 0;
+			virtual ~Action();
 
 			inline operator bool() const noexcept {
 				return activatable();
 			}
+
+			const char * getDescription() const noexcept;
+			const char * getSummary() const noexcept;
 
 		};
 

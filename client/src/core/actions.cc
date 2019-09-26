@@ -38,8 +38,25 @@
 
  #include <lib3270/ipc.h>
  #include <lib3270/toggle.h>
+ #include <lib3270/properties.h>
+ #include <lib3270/ipc/action.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
+
+ TN3270::Action::Action(const LIB3270_ACTION *descriptor) {
+ 	this->descriptor = descriptor;
+ }
+
+ TN3270::Action::~Action() {
+ }
+
+ const char * TN3270::Action::getDescription() const noexcept {
+ 	return lib3270_property_get_description((const LIB3270_PROPERTY *) this->descriptor);
+ }
+
+ const char * TN3270::Action::getSummary() const noexcept {
+ 	return lib3270_property_get_summary((const LIB3270_PROPERTY *) this->descriptor);
+ }
 
  std::vector<const LIB3270_ACTION *> TN3270::getActions() {
 

@@ -44,9 +44,8 @@
 
  namespace TN3270 {
 
-	Local::Action::Action(Session *session, const LIB3270_ACTION *descriptor) {
+	Local::Action::Action(Session *session, const LIB3270_ACTION *descriptor) : TN3270::Action(descriptor) {
 		this->session = session;
-		this->descriptor = descriptor;
 	}
 
 	bool Local::Action::activatable() const noexcept {
