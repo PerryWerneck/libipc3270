@@ -42,6 +42,7 @@
 
 	#include <config.h>
 	#include <ipc-client-internals.h>
+	#include <lib3270/ipc/action.h>
 	#include <string>
 	#include <lib3270.h>
 	#include <stdexcept>
@@ -53,8 +54,24 @@
 
 		namespace Local {
 
+			class Session;
+
+			class Action : public TN3270::Action {
+			private:
+				Session *session;
+				const LIB3270_ACTION *descriptor;
+
+			public:
+				Action(Session *hSession, const LIB3270_ACTION *descriptor);
+				bool activatable() const noexcept override;
+				void activate() override;
+
+			};
+
 			class TN3270_PRIVATE Session : public TN3270::Abstract::Session {
 			private:
+
+				friend class Action;
 
 				/// @brief Handle of the related instance of lib3270
 				H3270 * hSession;
@@ -89,12 +106,14 @@
 				virtual ~Session();
 
 				// Actions
+				TN3270::Action * getAction(const LIB3270_ACTION *descriptor) override;
+
 				void action(const char *action_name) override;
 				void connect(const char *url, int seconds) override;
 				void disconnect() override;
 				void pfkey(unsigned short value) override;
 				void pakey(unsigned short value) override;
-				void push(const Action action) override;
+				void push(const KeyboardAction action) override;
 				void print(LIB3270_CONTENT_OPTION option = LIB3270_CONTENT_ALL) override;
 
 				void wait(time_t seconds) const override;

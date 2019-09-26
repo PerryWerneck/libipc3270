@@ -439,6 +439,11 @@
 		value = getAttribute(name).getBoolean();
 	}
 
+	/// @brief Create an action object
+	Action * Session::getAction(const LIB3270_ACTION *descriptor) {
+		throw std::system_error(ENOTSUP, std::system_category());
+	}
+
 
  }
 

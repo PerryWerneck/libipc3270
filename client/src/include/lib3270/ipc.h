@@ -68,6 +68,7 @@
 
 		class Host;
 		class Controller;
+		class Action;
 
 		#define DEFAULT_TIMEOUT 5
 
@@ -222,8 +223,8 @@
 			PA_3
 		};
 
-		/// @brief LIB3270 Action.
-		enum Action : uint8_t {
+		/// @brief Keyboard Actions.
+		enum KeyboardAction : uint8_t {
 			ENTER,				///< @brief Enter key
 			ERASE,
 			ERASE_EOF,
@@ -436,7 +437,7 @@
 
 			void push(const PFKey key);
 			void push(const PAKey key);
-			virtual void push(const Action action) = 0;
+			virtual void push(const KeyboardAction action) = 0;
 
 			/// @brief Get contents of field ad address.
 			virtual void pop(int baddr, std::string &text) = 0;
@@ -541,8 +542,6 @@
 			/// @brief Set local charset.
 			virtual void setCharSet(const char *charset = NULL) = 0;
 
-			// Actions
-
 			/// @brief Execute action by name.
 			virtual void action(const char *action_name) = 0;
 
@@ -583,7 +582,8 @@
 			/// @brief Insert event listener.
 			// void insert(Event::Type type, std::function <void(const Event &event)> listener);
 
-			// Misc
+			/// @brief Create an action object
+			virtual Action * getAction(const LIB3270_ACTION *descriptor);
 
 			/// @brief Search
 			size_t find(const char * str, size_t pos = 0) const;
@@ -899,7 +899,7 @@
 	/// @param The action code.
 	///
 	/// @return The action description.
-	TN3270_PUBLIC const char * toCharString(const TN3270::Action action);
+	TN3270_PUBLIC const char * toCharString(const TN3270::KeyboardAction action);
 
 	template <typename T>
 	inline TN3270_PUBLIC TN3270::Session & operator<<(TN3270::Session& session, const T value) {

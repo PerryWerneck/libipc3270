@@ -40,7 +40,7 @@
 
 	#define IPC3270_REQUEST_H_INCLUDED
 
-	#include <config.h>
+	#include <lib3270/ipc.h>
 
 	#ifdef _WIN32
 		#include <winsock2.h>

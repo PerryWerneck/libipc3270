@@ -95,7 +95,7 @@
 				void disconnect() override;
 				void pfkey(unsigned short value) override;
 				void pakey(unsigned short value) override;
-				void push(const Action action) override;
+				void push(const KeyboardAction action) override;
 				void print(LIB3270_CONTENT_OPTION option = LIB3270_CONTENT_ALL) override;
 
 				void wait(time_t seconds) const override;

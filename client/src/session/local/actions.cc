@@ -38,10 +38,31 @@
 
  #include "private.h"
  #include <lib3270/actions.h>
+ #include <lib3270/ipc/action.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
+
+	Local::Action::Action(Session *session, const LIB3270_ACTION *descriptor) {
+		this->session = session;
+		this->descriptor = descriptor;
+	}
+
+	bool Local::Action::activatable() const noexcept {
+		std::lock_guard<std::mutex> lock(this->session->sync);
+		return lib3270_action_is_activatable(this->descriptor,this->session->hSession);
+	}
+
+	void Local::Action::activate() {
+		std::lock_guard<std::mutex> lock(this->session->sync);
+		chkResponse(lib3270_action_activate(this->descriptor,this->session->hSession));
+	}
+
+	TN3270::Action * Local::Session::getAction(const LIB3270_ACTION *descriptor) {
+		std::lock_guard<std::mutex> lock(sync);
+		return new Local::Action(this, descriptor);
+	}
 
 	void Local::Session::action(const char *action_name) {
 		std::lock_guard<std::mutex> lock(sync);
@@ -74,7 +95,7 @@
 
 	}
 
-	void Local::Session::push(const Action action) {
+	void Local::Session::push(const KeyboardAction action) {
 
 		typedef int (*ActionCallback)(H3270 *);
 

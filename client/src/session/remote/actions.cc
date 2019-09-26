@@ -113,7 +113,7 @@
 
 	}
 
-	void IPC::Session::push(const Action action) {
+	void IPC::Session::push(const KeyboardAction action) {
 		this->action(toCharString(action));
 	}
 

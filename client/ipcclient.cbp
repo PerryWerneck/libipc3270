@@ -68,6 +68,7 @@
 		<Unit filename="src/host/string.cc" />
 		<Unit filename="src/include/ipc-client-internals.h" />
 		<Unit filename="src/include/lib3270/ipc.h" />
+		<Unit filename="src/include/lib3270/ipc/action.h" />
 		<Unit filename="src/include/lib3270/ipc/request.h" />
 		<Unit filename="src/session/get.cc" />
 		<Unit filename="src/session/local/actions.cc" />
