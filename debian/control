@@ -8,6 +8,7 @@ Package: libipc3270
 Architecture: any
 Section: libs
 Depends: ${misc:Depends}, ${shlibs:Depends}
+Recommends: pw3270-plugin-ipc (= ${binary:Version})
 Provides: libipc3270 (= ${binary:Version})
 Description: TN3270 Access library.
  TN3270 access library originally designed as part of the pw3270 application.
@@ -29,5 +30,6 @@ Description: Debugging symbols for libipc3270
 Package: pw3270-plugin-ipc
 Architecture: any
 Depends: ${misc:Depends}, pw3270
+Enhances: libipc3270 (= ${binary:Version})
 Description: IPC server plugin for pw3270.
  This package provides a plugin exporting an active pw3270 to D-Bus.
