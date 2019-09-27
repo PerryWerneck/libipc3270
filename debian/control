@@ -1,0 +1,33 @@
+Source: libipc3270
+Section: unknown
+Priority: optional
+Maintainer: Perry Werneck <perry.werneck@gmail.com>
+Build-Depends: debhelper (>= 7), autotools-dev, autoconf, gettext, libssl-dev, libssl-dev, libdbus-1-dev, lib3270-dev
+
+Package: libipc3270
+Architecture: any
+Section: libs
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Provides: libipc3270 (= ${binary:Version})
+Description: TN3270 Access library.
+ TN3270 access library originally designed as part of the pw3270 application.
+
+Package: libipc3270-dev
+Architecture: any
+Provides: libipc3270-dev (= ${binary:Version}), libipc3270-5.2-dev (= ${binary:Version})
+Section: libdevel
+Depends: ${misc:Depends}, pkg-config, libipc3270-5.2 (= ${binary:Version})
+Description: TN3270 Access library development files.
+ TN3270 access library originally designed as part of the pw3270 application.
+
+Package: libipc3270-dbg
+Architecture: any
+Depends: libipc3270-5.2 (= ${binary:Version}), ${misc:Depends}
+Description: Debugging symbols for libipc3270
+ This package contains the debugging symbols for libipc3270.
+
+Package: pw3270-plugin-ipc
+Architecture: any
+Depends: ${misc:Depends}, pw3270
+Description: IPC server plugin for pw3270.
+ This package provides a plugin exporting an active pw3270 to D-Bus.

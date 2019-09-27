@@ -76,14 +76,17 @@ $(BINRLS)/libipc3270@LIBEXT@:
 
 install: \
 	install-plugin \
-	install-library
+	install-client \
+	install-devel
 
 install-plugin:
 	@$(MAKE) -C server DESTDIR=$(DESTDIR) install
-		
 
-install-library:
-	@$(MAKE) -C client DESTDIR=$(DESTDIR) install
+install-client:
+	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-shared
+
+install-devel:
+	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-devel
 
 doc:
 	@$(DOXYGEN) ./doxygen/doxyfile
