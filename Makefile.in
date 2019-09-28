@@ -76,7 +76,7 @@ $(BINRLS)/libipc3270@LIBEXT@:
 
 install: \
 	install-plugin \
-	install-client \
+	install-shared \
 	install-devel
 
 install-plugin:
