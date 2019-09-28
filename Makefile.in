@@ -82,7 +82,7 @@ install: \
 install-plugin:
 	@$(MAKE) -C server DESTDIR=$(DESTDIR) install
 
-install-client:
+install-shared:
 	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-shared
 
 install-devel:
