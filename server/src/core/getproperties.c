@@ -65,7 +65,7 @@ GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GEr
 			}
 
 			// Erro!
-			ipc3270_set_error(object,ENOENT,error);
+			ipc3270_set_error(object,errno,error);
 			return NULL;
 
 		}

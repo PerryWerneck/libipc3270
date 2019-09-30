@@ -46,3 +46,24 @@ int ipc3270_method_action(GObject *session, GVariant *request, GObject *response
 	return 0;
 }
 
+int ipc3270_method_activatable(GObject *session, GVariant *request, GObject *response, GError G_GNUC_UNUSED(**error)) {
+
+	if(g_variant_n_children(request) != 1) {
+		g_message("activatable was called with %u arguments.",(unsigned int) g_variant_n_children(request));
+		ipc3270_response_append_int32(response, EINVAL);
+	}
+
+	GVariant *value = g_variant_get_child_value(request,0);
+
+	LIB3270_ACTION * action = lib3270_action_get_by_name(g_variant_get_string(value,NULL));
+
+	if(action) {
+		ipc3270_response_append_int32(response, lib3270_action_is_activatable(action, ipc3270_get_session(session)));
+	} else {
+		ipc3270_response_append_int32(response, ENOENT);
+	}
+
+	g_variant_unref(value);
+
+	return 0;
+}

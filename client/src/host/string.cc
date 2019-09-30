@@ -60,11 +60,19 @@ std::string TN3270::Host::toString(unsigned short row, unsigned short col, int l
 
 }
 
-/// @brief Search
+/// @brief Checks if the terminal contains the string.
 size_t TN3270::Host::find(const char * str, size_t pos) const {
 
 	this->session->waitForReady(this->timeout);
 	return this->session->find(str,pos);
+
+}
+
+/// @brief Get the number of occurrences of a string in the terminal.
+size_t TN3270::Host::count(const char * str, size_t pos) const {
+
+	this->session->waitForReady(this->timeout);
+	return this->session->count(str,pos);
 
 }
 

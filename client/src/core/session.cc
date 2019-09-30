@@ -378,9 +378,23 @@
 		return rc;
 	}
 
-	/// @brief Search
+	/// @brief Checks if the terminal contains the string.
 	size_t Session::find(const char * str, size_t pos) const {
 		return toString((int) 0,(int) -1, '\0').find(str,pos);
+	}
+
+	/// @brief Get the number of occurrences of a string in the terminal.
+	size_t Session::count(const char * str, size_t pos) const {
+
+		std::string contents = toString((int) 0,(int) -1, '\0');
+		size_t rc = 0;
+
+		while( (pos = contents.find(str,pos)) != std::string::npos) {
+			rc++;
+		}
+
+		return rc;
+
 	}
 
 	/// @brief Compare contents.

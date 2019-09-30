@@ -585,8 +585,11 @@
 			/// @brief Create an action object
 			virtual Action * getAction(const LIB3270_ACTION *descriptor);
 
-			/// @brief Search
+			/// @brief Checks if the terminal contains the string.
 			size_t find(const char * str, size_t pos = 0) const;
+
+			/// @brief Get the number of occurrences of a string in the terminal.
+			size_t count(const char * str, size_t pos = 0) const;
 
 			/// @brief Compare contents.
 			int compare(int baddr, const char* s, int len = -1) const;
@@ -863,8 +866,11 @@
 				return session->wait(addr,text,timeout);
 			}
 
-			/// @brief Search
+			/// @brief Checks if the terminal contains the string.
 			size_t find(const char * str, size_t pos = 0) const;
+
+			/// @brief Get the number of occurrences of a string in the terminal.
+			size_t count(const char * str, size_t pos = 0) const;
 
 			/// @brief Compare contents.
 			int compare(int baddr, const char* s, int len = -1) const;

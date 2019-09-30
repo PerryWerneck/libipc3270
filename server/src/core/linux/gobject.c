@@ -112,6 +112,10 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='s' name='name' direction='in' />" \
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>"
+		"	<method name='activatable'>"
+		"		<arg type='s' name='name' direction='in' />" \
+		"		<arg type='b' name='result' direction='out' />" \
+		"	</method>"
 		"	<method name='pfkey'>" \
 		"		<arg type='i' name='keycode' direction='in'/>" \
 		"		<arg type='i' name='result' direction='out' />" \

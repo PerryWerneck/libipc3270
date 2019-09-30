@@ -42,6 +42,7 @@
 
 	#include <config.h>
 	#include <ipc-client-internals.h>
+	#include <lib3270/ipc/action.h>
 	#include <string>
 	#include <lib3270.h>
 	#include <stdexcept>
@@ -52,6 +53,20 @@
 	namespace TN3270 {
 
 		namespace IPC {
+
+			class Session;
+
+			class Action : public TN3270::Action {
+			private:
+				Session *session;
+
+			public:
+				Action(Session *session, const LIB3270_ACTION *descriptor);
+				bool activatable() const override;
+				void activate() override;
+				void wait(time_t seconds) override;
+
+			};
 
 			class TN3270_PRIVATE Session : public TN3270::Abstract::Session {
 			private:

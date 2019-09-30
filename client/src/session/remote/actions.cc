@@ -47,6 +47,30 @@
 
  namespace TN3270 {
 
+	IPC::Action::Action(Session *session, const LIB3270_ACTION *descriptor) : TN3270::Action(descriptor) {
+		this->session = session;
+	}
+
+	bool IPC::Action::activatable() const {
+
+		bool rc;
+
+		Request(*session,"activatable")
+			.push(descriptor->name)
+			.call()
+			.pop(rc);
+
+		return rc;
+	}
+
+	void IPC::Action::activate() {
+		session->action(descriptor->name);
+	}
+
+	void IPC::Action::wait(time_t seconds) {
+		session->waitForReady(seconds);
+	}
+
 	void IPC::Session::action(const char *action_name) {
 
 		int32_t rc;

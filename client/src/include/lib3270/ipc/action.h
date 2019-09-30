@@ -53,12 +53,12 @@
 			Action(const LIB3270_ACTION *descriptor);
 
 		public:
-			virtual bool activatable() const noexcept = 0;
+			virtual bool activatable() const = 0;
 			virtual void activate() = 0;
 			virtual void wait(time_t seconds = 0) = 0;
 			virtual ~Action();
 
-			inline operator bool() const noexcept {
+			inline operator bool() const {
 				return activatable();
 			}
 
