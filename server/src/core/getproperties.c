@@ -55,9 +55,10 @@ GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GEr
 		if(boolprop[ix].get && !g_ascii_strcasecmp(boolprop[ix].name, property_name)) {
 
 			// Found it!
+			errno = 0;
 			int value = boolprop[ix].get(hSession);
 
-			debug("%s=%d",property_name,value);
+			debug("%s=%d (errno=%d)",property_name,value,errno);
 
 			if(value > 0 || errno == 0) {
 				return g_variant_new_boolean(value != 0);
