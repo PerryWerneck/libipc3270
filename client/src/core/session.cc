@@ -409,6 +409,7 @@
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 
+	/*
 	Attribute Session::getAttribute(const char *name) const {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
@@ -416,6 +417,7 @@
 	void Session::getAttributes(std::vector<Attribute> & attributes) const {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
+	*/
 
 	std::vector<Attribute> Session::getAttributes() const {
 		std::vector<Attribute> attributes;

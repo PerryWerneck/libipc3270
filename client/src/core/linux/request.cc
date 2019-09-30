@@ -78,7 +78,7 @@
 
 		dbus_message_iter_init(msg.in, &msg.iter);
 
-		debug(__FUNCTION__," got a valid response");
+//		debug(__FUNCTION__," got a valid response");
 
 		return *this;
 
@@ -196,6 +196,65 @@
 
 	}
 
+	static unsigned int getBooleanValue(DBusMessageIter &iter) {
+
+		if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_UINT32) {
+
+			dbus_uint32_t rc = 0;
+			dbus_message_iter_get_basic(&iter, &rc);
+			return rc != 0;
+
+		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_UINT16) {
+
+			dbus_uint16_t rc = 0;
+			dbus_message_iter_get_basic(&iter, &rc);
+			return rc != 0;
+
+		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_BOOLEAN) {
+
+			dbus_bool_t rc = 0;
+			dbus_message_iter_get_basic(&iter, &rc);
+			return rc;
+
+		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_VARIANT) {
+
+			DBusMessageIter sub;
+			int current_type;
+
+			dbus_message_iter_recurse(&iter, &sub);
+
+			while ((current_type = dbus_message_iter_get_arg_type(&sub)) != DBUS_TYPE_INVALID) {
+
+				if (current_type == DBUS_TYPE_UINT32) {
+
+					dbus_uint32_t rc = 0;
+					dbus_message_iter_get_basic(&sub, &rc);
+					return rc != 0;
+
+				} else if (current_type == DBUS_TYPE_UINT16) {
+
+					dbus_uint16_t rc = 0;
+					dbus_message_iter_get_basic(&sub, &rc);
+					return rc != 0;
+
+				} else if (current_type == DBUS_TYPE_BOOLEAN) {
+
+					dbus_bool_t rc = 0;
+					dbus_message_iter_get_basic(&sub, &rc);
+					return rc;
+
+				}
+
+				dbus_message_iter_next(&sub);
+			}
+
+		}
+
+		debug("Argument type is ", ((char) dbus_message_iter_get_arg_type(&iter)) );
+		throw std::runtime_error("Expected an integer data type");
+
+	}
+
 	static int getIntValue(DBusMessageIter &iter) {
 
 		if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INT32) {
@@ -247,7 +306,7 @@
 
 		value = getIntValue(msg.iter);
 		dbus_message_iter_next(&msg.iter);
-		debug(__FUNCTION__,"= \"",value,"\"");
+//		debug(__FUNCTION__,"= \"",value,"\"");
 
 		return *this;
 
@@ -257,7 +316,17 @@
 
 		value = getUIntValue(msg.iter);
 		dbus_message_iter_next(&msg.iter);
-		debug(__FUNCTION__,"= \"",value,"\"");
+//		debug(__FUNCTION__,"= \"",value,"\"");
+
+		return *this;
+
+	}
+
+	IPC::Request & IPC::Request::Request::pop(bool &value) {
+
+		value = getBooleanValue(msg.iter);
+		dbus_message_iter_next(&msg.iter);
+//		debug(__FUNCTION__,"= \"",value,"\"");
 
 		return *this;
 

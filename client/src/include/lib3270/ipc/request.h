@@ -155,6 +155,7 @@
 				Request & pop(std::string &value);
 				Request & pop(int &value);
 				Request & pop(unsigned int &value);
+				Request & pop(bool &value);
 
 			};
 

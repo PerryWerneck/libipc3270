@@ -122,6 +122,10 @@
 				void setAttribute(const char *name, const int value) override;
 				void setAttribute(const char *name, const char *value) override;
 
+				// Attributes
+				Attribute getAttribute(const char *name) const override;
+				void getAttributes(std::vector<Attribute> & attributes) const override;
+
 				std::string getVersion() const override;
 				std::string getRevision() const override;
 				std::string getLUName() const override;

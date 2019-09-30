@@ -156,6 +156,7 @@
 
 	};
 
+	// Unsigned int attribute
 	class TN3270_PRIVATE UnsignedIntAttribute : public TemplateAttribute<LIB3270_UINT_PROPERTY> {
 	public:
 		UnsignedIntAttribute(H3270 *hSession, const LIB3270_UINT_PROPERTY *worker) : TemplateAttribute<LIB3270_UINT_PROPERTY>(hSession, Attribute::Boolean, worker) {
@@ -190,6 +191,7 @@
 		}
 	};
 
+	// String attribute
 	class TN3270_PRIVATE StringAttribute : public TemplateAttribute<LIB3270_STRING_PROPERTY> {
 	public:
 		StringAttribute(H3270 *hSession, const LIB3270_STRING_PROPERTY *worker) :  TemplateAttribute<LIB3270_STRING_PROPERTY>(hSession, Attribute::String, worker) {
@@ -226,6 +228,7 @@
 		}
 	};
 
+	// Toggle attribute
 	class TN3270_PRIVATE ToggleAttribute : public TemplateAttribute<LIB3270_TOGGLE_ENTRY> {
 	public:
 		ToggleAttribute(H3270 *hSession, const LIB3270_TOGGLE_ENTRY *worker) :  TemplateAttribute<LIB3270_TOGGLE_ENTRY>(hSession, Attribute::Boolean, worker) {
