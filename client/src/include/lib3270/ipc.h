@@ -734,6 +734,10 @@
 			Attribute getAttribute(const char *name) const;
 			std::vector<Attribute> getAttributes() const;
 
+			inline time_t getTimeout() const noexcept {
+				return this->timeout;
+			}
+
 			inline Attribute operator[](const char *name) const {
 				return getAttribute(name);
 			}
@@ -778,6 +782,10 @@
 			}
 
 			// Set properties
+			inline void setTimeout(time_t timeout = DEFAULT_TIMEOUT) noexcept {
+				this->timeout = timeout;
+			}
+
 			inline void setUnlockDelay(unsigned short delay = 350) {
 				session->setUnlockDelay(delay);
 			}
