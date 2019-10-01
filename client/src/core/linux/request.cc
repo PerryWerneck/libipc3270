@@ -46,37 +46,38 @@
 
 	IPC::Request::Request(DBusConnection * conn) {
 		this->conn = conn;
-		this->msg.in = nullptr;
-		this->msg.out = nullptr;
+		this->response.msg = nullptr;
+		this->request.msg = nullptr;
 	}
 
 	IPC::Request::~Request() {
-		if(msg.out) {
-			dbus_message_unref(msg.out);
+		if(request.msg) {
+			dbus_message_unref(request.msg);
 		}
-		if(msg.in) {
-			dbus_message_unref(msg.in);
+
+		if(response.msg) {
+			dbus_message_unref(response.msg);
 		}
 	}
 
 	IPC::Request & IPC::Request::call() {
 
-		if(msg.in) {
-			dbus_message_unref(msg.in);
-			msg.in = nullptr;
+		if(response.msg) {
+			dbus_message_unref(response.msg);
+			response.msg = nullptr;
 		}
 
 		DBusError error;
 		dbus_error_init(&error);
-		this->msg.in = dbus_connection_send_with_reply_and_block(this->conn,this->msg.out,10000,&error);
+		response.msg = dbus_connection_send_with_reply_and_block(this->conn,request.msg,10000,&error);
 
-		if(!this->msg.in) {
+		if(!response.msg) {
 			string message = error.message;
 			dbus_error_free(&error);
 			throw std::runtime_error(message.c_str());
 		}
 
-		dbus_message_iter_init(msg.in, &msg.iter);
+		dbus_message_iter_init(response.msg, &response.iter);
 
 //		debug(__FUNCTION__," got a valid response");
 
@@ -84,46 +85,53 @@
 
 	}
 
+	IPC::Request & IPC::Request::push(int type, const void *value) {
+
+		DBusMessageIter iter;
+		dbus_message_iter_init_append(request.msg, &iter);
+
+		 if (!dbus_message_iter_append_basic(&iter,type,value)) {
+			throw std::runtime_error("Can't append value");
+		 }
+
+		 return *this;
+
+	}
+
 	IPC::Request & IPC::Request::push(const char *arg) {
-		dbus_message_append_args(this->msg.out,DBUS_TYPE_STRING,&arg,DBUS_TYPE_INVALID);
-		return *this;
+		return push(DBUS_TYPE_STRING,&arg);
 	}
 
 	IPC::Request & IPC::Request::push(const bool arg) {
-		dbus_message_append_args(this->msg.out,DBUS_TYPE_BOOLEAN,&arg,DBUS_TYPE_INVALID);
-		return *this;
+		return push(DBUS_TYPE_BOOLEAN,&arg);
 	}
 
 	IPC::Request & IPC::Request::push(const uint8_t arg) {
-		dbus_message_append_args(this->msg.out,DBUS_TYPE_BYTE,&arg,DBUS_TYPE_INVALID);
-		return *this;
+		return push(DBUS_TYPE_BYTE,&arg);
 	}
 
 	IPC::Request & IPC::Request::push(const int32_t arg) {
-		dbus_message_append_args(this->msg.out,DBUS_TYPE_INT32,&arg,DBUS_TYPE_INVALID);
-		return *this;
+		return push(DBUS_TYPE_INT32,&arg);
 	}
 
 	IPC::Request & IPC::Request::push(const uint32_t arg) {
-		dbus_message_append_args(this->msg.out,DBUS_TYPE_UINT32,&arg,DBUS_TYPE_INVALID);
-		return *this;
+		return push(DBUS_TYPE_UINT32,&arg);
 	}
-
 
 	IPC::Request & IPC::Request::pop(std::string &value) {
 
 		const char * str = "";
 
-		if(dbus_message_iter_get_arg_type(&msg.iter) == DBUS_TYPE_STRING) {
+		if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_STRING) {
 
-			dbus_message_iter_get_basic(&msg.iter, &str);
+			dbus_message_iter_get_basic(&response.iter, &str);
 
-		} else if(dbus_message_iter_get_arg_type(&msg.iter) == DBUS_TYPE_VARIANT) {
+		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_VARIANT) {
 
 			DBusMessageIter sub;
 			int current_type;
 
-			dbus_message_iter_recurse(&msg.iter, &sub);
+			dbus_message_iter_recurse(&response.iter, &sub);
 
             while ((current_type = dbus_message_iter_get_arg_type(&sub)) != DBUS_TYPE_INVALID) {
 
@@ -136,12 +144,12 @@
 
 		} else {
 
-			debug("Argument type is ", ((char) dbus_message_iter_get_arg_type(&msg.iter)) );
+			debug("Argument type is ", ((char) dbus_message_iter_get_arg_type(&response.iter)) );
 			throw std::runtime_error("Expected an string data type");
 
 		}
 
-		dbus_message_iter_next(&msg.iter);
+		dbus_message_iter_next(&response.iter);
 
 		value.assign(str);
 
@@ -304,8 +312,8 @@
 
 	IPC::Request & IPC::Request::Request::pop(int &value) {
 
-		value = getIntValue(msg.iter);
-		dbus_message_iter_next(&msg.iter);
+		value = getIntValue(response.iter);
+		dbus_message_iter_next(&response.iter);
 //		debug(__FUNCTION__,"= \"",value,"\"");
 
 		return *this;
@@ -314,8 +322,8 @@
 
 	IPC::Request & IPC::Request::Request::pop(unsigned int &value) {
 
-		value = getUIntValue(msg.iter);
-		dbus_message_iter_next(&msg.iter);
+		value = getUIntValue(response.iter);
+		dbus_message_iter_next(&response.iter);
 //		debug(__FUNCTION__,"= \"",value,"\"");
 
 		return *this;
@@ -324,8 +332,8 @@
 
 	IPC::Request & IPC::Request::Request::pop(bool &value) {
 
-		value = getBooleanValue(msg.iter);
-		dbus_message_iter_next(&msg.iter);
+		value = getBooleanValue(response.iter);
+		dbus_message_iter_next(&response.iter);
 //		debug(__FUNCTION__,"= \"",value,"\"");
 
 		return *this;

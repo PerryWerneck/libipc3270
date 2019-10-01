@@ -49,18 +49,14 @@
 
 	IPC::Request::Request(const IPC::Session &session, const char *method) : Request(session.conn) {
 
-#ifdef DEBUG
-		clog << "Creating request \"" << method << "\"" << endl;
-#endif // DEBUG
-
-		this->msg.out = dbus_message_new_method_call(
+		request.msg = dbus_message_new_method_call(
 							session.name.c_str(),					// Destination
 							session.path.c_str(),					// Path
 							session.interface.c_str(),				// Interface
 							method									// Method
 						);
 
-		if(!msg.out) {
+		if(!request.msg) {
 			throw std::runtime_error("Can't create D-Bus Method Call");
 		}
 
@@ -68,14 +64,14 @@
 
 	IPC::Request::Request(const IPC::Session &session, bool isSet, const char *property) : Request(session.conn) {
 
-		this->msg.out = dbus_message_new_method_call(
+		request.msg = dbus_message_new_method_call(
 							session.name.c_str(),					// Destination
 							session.path.c_str(),					// Path
 							"org.freedesktop.DBus.Properties",		// Interface
 							(isSet ? "Set" : "Get")
 						);
 
-		if(!msg.out) {
+		if(!request.msg) {
 			throw std::runtime_error("Can't create D-Bus Property Call");
 		}
 
@@ -89,12 +85,8 @@
 		//
 		const char *interface_name = session.interface.c_str();
 
-		dbus_message_append_args(
-				this->msg.out,
-					DBUS_TYPE_STRING,&interface_name,
-					DBUS_TYPE_STRING,&property,
-					DBUS_TYPE_INVALID
-				);
+		push(DBUS_TYPE_STRING,&interface_name);
+		push(DBUS_TYPE_STRING,&property);
 
 	}
 

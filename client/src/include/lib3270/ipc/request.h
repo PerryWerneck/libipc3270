@@ -105,12 +105,17 @@
 				uint16_t * outvalues;
 
 #else
+				/// @brief Message received from server.
 				struct {
-					DBusMessage		* in;
-					DBusMessage		* out;
+					DBusMessage		* msg;
 					DBusMessageIter	  iter;
+				} response;
 
-				} msg;
+				/// @brief Message who will be sent to server.
+				struct {
+					DBusMessage		* msg;
+				} request;
+
 				DBusConnection	* conn;
 
 				Request(DBusConnection * conn);
@@ -121,6 +126,11 @@
 
 #ifdef _WIN32
 				Request(HANDLE hPipe, const char *name, uint16_t type);
+
+#else
+
+				IPC::Request & push(int type, const void *value);
+
 #endif // _WIN32
 
 			public:
