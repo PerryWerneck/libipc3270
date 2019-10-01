@@ -197,13 +197,13 @@
 	//testAttributes(session);
 
 	{
-		TN3270::Host host{"",nullptr,10};
+		TN3270::Host host{":a",nullptr,10};
 
 		cout << "pre: " << host["url"] << endl;
 
-		host["url"] = "http://www.google.com.br";
+		// host["url"] = "http://www.google.com.br";
 
-		cout << "post: " << host["url"] << endl;
+		// cout << "post: " << host["url"] << endl;
 	}
 
 

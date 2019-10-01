@@ -110,6 +110,41 @@
 				return (attr.getInt32() != 0);
 			};
 
+			if(worker->set) {
+
+				set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					int32_t rc;
+
+					IPC::Request(*w->session,true,w->methods->name)
+						.push(value)
+						.call()
+						.pop(rc);
+
+					if(rc) {
+						throw std::system_error((int) rc, std::system_category());
+					}
+
+				};
+
+				set.asUint32 = [](const Attribute & attr, const void *worker, const uint32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					int32_t rc;
+
+					IPC::Request(*w->session,true,w->methods->name)
+						.push(value)
+						.call()
+						.pop(rc);
+
+					if(rc) {
+						throw std::system_error((int) rc, std::system_category());
+					}
+
+				};
+
+			}
 
 		}
 
@@ -145,6 +180,40 @@
 				return value;
 			};
 
+			if(worker->set) {
+
+				set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					int32_t rc;
+
+					IPC::Request(*w->session,true,w->methods->name)
+						.push(value)
+						.call()
+						.pop(rc);
+
+					if(rc) {
+						throw std::system_error((int) rc, std::system_category());
+					}
+
+				};
+
+				set.asBoolean = [](const Attribute & attr, const void *worker, const bool value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					int32_t rc;
+
+					IPC::Request(*w->session,true,w->methods->name)
+						.push(value)
+						.call()
+						.pop(rc);
+
+					if(rc) {
+						throw std::system_error((int) rc, std::system_category());
+					}
+
+				};
+			}
 
 		}
 
@@ -181,6 +250,41 @@
 				return (attr.getUint32() != 0);
 			};
 
+			if(worker->set) {
+
+				set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					int32_t rc;
+
+					IPC::Request(*w->session,true,w->methods->name)
+						.push(value)
+						.call()
+						.pop(rc);
+
+					if(rc) {
+						throw std::system_error((int) rc, std::system_category());
+					}
+
+				};
+
+				set.asUint32 = [](const Attribute & attr, const void *worker, const uint32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					int32_t rc;
+
+					IPC::Request(*w->session,true,w->methods->name)
+						.push(value)
+						.call()
+						.pop(rc);
+
+					if(rc) {
+						throw std::system_error((int) rc, std::system_category());
+					}
+
+				};
+
+			}
 		}
 	};
 
@@ -190,7 +294,6 @@
 		StringAttribute(const IPC::Session *session, const LIB3270_STRING_PROPERTY *worker) :  TemplateAttribute<LIB3270_STRING_PROPERTY>(session, Attribute::String, worker) {
 
 			get.asString = [](const Attribute & attr, const void *worker) {
-
 
 				const struct Worker * w = (const struct Worker *) worker;
 				string value;
@@ -216,6 +319,57 @@
 
 			};
 
+			if(worker->set) {
+
+				set.asString = [](const Attribute & attr, const void *worker, const char *value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					int32_t rc;
+
+					IPC::Request(*w->session,true,w->methods->name)
+						.push(value)
+						.call()
+						.pop(rc);
+
+					if(rc) {
+						throw std::system_error((int) rc, std::system_category());
+					}
+
+				};
+
+				set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					int32_t rc;
+
+					IPC::Request(*w->session,true,w->methods->name)
+						.push(std::to_string(value).c_str())
+						.call()
+						.pop(rc);
+
+					if(rc) {
+						throw std::system_error((int) rc, std::system_category());
+					}
+
+				};
+
+				set.asUint32 = [](const Attribute & attr, const void *worker, const uint32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					int32_t rc;
+
+					IPC::Request(*w->session,true,w->methods->name)
+						.push(std::to_string(value).c_str())
+						.call()
+						.pop(rc);
+
+					if(rc) {
+						throw std::system_error((int) rc, std::system_category());
+					}
+
+				};
+
+			}
 
 		}
 	};
