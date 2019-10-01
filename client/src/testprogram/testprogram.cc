@@ -41,6 +41,7 @@
  #include <cstdlib>
  #include <lib3270.h>
  #include <lib3270/ipc.h>
+ #include <lib3270/ipc/action.h>
 
  using namespace std;
 
@@ -196,6 +197,7 @@
 	//testHost(session);
 	//testAttributes(session);
 
+	/*
 	{
 		TN3270::Host host{":a",nullptr,10};
 
@@ -204,6 +206,17 @@
 		host["url"] = "http://www.google.com.br";
 
 		cout << "post: " << host["url"] << endl;
+	}
+	*/
+
+	{
+		TN3270::Host host{":a",nullptr,10};
+
+		TN3270::Action * action = host.getAction("reconnect");
+
+        action->activatable();
+
+		delete action;
 	}
 
 

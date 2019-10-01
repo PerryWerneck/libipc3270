@@ -28,46 +28,22 @@
  */
 
 /**
- * @file lib3270/ipc/action.h
+ * @file
  *
- * @brief Declares the TN3270 IPC Action object.
+ * @brief
  *
  * @author perry.werneck@gmail.com
  *
  */
 
-#ifndef IPC3270_ACTION_H_INCLUDED
+#include <ipc-client-internals.h>
 
-	#define IPC3270_ACTION_H_INCLUDED
+/*---[ Implement ]----------------------------------------------------------------------------------*/
 
-	#include <lib3270/ipc.h>
-	#include <string.h>
+ namespace TN3270 {
 
-	namespace TN3270 {
 
-		/// @brief TN3270 Action
-		class TN3270_PUBLIC Action {
-		protected:
-			const LIB3270_ACTION *descriptor;
 
-			Action(const LIB3270_ACTION *descriptor);
+ }
 
-		public:
-			virtual bool activatable() const = 0;
-			virtual void activate() = 0;
-			virtual void wait(time_t seconds = 0) = 0;
-			virtual ~Action();
 
-			inline operator bool() const {
-				return activatable();
-			}
-
-			const char * getName() const noexcept;
-			const char * getDescription() const noexcept;
-			const char * getSummary() const noexcept;
-
-		};
-
-	}
-
-#endif // IPC3270_ACTION_H_INCLUDED

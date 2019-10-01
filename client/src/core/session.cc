@@ -460,6 +460,20 @@
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 
+	Action * Session::getAction(const char *name) {
+
+		for(auto action : getActions()) {
+
+			if(strcasecmp(action->name,name) == 0) {
+				return getAction(action);
+			}
+
+		}
+
+		throw std::system_error(EINVAL, std::system_category());
+
+	}
+
 
  }
 

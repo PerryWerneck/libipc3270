@@ -583,8 +583,11 @@
 			/// @brief Insert event listener.
 			// void insert(Event::Type type, std::function <void(const Event &event)> listener);
 
-			/// @brief Create an action object
+			/// @brief Create an action object.
 			virtual Action * getAction(const LIB3270_ACTION *descriptor);
+
+			/// @brief Create an action object.
+			Action * getAction(const char *name);
 
 			/// @brief Checks if the terminal contains the string.
 			size_t find(const char * str, size_t pos = 0) const;
@@ -812,6 +815,15 @@
 			///
 			inline TN3270::Action * getAction(const LIB3270_ACTION *descriptor) {
 				return session->getAction(descriptor);
+			}
+
+			/// @brief Create new action object.
+			///
+			/// Alocate a new action object associated with the session, delete it
+			/// when no longer necessary.
+			///
+			inline TN3270::Action * getAction(const char *name) {
+				return session->getAction(name);
 			}
 
 			/// @brief Send PF.

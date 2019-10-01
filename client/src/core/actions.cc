@@ -52,13 +52,15 @@
  TN3270::Action::~Action() {
  }
 
+ const char * TN3270::Action::getName() const noexcept {
+ 	return ((const LIB3270_PROPERTY *) this->descriptor)->name;
+ }
+
  const char * TN3270::Action::getDescription() const noexcept {
-	debug(__FUNCTION__,"(",(void *) descriptor,")");
  	return lib3270_property_get_description((const LIB3270_PROPERTY *) this->descriptor);
  }
 
  const char * TN3270::Action::getSummary() const noexcept {
-	debug(__FUNCTION__,"(",(void *) descriptor,")");
  	return lib3270_property_get_summary((const LIB3270_PROPERTY *) this->descriptor);
  }
 
