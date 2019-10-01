@@ -340,6 +340,7 @@
 			}
 
 			inline void setInt32(const int32_t value) {
+				printf("\n%s %d\n\n",__FUNCTION__,value);
 				set.asInt32(*this,data,value);
 			}
 

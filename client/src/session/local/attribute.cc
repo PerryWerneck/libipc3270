@@ -114,6 +114,23 @@
 				return (attr.getInt32() != 0);
 			};
 
+			if(worker->set) {
+
+				set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					w->methods->set(w->hSession,(int) value);
+
+				};
+
+				set.asUint32 = [](const Attribute & attr, const void *worker, const uint32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					w->methods->set(w->hSession,(int) value);
+
+				};
+
+			}
 
 		}
 
@@ -151,6 +168,23 @@
 				return (attr.getInt32() != 0);
 			};
 
+			if(worker->set) {
+
+				set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					w->methods->set(w->hSession,(int) value);
+
+				};
+
+				set.asUint32 = [](const Attribute & attr, const void *worker, const uint32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					w->methods->set(w->hSession,(int) value);
+
+				};
+
+			}
 
 		}
 
@@ -188,6 +222,24 @@
 				return (attr.getUint32() != 0);
 			};
 
+			if(worker->set) {
+
+				set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					w->methods->set(w->hSession,(unsigned int) value);
+
+				};
+
+				set.asUint32 = [](const Attribute & attr, const void *worker, const uint32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					w->methods->set(w->hSession,(unsigned int) value);
+
+				};
+
+			}
+
 		}
 	};
 
@@ -223,6 +275,31 @@
 
 				throw std::system_error(errno, std::system_category());
 			};
+
+			if(worker->set) {
+
+				set.asString = [](const Attribute & attr, const void *worker, const char *value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					w->methods->set(w->hSession,value);
+
+				};
+
+				set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					w->methods->set(w->hSession,std::to_string(value).c_str());
+
+				};
+
+				set.asUint32 = [](const Attribute & attr, const void *worker, const uint32_t value) {
+
+					const struct Worker * w = (const struct Worker *) worker;
+					w->methods->set(w->hSession,std::to_string(value).c_str());
+
+				};
+
+			}
 
 
 		}
