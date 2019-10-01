@@ -114,6 +114,7 @@
 				/// @brief Message who will be sent to server.
 				struct {
 					DBusMessage		* msg;
+					DBusMessageIter	  iter;
 				} request;
 
 				DBusConnection	* conn;

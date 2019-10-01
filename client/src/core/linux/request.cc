@@ -87,10 +87,7 @@
 
 	IPC::Request & IPC::Request::push(int type, const void *value) {
 
-		DBusMessageIter iter;
-		dbus_message_iter_init_append(request.msg, &iter);
-
-		 if (!dbus_message_iter_append_basic(&iter,type,value)) {
+		 if (!dbus_message_iter_append_basic(&request.iter,type,value)) {
 			throw std::runtime_error("Can't append value");
 		 }
 

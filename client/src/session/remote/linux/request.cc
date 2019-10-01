@@ -60,6 +60,8 @@
 			throw std::runtime_error("Can't create D-Bus Method Call");
 		}
 
+		dbus_message_iter_init_append(request.msg, &request.iter);
+
 	}
 
 	IPC::Request::Request(const IPC::Session &session, bool isSet, const char *property) : Request(session.conn) {
@@ -74,6 +76,8 @@
 		if(!request.msg) {
 			throw std::runtime_error("Can't create D-Bus Property Call");
 		}
+
+		dbus_message_iter_init_append(request.msg, &request.iter);
 
 		//
 		// https://dbus.freedesktop.org/doc/dbus-specification.html#standard-interfaces-properties
