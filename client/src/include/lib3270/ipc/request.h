@@ -113,9 +113,10 @@
 
 				/// @brief Message who will be sent to server.
 				struct {
-					DBusMessage		* msg;
-					DBusMessageIter	  iter;
-				} request;
+					DBusMessage		* msg;			///< @brief The request message.
+					DBusMessageIter	  iter;			///< @brief Arguments iter.
+					bool			  variant;		///< @brief Put arguments as variants?
+ 				} request;
 
 				DBusConnection	* conn;
 

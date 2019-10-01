@@ -92,6 +92,9 @@
 		push(DBUS_TYPE_STRING,&interface_name);
 		push(DBUS_TYPE_STRING,&property);
 
+		// Set property argument should be variant!
+		this->request.variant = isSet;
+
 	}
 
  }

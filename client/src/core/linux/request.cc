@@ -37,6 +37,7 @@
  */
 
  #include <ipc-client-internals.h>
+ #include <cstring>
 
  using std::string;
 
@@ -46,8 +47,10 @@
 
 	IPC::Request::Request(DBusConnection * conn) {
 		this->conn = conn;
-		this->response.msg = nullptr;
-		this->request.msg = nullptr;
+
+		memset(&response,0,sizeof(response));
+		memset(&request,0,sizeof(request));
+
 	}
 
 	IPC::Request::~Request() {
@@ -87,11 +90,36 @@
 
 	IPC::Request & IPC::Request::push(int type, const void *value) {
 
-		 if (!dbus_message_iter_append_basic(&request.iter,type,value)) {
-			throw std::runtime_error("Can't append value");
-		 }
+		if(request.variant) {
 
-		 return *this;
+			// Is variant
+			DBusMessageIter iter;
+			char signature[] = { (char) type, 0 };
+
+			if(!dbus_message_iter_open_container(&request.iter, DBUS_TYPE_VARIANT, signature, &iter)) {
+				throw std::runtime_error("Can't open variant");
+			}
+
+			if(!dbus_message_iter_append_basic(&iter,type,value)) {
+				dbus_message_iter_close_container(&request.iter, &iter);
+				throw std::runtime_error("Can't append variant");
+			}
+
+			if (!dbus_message_iter_close_container(&request.iter, &iter)) {
+				throw std::runtime_error("Can't close variant");
+			}
+
+			return *this;
+
+		} else {
+
+			// Basic type.
+			if(dbus_message_iter_append_basic(&request.iter,type,value))
+				return *this;
+
+		}
+
+		throw std::runtime_error("Can't append value");
 
 	}
 
@@ -302,7 +330,7 @@
 
 		}
 
-		debug("Argument type is ", ((char) dbus_message_iter_get_arg_type(&iter)) );
+		debug("Argument type is %d", ((int) dbus_message_iter_get_arg_type(&iter)) );
 		throw std::runtime_error("Expected an integer data type");
 
 	}
