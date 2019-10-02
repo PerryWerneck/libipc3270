@@ -197,18 +197,23 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='u' name='attribute' direction='out' />" \
 		"	</method>" \
 
+		"	<method name= 'waitForString'>" \
+		"		<arg type='s' name='text' direction='in' />" \
+		"		<arg type='u' name='seconds' direction='in' />" \
+		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>" \
 		"	<method name= 'waitForStringAt'>" \
 		"		<arg type='u' name='row' direction='in' />" \
 		"		<arg type='u' name='col' direction='in' />" \
 		"		<arg type='s' name='text' direction='in' />" \
 		"		<arg type='u' name='seconds' direction='in' />" \
-		"		<arg type='u' name='attribute' direction='out' />" \
+		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>" \
 		"	<method name= 'waitForStringAtAddress'>" \
 		"		<arg type='i' name='addr' direction='in' />" \
 		"		<arg type='s' name='text' direction='in' />" \
 		"		<arg type='u' name='seconds' direction='in' />" \
-		"		<arg type='u' name='attribute' direction='out' />" \
+		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>" \
 
 		"	<property type='s' name='version' access='read'/>" \

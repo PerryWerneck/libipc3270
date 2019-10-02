@@ -36,17 +36,17 @@ int ipc3270_method_wait_for_string(GObject *session, GVariant *request, GObject 
 
 	H3270 *hSession = ipc3270_get_session(session);
 	int rc = 0;
-	guint seconds = 1;
+	guint seconds = 10;
 	gchar *text = NULL;
 
 	if(*error)
 		return 0;
 
 	switch(g_variant_n_children(request)) {
-	case 1:	// Just text
+	case 2:	// Text & timeout
 		{
 			gchar *text = NULL;
-			g_variant_get(request, "(&su)", &text, seconds);
+			g_variant_get(request, "(&su)", &text, &seconds);
 
 			if(text) {
 
@@ -59,7 +59,7 @@ int ipc3270_method_wait_for_string(GObject *session, GVariant *request, GObject 
 
 		break;
 
-	case 2:	// Address and text
+	case 3:	// Address, text & timeout
 		{
 			gint addr;
 			g_variant_get(request, "(i&su)", &addr, &text, &seconds);
@@ -74,7 +74,7 @@ int ipc3270_method_wait_for_string(GObject *session, GVariant *request, GObject 
 		}
 		break;
 
-	case 3:	// Row, col & text
+	case 4:	// Row, col, text & timeout
 		{
 			guint row, col;
 			g_variant_get(request, "(uu&su)", &row, &col, &text, &seconds);
