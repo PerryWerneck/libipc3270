@@ -36,6 +36,7 @@
 	#undef PACKAGE_RELEASE
 	#undef PRODUCT_NAME
 
+	#undef HAVE_LIBINTL
 	#undef HAVE_ICONV
 	#undef ICONV_CONST
 

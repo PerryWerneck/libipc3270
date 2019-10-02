@@ -47,6 +47,7 @@
 		<Unit filename="src/core/constants.cc" />
 		<Unit filename="src/core/events.cc" />
 		<Unit filename="src/core/linux/attribute.cc" />
+		<Unit filename="src/core/linux/dynamic/init.cc" />
 		<Unit filename="src/core/linux/request.cc" />
 		<Unit filename="src/core/session.cc" />
 		<Unit filename="src/core/windows/attribute.cc" />

@@ -102,6 +102,7 @@ CFLAGS= \
 	-I$(BASEDIR)/common/src/include \
 	-Isrc/include \
 	-DBUILD_DATE=`date +%Y%m%d` \
+	-DLOCALEDIR=$(localedir) \
 	@LIB3270_CFLAGS@ \
 	@DBUS_CFLAGS@
 

@@ -61,11 +61,11 @@
 
 #ifdef HAVE_LIBINTL
         #include <libintl.h>
-        #define _( x )                  gettext(x)
-        #define N_( x )                 x
+		#define _( x ) dgettext(PACKAGE_NAME, x)
+        #define N_( x )	x
 #else
-        #define _( x )                  x
-        #define N_( x )                 x
+        #define _( x ) x
+        #define N_( x ) x
 #endif // HAVE_LIBINTL
 
 #ifdef HAVE_ICONV

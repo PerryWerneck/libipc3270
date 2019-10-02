@@ -28,47 +28,46 @@
  */
 
 /**
- * @file src/os/linux/attribute.cc
+ * @file
  *
- * @brief Implements methods for static attribute management.
+ * @brief Linux dynamic module initialization.
  *
  * @author perry.werneck@gmail.com
  *
  */
 
- #include <lib3270/ipc.h>
- #include <lib3270/toggle.h>
- #include <lib3270/properties.h>
+ #include <config.h>
+ #include <ipc-client-internals.h>
 
-/*---[ Implement ]----------------------------------------------------------------------------------*/
+ extern "C" {
 
- std::vector<const LIB3270_PROPERTY *> TN3270::getAttributes() {
-
-	std::vector<const LIB3270_PROPERTY *> attributes;
-
-	for(auto prop = lib3270_get_int_properties_list(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
-	}
-
-	for(auto prop = lib3270_get_unsigned_properties_list(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
-	}
-
-	for(auto prop = lib3270_get_string_properties_list(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
-	}
-
-	for(auto prop = lib3270_get_toggle_list(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
-	}
-
-	for(auto prop = lib3270_get_boolean_properties_list(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
-	}
-
-	return attributes;
+	int ipc3270_loaded(void) __attribute__((constructor));
+	int ipc3270_unloaded(void) __attribute__((destructor));
 
  }
 
+/*---[ Implement ]----------------------------------------------------------------------------------*/
 
+ int ipc3270_loaded(void) {
+
+#ifdef HAVE_LIBINTL
+
+ 	static bool initialized = false;
+
+	if(!initialized) {
+		initialized = true;
+		bindtextdomain(PACKAGE_NAME, LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
+	}
+
+#endif // HAVE_LIBINTL
+
+	return 0;
+
+ }
+
+ int ipc3270_unloaded(void) {
+
+	return 0;
+
+ }
 

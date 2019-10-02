@@ -31,7 +31,7 @@ AC_PREREQ(2.61)
 
 dnl Initialise automake with the package name, version and
 dnl bug-reporting address.
-AC_INIT([libipc3270], [5.2], [perry.werneck@gmail.com])
+AC_INIT([ipc3270], [5.2], [perry.werneck@gmail.com])
 
 dnl Place auxilliary scripts here.
 AC_CONFIG_AUX_DIR([scripts])
@@ -209,6 +209,21 @@ AC_PATH_TOOL([MSGINIT], [msginit], [no])
 AC_PATH_TOOL([MSGMERGE], [msgmerge], [no])
 AC_PATH_TOOL([MSGFMT], [msgfmt], [no])
 AC_PATH_TOOL([VALGRIND], [valgrind], [no])
+
+AC_CHECK_HEADER(libintl.h, [
+	AC_DEFINE(HAVE_LIBINTL, 1)
+
+	case "$host" in
+	*-mingw32|*-pc-msys)
+		INTL_LIBS="-lintl"
+		;;
+
+	*)
+		INTL_LIBS=""
+
+	esac
+
+])
 
 AC_SUBST(INTL_LIBS)
 

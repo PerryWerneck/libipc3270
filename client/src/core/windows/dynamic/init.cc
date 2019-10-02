@@ -63,10 +63,27 @@
  static HANDLE hEventLog = 0;
 
  BOOL WINAPI DllMain(HANDLE hInstance, DWORD dwcallpurpose, LPVOID lpvResvd) {
+
+#ifdef HAVE_LIBINTL
+ 	static bool initialized = false;
+#endif // HAVE_LIBINTL
+
     switch(dwcallpurpose) {
     case DLL_PROCESS_ATTACH:
         hModule = hInstance;
         hEventLog = RegisterEventSource(NULL, LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME));
+
+#ifdef HAVE_LIBINTL
+		if(!initialized) {
+			initialized = true;
+
+			std::string localedir = TN3270::getInstallLocation();
+			localedir += "\\locale";
+
+			bindtextdomain(PACKAGE_NAME, localedir.c_str());
+		}
+#endif // HAVE_LIBINTL
+
         break;
 
 	case DLL_PROCESS_DETACH:
