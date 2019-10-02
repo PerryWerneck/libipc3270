@@ -109,6 +109,8 @@
 	void		  ipc3270_response_append_int32(GObject *object, gint32 value);
 	void		  ipc3270_response_append_uint32(GObject *object, guint32 value);
 	void		  ipc3270_response_append_string(GObject *object, const gchar *text);
+	void		  ipc3270_response_append_boolean(GObject *object, gboolean value);
+
 	gboolean	  ipc3270_response_has_values(GObject *object);
 	GVariant	* ipc3270_response_steal_value(GObject *object);
 

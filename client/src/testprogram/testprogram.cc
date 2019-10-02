@@ -214,7 +214,7 @@
 
 		TN3270::Action * action = host.getAction("reconnect");
 
-        action->activatable();
+        cout << "Reconnect is " << (action->activatable() ? "available" : "unavailable") << endl;
 
 		delete action;
 	}

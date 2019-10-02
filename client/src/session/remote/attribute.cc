@@ -196,6 +196,61 @@
 
 	};
 
+	// Toggle attribute
+	class TN3270_PRIVATE ToggleAttribute : public TemplateAttribute<LIB3270_TOGGLE_ENTRY> {
+	public:
+		ToggleAttribute(const IPC::Session *session, const LIB3270_TOGGLE_ENTRY *worker) :  TemplateAttribute<LIB3270_TOGGLE_ENTRY>(session, Attribute::Boolean, worker) {
+
+			get.asString = [](const Attribute & attr, const void *worker) {
+				return attr.getBoolean() ? "true" : "false";
+			};
+
+			get.asInt32 = [](const Attribute & attr, const void *worker) {
+				return (uint32_t) attr.getBoolean();
+			};
+
+			get.asUint32 = [](const Attribute & attr, const void *worker) {
+				return (uint32_t) attr.getInt32();
+			};
+
+			get.asBoolean = [](const Attribute & attr, const void *worker) {
+
+				const struct Worker * w = (const struct Worker *) worker;
+
+				bool value;
+
+				IPC::Request(*w->session,false,w->methods->name)
+					.call()
+					.pop(value);
+
+				return value;
+			};
+
+			set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+
+				const struct Worker * w = (const struct Worker *) worker;
+
+				IPC::Request(*w->session,true,w->methods->name)
+					.push(value)
+					.call();
+
+			};
+
+			set.asBoolean = [](const Attribute & attr, const void *worker, const bool value) {
+
+				const struct Worker * w = (const struct Worker *) worker;
+
+				IPC::Request(*w->session,true,w->methods->name)
+					.push(value)
+					.call();
+
+			};
+
+		}
+
+	};
+
+
 	// Unsigned int attribute
 	class TN3270_PRIVATE UnsignedIntAttribute : public TemplateAttribute<LIB3270_UINT_PROPERTY> {
 	public:
@@ -367,7 +422,6 @@
 
 		// Check for boolean properties
 		{
-			/*
 			const LIB3270_TOGGLE_ENTRY *toggles = lib3270_get_toggle_list();
 			for(size_t ix = 0; toggles[ix].name; ix++) {
 
@@ -376,7 +430,6 @@
 				}
 
 			}
-			*/
 
 			const LIB3270_INT_PROPERTY * intprop = lib3270_get_boolean_properties_list();
 			for(size_t ix = 0; intprop[ix].name; ix++) {
@@ -426,12 +479,10 @@
 
 		// Add boolean properties
 		{
-			/*
 			const LIB3270_TOGGLE_ENTRY *toggles = lib3270_get_toggle_list();
 			for(size_t ix = 0; toggles[ix].name; ix++) {
 				attributes.push_back(ToggleAttribute(this,&toggles[ix]));
 			}
-			*/
 
 			const LIB3270_INT_PROPERTY * intprop = lib3270_get_boolean_properties_list();
 			for(size_t ix = 0; intprop[ix].name; ix++) {
