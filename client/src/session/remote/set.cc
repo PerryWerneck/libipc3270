@@ -51,7 +51,8 @@
 			.call()
 			.pop(rc);
 
-		chkResponse(rc);
+		if(rc < 0)
+			chkResponse(-rc);
 
 	}
 
