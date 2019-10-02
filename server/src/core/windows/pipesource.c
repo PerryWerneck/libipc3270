@@ -101,7 +101,7 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 	int			  request_type	= 0;
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE))
-		lib3270_trace_data(hSession, "IPC Data block received on pipe", (const char *) source->buffer, (size_t) cbRead);
+		lib3270_trace_data(hSession, "IPC Data block received on pipe", (const unsigned char *) source->buffer, (size_t) cbRead);
 
 	debug("Received packet \"%s\" with %u bytes", request_name, (unsigned int) cbRead);
 
@@ -169,7 +169,7 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 	DWORD wrote = (DWORD) szPacket;
 
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE))
-		lib3270_trace_data(hSession, "IPC Data block sent to pipe", (const char *) buffer, szPacket);
+		lib3270_trace_data(hSession, "IPC Data block sent to pipe", (const unsigned char *) buffer, szPacket);
 
 	WriteFile(source->hPipe,buffer,wrote,&wrote,NULL);
 

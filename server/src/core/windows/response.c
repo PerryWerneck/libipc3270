@@ -121,6 +121,17 @@ void ipc3270_response_append_string(GObject *object, const gchar *text) {
 
 }
 
+void ipc3270_response_append_boolean(GObject *object, gboolean value) {
+
+	ipc3270Response * response = IPC3270_RESPONSE(object);
+
+	if(response->value)
+		g_variant_unref(response->value);
+
+	response->value = g_variant_new_boolean(value);
+}
+
+
 GVariant * ipc3270_response_steal_value(GObject *object) {
 
 	ipc3270Response * response = IPC3270_RESPONSE(object);
