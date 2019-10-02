@@ -716,7 +716,7 @@
 			}
 
 			/// @brief Set cursor address.
-			inline Host & setCursor(unsigned short addr) {
+			inline Host & setCursor(int addr = -1) {
 				session->setCursor(addr);
 				return *this;
 			}
