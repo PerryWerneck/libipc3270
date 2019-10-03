@@ -23,9 +23,9 @@ Release:		0
 License:		LGPL-3.0
 Source:			%{name}-%{version}.tar.xz
 
-Url:			https://github.com/PerryWerneck/pw3270-plugin-ipc.git
+URL:			https://github.com/PerryWerneck/libipc3270
 
-Group:			System/X11/Terminals
+Group:			System/Libraries
 BuildRoot:		/var/tmp/%{name}-%{version}
 
 BuildRequires:	autoconf >= 2.61
@@ -60,12 +60,11 @@ BuildRequires:  python
 %endif
 
 %description
-
 IPC client library for lib3270/pw3270.
 
 Designed as framework for language bindings.
 
-See more details at https://softwarepublico.gov.br/social/pw3270/
+For more details, see https://github.com/PerryWerneck/libipc3270 .
 
 #---[ Library ]-------------------------------------------------------------------------------------------------------
 
@@ -83,12 +82,11 @@ Recommends: lib3270-ipc-service
 %endif
 
 %description -n %{name}-%{_libvrs}
-
 IPC client library for lib3270/pw3270.
 
 Designed as framework for language bindings.
 
-See more details at https://softwarepublico.gov.br/social/pw3270/
+For more details, see https://github.com/PerryWerneck/libipc3270 .
 
 #---[ Development ]---------------------------------------------------------------------------------------------------
 
@@ -106,7 +104,7 @@ Requires:	lib3270-devel
 
 Development files for lib3270/pw3270 IPC client library.
 
-Designed as a support tool for language bindings.
+For more details, see https://github.com/PerryWerneck/libipc3270 .
 
 #---[ Plugin module for pw3270 main application ]----------------------------------------------------------------------
 
@@ -125,8 +123,7 @@ Requires: %{product} >= 5.2
 
 PW3270 plugin exporting D-Bus objects for every tn3270 session.
 
-See more details at https://softwarepublico.gov.br/social/pw3270/
-
+For more details, see https://github.com/PerryWerneck/libipc3270 .
 
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
