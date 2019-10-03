@@ -29,12 +29,6 @@
 Name:		mingw32-libipc3270
 Summary:	lib3270/pw3270 IPC client library.
 Version:	5.2
-
-%define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
-%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
-%define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
-%define _product %(i686-w64-mingw32-pkg-config --variable=product_name lib3270)
-
 Release:	0
 License:	LGPL-3.0
 Source:		libipc3270-%{version}.tar.xz
@@ -74,7 +68,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 #---[ Library ]-------------------------------------------------------------------------------------------------------
 
-%define product %(pkg-config --variable=product_name lib3270)
+%define _product %(i686-w64-mingw32-pkg-config --variable=product_name lib3270)
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
 %define MINOR_VERSION %(echo %{version} | cut -d. -f2)
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
@@ -140,7 +134,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n %{name}-%{_libvrs}
 %defattr(-,root,root)
 
-# https://en.opensuse.org/openSUSE:Packaging_for_Leap#RPM_Distro_Version_Macros
 %doc AUTHORS README.md
 %license LICENSE
 
@@ -159,7 +152,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mingw32_includedir}/lib3270/ipc.h
 %dir %{_mingw32_includedir}/lib3270/ipc
 %{_mingw32_includedir}/lib3270/ipc/*.h
-%{_mingw32_libdir}/*.a
 %{_mingw32_libdir}/pkgconfig/*.pc
 
 %changelog
