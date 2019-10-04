@@ -76,6 +76,8 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 %package -n %{name}-%{_libvrs}
 Summary:	IPC Library for pw3270
 Group:		Development/Libraries/C and C++
+Provides:	mingw64(lib:ipc3270)
+
 
 %description -n %{name}-%{_libvrs}
 
@@ -117,7 +119,8 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 NOCONFIGURE=1 \
 	./autogen.sh
 
-%{_mingw64_configure}
+%{_mingw64_configure} \
+	--enable-static
 
 %build
 make all
@@ -153,6 +156,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_mingw64_includedir}/lib3270/ipc
 %{_mingw64_includedir}/lib3270/ipc/*.h
 %{_mingw64_libdir}/pkgconfig/*.pc
+%{_mingw64_libdir}/*.a
 
 %changelog
 

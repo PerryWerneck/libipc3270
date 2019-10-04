@@ -208,8 +208,7 @@ $(BINRLS)/lib$(MODULE_NAME)@LIBEXT@: \
 		-o $@ \
 		$(LDFLAGS) \
 		$^ \
-		$(LIBS) \
-		$(GTK_LIBS)
+		$(LIBS)
 
 $(BINRLS)/lib$(MODULE_NAME).static.a: \
 	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o)

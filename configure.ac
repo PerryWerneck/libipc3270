@@ -82,7 +82,7 @@ case "$host" in
 		CFLAGS="$CFLAGS -D_WIN32_WINNT=0x0600"
 		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32 -lkernel32"
 		LDFLAGS="$LDFLAGS"
-		STATIC_LDFLAGS="-static -static-libgcc -static-libstdc++"
+		STATIC_LDFLAGS="-static-libgcc -static-libstdc++"
 		STATIC_LIBS="-Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive,-Bdynamic"
 		DLLEXT=".dll"
 		DLLPREFIX=""
@@ -210,23 +210,6 @@ AC_PATH_TOOL([MSGMERGE], [msgmerge], [no])
 AC_PATH_TOOL([MSGFMT], [msgfmt], [no])
 AC_PATH_TOOL([VALGRIND], [valgrind], [no])
 
-AC_CHECK_HEADER(libintl.h, [
-	AC_DEFINE(HAVE_LIBINTL, 1)
-
-	case "$host" in
-	*-mingw32|*-pc-msys)
-		INTL_LIBS="-lintl"
-		;;
-
-	*)
-		INTL_LIBS=""
-
-	esac
-
-])
-
-AC_SUBST(INTL_LIBS)
-
 dnl ---------------------------------------------------------------------------
 dnl Check for LIB3270
 dnl ---------------------------------------------------------------------------
@@ -236,10 +219,7 @@ AC_ARG_WITH([delayed-lib3270],
 [
 	app_cv_delayed_lib3270=$withval
 ],[
-	app_cv_delayed_lib3270="auto"
-])
 
-if test "$app_cv_delayed_lib3270" == "auto"; then
 	case "$host" in
 	*-mingw32|*-pc-msys)
 		app_cv_delayed_lib3270="yes"
@@ -250,13 +230,37 @@ if test "$app_cv_delayed_lib3270" == "auto"; then
 
 	esac
 
-fi
+])
 
 if test "$app_cv_delayed_lib3270" == "yes"; then
+
 	PKG_CHECK_MODULES( [LIB3270], [lib3270-delayed], AC_DEFINE(LIB3270_DELAYED), AC_MSG_ERROR([LIB3270 delayed module is not present.]))
+	AC_MSG_NOTICE([Not using libintl to avoid the dependency.])
+
 else
 	PKG_CHECK_MODULES( [LIB3270], [lib3270], AC_DEFINE(LIB3270_DYNAMIC), AC_MSG_ERROR([LIB3270 dynamic module is not present.]))
+
+	# Use libintl only if using dynamic lib3270 to avoid an extra DLL dependency.
+	AC_CHECK_HEADER(libintl.h, [
+
+		AC_DEFINE(HAVE_LIBINTL, 1)
+
+		case "$host" in
+		*-mingw32|*-pc-msys)
+			INTL_LIBS="-lintl"
+			;;
+
+		*)
+			INTL_LIBS=""
+
+		esac
+
+	])
+
 fi
+
+AC_SUBST(INTL_LIBS)
+
 
 AC_SUBST(LIB3270_LIBS)
 AC_SUBST(LIB3270_CFLAGS)
