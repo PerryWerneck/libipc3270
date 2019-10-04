@@ -26,6 +26,9 @@
 
 PRODUCT_NAME=@PRODUCT_NAME@
 
+CLIENT_TARGETS= \
+	@CLIENT_TARGETS@
+
 #---[ Paths ]----------------------------------------------------------------------------
 
 prefix=@prefix@
@@ -76,14 +79,16 @@ $(BINRLS)/libipc3270@LIBEXT@:
 
 install: \
 	install-plugin \
-	install-shared \
-	install-devel
+	$(foreach CLIENT_TARGET, $(CLIENT_TARGETS), install-$(CLIENT_TARGET))
 
 install-plugin:
 	@$(MAKE) -C server DESTDIR=$(DESTDIR) install
 
 install-shared:
 	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-shared
+
+install-static:
+	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-static
 
 install-devel:
 	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-devel
