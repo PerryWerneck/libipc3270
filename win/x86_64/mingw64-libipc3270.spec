@@ -157,6 +157,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_mingw64_includedir}/lib3270/ipc/*.h
 %{_mingw64_libdir}/pkgconfig/*.pc
 %{_mingw64_libdir}/*.a
+%{_mingw64_libdir}/*.lib
+
+%{_mingw64_datadir}/%{_product}/def/*.def
 
 %changelog
 
