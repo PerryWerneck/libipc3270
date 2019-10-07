@@ -93,6 +93,9 @@ install-static:
 install-devel:
 	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-devel
 
+install-winlib:
+	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-winlib
+
 doc:
 	@$(DOXYGEN) ./doxygen/doxyfile
 

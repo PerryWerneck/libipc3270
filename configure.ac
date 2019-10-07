@@ -66,15 +66,13 @@ PLUGINS=""
 APP_RESOURCES=""
 APP_LDFLAGS=""
 DLL_LDFLAGS="-shared"
-STATIC_LDFLAGS=""
-STATIC_LIBS=""
+CLIENT_LDFLAGS=""
+CLIENT_LIBS=""
 CLIENT_TARGETS="shared devel"
 
 dnl ---------------------------------------------------------------------------
 dnl Check for OS specifics
 dnl ---------------------------------------------------------------------------
-
-DLLPREFIX="lib"
 
 case "$host" in
 	*-mingw32|*-pc-msys)
@@ -82,10 +80,11 @@ case "$host" in
 		CFLAGS="$CFLAGS -D_WIN32_WINNT=0x0600"
 		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32 -lkernel32"
 		LDFLAGS="$LDFLAGS"
-		STATIC_LDFLAGS="-static-libgcc -static-libstdc++"
-		STATIC_LIBS="-Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive,-Bdynamic"
+		CLIENT_LDFLAGS="-shared -static-libgcc -static-libstdc++ -Wl,--output-def,\$(@D)/\lib\$(MODULE_NAME).def,--out-implib,\$(@D)/\lib\$(MODULE_NAME).dll.a"
+		CLIENT_LIBS="-Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive,-Bdynamic"
 		DLLEXT=".dll"
-		DLLPREFIX=""
+		CLIENT_TARGETS="$CLIENT_TARGETS winlib"
+
 
 		app_win32_revision=$(date +%-y.%-m.%-d.%-H)
 		AC_SUBST(WIN32_VERSION,$app_win32_revision)
@@ -110,6 +109,7 @@ case "$host" in
 		app_cv_osname="linux"
 		LOGDIR="/var/log"
 		DLLEXT=".so"
+		CLIENT_LDFLAGS="-shared"
 
 		app_cv_static='no'
 
@@ -122,9 +122,8 @@ AC_SUBST(OSNAME,$app_cv_osname)
 AC_SUBST(LIBS)
 AC_SUBST(LOGDIR)
 AC_SUBST(DLLEXT)
-AC_SUBST(DLLPREFIX)
-AC_SUBST(STATIC_LDFLAGS)
-AC_SUBST(STATIC_LIBS)
+AC_SUBST(CLIENT_LDFLAGS)
+AC_SUBST(CLIENT_LIBS)
 
 AC_CHECK_FUNC(vasprintf, AC_DEFINE(HAVE_VASPRINTF) )
 
@@ -134,6 +133,7 @@ dnl ---------------------------------------------------------------------------
 
 AC_PATH_TOOL([AR], [ar], [ar])
 AC_PATH_TOOL([WINDRES], [windres], [no])
+AC_PATH_TOOL([DLLTOOL], [dlltool], [no])
 
 PKG_CHECK_EXISTS
 

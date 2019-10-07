@@ -28,6 +28,7 @@
 
 MODULE_NAME=ipc3270
 PACKAGE_NAME=@PACKAGE_NAME@
+PRODUCT_NAME=@PRODUCT_NAME@
 
 MAIN_SOURCES= \
 	$(wildcard src/core/*.cc) \
@@ -62,6 +63,7 @@ MSGCAT=@MSGCAT@
 WINDRES=@WINDRES@
 AR=@AR@
 VALGRIND=@VALGRIND@
+DLLTOOL=@DLLTOOL@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -107,11 +109,10 @@ CFLAGS= \
 	@DBUS_CFLAGS@
 
 LDFLAGS=\
-	@STATIC_LDFLAGS@ \
 	@LDFLAGS@
 
 LIBS= \
-	@STATIC_LIBS@ \
+	@CLIENT_LIBS@ \
 	@LIBS@ \
 	@LIBICONV@ \
 	@INTL_LIBS@ \
@@ -204,7 +205,8 @@ $(BINRLS)/lib$(MODULE_NAME)@LIBEXT@: \
 	@$(MKDIR) $(@D)
 	@echo $< ...
 	@$(LD) \
-		-shared -Wl,-soname,$(@F) \
+		@CLIENT_LDFLAGS@ \
+		-Wl,-soname,$(@F) \
 		-o $@ \
 		$(LDFLAGS) \
 		$^ \
@@ -281,6 +283,28 @@ install-devel:
 		sdk/ipc3270.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/ipc3270.pc
 
+install-winlib: \
+	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/lib$(MODULE_NAME).dll.a \
+		$(DESTDIR)$(libdir)
+
+	@$(DLLTOOL) \
+		--input-def $(BINRLS)/lib$(MODULE_NAME).def \
+		--dllname lib$(MODULE_NAME).dll \
+		--output-lib $(DESTDIR)$(libdir)/lib$(MODULE_NAME).lib
+
+	@$(MKDIR) \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/lib$(MODULE_NAME).def \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
+
 #---[ Misc Targets ]---------------------------------------------------------------------
 
 $(POTDIR)/$(MODULE_NAME).pot: \
@@ -310,6 +334,7 @@ $(BINDBG)/$(MODULE_NAME)-client@EXEEXT@: \
 		$^ \
 		-L$(BINDBG) \
 		-Wl,-rpath,$(BINDBG) \
+		@CLIENT_LDFLAGS@ \
 		$(LDFLAGS) \
 		$(LIBS)
 
@@ -321,7 +346,8 @@ $(BINDBG)/lib$(MODULE_NAME)@LIBEXT@: \
 	@$(MKDIR) $(@D)
 	@echo $< ...
 	@$(LD) \
-		-shared -Wl,-soname,$(@F) \
+		@CLIENT_LDFLAGS@ \
+		-Wl,-soname,$(@F) \
 		-o $@ \
 		$(LDFLAGS) \
 		$^ \
