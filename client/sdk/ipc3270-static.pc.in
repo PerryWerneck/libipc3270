@@ -8,7 +8,7 @@ product_name=@PRODUCT_NAME@
 Name: @PACKAGE_NAME@-static
 Description: @PACKAGE_DESCRIPTION@ (static library)
 Version: @PACKAGE_VERSION@
-Libs: -lipc3270.static @LIB3270_LIBS@ @STATIC_LIBS@ @DBUS_LIBS@ @LIBS@ @LIBICONV@ @INTL_LIBS@
+Libs: -lipc3270.static @LIBS@ @LIB3270_LIBS@ @DBUS_LIBS@ @LIBICONV@ @INTL_LIBS@
 Cflags: -I@includedir@
 
 
