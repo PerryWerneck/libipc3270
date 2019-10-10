@@ -229,29 +229,29 @@ install-linux-lib: \
 	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@
 
 	@$(MKDIR) \
-		$(DESTDIR)/$(libdir)
+		$(DESTDIR)$(libdir)
 
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@ \
-		$(DESTDIR)/$(libdir)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
+		$(DESTDIR)$(libdir)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@
 		
 	@$(LN_S) \
 		lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
-		$(DESTDIR)/$(libdir)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
+		$(DESTDIR)$(libdir)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
 
 	@$(LN_S) \
 		lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
-		$(DESTDIR)/$(libdir)/lib$(MODULE_NAME)@DLLEXT@
+		$(DESTDIR)$(libdir)/lib$(MODULE_NAME)@DLLEXT@
 
 install-windows-lib: \
 	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@
 
 	@$(MKDIR) \
-		$(DESTDIR)/$(bindir)
+		$(DESTDIR)$(bindir)
 
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@ \
-		$(DESTDIR)/$(bindir)/lib$(MODULE_NAME)@LIBEXT@
+		$(DESTDIR)$(bindir)/lib$(MODULE_NAME)@LIBEXT@
 		
 	@$(MKDIR) \
 		$(DESTDIR)$(libdir)
@@ -272,13 +272,15 @@ install-static: \
 	$(BINRLS)/lib$(MODULE_NAME).static.a
 
 	@$(MKDIR) \
-		$(DESTDIR)/$(libdir)
+		$(DESTDIR)$(libdir)
 
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/lib$(MODULE_NAME).static.a \
-		$(DESTDIR)/$(libdir)
+		$(DESTDIR)$(libdir)
 
-	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)/pkgconfig
+
 	@$(INSTALL_DATA) \
 		sdk/ipc3270-static.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/ipc3270-static.pc
@@ -286,22 +288,22 @@ install-static: \
 install-devel:
 
 	@$(MKDIR) \
-		$(DESTDIR)/$(includedir)/lib3270
+		$(DESTDIR)$(includedir)/lib3270
 
 	@$(MKDIR) \
-		$(DESTDIR)/$(includedir)/lib3270/ipc
-
+		$(DESTDIR)$(includedir)/lib3270/ipc
 
 	@$(INSTALL_DATA) \
 		src/include/lib3270/ipc.h \
-		$(DESTDIR)/$(includedir)/lib3270
+		$(DESTDIR)$(includedir)/lib3270
 
 	@$(INSTALL_DATA) \
 		src/include/lib3270/ipc/*.h \
-		$(DESTDIR)/$(includedir)/lib3270/ipc
+		$(DESTDIR)$(includedir)/lib3270/ipc
 
 	# Install PKG-CONFIG files
-	@mkdir -p $(DESTDIR)$(libdir)/pkgconfig
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)/pkgconfig
 
 	@$(INSTALL_DATA) \
 		sdk/ipc3270.pc \
