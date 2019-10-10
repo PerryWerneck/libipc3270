@@ -56,7 +56,7 @@ install: build
 	make all
 
 	# Install libipc3270
-	make DESTDIR=$(PWD)/debian/libipc3270 install-shared
+	make DESTDIR=$(PWD)/debian/libipc3270 install-linux-lib
 	find $(PWD)/debian/libipc3270 -type f | sed -e "s@^$(PWD)/debian/libipc3270/@/@g" > $(PWD)/debian/libipc3270.install
 
 	# Install dev
