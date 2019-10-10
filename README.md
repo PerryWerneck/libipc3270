@@ -34,9 +34,9 @@ Cross-compiling on SuSE Linux (Native or WSL)
 	* https://build.opensuse.org/project/show/windows:mingw:win64
 	* https://build.opensuse.org/project/show/home:PerryWerneck:pw3270
  
-2. Get libv3270 sources from git
+2. Get sources from git
 
-	* git clone https://github.com/PerryWerneck/pw3270-plugin-ipc.git ./ipc3270
+	* git clone https://github.com/PerryWerneck/libipc3270.git ./libipc3270
 
 3. Install cross compilers
 
@@ -44,7 +44,7 @@ Cross-compiling on SuSE Linux (Native or WSL)
 
 4. Build
 
-	* cd ipc3270
+	* cd libipc3270
 	* make clean
 	* make all
 
@@ -60,14 +60,17 @@ Compiling for Windows (With MSYS2)
 
 	* Follow the guide on https://github.com/PerryWerneck/libv3270
 
-2. Get ip3270 sources from git
+3. Get sources from git
 
-	* git clone https://github.com/PerryWerneck/pw3270-plugin-ipc.git ./ipc3270
+	* git clone https://github.com/PerryWerneck/libipc3270.git ./libipc3270
 
 4. Build library using the mingw shell
 
-	* cd ipc3270
+	* cd libipc3270
 	* ./autogen.sh
 	* make all
 
+5. Install
+
+	* make install
 

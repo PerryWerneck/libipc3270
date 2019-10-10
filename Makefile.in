@@ -84,8 +84,8 @@ install: \
 install-plugin:
 	@$(MAKE) -C server DESTDIR=$(DESTDIR) install
 
-install-shared:
-	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-shared
+install-linux-lib:
+	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-linux-lib
 
 install-static:
 	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-static
@@ -93,8 +93,8 @@ install-static:
 install-devel:
 	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-devel
 
-install-winlib:
-	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-winlib
+install-windows-lib:
+	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-windows-lib
 
 doc:
 	@$(DOXYGEN) ./doxygen/doxyfile

@@ -186,7 +186,6 @@ $(POTDIR)/$(MODULE_NAME)/%.pot: \
 	@$(MKDIR) $(@D)
 	@touch $@
 
-
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
@@ -226,7 +225,7 @@ $(BINRLS)/lib$(MODULE_NAME).static.a: \
 install: \
        $(foreach TARGET, $(TARGETS), install-$(TARGET))
 
-install-shared: \
+install-linux-lib: \
 	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@
 
 	@$(MKDIR) \
@@ -243,6 +242,31 @@ install-shared: \
 	@$(LN_S) \
 		lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
 		$(DESTDIR)/$(libdir)/lib$(MODULE_NAME)@DLLEXT@
+
+install-windows-lib: \
+	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@
+
+	@$(MKDIR) \
+		$(DESTDIR)/$(bindir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@ \
+		$(DESTDIR)/$(bindir)/lib$(MODULE_NAME)@LIBEXT@
+		
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
+	@$(DLLTOOL) \
+		--input-def $(BINRLS)/lib$(MODULE_NAME).def \
+		--dllname lib$(MODULE_NAME).dll \
+		--output-lib $(DESTDIR)$(libdir)/lib$(MODULE_NAME).dll.a
+
+	@$(MKDIR) \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/lib$(MODULE_NAME).def \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
 
 install-static: \
 	$(BINRLS)/lib$(MODULE_NAME).static.a
@@ -282,28 +306,6 @@ install-devel:
 	@$(INSTALL_DATA) \
 		sdk/ipc3270.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/ipc3270.pc
-
-install-winlib: \
-	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@
-
-	@$(MKDIR) \
-		$(DESTDIR)$(libdir)
-
-	@$(INSTALL_DATA) \
-		$(BINRLS)/lib$(MODULE_NAME).dll.a \
-		$(DESTDIR)$(libdir)
-
-	@$(DLLTOOL) \
-		--input-def $(BINRLS)/lib$(MODULE_NAME).def \
-		--dllname lib$(MODULE_NAME).dll \
-		--output-lib $(DESTDIR)$(libdir)/lib$(MODULE_NAME).lib
-
-	@$(MKDIR) \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
-
-	@$(INSTALL_DATA) \
-		$(BINRLS)/lib$(MODULE_NAME).def \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
 
 #---[ Misc Targets ]---------------------------------------------------------------------
 

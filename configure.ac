@@ -68,7 +68,7 @@ APP_LDFLAGS=""
 DLL_LDFLAGS="-shared"
 CLIENT_LDFLAGS=""
 CLIENT_LIBS=""
-CLIENT_TARGETS="shared devel"
+CLIENT_TARGETS="devel"
 
 dnl ---------------------------------------------------------------------------
 dnl Check for OS specifics
@@ -80,11 +80,11 @@ case "$host" in
 		CFLAGS="$CFLAGS -D_WIN32_WINNT=0x0600"
 		LIBS="$LIBS -lws2_32 -lwtsapi32 -lcomdlg32 -lkernel32"
 		LDFLAGS="$LDFLAGS"
-		CLIENT_LDFLAGS="-shared -static-libgcc -static-libstdc++ -Wl,--output-def,\$(@D)/\lib\$(MODULE_NAME).def,--out-implib,\$(@D)/\lib\$(MODULE_NAME).dll.a"
+		CLIENT_LDFLAGS="-shared -static-libgcc -static-libstdc++ -Wl,--output-def,\$(@D)/\lib\$(MODULE_NAME).def"
 		CLIENT_LIBS="-Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive,-Bdynamic"
 		DLLEXT=".dll"
-		CLIENT_TARGETS="$CLIENT_TARGETS winlib"
 
+		CLIENT_TARGETS="windows-lib $CLIENT_TARGETS"
 
 		app_win32_revision=$(date +%-y.%-m.%-d.%-H)
 		AC_SUBST(WIN32_VERSION,$app_win32_revision)
@@ -111,8 +111,9 @@ case "$host" in
 		DLLEXT=".so"
 		CLIENT_LDFLAGS="-shared"
 
-		app_cv_static='no'
+		CLIENT_TARGETS="linux-lib $CLIENT_TARGETS"
 
+		app_cv_static='no'
 
 esac
 
