@@ -234,7 +234,7 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 
 	// Toggle properties
 	for(ix = 0; ix < (int) LIB3270_TOGGLE_COUNT; ix++) {
-		g_string_append_printf(introspection, "    <property type='b' name='%s' access='readwrite'/>", lib3270_get_toggle_name((LIB3270_TOGGLE) ix));
+		g_string_append_printf(introspection, "    <property type='b' name='%s' access='readwrite'/>", lib3270_get_toggle_name((LIB3270_TOGGLE_ID) ix));
 	}
 
 	// Boolean properties

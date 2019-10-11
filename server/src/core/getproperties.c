@@ -143,8 +143,8 @@ GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GEr
 	}
 
 	// Check for toggle
-	LIB3270_TOGGLE toggle = lib3270_get_toggle_id(property_name);
-	if(toggle != (LIB3270_TOGGLE) -1) {
+	LIB3270_TOGGLE_ID toggle = lib3270_get_toggle_id(property_name);
+	if(toggle != (LIB3270_TOGGLE_ID) -1) {
 
 		// Is a Tn3270 toggle, get it!
 		return g_variant_new_boolean(lib3270_get_toggle( (hSession), toggle) != 0);
