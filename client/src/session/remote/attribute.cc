@@ -84,11 +84,11 @@
 	public:
 		IntAttribute(const IPC::Session *session, const LIB3270_INT_PROPERTY *worker) : TemplateAttribute<LIB3270_INT_PROPERTY>(session, Attribute::Int32, worker) {
 
-			get.asString = [](const Attribute & attr, const void *worker) {
+			get.asString = [](const Attribute GNUC_UNUSED(& attr), const void GNUC_UNUSED(*worker)) {
 				return std::to_string(attr.getInt32());
 			};
 
-			get.asInt32 = [](const Attribute & attr, const void *worker) {
+			get.asInt32 = [](const Attribute GNUC_UNUSED(& attr), const void *worker) {
 
 				const struct Worker * w = (const struct Worker *) worker;
 
@@ -102,17 +102,17 @@
 
 			};
 
-			get.asUint32 = [](const Attribute & attr, const void *worker) {
+			get.asUint32 = [](const Attribute & attr, const void GNUC_UNUSED(*worker)) {
 				return (uint32_t) attr.getInt32();
 			};
 
-			get.asBoolean = [](const Attribute & attr, const void *worker) {
+			get.asBoolean = [](const Attribute & attr, const void GNUC_UNUSED(*worker)) {
 				return (attr.getInt32() != 0);
 			};
 
 			if(worker->set) {
 
-				set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+				set.asInt32 = [](const Attribute GNUC_UNUSED(& attr), const void *worker, const int32_t value) {
 
 					const struct Worker * w = (const struct Worker *) worker;
 
@@ -122,10 +122,9 @@
 
 				};
 
-				set.asUint32 = [](const Attribute & attr, const void *worker, const uint32_t value) {
+				set.asUint32 = [](const Attribute GNUC_UNUSED(& attr), const void *worker, const uint32_t value) {
 
 					const struct Worker * w = (const struct Worker *) worker;
-					int32_t rc;
 
 					IPC::Request(*w->session,true,w->methods->name)
 						.push(value)
@@ -144,19 +143,19 @@
 	public:
 		BooleanAttribute(const IPC::Session *session, const LIB3270_INT_PROPERTY *worker) : TemplateAttribute<LIB3270_INT_PROPERTY>(session, Attribute::Boolean, worker) {
 
-			get.asString = [](const Attribute & attr, const void *worker) {
+			get.asString = [](const Attribute & attr, const void GNUC_UNUSED(*worker)) {
 				return attr.getBoolean() ? "true" : "false";
 			};
 
-			get.asInt32 = [](const Attribute & attr, const void *worker) {
+			get.asInt32 = [](const Attribute & attr, const void GNUC_UNUSED(*worker)) {
 				return (uint32_t) attr.getBoolean();
 			};
 
-			get.asUint32 = [](const Attribute & attr, const void *worker) {
+			get.asUint32 = [](const Attribute & attr, const void GNUC_UNUSED(*worker)) {
 				return (uint32_t) attr.getInt32();
 			};
 
-			get.asBoolean = [](const Attribute & attr, const void *worker) {
+			get.asBoolean = [](const Attribute GNUC_UNUSED(& attr), const void *worker) {
 
 				const struct Worker * w = (const struct Worker *) worker;
 
@@ -171,7 +170,7 @@
 
 			if(worker->set) {
 
-				set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+				set.asInt32 = [](const Attribute GNUC_UNUSED(& attr), const void *worker, const int32_t value) {
 
 					const struct Worker * w = (const struct Worker *) worker;
 
@@ -181,7 +180,7 @@
 
 				};
 
-				set.asBoolean = [](const Attribute & attr, const void *worker, const bool value) {
+				set.asBoolean = [](const Attribute GNUC_UNUSED(& attr), const void *worker, const bool value) {
 
 					const struct Worker * w = (const struct Worker *) worker;
 
@@ -197,23 +196,23 @@
 	};
 
 	// Toggle attribute
-	class TN3270_PRIVATE ToggleAttribute : public TemplateAttribute<LIB3270_TOGGLE_ENTRY> {
+	class TN3270_PRIVATE ToggleAttribute : public TemplateAttribute<LIB3270_TOGGLE> {
 	public:
-		ToggleAttribute(const IPC::Session *session, const LIB3270_TOGGLE_ENTRY *worker) :  TemplateAttribute<LIB3270_TOGGLE_ENTRY>(session, Attribute::Boolean, worker) {
+		ToggleAttribute(const IPC::Session *session, const LIB3270_TOGGLE *worker) :  TemplateAttribute<LIB3270_TOGGLE>(session, Attribute::Boolean, worker) {
 
-			get.asString = [](const Attribute & attr, const void *worker) {
+			get.asString = [](const Attribute & attr, const void GNUC_UNUSED(*worker)) {
 				return attr.getBoolean() ? "true" : "false";
 			};
 
-			get.asInt32 = [](const Attribute & attr, const void *worker) {
+			get.asInt32 = [](const Attribute & attr, const void GNUC_UNUSED(*worker)) {
 				return (uint32_t) attr.getBoolean();
 			};
 
-			get.asUint32 = [](const Attribute & attr, const void *worker) {
+			get.asUint32 = [](const Attribute & attr, const void GNUC_UNUSED(*worker)) {
 				return (uint32_t) attr.getInt32();
 			};
 
-			get.asBoolean = [](const Attribute & attr, const void *worker) {
+			get.asBoolean = [](const Attribute GNUC_UNUSED(& attr), const void *worker) {
 
 				const struct Worker * w = (const struct Worker *) worker;
 
@@ -226,7 +225,7 @@
 				return value;
 			};
 
-			set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+			set.asInt32 = [](const Attribute GNUC_UNUSED(& attr), const void *worker, const int32_t value) {
 
 				const struct Worker * w = (const struct Worker *) worker;
 
@@ -236,7 +235,7 @@
 
 			};
 
-			set.asBoolean = [](const Attribute & attr, const void *worker, const bool value) {
+			set.asBoolean = [](const Attribute GNUC_UNUSED(& attr), const void *worker, const bool value) {
 
 				const struct Worker * w = (const struct Worker *) worker;
 
@@ -256,15 +255,15 @@
 	public:
 		UnsignedIntAttribute(const IPC::Session *session, const LIB3270_UINT_PROPERTY *worker) : TemplateAttribute<LIB3270_UINT_PROPERTY>(session, Attribute::Boolean, worker) {
 
-			get.asString = [](const Attribute & attr, const void *worker) {
+			get.asString = [](const Attribute & attr, const void GNUC_UNUSED(*worker)) {
 				return std::to_string(attr.getUint32());
 			};
 
-			get.asInt32 = [](const Attribute & attr, const void *worker) {
+			get.asInt32 = [](const Attribute & attr, const void GNUC_UNUSED(*worker)) {
 				return (int32_t) attr.getUint32();
 			};
 
-			get.asUint32 = [](const Attribute & attr, const void *worker) {
+			get.asUint32 = [](const Attribute GNUC_UNUSED(& attr), const void *worker) {
 
 				const struct Worker * w = (const struct Worker *) worker;
 
@@ -278,16 +277,15 @@
 
 			};
 
-			get.asBoolean = [](const Attribute & attr, const void *worker) {
+			get.asBoolean = [](const Attribute & attr, const void GNUC_UNUSED(*worker)) {
 				return (attr.getUint32() != 0);
 			};
 
 			if(worker->set) {
 
-				set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+				set.asInt32 = [](const Attribute GNUC_UNUSED(& attr), const void *worker, const int32_t value) {
 
 					const struct Worker * w = (const struct Worker *) worker;
-					int32_t rc;
 
 					IPC::Request(*w->session,true,w->methods->name)
 						.push(value)
@@ -295,10 +293,9 @@
 
 				};
 
-				set.asUint32 = [](const Attribute & attr, const void *worker, const uint32_t value) {
+				set.asUint32 = [](const Attribute GNUC_UNUSED(& attr), const void *worker, const uint32_t value) {
 
 					const struct Worker * w = (const struct Worker *) worker;
-					int32_t rc;
 
 					IPC::Request(*w->session,true,w->methods->name)
 						.push(value)
@@ -315,7 +312,7 @@
 	public:
 		StringAttribute(const IPC::Session *session, const LIB3270_STRING_PROPERTY *worker) :  TemplateAttribute<LIB3270_STRING_PROPERTY>(session, Attribute::String, worker) {
 
-			get.asString = [](const Attribute & attr, const void *worker) {
+			get.asString = [](const Attribute GNUC_UNUSED(& attr), const void *worker) {
 
 				const struct Worker * w = (const struct Worker *) worker;
 				string value;
@@ -328,7 +325,7 @@
 
 			};
 
-			get.asInt32 = [](const Attribute & attr, const void *worker) {
+			get.asInt32 = [](const Attribute GNUC_UNUSED(& attr), const void *worker) {
 
 				const struct Worker * w = (const struct Worker *) worker;
 				string value;
@@ -343,10 +340,9 @@
 
 			if(worker->set) {
 
-				set.asString = [](const Attribute & attr, const void *worker, const char *value) {
+				set.asString = [](const Attribute GNUC_UNUSED(& attr), const void *worker, const char *value) {
 
 					const struct Worker * w = (const struct Worker *) worker;
-					int32_t rc;
 
 					IPC::Request(*w->session,true,w->methods->name)
 						.push(value)
@@ -354,7 +350,7 @@
 
 				};
 
-				set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+				set.asInt32 = [](const Attribute GNUC_UNUSED(& attr), const void *worker, const int32_t value) {
 
 					const struct Worker * w = (const struct Worker *) worker;
 
@@ -364,7 +360,7 @@
 
 				};
 
-				set.asUint32 = [](const Attribute & attr, const void *worker, const uint32_t value) {
+				set.asUint32 = [](const Attribute GNUC_UNUSED(& attr), const void *worker, const uint32_t value) {
 
 					const struct Worker * w = (const struct Worker *) worker;
 
@@ -422,7 +418,7 @@
 
 		// Check for boolean properties
 		{
-			const LIB3270_TOGGLE_ENTRY *toggles = lib3270_get_toggle_list();
+			const LIB3270_TOGGLE *toggles = lib3270_get_toggles();
 			for(size_t ix = 0; toggles[ix].name; ix++) {
 
 				if(!strcasecmp(name,toggles[ix].name)) {
@@ -479,7 +475,7 @@
 
 		// Add boolean properties
 		{
-			const LIB3270_TOGGLE_ENTRY *toggles = lib3270_get_toggle_list();
+			const LIB3270_TOGGLE *toggles = lib3270_get_toggles();
 			for(size_t ix = 0; toggles[ix].name; ix++) {
 				attributes.push_back(ToggleAttribute(this,&toggles[ix]));
 			}

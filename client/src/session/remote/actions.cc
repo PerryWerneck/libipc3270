@@ -147,7 +147,7 @@
 		this->action(toCharString(action));
 	}
 
-	void IPC::Session::print(LIB3270_CONTENT_OPTION option) {
+	void IPC::Session::print(LIB3270_CONTENT_OPTION GNUC_UNUSED(option)) {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 

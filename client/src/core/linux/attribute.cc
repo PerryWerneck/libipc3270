@@ -58,7 +58,7 @@
 		attributes.push_back((const LIB3270_PROPERTY *) prop);
 	}
 
-	for(auto prop = lib3270_get_toggle_list(); prop->name; prop++) {
+	for(auto prop = lib3270_get_toggles(); prop->name; prop++) {
 		attributes.push_back((const LIB3270_PROPERTY *) prop);
 	}
 

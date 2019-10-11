@@ -70,7 +70,7 @@
 	}
 
 	/// @brief Fire event.
-	void Session::fire(const Event &event) {
+	void Session::fire(const Event GNUC_UNUSED(&event)) {
 	}
 
 	void Session::push(const PFKey key) {
@@ -415,23 +415,13 @@
 
 	}
 
-	void Session::setAttribute(const char *name, const int value) {
+	void Session::setAttribute(const char GNUC_UNUSED(*name), const int GNUC_UNUSED(value)) {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 
-	void Session::setAttribute(const char *name, const char *value) {
+	void Session::setAttribute(const char GNUC_UNUSED(*name), const char GNUC_UNUSED(*value)) {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
-
-	/*
-	Attribute Session::getAttribute(const char *name) const {
-		throw std::system_error(ENOTSUP, std::system_category());
-	}
-
-	void Session::getAttributes(std::vector<Attribute> & attributes) const {
-		throw std::system_error(ENOTSUP, std::system_category());
-	}
-	*/
 
 	std::vector<Attribute> Session::getAttributes() const {
 		std::vector<Attribute> attributes;
@@ -456,7 +446,7 @@
 	}
 
 	/// @brief Create an action object
-	Action * Session::getAction(const LIB3270_ACTION *descriptor) {
+	Action * Session::getAction(const LIB3270_ACTION GNUC_UNUSED(*descriptor)) {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 

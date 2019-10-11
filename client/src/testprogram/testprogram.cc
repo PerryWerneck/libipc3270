@@ -167,7 +167,7 @@
 
  int main(int argc, char **argv) {
 
-
+	/*
 	const char * session = ":a";
 
 	#pragma GCC diagnostic push
@@ -191,8 +191,9 @@
 		}
 
 	}
+	*/
 
-	cout << "Session: " << session << endl;
+	// cout << "Session: " << session << endl;
 
 	//testHost(session);
 	//testAttributes(session);

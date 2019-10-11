@@ -51,12 +51,12 @@
 	}
 
 	/// @brief Get contents of field ad address.
-	void Abstract::Session::pop(int baddr, std::string &text) {
+	void Abstract::Session::pop(int GNUC_UNUSED(baddr), std::string GNUC_UNUSED(&text)) {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 
 	/// @brief Get contents of field at position.
-	void Abstract::Session::pop(unsigned short row, unsigned short col, std::string &text) {
+	void Abstract::Session::pop(unsigned short GNUC_UNUSED(row), unsigned short GNUC_UNUSED(col), std::string GNUC_UNUSED(&text)) {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 

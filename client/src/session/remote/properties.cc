@@ -69,7 +69,7 @@
 
 	}
 
-	void IPC::Session::getAttribute(const char *name, bool &value) const {
+	void IPC::Session::getAttribute(const char GNUC_UNUSED(*name), bool GNUC_UNUSED(&value)) const {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 

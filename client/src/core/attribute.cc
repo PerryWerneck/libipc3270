@@ -94,17 +94,17 @@
 
 		debug("worker=",((void *) this->data)," length=",szWorker);
 
-		get.name = [](const void *worker) {
+		get.name = [](const void GNUC_UNUSED(*worker)) {
 			return "unnamed";
 		};
 
-		get.asString = [](const Attribute &attr, const void *worker) {
+		get.asString = [](const Attribute GNUC_UNUSED(&attr), const void GNUC_UNUSED(*worker)) {
 
 			throw std::system_error(ENOTSUP, std::system_category());
 			return "";
 		};
 
-		get.asInt32 = [](const Attribute &attr, const void *worker) {
+		get.asInt32 = [](const Attribute GNUC_UNUSED(&attr), const void GNUC_UNUSED(*worker)) {
 			throw std::system_error(ENOTSUP, std::system_category());
 			return (int32_t) 0;
 		};
@@ -117,11 +117,11 @@
 			return (bool) attr.get.asInt32(attr, worker) != 0;
 		};
 
-		set.asString = [](const Attribute & attr, const void *worker, const char *value) {
+		set.asString = [](const Attribute GNUC_UNUSED(& attr), const void GNUC_UNUSED(*worker), const char GNUC_UNUSED(*value)) {
 			throw std::system_error(ENOTSUP, std::system_category());
 		};
 
-		set.asInt32 = [](const Attribute & attr, const void *worker, const int32_t value) {
+		set.asInt32 = [](const Attribute GNUC_UNUSED(& attr), const void GNUC_UNUSED(*worker), const int32_t GNUC_UNUSED(value)) {
 			throw std::system_error(ENOTSUP, std::system_category());
 		};
 
