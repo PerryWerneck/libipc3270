@@ -60,12 +60,6 @@ dnl ---------------------------------------------------------------------------
 dnl Initialize defaults
 dnl ---------------------------------------------------------------------------
 
-DBG_CFLAGS="-g -fstack-check -DDEBUG=1"
-RLS_CFLAGS="-DNDEBUG=1"
-PLUGINS=""
-APP_RESOURCES=""
-APP_LDFLAGS=""
-DLL_LDFLAGS="-shared"
 CLIENT_LDFLAGS=""
 CLIENT_LIBS=""
 CLIENT_TARGETS="devel"
@@ -450,6 +444,8 @@ dnl ---------------------------------------------------------------------------
 dnl Output the generated config.status script.
 dnl ---------------------------------------------------------------------------
 AC_SUBST(BASEDIR,$ac_pwd)
+CFLAGS="$CFLAGS -DHAVE_CONFIG_H"
+CXXFLAGS="$CXXFLAGS -DHAVE_CONFIG_H"
 
 AC_OUTPUT
 

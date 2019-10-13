@@ -102,7 +102,6 @@ CFLAGS= \
 	-I$(BASEDIR)/server/src/include \
 	-I$(BASEDIR)/common/src/include \
 	-DBUILD_DATE=`date +%Y%m%d` \
-	@LIB3270_CFLAGS@ \
 	@V3270_CFLAGS@ \
 	@GTK_CFLAGS@ \
 	@GLIB_CFLAGS@ \
@@ -114,7 +113,6 @@ LIBS= \
 	@LIBICONV@ \
 	@INTL_LIBS@ \
 	@V3270_LIBS@ \
-	@LIB3270_LIBS@ \
 	@GTK_LIBS@ \
 	@GLIB_LIBS@ \
 	@DBUS_LIBS@ \
