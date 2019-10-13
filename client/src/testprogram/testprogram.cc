@@ -36,7 +36,6 @@
  *
  */
 
- #include <config.h>
  #include <getopt.h>
  #include <cstdlib>
  #include <lib3270.h>

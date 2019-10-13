@@ -36,7 +36,6 @@
  *
  */
 
- #include <config.h>
  #include <ipc-client-internals.h>
 
  extern "C" {

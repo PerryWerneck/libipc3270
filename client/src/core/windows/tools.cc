@@ -36,7 +36,6 @@
  *
  */
 
- #include <config.h>
  #include <ipc-client-internals.h>
  #include <lmcons.h>
  #include <fcntl.h>
