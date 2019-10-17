@@ -44,6 +44,8 @@
 
  using namespace std;
 
+ #pragma GCC diagnostic ignored "-Wunused-function"
+
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
 /*
@@ -119,11 +121,10 @@
 
 		cout
 			<< "Version: " << host["version"]
-//			<< "\tRevision: " << host["Revision"]
-//			<< "\tConnected: " << host["Connected"]
+			<< "\tRevision: " << host["Revision"]
+			<< "\tConnected: " << host["Connected"]
 			<< std::endl;
 
-			/*
 		host.connect(nullptr);
 
 		cout
@@ -145,16 +146,20 @@
 		// host.input("test@0another line");
 
 		host.push(TN3270::ENTER);
+		host.wait(10);
+
+		cout << host << endl;
 
 		cout << endl << "[" << host.toString((unsigned int) 1, (unsigned int) 3,7) << "]" << endl;
 		cout << endl << "[" << host.toString((int) 15, (int) 10) << "]" << endl;
 
 		host.pfkey(3);
+		host.wait(10);
 
+		cout << host << endl;
 		host.wait(10);
 
 		host.disconnect();
-		*/
 
 	} catch(const std::exception &e) {
 
@@ -166,7 +171,6 @@
 
  int main(int argc, char **argv) {
 
-	/*
 	const char * session = ":a";
 
 	#pragma GCC diagnostic push
@@ -190,11 +194,11 @@
 		}
 
 	}
-	*/
 
-	// cout << "Session: " << session << endl;
+	cout << "Session: " << session << endl;
 
-	//testHost(session);
+	testHost(session);
+
 	//testAttributes(session);
 
 	/*
@@ -209,6 +213,7 @@
 	}
 	*/
 
+	/*
 	{
 		TN3270::Host host{":a",nullptr,10};
 
@@ -218,7 +223,7 @@
 
 		delete action;
 	}
-
+	*/
 
 	/*
 	for(auto attribute : TN3270::getAttributes()) {

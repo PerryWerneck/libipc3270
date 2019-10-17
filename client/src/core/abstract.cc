@@ -151,7 +151,7 @@
 
 	/// @brief Converte string recebida do host para o charset atual.
 	std::string Abstract::Session::convertFromHost(const std::string &str) const {
-		debug(__FUNCTION__,"(",str.c_str(),")");
+//		debug(__FUNCTION__,"(",str.c_str(),")");
 		return convertCharset(const_cast<Abstract::Session *>(this)->converter.local,str.c_str(),str.size());
 	}
 
