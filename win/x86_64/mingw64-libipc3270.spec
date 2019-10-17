@@ -1,5 +1,5 @@
 #
-# spec file for packages mingw64-libipc3270
+# spec file for package mingw64-%{_libname}
 #
 # Copyright (c) 2015 SUSE LINUX GmbH, Nuernberg, Germany.
 # Copyright (C) <2008> <Banco do Brasil S.A.>
@@ -16,6 +16,8 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
+%define _libname libipc3270
+
 %define __strip %{_mingw64_strip}
 %define __objdump %{_mingw64_objdump}
 %define _use_internal_dependency_generator 0
@@ -23,34 +25,32 @@
 %define __find_provides %{_mingw64_findprovides}
 %define __os_install_post %{_mingw64_debug_install_post} \
                           %{_mingw64_install_post}
+                          
+#---[ Package header ]------------------------------------------------------------------------------------------------
 
-#---[ Main package ]--------------------------------------------------------------------------------------------------
+Summary:		lib3270/pw3270 IPC client library for 64 bits Windows
+Name:			mingw64-%{_libname}
+Version:		5.2
+Release:		0
+License:		LGPL-3.0
 
-Name:		mingw64-libipc3270
-Summary:	lib3270/pw3270 IPC client library.
-Version:	5.2
-Release:	0
-License:	LGPL-3.0
-Source:		libipc3270-%{version}.tar.xz
+Source:			%{_libname}-%{version}.tar.xz
+URL:			https://github.com/PerryWerneck/%{_libname}
 
-Url:		https://github.com/PerryWerneck/libipc3270.git
+Group:			System/Libraries
+BuildRoot:		/var/tmp/%{name}-%{version}
 
-Group:		Development/Libraries/C and C++
-
-BuildRequires:  autoconf >= 2.61
-BuildRequires:  automake
-BuildRequires:  binutils
-BuildRequires:  coreutils
-BuildRequires:  gcc-c++
-BuildRequires:  gettext-devel
-BuildRequires:  m4
+BuildRequires:	autoconf >= 2.61
+BuildRequires:	automake
+BuildRequires:	gettext-devel
+BuildRequires:	xz
+BuildRequires:	fdupes
 
 BuildRequires:	mingw64-cross-binutils
 BuildRequires:	mingw64-cross-gcc
 BuildRequires:	mingw64-cross-gcc-c++
 BuildRequires:	mingw64-cross-pkg-config
 BuildRequires:	mingw64-filesystem
-BuildRequires:	mingw64-zlib-devel
 BuildRequires:	mingw64(lib:iconv)
 BuildRequires:	mingw64(lib:intl)
 
@@ -59,12 +59,11 @@ BuildRequires:	mingw64(pkg:lib3270)
 BuildRequires:	mingw64(pkg:libv3270)
 
 %description
-
 IPC client library for lib3270/pw3270.
 
 Designed as framework for language bindings.
 
-See more details at https://softwarepublico.gov.br/social/pw3270/
+For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
 #---[ Library ]-------------------------------------------------------------------------------------------------------
 
@@ -74,30 +73,26 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
 %package -n %{name}-%{_libvrs}
-Summary:	IPC Library for pw3270
-Group:		Development/Libraries/C and C++
-Provides:	mingw64(lib:ipc3270)
-
+Summary:		TN3270 Access library
+Group:			Development/Libraries/C and C++
 
 %description -n %{name}-%{_libvrs}
-
 IPC client library for lib3270/pw3270.
 
 Designed as framework for language bindings.
 
-See more details at https://softwarepublico.gov.br/social/pw3270/
+For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
 #---[ Development ]---------------------------------------------------------------------------------------------------
 
 %package devel
-Summary: Development files for %{name}
-Requires: mingw64(pkg:lib3270)
+
+Summary:		TN3270 Access library development files
+Group:			Development/Libraries/C and C++
+Requires:		%{name}-%{_libvrs} = %{version}
 
 %description devel
-
-Development files for lib3270/pw3270 IPC client library.
-
-Designed as a support tool for language bindings.
+Header files for the ipc3270 library.
 
 #---[ Plugin module for pw3270 main application ]----------------------------------------------------------------------
 
@@ -107,32 +102,31 @@ Requires: mingw64-%{_product} >= 5.2
 
 %description -n mingw64-%{_product}-plugin-ipc
 
-PW3270 plugin exporting D-Bus objects for every tn3270 session.
+PW3270 plugin exporting D-Bus objects to be used by the ipc3270 client library.
 
 See more details at https://softwarepublico.gov.br/social/pw3270/
 
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
-%setup -n libipc3270-%{version}
+%setup -n %{_libname}-%{version}
 
 NOCONFIGURE=1 \
 	./autogen.sh
 
-%{_mingw64_configure} \
-	--enable-static
+%{_mingw64_configure}
 
 %build
-make all
+make all %{?_smp_mflags}
 
 %{_mingw64_strip} \
 	--strip-all \
-    .bin/Release/*.dll
+	.bin/Release/*.dll
+
 
 %install
-rm -rf $RPM_BUILD_ROOT
-
-%makeinstall
+%{_mingw64_makeinstall}
+%fdupes %{buildroot}
 
 %files -n %{name}-%{_libvrs}
 %defattr(-,root,root)
@@ -140,26 +134,28 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS README.md
 %license LICENSE
 
-%{_mingw64_libdir}/libipc3270.dll
-%{_mingw64_libdir}/libipc3270.dll.%{MAJOR_VERSION}
-%{_mingw64_libdir}/libipc3270.dll.%{MAJOR_VERSION}.%{MINOR_VERSION}
+%dir %{_mingw64_datadir}/%{_product}
+
+%{_mingw64_bindir}/*.dll
+
+%files devel
+%defattr(-,root,root)
+
+%{_mingw64_libdir}/*.a
+
+%{_mingw64_includedir}/lib3270/ipc.h
+%{_mingw64_includedir}/lib3270/ipc
+
+%{_mingw64_libdir}/pkgconfig/*.pc
+
+%dir %{_mingw64_datadir}/%{_product}/def
+%{_mingw64_datadir}/%{_product}/def/*.def
 
 %files -n mingw64-%{_product}-plugin-ipc
 %defattr(-,root,root)
 
 %dir %{_mingw64_libdir}/%{_product}-plugins
 %{_mingw64_libdir}/%{_product}-plugins/ipcserver.dll
-
-%files devel
-%defattr(-,root,root)
-%{_mingw64_includedir}/lib3270/ipc.h
-%dir %{_mingw64_includedir}/lib3270/ipc
-%{_mingw64_includedir}/lib3270/ipc/*.h
-%{_mingw64_libdir}/pkgconfig/*.pc
-%{_mingw64_libdir}/*.a
-%{_mingw64_libdir}/*.lib
-
-%{_mingw64_datadir}/%{_product}/def/*.def
 
 %changelog
 
