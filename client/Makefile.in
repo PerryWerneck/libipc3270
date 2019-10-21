@@ -237,10 +237,6 @@ install-linux-lib: \
 		
 	@$(LN_S) \
 		lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
-		$(DESTDIR)$(libdir)/lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@
-
-	@$(LN_S) \
-		lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@ \
 		$(DESTDIR)$(libdir)/lib$(MODULE_NAME)@DLLEXT@
 
 install-windows-lib: \

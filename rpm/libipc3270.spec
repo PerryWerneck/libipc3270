@@ -152,7 +152,6 @@ make all
 %files -n %{name}-%{_libvrs}
 %defattr(-,root,root)
 %{_libdir}/%{name}.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
-%{_libdir}/%{name}.so.%{MAJOR_VERSION}
 
 %files devel
 %defattr(-,root,root)
