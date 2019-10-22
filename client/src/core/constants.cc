@@ -43,11 +43,19 @@
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
 TN3270_PUBLIC const char * getVersion() {
+#ifdef PACKAGE_VERSION
 	return PACKAGE_VERSION;
+#else
+    return "";
+#endif // PACKAGE_VERSION
 }
 
 TN3270_PUBLIC const char * getRevision() {
+#ifdef PACKAGE_RELEASE
 	return LIB3270_STRINGIZE_VALUE_OF(PACKAGE_RELEASE);
+#else
+    return "";
+#endif // PACKAGE_RELEASE
 }
 
 TN3270_PUBLIC const char * toCharString(const TN3270::KeyboardAction action) {

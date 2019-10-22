@@ -110,14 +110,14 @@
 	}
 
 	/// @brief Converte charset.
+#ifdef HAVE_ICONV
+
 	std::string Abstract::Session::convertCharset(iconv_t &converter, const char * str, int length) {
 
 		std::string rc;
 
 		if(length < 0)
 			length = (int) strlen(str);
-
-#ifdef HAVE_ICONV
 
 		if(length && converter != (iconv_t)(-1)) {
 
@@ -140,30 +140,37 @@
 			rc.assign(str);
 		}
 
-#else
-
-		rc.assign(str);
-
-#endif // HAVE_ICONV
 
 		return rc;
 	}
+#endif // HAVE_ICONV
 
 	/// @brief Converte string recebida do host para o charset atual.
 	std::string Abstract::Session::convertFromHost(const std::string &str) const {
 //		debug(__FUNCTION__,"(",str.c_str(),")");
+#ifdef HAVE_ICONV
 		return convertCharset(const_cast<Abstract::Session *>(this)->converter.local,str.c_str(),str.size());
+#else
+        return str;
+#endif // HAVE_ICONV
 	}
 
 	// @brief Converte string do charset atual para o charset do host.
 	std::string Abstract::Session::convertToHost(const char *text, int length) const {
+#ifdef HAVE_ICONV
 		return convertCharset(const_cast<Abstract::Session *>(this)->converter.host,text,length);
+#else
+        return std::string(text,length);
+#endif // HAVE_ICONV
 	}
 
 	/// @brief Converte string do charset atual para o charset do host.
 	std::string Abstract::Session::convertToHost(const std::string &str) const {
-		debug(__FUNCTION__,"(",str.c_str(),")");
+#ifdef HAVE_ICONV
 		return convertCharset(const_cast<Abstract::Session *>(this)->converter.host,str.c_str(),str.size());
+#else
+        return str;
+#endif // HAVE_ICONV
 	}
 
 

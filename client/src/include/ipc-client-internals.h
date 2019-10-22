@@ -139,10 +139,11 @@
 					iconv_t	host;
 
 				} converter;
-#endif
 
 				/// @brief Converte charset.
 				static std::string convertCharset(iconv_t &converter, const char *str, int length);
+#endif
+
 
 			protected:
 
