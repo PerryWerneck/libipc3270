@@ -171,7 +171,7 @@
 
  int main(int argc, char **argv) {
 
-	const char * session = ":a";
+	const char * session = ""; // ":a";
 
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"

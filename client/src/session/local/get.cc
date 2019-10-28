@@ -46,39 +46,39 @@
 
 		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
 
-		lib3270_autoptr(char) text = lib3270_get_string_at_address(hSession, 0, -1, '\n');
+		lib3270_auto_cleanup<char> text = lib3270_get_string_at_address(hSession, 0, -1, '\n');
 
         if(!text) {
             throw std::runtime_error( _("Can't get screen contents") );
         }
 
-        return std::string(text);
+        return std::string((char *) text);
 	}
 
 	std::string	Local::Session::get(int baddr, int len, char lf) const {
 
 		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
 
-		lib3270_autoptr(char) text = lib3270_get_string_at_address(hSession, baddr, len, lf);
+		lib3270_auto_cleanup<char> text = lib3270_get_string_at_address(hSession, baddr, len, lf);
 
         if(!text) {
             throw std::runtime_error( _("Can't get screen contents") );
         }
 
-        return std::string(text);
+        return std::string((char *) text);
 	}
 
 	std::string	Local::Session::get(unsigned int row, unsigned int col, int len, char lf) const {
 
 		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
 
-		lib3270_autoptr(char) text = lib3270_get_string_at(hSession, row, col, len, lf);
+		lib3270_auto_cleanup<char> text = lib3270_get_string_at(hSession, row, col, len, lf);
 
         if(!text) {
             throw std::runtime_error( _("Can't get screen contents") );
         }
 
-        return std::string(text);
+        return std::string((char *) text);
 
 	}
 

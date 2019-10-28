@@ -100,6 +100,42 @@
 		 */
 		TN3270_PUBLIC std::vector<const LIB3270_ACTION *> getActions();
 
+		/**
+		 * @brief Lib3270 dynamic memory block wrapper.
+		 *
+		 */
+		template<typename T>
+		class lib3270_auto_cleanup {
+		private:
+			T *data;
+
+		public:
+			lib3270_auto_cleanup(T *data) {
+				this->data = data;
+			}
+
+			~lib3270_auto_cleanup() {
+				lib3270_free((void *) this->data);
+			}
+
+			operator bool() const noexcept {
+				return this->data != NULL;
+			}
+
+			T * operator->() {
+				return this->data;
+			}
+
+			operator T *() const noexcept {
+				return this->data;
+			}
+
+		};
+
+		/**
+		 * @brief TN3270 Event.
+		 *
+		 */
 		class TN3270_PUBLIC Event {
 		public:
 
