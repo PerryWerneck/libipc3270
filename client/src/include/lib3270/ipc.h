@@ -551,8 +551,8 @@
 			/// @brief Get the lib3270 revision string.
 			virtual std::string getRevision() const = 0;
 
-			/// @brief Get the LU name.
-			virtual std::string getLUName() const = 0;
+			/// @brief Get the LU name associated with the session, if there is one.
+			virtual std::string getAssociatedLUName() const = 0;
 
 			/// @brief Get the terminal lock state code.
 			virtual LIB3270_KEYBOARD_LOCK_STATE getKeyboardLockState() const = 0;
@@ -796,8 +796,8 @@
 			}
 
 			/// @brief Get LU Name.
-			std::string getLUName() const {
-				return session->getLUName();
+			std::string getAssociatedLUName() const {
+				return session->getAssociatedLUName();
 			}
 
 			inline std::string getHostURL() const {

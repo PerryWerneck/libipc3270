@@ -67,7 +67,7 @@
 		cout
 			<< "Connection state is " << toCharString(hSession->getConnectionState()) << std::endl
 			<< "Program message is " << toCharString(hSession->getProgramMessage()) << std::endl
-			<< "Luname is " << hSession->getLUName() << std::endl
+			<< "Luname is " << hSession->getAssociatedLUName() << std::endl
 			<< std::endl;
 
 		cout
@@ -131,7 +131,7 @@
 			<< "Wait for unlock returns " << host.getKeyboardLockState() << std::endl
 			<< "Connection state is " << toCharString(host.getConnectionState()) << std::endl
 			<< "Program message is " << toCharString(host.getProgramMessage()) << std::endl
-			<< "Luname is " << host.getLUName() << std::endl
+			<< "Associated luname is " << host.getAssociatedLUName() << std::endl
 			<< "Screen size is " << host.getScreenWidth() << "x" << host.getScreenHeight() << " (" << host.getScreenLength() << ")"
 			<< std::endl;
 

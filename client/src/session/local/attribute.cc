@@ -536,10 +536,10 @@
 
 	}
 
-	std::string Local::Session::getLUName() const {
+	std::string Local::Session::getAssociatedLUName() const {
 
 		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return lib3270_get_luname(hSession);
+		return lib3270_get_associated_luname(hSession);
 
 	}
 

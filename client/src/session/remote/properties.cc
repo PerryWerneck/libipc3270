@@ -197,10 +197,10 @@
 
 	}
 
-	std::string IPC::Session::getLUName() const {
+	std::string IPC::Session::getAssociatedLUName() const {
 
 		string rc;
-		getAttribute("luname",rc);
+		getAttribute("associated_lu",rc);
 		return rc;
 
 	}
