@@ -23,4 +23,6 @@ resources.rc
 vgcore.*
 doxygen/doxyfile
 doxygen/html
+*.obj
+
 

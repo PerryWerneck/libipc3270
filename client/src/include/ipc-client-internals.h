@@ -79,7 +79,7 @@
         #define GNUC_UNUSED \
                 __attribute__((__unused__))
 #else
-        #define unused
+        #define GNUC_UNUSED
 #endif
 
 #ifdef HAVE_ICONV

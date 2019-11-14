@@ -4,7 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${vcpkgRoot}/x64-windows/include",
+                "C:/Program Files/pw3270/sdk/include",
                 "${vcpkgRoot}/x64-windows-static/include"
             ],
             "defines": [
