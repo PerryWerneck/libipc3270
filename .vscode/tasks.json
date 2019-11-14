@@ -11,10 +11,14 @@
                 "/favor:AMD64",
                 "/c",
                 "/EHsc",
-                "/I","${workspaceFolder}/client/src/include",
-                "/I","${workspaceFolder}/common/src/include",
-                "/I","C:/Program Files/pw3270/sdk/include",
-                "/I","${env:VCPKG_ROOT}/x64-windows-static/include",
+                "/I",
+                "${workspaceFolder}/client/src/include",
+                "/I",
+                "${workspaceFolder}/common/src/include",
+                "/I",
+                "C:/Program Files/pw3270/sdk/include",
+                "/I",
+                "${env:VCPKG_ROOT}/x64-windows-static/include",
                 "${file}"
             ],
             "group": {

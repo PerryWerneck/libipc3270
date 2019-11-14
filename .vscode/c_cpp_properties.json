@@ -9,6 +9,7 @@
             ],
             "defines": [
                 "_DEBUG",
+                "DEBUG",
                 "UNICODE",
                 "_UNICODE"
             ],

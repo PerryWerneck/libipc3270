@@ -82,6 +82,11 @@
         #define GNUC_UNUSED
 #endif
 
+#if defined(_MSC_VER)
+	// MSVC doesn't have a strcasecmp() function; instead it has _stricmp.
+	#define strcasecmp(a,b) _stricmp(a,b)
+#endif // _MSC_VER
+
 #ifdef HAVE_ICONV
 	#include <iconv.h>
 #endif // HAVE_ICONV
