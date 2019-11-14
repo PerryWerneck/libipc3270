@@ -1,0 +1,341 @@
+#
+# "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
+# (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
+# aplicativos mainframe. Registro no INPI sob o nome G3270.
+#
+# Copyright (C) <2008> <Banco do Brasil S.A.>
+#
+# Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
+# os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
+# Free Software Foundation.
+#
+# Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
+# GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
+# A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
+# obter mais detalhes.
+#
+# Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
+# programa;  se  não, escreva para a Free Software Foundation, Inc., 59 Temple
+# Place, Suite 330, Boston, MA, 02111-1307, USA
+#
+# Contatos:
+#
+# perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
+# erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
+#
+
+#---[ Library configuration ]------------------------------------------------------------
+
+MODULE_NAME=ipc3270
+PACKAGE_NAME=ipc3270
+PRODUCT_NAME=pw3270
+
+MAIN_SOURCES= \
+	$(wildcard src/core/*.cc) \
+	$(wildcard src/core/windows/*.cc) \
+	$(wildcard src/core/windows/*.rc) \
+	$(wildcard src/host/*.cc) \
+	$(wildcard src/session/*.cc) \
+	$(wildcard src/session/local/*.cc) \
+	$(wildcard src/session/remote/*.cc) \
+	$(wildcard src/session/remote/windows/*.cc)
+
+DYNAMIC_SOURCES= \
+	$(wildcard src/core/windows/dynamic/*.cc)
+
+TEST_SOURCES= \
+	$(wildcard src/testprogram/*.cc)
+
+TARGETS= \
+	windows-lib devel static
+
+#---[ Tools ]----------------------------------------------------------------------------
+
+CXX=
+LD=
+MKDIR=
+
+#---[ Paths ]----------------------------------------------------------------------------
+
+BASEDIR ?=..
+
+OBJDIR=.obj/$(MODULE_NAME)
+OBJDBG=$(OBJDIR)/Debug
+OBJRLS=$(OBJDIR)/Release
+
+BINDIR=$(BASEDIR)/.bin
+BINDBG=$(BINDIR)/Debug
+BINRLS=$(BINDIR)/Release
+
+#---[ Rules ]----------------------------------------------------------------------------
+
+DEPENDS= \
+	Makefile \
+	src/include/*.h \
+	$(BASEDIR)/common/src/include/*.h \
+	$(BASEDIR)/client/src/include/lib3270/*.h \
+	$(BASEDIR)/client/src/include/lib3270/ipc/*.h \
+
+CFLAGS= \
+	/favor:AMD64 \
+	/c \
+	/EHsc \
+	/I "$(BASEDIR)/client/src/include" \
+	/I "$(BASEDIR)/common/src/include" \
+	/I "C:/Program Files/pw3270/sdk/include" \
+	/I "$(VCPKG_ROOT)/x64-windows-static/include
+
+#LIBS=
+	
+
+#---[ Debug Rules ]----------------------------------------------------------------------
+
+$(OBJDBG)/%.o: \
+	%.cc \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) $(@D)
+
+	@$(CXX) \
+		$(CFLAGS) \
+		-Wall -Wextra -fstack-check \
+		-DDEBUG=1 \
+		-o $@ \
+		-c $<
+
+$(OBJDBG)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) $(@D)
+	@$(WINDRES) $< -O coff -o $@
+
+#---[ Release Rules ]--------------------------------------------------------------------
+
+$(OBJRLS)/%.o: \
+	%.cc \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) $(@D)
+	@$(CXX) \
+		$(CFLAGS) \
+		-DNDEBUG=1 \
+		-o $@ \
+		-c $<
+
+$(OBJRLS)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) $(@D)
+	@$(WINDRES) $< -O coff -o $@
+
+#---[ Release Targets ]------------------------------------------------------------------
+
+all: \
+	$(BINRLS)/lib$(MODULE_NAME).dll \
+	$(BINRLS)/lib$(MODULE_NAME).a \
+	$(POTDIR)/$(MODULE_NAME).pot
+
+Release: \
+	$(BINRLS)/lib$(MODULE_NAME).dll \
+	$(BINRLS)/lib$(MODULE_NAME).static.a
+
+$(BINRLS)/lib$(MODULE_NAME).dll: \
+	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
+	$(foreach SRC, $(basename $(DYNAMIC_SOURCES)), $(OBJRLS)/$(SRC).o)
+
+	@$(MKDIR) $(@D)
+	@echo $< ...
+	@$(LD) \
+		-shared -static-libgcc -static-libstdc++ -Wl,--output-def,$(@D)/\lib$(MODULE_NAME).def \
+		-Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$^ \
+		$(LIBS)
+
+$(BINRLS)/lib$(MODULE_NAME).static.a: \
+	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o)
+
+	@$(MKDIR) $(@D)
+	@echo $< ...
+
+	@$(AR) rcs $@ $^
+
+
+#---[ Install Targets ]------------------------------------------------------------------
+
+install: \
+       $(foreach TARGET, $(TARGETS), install-$(TARGET))
+
+install-linux-lib: \
+	$(BINRLS)/lib$(MODULE_NAME).dll
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/lib$(MODULE_NAME).dll \
+		$(DESTDIR)$(libdir)/lib$(MODULE_NAME).dll.5.2
+		
+	@$(LN_S) \
+		lib$(MODULE_NAME).dll.5.2 \
+		$(DESTDIR)$(libdir)/lib$(MODULE_NAME).dll
+
+install-windows-lib: \
+	$(BINRLS)/lib$(MODULE_NAME).dll
+
+	@$(MKDIR) \
+		$(DESTDIR)$(bindir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/lib$(MODULE_NAME).dll \
+		$(DESTDIR)$(bindir)/lib$(MODULE_NAME).dll
+		
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
+	@$(DLLTOOL) \
+		--input-def $(BINRLS)/lib$(MODULE_NAME).def \
+		--dllname lib$(MODULE_NAME).dll \
+		--output-lib $(DESTDIR)$(libdir)/lib$(MODULE_NAME).dll.a
+
+	@$(MKDIR) \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/lib$(MODULE_NAME).def \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
+
+install-static: \
+	$(BINRLS)/lib$(MODULE_NAME).static.a
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/lib$(MODULE_NAME).static.a \
+		$(DESTDIR)$(libdir)
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)/pkgconfig
+
+	@$(INSTALL_DATA) \
+		sdk/ipc3270-static.pc \
+		$(DESTDIR)$(libdir)/pkgconfig/ipc3270-static.pc
+
+install-devel:
+
+	@$(MKDIR) \
+		$(DESTDIR)$(includedir)/lib3270
+
+	@$(MKDIR) \
+		$(DESTDIR)$(includedir)/lib3270/ipc
+
+	@$(INSTALL_DATA) \
+		src/include/lib3270/ipc.h \
+		$(DESTDIR)$(includedir)/lib3270
+
+	@$(INSTALL_DATA) \
+		src/include/lib3270/ipc/*.h \
+		$(DESTDIR)$(includedir)/lib3270/ipc
+
+	# Install PKG-CONFIG files
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)/pkgconfig
+
+	@$(INSTALL_DATA) \
+		sdk/ipc3270.pc \
+		$(DESTDIR)$(libdir)/pkgconfig/ipc3270.pc
+
+#---[ Misc Targets ]---------------------------------------------------------------------
+
+$(POTDIR)/$(MODULE_NAME).pot: \
+	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(POTDIR)/$(MODULE_NAME)/$(SRC).pot)
+
+	@rm -f $@
+	@mkdir -p `dirname $@`
+	@$(MSGCAT) --sort-output $^ > $@
+
+locale: \
+	$(POTDIR)/$(MODULE_NAME).pot
+
+
+#---[ Debug Targets ]--------------------------------------------------------------------
+
+Debug: \
+	$(BINDBG)/$(MODULE_NAME)-client.exe
+
+$(BINDBG)/$(MODULE_NAME)-client.exe: \
+	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
+	$(BINDBG)/lib$(MODULE_NAME).dll
+
+	@$(MKDIR) $(@D)
+	@echo $< ...
+	@$(LD) \
+		-o $@ \
+		$^ \
+		-L$(BINDBG) \
+		-Wl,-rpath,$(BINDBG) \
+		 \
+		$(LDFLAGS) \
+		$(LIBS)
+
+
+$(BINDBG)/lib$(MODULE_NAME).dll: \
+	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJDBG)/$(SRC).o) \
+	$(foreach SRC, $(basename $(DYNAMIC_SOURCES)), $(OBJDBG)/$(SRC).o)
+
+	@$(MKDIR) $(@D)
+	@echo $< ...
+	@$(LD) \
+		-shared -static-libgcc -static-libstdc++ -Wl,--output-def,$(@D)/\lib$(MODULE_NAME).def \
+		-Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$^ \
+		$(LIBS)
+
+
+run: \
+	$(BINDBG)/$(MODULE_NAME)-client.exe
+
+ifeq ($(VALGRIND),no)
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(BINDBG)/$(MODULE_NAME)-client.exe
+
+else
+	@touch valgrind.suppression
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(VALGRIND) --leak-check=full --track-origins=yes --gen-suppressions=all --suppressions=valgrind.suppression \
+		$(BINDBG)/$(MODULE_NAME)-client.exe
+endif
+
+#---[ Clean Targets ]--------------------------------------------------------------------
+
+clean: \
+	cleanDebug \
+	cleanRelease
+
+cleanDebug:
+
+	@rm -fr $(OBJDBG)
+	@rm -fr $(BINDBG)
+
+cleanRelease:
+
+	@rm -fr $(OBJRLS)
+	@rm -fr $(BINRLS)
+	@rm -fr $(POTDIR)
+	@rm -f $(MODULE_NAME).pot
+
+clean: \
+	cleanDebug \
+	cleanRelease
+
+
