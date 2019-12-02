@@ -50,7 +50,7 @@
 
 	IPC::Session::Session(const char *id) : Abstract::Session() {
 
-		char *ptr = strchr(id,':');
+		const char *ptr = strchr(id,':');
 
 		if(!ptr)
 			throw std::system_error(EINVAL, std::system_category());
