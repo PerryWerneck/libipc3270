@@ -36,15 +36,17 @@
  *
  */
 
+#ifndef _WIN32
  #include <getopt.h>
+ #pragma GCC diagnostic ignored "-Wunused-function"
+#endif // _WIN32
+
  #include <cstdlib>
  #include <lib3270.h>
  #include <lib3270/ipc.h>
  #include <lib3270/ipc/action.h>
 
  using namespace std;
-
- #pragma GCC diagnostic ignored "-Wunused-function"
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
@@ -173,6 +175,7 @@
 
 	const char * session = ""; // ":a";
 
+#ifndef _WIN32
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 	static struct option options[] = {
@@ -194,6 +197,7 @@
 		}
 
 	}
+#endif // _WIN32
 
 	cout << "Session: " << session << endl;
 

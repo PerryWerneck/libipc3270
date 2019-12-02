@@ -24,318 +24,60 @@
 # erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
 #
 
-#---[ Library configuration ]------------------------------------------------------------
-
-MODULE_NAME=ipc3270
-PACKAGE_NAME=ipc3270
-PRODUCT_NAME=pw3270
-
-MAIN_SOURCES= \
-	$(wildcard src/core/*.cc) \
-	$(wildcard src/core/windows/*.cc) \
-	$(wildcard src/core/windows/*.rc) \
-	$(wildcard src/host/*.cc) \
-	$(wildcard src/session/*.cc) \
-	$(wildcard src/session/local/*.cc) \
-	$(wildcard src/session/remote/*.cc) \
-	$(wildcard src/session/remote/windows/*.cc)
-
-DYNAMIC_SOURCES= \
-	$(wildcard src/core/windows/dynamic/*.cc)
-
-TEST_SOURCES= \
-	$(wildcard src/testprogram/*.cc)
-
-TARGETS= \
-	windows-lib devel static
-
-#---[ Tools ]----------------------------------------------------------------------------
-
-CXX=
-LD=
-MKDIR=
-
-#---[ Paths ]----------------------------------------------------------------------------
-
-BASEDIR ?=..
-
-OBJDIR=.obj/$(MODULE_NAME)
-OBJDBG=$(OBJDIR)/Debug
-OBJRLS=$(OBJDIR)/Release
-
-BINDIR=$(BASEDIR)/.bin
-BINDBG=$(BINDIR)/Debug
-BINRLS=$(BINDIR)/Release
-
-#---[ Rules ]----------------------------------------------------------------------------
-
-DEPENDS= \
-	Makefile \
-	src/include/*.h \
-	$(BASEDIR)/common/src/include/*.h \
-	$(BASEDIR)/client/src/include/lib3270/*.h \
-	$(BASEDIR)/client/src/include/lib3270/ipc/*.h \
-
-CFLAGS= \
-	/favor:AMD64 \
-	/c \
-	/EHsc \
-	/I "$(BASEDIR)/client/src/include" \
-	/I "$(BASEDIR)/common/src/include" \
-	/I "C:/Program Files/pw3270/sdk/include" \
-	/I "$(VCPKG_ROOT)/x64-windows-static/include
-
-#LIBS=
-	
-
-#---[ Debug Rules ]----------------------------------------------------------------------
-
-$(OBJDBG)/%.o: \
-	%.cc \
-	$(DEPENDS)
-
-	@echo $< ...
-	@$(MKDIR) $(@D)
-
-	@$(CXX) \
-		$(CFLAGS) \
-		-Wall -Wextra -fstack-check \
-		-DDEBUG=1 \
-		-o $@ \
-		-c $<
-
-$(OBJDBG)/%.o: \
-	%.rc
-
-	@echo $< ...
-	@$(MKDIR) $(@D)
-	@$(WINDRES) $< -O coff -o $@
-
-#---[ Release Rules ]--------------------------------------------------------------------
-
-$(OBJRLS)/%.o: \
-	%.cc \
-	$(DEPENDS)
-
-	@echo $< ...
-	@$(MKDIR) $(@D)
-	@$(CXX) \
-		$(CFLAGS) \
-		-DNDEBUG=1 \
-		-o $@ \
-		-c $<
-
-$(OBJRLS)/%.o: \
-	%.rc
-
-	@echo $< ...
-	@$(MKDIR) $(@D)
-	@$(WINDRES) $< -O coff -o $@
-
-#---[ Release Targets ]------------------------------------------------------------------
-
-all: \
-	$(BINRLS)/lib$(MODULE_NAME).dll \
-	$(BINRLS)/lib$(MODULE_NAME).a \
-	$(POTDIR)/$(MODULE_NAME).pot
-
-Release: \
-	$(BINRLS)/lib$(MODULE_NAME).dll \
-	$(BINRLS)/lib$(MODULE_NAME).static.a
-
-$(BINRLS)/lib$(MODULE_NAME).dll: \
-	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
-	$(foreach SRC, $(basename $(DYNAMIC_SOURCES)), $(OBJRLS)/$(SRC).o)
-
-	@$(MKDIR) $(@D)
-	@echo $< ...
-	@$(LD) \
-		-shared -static-libgcc -static-libstdc++ -Wl,--output-def,$(@D)/\lib$(MODULE_NAME).def \
-		-Wl,-soname,$(@F) \
-		-o $@ \
-		$(LDFLAGS) \
-		$^ \
-		$(LIBS)
-
-$(BINRLS)/lib$(MODULE_NAME).static.a: \
-	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o)
-
-	@$(MKDIR) $(@D)
-	@echo $< ...
-
-	@$(AR) rcs $@ $^
-
-
-#---[ Install Targets ]------------------------------------------------------------------
-
-install: \
-       $(foreach TARGET, $(TARGETS), install-$(TARGET))
-
-install-linux-lib: \
-	$(BINRLS)/lib$(MODULE_NAME).dll
-
-	@$(MKDIR) \
-		$(DESTDIR)$(libdir)
-
-	@$(INSTALL_PROGRAM) \
-		$(BINRLS)/lib$(MODULE_NAME).dll \
-		$(DESTDIR)$(libdir)/lib$(MODULE_NAME).dll.5.2
-		
-	@$(LN_S) \
-		lib$(MODULE_NAME).dll.5.2 \
-		$(DESTDIR)$(libdir)/lib$(MODULE_NAME).dll
-
-install-windows-lib: \
-	$(BINRLS)/lib$(MODULE_NAME).dll
-
-	@$(MKDIR) \
-		$(DESTDIR)$(bindir)
-
-	@$(INSTALL_PROGRAM) \
-		$(BINRLS)/lib$(MODULE_NAME).dll \
-		$(DESTDIR)$(bindir)/lib$(MODULE_NAME).dll
-		
-	@$(MKDIR) \
-		$(DESTDIR)$(libdir)
-
-	@$(DLLTOOL) \
-		--input-def $(BINRLS)/lib$(MODULE_NAME).def \
-		--dllname lib$(MODULE_NAME).dll \
-		--output-lib $(DESTDIR)$(libdir)/lib$(MODULE_NAME).dll.a
-
-	@$(MKDIR) \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
-
-	@$(INSTALL_DATA) \
-		$(BINRLS)/lib$(MODULE_NAME).def \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
-
-install-static: \
-	$(BINRLS)/lib$(MODULE_NAME).static.a
-
-	@$(MKDIR) \
-		$(DESTDIR)$(libdir)
-
-	@$(INSTALL_PROGRAM) \
-		$(BINRLS)/lib$(MODULE_NAME).static.a \
-		$(DESTDIR)$(libdir)
-
-	@$(MKDIR) \
-		$(DESTDIR)$(libdir)/pkgconfig
-
-	@$(INSTALL_DATA) \
-		sdk/ipc3270-static.pc \
-		$(DESTDIR)$(libdir)/pkgconfig/ipc3270-static.pc
-
-install-devel:
-
-	@$(MKDIR) \
-		$(DESTDIR)$(includedir)/lib3270
-
-	@$(MKDIR) \
-		$(DESTDIR)$(includedir)/lib3270/ipc
-
-	@$(INSTALL_DATA) \
-		src/include/lib3270/ipc.h \
-		$(DESTDIR)$(includedir)/lib3270
-
-	@$(INSTALL_DATA) \
-		src/include/lib3270/ipc/*.h \
-		$(DESTDIR)$(includedir)/lib3270/ipc
-
-	# Install PKG-CONFIG files
-	@$(MKDIR) \
-		$(DESTDIR)$(libdir)/pkgconfig
-
-	@$(INSTALL_DATA) \
-		sdk/ipc3270.pc \
-		$(DESTDIR)$(libdir)/pkgconfig/ipc3270.pc
-
-#---[ Misc Targets ]---------------------------------------------------------------------
-
-$(POTDIR)/$(MODULE_NAME).pot: \
-	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(POTDIR)/$(MODULE_NAME)/$(SRC).pot)
-
-	@rm -f $@
-	@mkdir -p `dirname $@`
-	@$(MSGCAT) --sort-output $^ > $@
-
-locale: \
-	$(POTDIR)/$(MODULE_NAME).pot
-
-
-#---[ Debug Targets ]--------------------------------------------------------------------
-
-Debug: \
-	$(BINDBG)/$(MODULE_NAME)-client.exe
-
-$(BINDBG)/$(MODULE_NAME)-client.exe: \
-	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
-	$(BINDBG)/lib$(MODULE_NAME).dll
-
-	@$(MKDIR) $(@D)
-	@echo $< ...
-	@$(LD) \
-		-o $@ \
-		$^ \
-		-L$(BINDBG) \
-		-Wl,-rpath,$(BINDBG) \
-		 \
-		$(LDFLAGS) \
-		$(LIBS)
-
-
-$(BINDBG)/lib$(MODULE_NAME).dll: \
-	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJDBG)/$(SRC).o) \
-	$(foreach SRC, $(basename $(DYNAMIC_SOURCES)), $(OBJDBG)/$(SRC).o)
-
-	@$(MKDIR) $(@D)
-	@echo $< ...
-	@$(LD) \
-		-shared -static-libgcc -static-libstdc++ -Wl,--output-def,$(@D)/\lib$(MODULE_NAME).def \
-		-Wl,-soname,$(@F) \
-		-o $@ \
-		$(LDFLAGS) \
-		$^ \
-		$(LIBS)
-
-
-run: \
-	$(BINDBG)/$(MODULE_NAME)-client.exe
-
-ifeq ($(VALGRIND),no)
-
-	@LD_LIBRARY_PATH=$(BINDBG) \
-		$(BINDBG)/$(MODULE_NAME)-client.exe
-
-else
-	@touch valgrind.suppression
-
-	@LD_LIBRARY_PATH=$(BINDBG) \
-		$(VALGRIND) --leak-check=full --track-origins=yes --gen-suppressions=all --suppressions=valgrind.suppression \
-		$(BINDBG)/$(MODULE_NAME)-client.exe
-endif
-
-#---[ Clean Targets ]--------------------------------------------------------------------
-
-clean: \
-	cleanDebug \
-	cleanRelease
-
-cleanDebug:
-
-	@rm -fr $(OBJDBG)
-	@rm -fr $(BINDBG)
-
-cleanRelease:
-
-	@rm -fr $(OBJRLS)
-	@rm -fr $(BINRLS)
-	@rm -fr $(POTDIR)
-	@rm -f $(MODULE_NAME).pot
-
-clean: \
-	cleanDebug \
-	cleanRelease
-
-
+OBJ_FILES= \
+	client\src\core\abstract.obj \
+	client\src\core\actions.obj \
+	client\src\core\attribute.obj \
+	client\src\core\constants.obj \
+	client\src\core\events.obj \
+	client\src\core\session.obj \
+	client\src\core\windows\attribute.obj \
+	client\src\core\windows\pop.obj \
+	client\src\core\windows\push.obj \
+	client\src\core\windows\request.obj \
+	client\src\core\windows\tools.obj \
+	client\src\host\actions.obj \
+	client\src\host\init.obj \
+	client\src\host\pop.obj \
+	client\src\host\properties.obj \
+	client\src\host\push.obj \
+	client\src\host\states.obj \
+	client\src\host\stream.obj \
+	client\src\host\string.obj \
+	client\src\session\action.obj \
+	client\src\session\get.obj \
+	client\src\session\set.obj \
+	client\src\session\tools.obj \
+	client\src\session\local\actions.obj \
+	client\src\session\local\attribute.obj \
+	client\src\session\local\events.obj \
+	client\src\session\local\get.obj \
+	client\src\session\local\init.obj \
+	client\src\session\local\set.obj \
+	client\src\session\local\wait.obj \
+	client\src\session\remote\actions.obj \
+	client\src\session\remote\attribute.obj \
+	client\src\session\remote\get.obj \
+	client\src\session\remote\properties.obj \
+	client\src\session\remote\set.obj \
+	client\src\session\remote\tools.obj \
+	client\src\session\remote\wait.obj \
+	client\src\session\remote\windows\request.obj \
+	client\src\session\remote\windows\session.obj \
+	client\src\testprogram\testprogram.obj
+
+.cc.obj:
+	@echo Compiling...
+	$(CPP) \
+		/c \
+		/I"C:\msys64\project\pw3270\ipc\client\src\include" \
+		/I"c:\Program Files\pw3270\sdk\include" \
+		/EHsc \
+		/Fo"$@" \
+		$<
+
+ipc3270.dll: \
+	$(OBJ_FILES)
+	link \
+		/OUT:"$@" \
+		$(OBJ_FILES)

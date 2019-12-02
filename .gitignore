@@ -24,5 +24,6 @@ vgcore.*
 doxygen/doxyfile
 doxygen/html
 *.obj
+*.bat
 
 
