@@ -40,10 +40,14 @@
  #include <delayimp.h>
  #include <fcntl.h>
 
+#if defined(_MSC_VER)
+	#pragma comment(lib,"lib3270.lib")
+#endif // _MSC_VER
+
  extern "C" {
 
-	extern __declspec (dllexport) PfnDliHook __pfnDliNotifyHook2;
-	extern __declspec (dllexport) PfnDliHook __pfnDliFailureHook2;
+//	extern __declspec (dllexport) PfnDliHook __pfnDliNotifyHook2;
+//	extern __declspec (dllexport) PfnDliHook __pfnDliFailureHook2;
 
 	FARPROC WINAPI IPC3270_DelayLoadHook(unsigned reason, DelayLoadInfo * info);
 
@@ -55,8 +59,8 @@
 
  // https://docs.microsoft.com/en-us/cpp/build/reference/loading-all-imports-for-a-delay-loaded-dll?view=vs-2019
 
- PfnDliHook __pfnDliNotifyHook2 = IPC3270_DelayLoadHook;
- PfnDliHook __pfnDliFailureHook2 = IPC3270_DelayLoadHook;
+ const PfnDliHook __pfnDliNotifyHook2 = IPC3270_DelayLoadHook;
+ const PfnDliHook __pfnDliFailureHook2 = IPC3270_DelayLoadHook;
 
  static HANDLE hModule = 0;
  static HANDLE hEventLog = 0;

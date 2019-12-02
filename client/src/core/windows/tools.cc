@@ -40,6 +40,10 @@
  #include <lmcons.h>
  #include <fcntl.h>
 
+#if defined(_MSC_VER)
+	#pragma comment(lib,"Advapi32.lib")
+#endif // _MSC_VER
+
  using std::string;
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/

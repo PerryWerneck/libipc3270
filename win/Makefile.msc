@@ -78,8 +78,18 @@ OBJ_FILES= \
 
 ipc3270.dll: \
 	$(OBJ_FILES) \
-	client\src\core\windows\dynamic\init.obj
+	client\src\core\windows\dynamic\init.obj \
+	lib3270.lib
 	link \
 		/DLL \
 		/OUT:"$@" \
-		$<
+		$(OBJ_FILES) \
+		client\src\core\windows\dynamic\init.obj \
+		/DELAYLOAD:lib3270.dll
+
+
+lib3270.lib:
+	lib \
+		/def:"c:\Program Files\pw3270\sdk\def\lib3270.def" \
+		/out:lib3270.lib
+
