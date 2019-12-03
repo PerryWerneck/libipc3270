@@ -43,7 +43,7 @@
 #endif // _WIN32
 
 #if defined(_MSC_VER)
-	#pragma comment(lib,"lib3270.lib")
+	#pragma comment(lib,LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME)".lib")
 #endif // _MSC_VER
 
  extern "C" {
