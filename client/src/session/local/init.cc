@@ -42,6 +42,10 @@
  #include <lmcons.h>
 #endif // _WIN32
 
+#if defined(_MSC_VER)
+	#pragma comment(lib,"lib3270.lib")
+#endif // _MSC_VER
+
  extern "C" {
 	 #include <lib3270/session.h>
  }

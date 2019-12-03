@@ -121,12 +121,9 @@
  // test host object
  static void testHost(const char *session) {
 
-	cout
-	 	<< "Creating host" << endl;
-
-	TN3270::Host host{session,nullptr,10};
-
 	try {
+
+		TN3270::Host host{session,nullptr,10};
 
 		cout
 			<< "Version: " << host["version"]
@@ -206,9 +203,11 @@
 	}
 #endif // _WIN32
 
-	cout << "Session: " << session << endl;
-
+	cout 	<< "Session: " << session << endl;
+	
 	testHost(session);
+
+
 
 	//testAttributes(session);
 

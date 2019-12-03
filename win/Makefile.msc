@@ -115,4 +115,5 @@ clean:
 		$(LIB3270_NAME).dll \
 		ipc3270.lib \
 		ipc3270.dll \
-		$(OBJ_FILES)
+		$(OBJ_FILES) \
+		testprogram.*
