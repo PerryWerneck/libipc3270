@@ -24,9 +24,7 @@
 # erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
 #
 
-PW3270_SDK_PATH=c:\Program Files\pw3270\sdk
-
-!include "$(PW3270_SDK_PATH)\def\lib3270.mak"
+!include "$(PW3270_SDK_PATH)\lib3270.mak"
 
 OBJ_FILES= \
 	client\src\core\abstract.obj \
@@ -91,6 +89,18 @@ testprogram.exe: \
 		/nologo \
 		/OUT:"$@" \
 		client\src\testprogram\testprogram.obj
+
+install: \
+	$(OBJ_FILES)
+	@echo Building library...
+	lib \
+		/NOLOGO \
+		/OUT:"$(PW3270_SDK_PATH)\lib\ipc3270.lib" \
+		$(OBJ_FILES)		
+
+	-mkdir "$(PW3270_SDK_PATH)\include\lib3270\ipc"
+	copy "client\src\include\lib3270\ipc\*.h" "$(PW3270_SDK_PATH)\include\lib3270\ipc"
+	copy "client\src\include\lib3270\*.h" "$(PW3270_SDK_PATH)\include\lib3270"
 
 ipc3270.dll: \
 	$(OBJ_FILES) \
