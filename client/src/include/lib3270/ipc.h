@@ -39,7 +39,7 @@
 	#include <lib3270/keyboard.h>
 	#include <lib3270/actions.h>
 
-	#if defined(_WIN32)
+	#if defined(_WIN32) || defined(_MSC_VER)
 
 		#define TN3270_PUBLIC	__declspec (dllexport)
 		#define TN3270_PRIVATE

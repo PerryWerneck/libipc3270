@@ -75,17 +75,29 @@ OBJ_FILES= \
 		/DPACKAGE_NAME=\"ipc3270\" \
 		/DPRODUCT_NAME=\"$(PRODUCT_NAME)" \
 		/DLIB3270_NAME=\"$(LIB3270_NAME)" \
+		/DDEBUG=1 \
 		/I"C:\msys64\project\pw3270\ipc\client\src\include" \
 		/I"c:\Program Files\pw3270\sdk\include" \
 		/EHsc \
 		/Fo"$@" \
 		$<
 
+testprogram.exe: \
+	client\src\testprogram\testprogram.obj \
+	ipc3270.dll
+	@echo Build exe file....
+	link \
+		/nologo \
+		/OUT:"$@" \
+		client\src\testprogram\testprogram.obj
+
 ipc3270.dll: \
 	$(OBJ_FILES) \
 	client\src\core\windows\dynamic\init.obj \
 	lib3270.lib
+	@echo Build dll file....
 	link \
+		/NOLOGO \
 		/DLL \
 		/OUT:"$@" \
 		$(OBJ_FILES) \
@@ -98,4 +110,9 @@ $(LIB3270_NAME).lib:
 		/out:$(LIB3270_NAME).lib
 
 clean:
-	del $(LIB3270_NAME).lib
+	del \
+		$(LIB3270_NAME).lib \
+		$(LIB3270_NAME).dll \
+		ipc3270.lib \
+		ipc3270.dll \
+		$(OBJ_FILES)

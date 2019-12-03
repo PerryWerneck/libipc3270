@@ -41,6 +41,10 @@
  #pragma GCC diagnostic ignored "-Wunused-function"
 #endif // _WIN32
 
+#if defined(_MSC_VER)
+	#pragma comment(lib,"ipc3270.lib")
+#endif // _MSC_VER
+
  #include <cstdlib>
  #include <lib3270.h>
  #include <lib3270/ipc.h>
@@ -116,6 +120,9 @@
 
  // test host object
  static void testHost(const char *session) {
+
+	cout
+	 	<< "Creating host" << endl;
 
 	TN3270::Host host{session,nullptr,10};
 

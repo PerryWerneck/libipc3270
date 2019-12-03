@@ -42,6 +42,7 @@
 
 #if defined(_MSC_VER)
 	#pragma comment(lib,"lib3270.lib")
+	#pragma comment(lib,"DelayImp.lib")
 #endif // _MSC_VER
 
  extern "C" {

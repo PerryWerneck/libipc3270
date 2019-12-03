@@ -25,5 +25,9 @@ doxygen/doxyfile
 doxygen/html
 *.obj
 *.bat
+*.exe
+*.dll
+*.lib
+*.exp
 
 
