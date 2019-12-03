@@ -49,6 +49,8 @@
 #ifdef HAVE_ICONV
 		this->converter.local	= (iconv_t) (-1);
 		this->converter.host	= (iconv_t) (-1);
+#else
+		this->converter = nullptr;
 #endif
 
 	}
@@ -62,6 +64,13 @@
 
 		if(this->converter.host != (iconv_t) (-1))
 			iconv_close(this->converter.host);
+
+#else
+
+		if(converter) {
+			lib3270_iconv_free(converter);
+			converter = nullptr;
+		}
 
 #endif
 
@@ -102,8 +111,12 @@
 
 #else
 
-		throw std::runtime_error("No ICONV Support");
+		if(converter)
+			lib3270_iconv_free(converter);
 
+		converter = lib3270_iconv_new(remote,local);
+
+		debug("lib3270_iconv_new(",remote,",",local,"=",(void *) converter);
 #endif
 
 
@@ -147,21 +160,48 @@
 
 	/// @brief Converte string recebida do host para o charset atual.
 	std::string Abstract::Session::convertFromHost(const std::string &str) const {
-//		debug(__FUNCTION__,"(",str.c_str(),")");
+
 #ifdef HAVE_ICONV
+
 		return convertCharset(const_cast<Abstract::Session *>(this)->converter.local,str.c_str(),str.size());
+
 #else
+		if(converter) {
+
+			lib3270_auto_cleanup<char> converted = lib3270_iconv_from_host(converter,str.c_str(),str.size());
+			if(converted) {
+				return std::string(converted);
+			}
+
+		}
+
         return str;
+
 #endif // HAVE_ICONV
 	}
 
 	// @brief Converte string do charset atual para o charset do host.
 	std::string Abstract::Session::convertToHost(const char *text, int length) const {
+
 #ifdef HAVE_ICONV
+
 		return convertCharset(const_cast<Abstract::Session *>(this)->converter.host,text,length);
+
 #else
-        return std::string(text,length);
+
+		if(converter) {
+
+			lib3270_auto_cleanup<char> converted = lib3270_iconv_to_host(converter,text,length);
+			if(converted) {
+				return std::string(converted);
+			}
+
+		}
+
 #endif // HAVE_ICONV
+
+        return std::string(text,length);
+
 	}
 
 	/// @brief Converte string do charset atual para o charset do host.

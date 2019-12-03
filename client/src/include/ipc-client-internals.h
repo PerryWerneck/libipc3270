@@ -61,13 +61,17 @@
 	#include <stdexcept>
 	#include <string>
 
+#ifndef HAVE_ICONV
+	#include <lib3270/charset.h>
+#endif // !HAVE_ICONV
+
 #ifdef HAVE_LIBINTL
-        #include <libintl.h>
-		#define _( x ) dgettext(PACKAGE_NAME, x)
-        #define N_( x )	x
+	#include <libintl.h>
+	#define _( x ) dgettext(PACKAGE_NAME, x)
+	#define N_( x )	x
 #else
-        #define _( x ) x
-        #define N_( x ) x
+	#define _( x ) x
+	#define N_( x ) x
 #endif // HAVE_LIBINTL
 
 //
@@ -145,10 +149,15 @@
 
 				} converter;
 
-				/// @brief Converte charset.
 				static std::string convertCharset(iconv_t &converter, const char *str, int length);
+
+#else
+
+				LIB3270_ICONV * converter;
+
 #endif
 
+				/// @brief Converte charset.
 
 			protected:
 
