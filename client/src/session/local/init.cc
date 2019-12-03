@@ -66,7 +66,11 @@
 		this->hSession = lib3270_session_new("");
 
 		lib3270_set_user_data(this->hSession,(void *) this);
+
+#ifdef HAVE_ICONV
 		setCharSet();
+#endif // HAVE_ICONV
+
 		lib3270_set_popup_handler(this->hSession, popupHandler);
 
 		// Setup callbacks
