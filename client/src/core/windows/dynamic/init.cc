@@ -59,8 +59,13 @@
 
  // https://docs.microsoft.com/en-us/cpp/build/reference/loading-all-imports-for-a-delay-loaded-dll?view=vs-2019
 
+#if defined(_MSC_VER)
  const PfnDliHook __pfnDliNotifyHook2 = IPC3270_DelayLoadHook;
  const PfnDliHook __pfnDliFailureHook2 = IPC3270_DelayLoadHook;
+#else
+ PfnDliHook __pfnDliNotifyHook2 = IPC3270_DelayLoadHook;
+ PfnDliHook __pfnDliFailureHook2 = IPC3270_DelayLoadHook;
+#endif // _MSC_VER
 
  static HANDLE hModule = 0;
  static HANDLE hEventLog = 0;
