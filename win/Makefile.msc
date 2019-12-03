@@ -24,8 +24,9 @@
 # erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
 #
 
-PRODUCT_NAME=pw3270
-LIB3270_NAME=lib3270
+PW3270_SDK_PATH=c:\Program Files\pw3270\sdk
+
+!include "$(PW3270_SDK_PATH)\def\lib3270.mak"
 
 OBJ_FILES= \
 	client\src\core\abstract.obj \
@@ -77,7 +78,7 @@ OBJ_FILES= \
 		/DLIB3270_NAME=\"$(LIB3270_NAME)" \
 		/DDEBUG=1 \
 		/I"C:\msys64\project\pw3270\ipc\client\src\include" \
-		/I"c:\Program Files\pw3270\sdk\include" \
+		/I"$(PW3270_SDK_PATH)\include" \
 		/EHsc \
 		/Fo"$@" \
 		$<
@@ -106,7 +107,7 @@ ipc3270.dll: \
 
 $(LIB3270_NAME).lib:
 	lib \
-		/def:"c:\Program Files\pw3270\sdk\def\lib3270.def" \
+		/def:"$(PW3270_SDK_PATH)\def\lib3270.def" \
 		/out:$(LIB3270_NAME).lib
 
 clean:
