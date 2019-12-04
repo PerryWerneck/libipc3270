@@ -69,13 +69,13 @@ OBJ_FILES= \
 
 .cc.obj:
 	@echo Compiling...
-	$(CPP) \
+	@$(CPP) \
 		/c \
-		/DPACKAGE_NAME=ipc3270 \
+		/DPACKAGE_NAME=\"ipc3270\" \
 		/DPRODUCT_NAME=$(PRODUCT_NAME) \
 		/DLIB3270_NAME=$(LIB3270_NAME) \
-		/DDEBUG=1 \
-		/I"C:\msys64\project\pw3270\ipc\client\src\include" \
+		/DNDEBUG=1 \
+		/I".\client\src\include" \
 		/I"$(PW3270_SDK_PATH)\include" \
 		/EHsc \
 		/Fo"$@" \
@@ -85,7 +85,7 @@ testprogram.exe: \
 	client\src\testprogram\testprogram.obj \
 	ipc3270.dll
 	@echo Build exe file....
-	link \
+	@link \
 		/nologo \
 		/OUT:"$@" \
 		client\src\testprogram\testprogram.obj
@@ -93,7 +93,7 @@ testprogram.exe: \
 install: \
 	$(OBJ_FILES)
 	@echo Building library...
-	lib \
+	@lib \
 		/NOLOGO \
 		/OUT:"$(PW3270_SDK_PATH)\lib\ipc3270.lib" \
 		$(OBJ_FILES)		
@@ -127,4 +127,5 @@ clean:
 		ipc3270.lib \
 		ipc3270.dll \
 		$(OBJ_FILES) \
+		client\src\core\windows\dynamic\init.obj \
 		testprogram.*
