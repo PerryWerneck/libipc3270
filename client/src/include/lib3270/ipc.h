@@ -451,7 +451,7 @@
 		public:
 
 			/// @brief Get an instance of the TN3270 session based on the supplied ID.
-			static Session * getInstance(const char *id = nullptr);
+			static Session * getInstance(const char *id = nullptr, const char *charset = nullptr);
 			virtual ~Session();
 
 			// States
@@ -675,7 +675,7 @@
 			*/
 
 		public:
-			Host(const char *id = nullptr, const char *url = nullptr, time_t timeout = DEFAULT_TIMEOUT);
+			Host(const char *id = nullptr, const char *url = nullptr, time_t timeout = DEFAULT_TIMEOUT, const char *charset = nullptr);
 			~Host();
 
 			inline bool operator==(ConnectionState state) const noexcept {

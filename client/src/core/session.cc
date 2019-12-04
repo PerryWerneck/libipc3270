@@ -44,10 +44,10 @@
 
  namespace TN3270 {
 
-	Session * Session::getInstance(const char *id) {
+	Session * Session::getInstance(const char *id, const char *charset) {
 
 		if(!(id && *id)) {
-			return Local::getSessionInstance();
+			return Local::getSessionInstance(charset);
 		}
 
 		if(*id == ':') {
@@ -55,11 +55,11 @@
 			std::string name{LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME)};
 			name += id;
 
-			return IPC::getSessionInstance(name.c_str());
+			return IPC::getSessionInstance(name.c_str(), charset);
 
 		}
 
-		return IPC::getSessionInstance(id);
+		return IPC::getSessionInstance(id, charset);
 
 	}
 

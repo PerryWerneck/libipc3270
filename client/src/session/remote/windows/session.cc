@@ -48,7 +48,7 @@
 
  namespace TN3270 {
 
-	IPC::Session::Session(const char *id) : Abstract::Session() {
+	IPC::Session::Session(const char *id, const char *charset) : Abstract::Session() {
 
 		const char *ptr = strchr(id,':');
 
@@ -86,7 +86,7 @@
 			throw std::runtime_error("Can't set IPC Channel mode");
 		}
 
-		setCharSet();
+		this->setCharSet(charset);
 	}
 
 	IPC::Session::~Session() {

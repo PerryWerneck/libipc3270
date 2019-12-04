@@ -42,8 +42,8 @@
 
  namespace TN3270 {
 
-	Session * IPC::getSessionInstance(const char *id) {
-		return new IPC::Session(id);
+	Session * IPC::getSessionInstance(const char *id, const char *charset) {
+		return new IPC::Session(id,charset);
 	}
 
 

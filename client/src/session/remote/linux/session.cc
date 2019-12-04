@@ -60,7 +60,7 @@
 
  namespace TN3270 {
 
-	IPC::Session::Session(const char *id) : Abstract::Session() {
+	IPC::Session::Session(const char *id, const char *charset) : Abstract::Session() {
 
 		// Create D-Bus session.
 		DBusError err;
@@ -92,7 +92,7 @@
 
 		debug("D-Bus Object name=\"",this->name,"\" D-Bus Object path=\"",this->path,"\"");
 
-		setCharSet();
+		setCharSet(charset);
 
 	}
 

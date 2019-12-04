@@ -98,7 +98,7 @@
 		if(this->converter.host != (iconv_t) (-1))
 			iconv_close(converter.host);
 
-		if(strcmp(local,remote)) {
+		if(remote && strcmp(local,remote)) {
 
 			// Local and remote charsets aren't the same, setup conversion
 			converter.local	= iconv_open(local, remote);

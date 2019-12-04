@@ -104,7 +104,7 @@
 
 			public:
 
-				Session(const char *id);
+				Session(const char *id, const char *charset = nullptr);
 				virtual ~Session();
 
 				// Actions

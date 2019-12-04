@@ -55,11 +55,11 @@
 
  namespace TN3270 {
 
-	Session * Local::getSessionInstance() {
-		return new Local::Session();
+	Session * Local::getSessionInstance(const char *charset) {
+		return new Local::Session(charset);
 	}
 
- 	Local::Session::Session() : Abstract::Session() {
+ 	Local::Session::Session(const char *charset) : Abstract::Session() {
 
 		std::lock_guard<std::mutex> lock(sync);
 
@@ -67,7 +67,7 @@
 
 		lib3270_set_user_data(this->hSession,(void *) this);
 
-		setCharSet();
+		this->setCharSet(charset);
 
 		lib3270_set_popup_handler(this->hSession, popupHandler);
 
