@@ -42,7 +42,7 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-TN3270_PUBLIC const char * getVersion() {
+TN3270_PUBLIC const char * TN3270::getVersion() {
 #ifdef PACKAGE_VERSION
 	return PACKAGE_VERSION;
 #else
@@ -50,7 +50,7 @@ TN3270_PUBLIC const char * getVersion() {
 #endif // PACKAGE_VERSION
 }
 
-TN3270_PUBLIC const char * getRevision() {
+TN3270_PUBLIC const char * TN3270::getRevision() {
 #ifdef PACKAGE_RELEASE
 	return LIB3270_STRINGIZE_VALUE_OF(PACKAGE_RELEASE);
 #else
