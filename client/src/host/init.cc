@@ -40,16 +40,15 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-TN3270::Host::Host(const char *id, const char *url, time_t timeout, const char *charset) {
+TN3270::Host::Host(const char *id, const char *charset) {
 
 	debug("Creating host id=\"", id);
 
-	this->timeout = timeout;
+	this->timeout = 5;
 	this->session = Session::getInstance(id, charset);
-	if(url) {
-		this->connect(url);
-	}
+
 }
+
 
 TN3270::Host::~Host() {
 	delete this->session;

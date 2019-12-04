@@ -675,7 +675,8 @@
 			*/
 
 		public:
-			Host(const char *id = nullptr, const char *url = nullptr, time_t timeout = DEFAULT_TIMEOUT, const char *charset = nullptr);
+			Host(const char *id, const char *charset = nullptr);
+
 			~Host();
 
 			inline bool operator==(ConnectionState state) const noexcept {

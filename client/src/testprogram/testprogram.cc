@@ -97,7 +97,7 @@
  // Test Attributes
  static void testAttributes(const char *session) {
 
-	TN3270::Host host{session,nullptr,10};
+	TN3270::Host host{session};
 
 	for(auto attribute : host.getAttributes()) {
 
@@ -123,7 +123,7 @@
 
 	try {
 
-		TN3270::Host host{session,nullptr,10};
+		TN3270::Host host{session};
 
 		cout
 			<< "Version: " << host["version"]
@@ -204,7 +204,7 @@
 #endif // _WIN32
 
 	cout 	<< "Session: " << session << endl;
-	
+
 	testHost(session);
 
 
