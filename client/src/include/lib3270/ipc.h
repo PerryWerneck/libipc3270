@@ -89,6 +89,14 @@
 		TN3270_PUBLIC const char * getRevision();
 
 		/**
+		 * @brief Get protocol library install location.
+		 *
+		 * @return The installation path of the tn3270 protocol library.
+		 *
+		 */
+		TN3270_PUBLIC std::string getInstallLocation();
+
+		/**
 		 * @brief Get list of attributes.
 		 *
 		 */

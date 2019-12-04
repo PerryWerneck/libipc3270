@@ -127,8 +127,6 @@
 
 #ifdef _WIN32
 
-		/// @brief Get protocol library install location.
-		TN3270_PRIVATE std::string getInstallLocation();
 		TN3270_PRIVATE std::string getUserName();
 
 #endif // _WIN32
