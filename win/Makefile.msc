@@ -91,16 +91,20 @@ testprogram.exe: \
 		client\src\testprogram\testprogram.obj
 
 install: \
-	$(OBJ_FILES)
+	$(OBJ_FILES) \
+	$(LIB3270_NAME).lib
 	@echo Building library...
+	@-mkdir "$(PW3270_SDK_PATH)\lib"
 	@lib \
 		/NOLOGO \
 		/OUT:"$(PW3270_SDK_PATH)\lib\ipc3270.lib" \
 		$(OBJ_FILES)		
 
-	-mkdir "$(PW3270_SDK_PATH)\include\lib3270\ipc"
-	copy "client\src\include\lib3270\ipc\*.h" "$(PW3270_SDK_PATH)\include\lib3270\ipc"
-	copy "client\src\include\lib3270\*.h" "$(PW3270_SDK_PATH)\include\lib3270"
+
+	@copy "$(LIB3270_NAME).lib" "$(PW3270_SDK_PATH)\lib\$(LIB3270_NAME).lib"
+	@-mkdir "$(PW3270_SDK_PATH)\include\lib3270\ipc"
+	@copy "client\src\include\lib3270\ipc\*.h" "$(PW3270_SDK_PATH)\include\lib3270\ipc"
+	@copy "client\src\include\lib3270\*.h" "$(PW3270_SDK_PATH)\include\lib3270"
 
 ipc3270.dll: \
 	$(OBJ_FILES) \
