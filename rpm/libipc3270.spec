@@ -94,6 +94,12 @@ For more details, see https://github.com/PerryWerneck/libipc3270 .
 Summary: Development files for %{name}
 Requires: %{name}-%{_libvrs} = %{version}
 
+%if 0%{?fedora} ||  0%{?suse_version} > 1200
+Requires:	pkgconfig(lib3270)
+%else
+Requires:	lib3270-devel
+%endif
+
 %description -n libipc3270-devel
 
 Development files for lib3270/pw3270 IPC client library.
