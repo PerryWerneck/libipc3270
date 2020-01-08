@@ -59,8 +59,8 @@ static void ipc3270_finalize(GObject *object) {
 	if(ptr)
 		*ptr = 0;
 
-	v3270_set_session_name(ipc->terminal,widget_name);
 	lib3270_set_session_id(ipc->hSession, 0);
+	v3270_set_session_name(ipc->terminal,widget_name);
 
 	g_free(ipc->charset);
 
