@@ -113,10 +113,7 @@ static gboolean
 
 }
 
-void ipc3270_export_object(GObject *object, const char *name, GError **error) {
-
-	char id;
-	gchar *ptr;
+static gboolean register_object(ipc3270 *ipc, const char *name, char id) {
 
 	#pragma GCC diagnostic push
 	#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
@@ -127,6 +124,100 @@ void ipc3270_export_object(GObject *object, const char *name, GError **error) {
 	};
 	#pragma GCC diagnostic pop
 
+	GError * error = NULL;
+	gchar *ptr;
+
+	g_autofree gchar *object_name = g_strdup_printf(PW3270_IPC_SESSION_BUS_NAME,name,id);
+
+	for(ptr=object_name;*ptr;ptr++)
+		*ptr = g_ascii_tolower(*ptr);
+
+	debug("Requesting \"%s\"",object_name);
+
+	// https://dbus.freedesktop.org/doc/dbus-specification.html
+	GVariant * response =
+		g_dbus_connection_call_sync (
+				ipc->dbus.connection,
+				DBUS_SERVICE_DBUS,
+				DBUS_PATH_DBUS,
+				DBUS_INTERFACE_DBUS,
+				"RequestName",
+				g_variant_new ("(su)", object_name, DBUS_NAME_FLAG_DO_NOT_QUEUE),
+				NULL,
+				G_DBUS_CALL_FLAGS_NONE,
+				-1,
+				NULL,
+				&error
+		);
+
+
+	if(error) {
+
+		g_message("Can't request \"%s\": %s",object_name,error->message);
+		g_error_free(error);
+		return FALSE;
+
+	}
+
+	if(!response) {
+
+		g_message("Empty response when requesting \"%s\"",object_name);
+		return FALSE;
+
+	}
+
+	guint32 reply = 0;
+	g_variant_get(response, "(u)", &reply);
+	g_variant_unref(response);
+
+	if(reply == DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
+
+		ipc->dbus.name = g_strdup(object_name);
+		lib3270_set_session_id(ipc->hSession, id);
+		g_message("Got %s", ipc->dbus.name);
+
+		// Introspection data for the service we are exporting
+		GString * introspection = g_string_new("<node><interface name='" PW3270_IPC_SESSION_INTERFACE_NAME "'>");
+		ipc3270_add_terminal_introspection(introspection);
+		g_string_append(introspection,"</interface></node>");
+
+		gchar * introspection_xml = g_string_free(introspection,FALSE);
+
+		// debug("\n%s\n",introspection_xml);
+
+		GDBusNodeInfo * introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
+
+		// Register object-id
+		ipc->dbus.id = g_dbus_connection_register_object (
+							ipc->dbus.connection,
+							PW3270_IPC_SESSION_OBJECT_PATH,
+							introspection_data->interfaces[0],
+							&interface_vtable,
+							ipc,
+							NULL,
+							&error
+					);
+
+		g_dbus_node_info_unref(introspection_data);
+		g_free(introspection_xml);
+
+		if(error) {
+
+			g_message("Can't register object \"%s\": %s",object_name,error->message);
+			g_error_free(error);
+			return FALSE;
+
+		}
+
+		return TRUE;
+
+	}
+
+	return FALSE;
+}
+
+void ipc3270_export_object(GObject *object, const char *name, GError **error) {
+
 	ipc3270 * ipc = IPC3270(object);
 
 	ipc->dbus.connection = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, error);
@@ -135,84 +226,31 @@ void ipc3270_export_object(GObject *object, const char *name, GError **error) {
 		return;
 	}
 
+	g_autofree gchar *basename = g_strdup(name);
+	{
+		gchar *ptr = strrchr(basename,':');
+		if(ptr)
+			*ptr = 0;
+	}
+
 	g_dbus_connection_set_exit_on_close(ipc->dbus.connection,FALSE);
+
+	char id = lib3270_get_session_id(ipc->hSession);
+
+	if(id) {
+
+		if(register_object(ipc,basename,id))
+			return;
+
+	}
 
 	for(id='a'; id < 'z' && !ipc->dbus.id && !*error; id++) {
 
-		g_autofree gchar *object_name = g_strdup_printf(PW3270_IPC_SESSION_BUS_NAME,name,id);
-
-		for(ptr=object_name;*ptr;ptr++)
-			*ptr = g_ascii_tolower(*ptr);
-
-		debug("Requesting \"%s\"",object_name);
-
-		// https://dbus.freedesktop.org/doc/dbus-specification.html
-		GError *err = NULL;
-
-		GVariant * response =
-			g_dbus_connection_call_sync (
-					ipc->dbus.connection,
-					DBUS_SERVICE_DBUS,
-					DBUS_PATH_DBUS,
-					DBUS_INTERFACE_DBUS,
-					"RequestName",
-					g_variant_new ("(su)", object_name, DBUS_NAME_FLAG_DO_NOT_QUEUE),
-					NULL,
-					G_DBUS_CALL_FLAGS_NONE,
-					-1,
-					NULL,
-					&err
-			);
-
-		if(err) {
-
-			g_message("Can't request \"%s\": %s",object_name,err->message);
-			g_error_free(err);
-			err = NULL;
-
-		} else if(response) {
-
-			guint32 reply = 0;
-			g_variant_get(response, "(u)", &reply);
-			g_variant_unref(response);
-
-			if(reply == DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
-
-				ipc->dbus.name = g_strdup(object_name);
-				g_message("Got %s", ipc->dbus.name);
-
-				lib3270_set_session_id(ipc->hSession, id);
-
-				// Introspection data for the service we are exporting
-				GString * introspection = g_string_new("<node><interface name='" PW3270_IPC_SESSION_INTERFACE_NAME "'>");
-				ipc3270_add_terminal_introspection(introspection);
-				g_string_append(introspection,"</interface></node>");
-
-				gchar * introspection_xml = g_string_free(introspection,FALSE);
-
-				// debug("\n%s\n",introspection_xml);
-
-				GDBusNodeInfo * introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
-
-				// Register object-id
-				ipc->dbus.id = g_dbus_connection_register_object (
-									ipc->dbus.connection,
-									PW3270_IPC_SESSION_OBJECT_PATH,
-									introspection_data->interfaces[0],
-									&interface_vtable,
-									ipc,
-									NULL,
-									error
-							);
-
-				g_dbus_node_info_unref(introspection_data);
-				g_free(introspection_xml);
-
-				return;
-			}
-
-		}
+		if(register_object(ipc,basename,id))
+			return;
 
 	}
+
+	g_message("Can't register IPC object for session \"%s\"",basename);
 
 }
