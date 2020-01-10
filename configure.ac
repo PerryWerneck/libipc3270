@@ -437,6 +437,7 @@ dnl ---------------------------------------------------------------------------
 AC_CONFIG_FILES(Makefile)
 AC_CONFIG_FILES(server/Makefile)
 AC_CONFIG_FILES(client/Makefile)
+AC_CONFIG_FILES(locale/Makefile)
 AC_CONFIG_FILES(client/sdk/ipc3270.pc)
 AC_CONFIG_FILES(client/sdk/ipc3270-static.pc)
 

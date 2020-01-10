@@ -24,7 +24,9 @@
 # erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
 #
 
+PACKAGE_NAME=@PACKAGE_NAME@
 PRODUCT_NAME=@PRODUCT_NAME@
+LIBNAME=libipc3270
 
 CLIENT_TARGETS= \
 	@CLIENT_TARGETS@
@@ -41,6 +43,7 @@ datarootdir=@datarootdir@
 localedir=@localedir@
 docdir=@docdir@
 sysconfdir=@sysconfdir@
+POTDIR=$(BASEDIR)/.pot
 
 BASEDIR=@BASEDIR@
 
@@ -56,12 +59,14 @@ INSTALL=@INSTALL@
 INSTALL_DATA=@INSTALL_DATA@
 INSTALL_PROGRAM=@INSTALL_PROGRAM@
 DOXYGEN=@DOXYGEN@
+MSGCAT=@MSGCAT@
 
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
 	$(BINRLS)/ipcserver@DLLEXT@ \
-	$(BINRLS)/libipc3270@LIBEXT@
+	$(BINRLS)/libipc3270@LIBEXT@ \
+	locale/$(LIBNAME).pot
 
 plugin: \
 	$(BINRLS)/ipcserver@DLLEXT@
@@ -75,11 +80,29 @@ $(BINRLS)/ipcserver@DLLEXT@:
 $(BINRLS)/libipc3270@LIBEXT@:
 	@$(MAKE) -C client $@	
 
+locale/$(LIBNAME).pot:
+
+	@rm -f $@
+	@$(MKDIR) $(@D)
+	@$(MAKE) -C client locale
+	@$(MAKE) -C server locale
+	@$(MSGCAT) \
+		--sort-output \
+		$(POTDIR)/ipc3270.pot \
+		$(POTDIR)/ipcserver.pot \
+		> $@
+
+
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
 	install-plugin \
+	install-locale \
 	$(foreach CLIENT_TARGET, $(CLIENT_TARGETS), install-$(CLIENT_TARGET))
+
+install-locale: \
+	locale/$(LIBNAME).pot
+	@$(MAKE) -C locale DESTDIR=$(DESTDIR) install
 
 install-plugin:
 	@$(MAKE) -C server DESTDIR=$(DESTDIR) install
