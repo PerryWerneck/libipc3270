@@ -140,6 +140,7 @@ make all
 
 %install
 %makeinstall
+%find_lang %{name} langfiles
 
 %files -n %{product}-plugin-ipc
 %defattr(-,root,root)
@@ -155,7 +156,7 @@ make all
 %dir %{_libdir}/%{product}-plugins
 %{_libdir}/%{product}-plugins/ipcserver.so
 
-%files -n %{name}-%{_libvrs}
+%files -n %{name}-%{_libvrs} -f langfiles
 %defattr(-,root,root)
 %{_libdir}/%{name}.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
 
