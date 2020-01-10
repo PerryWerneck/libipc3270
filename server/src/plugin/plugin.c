@@ -40,10 +40,11 @@
 
  int pw3270_plugin_page_added(GtkWidget *terminal) {
 
+ 	if(!GTK_IS_V3270(terminal))
+		return EINVAL;
+
+
  	// Creates IPC, associate it with the terminal window.
-
- 	g_return_val_if_fail(GTK_IS_V3270(terminal),EINVAL);
-
  	// Build session name.
  	g_autofree gchar * session_name = g_strdup(v3270_get_session_name(terminal));
  	{
@@ -108,13 +109,13 @@
 
  int pw3270_plugin_page_removed(GtkWidget *terminal) {
 
- 	if(GTK_IS_V3270(terminal)) {
-		debug("%s(%p)",__FUNCTION__,g_object_get_data(G_OBJECT(terminal),"ipc-object-info"));
-		g_object_set_data(G_OBJECT(terminal), "ipc-object-info", NULL);
-		return 0;
- 	}
+ 	if(!GTK_IS_V3270(terminal))
+		return EINVAL;
 
- 	return -1;
+	debug("%s(%p)",__FUNCTION__,g_object_get_data(G_OBJECT(terminal),"ipc-object-info"));
+	g_object_set_data(G_OBJECT(terminal), "ipc-object-info", NULL);
+	return 0;
+
  }
 
  int pw3270_plugin_start(GtkWidget G_GNUC_UNUSED(*window), GtkWidget *terminal) {
