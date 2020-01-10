@@ -234,7 +234,7 @@ install-plugin: \
 #---[ Misc Targets ]---------------------------------------------------------------------
 
 $(POTDIR)/$(MODULE_NAME).pot: \
-	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(MODULE_NAME)/$(SRC).pot)
+	$(foreach SRC, $(basename $(CORE_SOURCES) $(PLUGIN_SOURCES) $(SERVICE_SOURCES)), $(POTDIR)/$(MODULE_NAME)/$(SRC).pot)
 
 	@rm -f $@
 	@mkdir -p `dirname $@`
@@ -344,7 +344,7 @@ clean: \
 	cleanRelease
 
 	@rm -fr $(BASEDIR)/.tmp/$(MODULE_NAME)
-	@rm -fr $(POTDIR)/$(MODULE_NAME)
+	@rm -fr $(POTDIR)/$(MODULE_NAME).pot
 	@rm -fr src/include/marshal
 
 cleanDebug:
