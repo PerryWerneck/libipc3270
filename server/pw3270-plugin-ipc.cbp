@@ -131,6 +131,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/include/config.h.in" />
+		<Unit filename="src/include/internals.h" />
 		<Unit filename="src/include/ipc-glib.h" />
 		<Unit filename="src/plugin/plugin.c">
 			<Option compilerVar="CC" />

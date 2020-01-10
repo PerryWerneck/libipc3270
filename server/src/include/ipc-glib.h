@@ -157,12 +157,6 @@
         #define g_autofree __attribute__((cleanup(ipc3270_autoptr_cleanup_generic_gfree)))
 	#endif // ! GLIB(2,44,0)
 
-	#ifdef DEBUG
-		#define debug( fmt, ... )  fprintf(stderr,"%s(%d) " fmt "\n", __FILE__, (int) __LINE__, __VA_ARGS__ ); fflush(stderr);
-	#else
-		#define debug(...) /* __VA_ARGS */
-	#endif
-
 	typedef struct _ipc_method_int_arg {
 		const gchar *name;
 		int (*call)(H3270 *hSession, int keycode);

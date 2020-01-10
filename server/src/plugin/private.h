@@ -37,16 +37,17 @@
 
 	#define PRIVATE_H_INCLUDED
 
-	#include <config.h>
+	#include <internals.h>
 	#include <ipc-glib.h>
+
+	G_BEGIN_DECLS
 
 	int pw3270_plugin_start(GtkWidget *window, GtkWidget *terminal);
 	int pw3270_plugin_stop(GtkWidget *window, GtkWidget *terminal);
 
-	#ifdef DEBUG
-		#define debug( fmt, ... )  fprintf(stderr,"%s(%d) " fmt "\n", __FILE__, (int) __LINE__, __VA_ARGS__ ); fflush(stderr);
-	#else
-		#define debug(...) /* __VA_ARGS */
-	#endif
+	int pw3270_plugin_page_added(GtkWidget *terminal);
+	int pw3270_plugin_page_removed(GtkWidget *terminal);
+
+	G_END_DECLS
 
 #endif // PRIVATE_H_INCLUDED

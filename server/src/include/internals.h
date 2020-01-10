@@ -29,48 +29,31 @@
  */
 
  /**
-  * @brief Private definitions for pw3270 IPC linux module.
+  * @brief Internal definitions for pw3270 IPC plugin.
+  *
+  * @author Perry Werneck <perry.werneck@gmail.com>
   *
   */
 
-#ifndef LINUX_GOBJECT_H_INCLUDED
+#ifndef INTERNALS_H_INCLUDED
 
-	#define LINUX_GOBJECT_H_INCLUDED
+	#define INTERNALS_H_INCLUDED
 
-	#include <internals.h>
+	#include <config.h>
+
+	#define ENABLE_NLS
+	#define GETTEXT_PACKAGE PACKAGE_NAME
 
 	#include <glib.h>
-	#include <gio/gio.h>
+	#include <glib/gi18n-lib.h>
 
 	#include <lib3270.h>
-	#include <ipc-glib.h>
+	#include <lib3270/log.h>
+	#include <v3270.h>
 
 	G_BEGIN_DECLS
 
-	typedef struct _ipc3270			ipc3270;
-	typedef struct _ipc3270Class	ipc3270Class;
-
-	struct _ipc3270 {
-		GObject			  parent;
-
-		struct {
-			gchar			* name;
-			GDBusConnection	* connection;
-			guint			  id;
-		} dbus;
-
-		H3270			* hSession;
-		gchar			* charset;
-		GtkWidget		* terminal;
-		GQuark 			  error_domain;
-	};
-
-	struct _ipc3270Class {
-		GObjectClass parent;
-	};
-
-	G_GNUC_INTERNAL void ipc3270_release_object(ipc3270 *object);
 
 	G_END_DECLS
 
-#endif // LINUX_GOBJECT_H_INCLUDED
+#endif // PW3270_IPC_H_INCLUDED

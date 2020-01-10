@@ -32,6 +32,7 @@
  *
  */
 
+#include <internals.h>
 #include "gobject.h"
 #include <lib3270.h>
 #include <lib3270/actions.h>

@@ -32,7 +32,7 @@
  *
  */
 
-#include <config.h>
+#include <internals.h>
 #include <ipc-glib.h>
 #include <lib3270.h>
 #include <lib3270/properties.h>

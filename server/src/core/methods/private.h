@@ -36,7 +36,7 @@
 
 	#define IPC_METHODS_H_INCLUDED
 
-	#include <config.h>
+	#include <internals.h>
 	#include <lib3270.h>
 	#include <ipc-glib.h>
 

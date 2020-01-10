@@ -34,41 +34,51 @@
   *
   */
 
- #define ENABLE_NLS
- #define GETTEXT_PACKAGE PACKAGE_NAME
-
- #include <libintl.h>
- #include <glib/gi18n.h>
- #include <gio/gio.h>
-
  #include "private.h"
  #include <v3270.h>
  #include <ipc-glib.h>
 
- int pw3270_plugin_stop(GtkWidget G_GNUC_UNUSED(*window), GtkWidget *terminal) {
-	debug("%s(%p)",__FUNCTION__,g_object_get_data(G_OBJECT(terminal),"ipc-object-info"));
-	g_object_set_data(G_OBJECT(terminal), "ipc-object-info", NULL);
-	return 0;
- }
+ int pw3270_plugin_page_added(GtkWidget *terminal) {
 
- int pw3270_plugin_start(GtkWidget *window, GtkWidget *terminal) {
+ 	// Creates IPC, associate it with the terminal window.
 
-	// Creates IPC, associate it with the terminal window
+ 	g_return_val_if_fail(GTK_IS_V3270(terminal),EINVAL);
+
+ 	// Build session name.
+ 	g_autofree gchar * session_name = g_strdup(v3270_get_session_name(terminal));
+ 	{
+ 		gchar *ptr = strchr(session_name,':');
+ 		if(ptr)
+			*ptr = 0;
+
+		for(ptr=session_name;*ptr;ptr++) {
+
+			if(!g_ascii_isalnum(*ptr)) {
+				*ptr = '_';
+			} else {
+				*ptr = g_ascii_tolower(*ptr);
+			}
+
+		}
+
+ 	}
+
+ 	debug("Session name for widget %p is \"%s\"",terminal,session_name);
+
+	// Create IPC object
 	GObject	* ipc = ipc3270_new();
 	g_object_set_data_full(G_OBJECT(terminal), "ipc-object-info", ipc, g_object_unref);
-
-	debug("Name: \"%s\"",v3270_get_session_name(terminal));
 
 	// Set session handle, this starts the IPC communication.
 	GError * error = NULL;
 
 	ipc3270_set_terminal_widget(ipc,terminal);
-	ipc3270_export_object(ipc,v3270_get_session_name(terminal),&error);
+	ipc3270_export_object(ipc,session_name,&error);
 
 	if(error) {
 
 		GtkWidget *dialog =  gtk_message_dialog_new(
-									GTK_WINDOW(window),
+									GTK_WINDOW(gtk_widget_get_toplevel(terminal)),
 									GTK_DIALOG_MODAL|GTK_DIALOG_DESTROY_WITH_PARENT,
 									GTK_MESSAGE_ERROR,
 									GTK_BUTTONS_OK,
@@ -82,7 +92,7 @@
 
         gtk_widget_show_all(dialog);
 
-		return 0;
+		return -1;
 
 	}
 
@@ -92,7 +102,27 @@
 		v3270_set_session_name(terminal, widget_name);
 	}
 
-	return 0;
+ 	return 0;
+
+ }
+
+ int pw3270_plugin_page_removed(GtkWidget *terminal) {
+
+ 	if(GTK_IS_V3270(terminal)) {
+		debug("%s(%p)",__FUNCTION__,g_object_get_data(G_OBJECT(terminal),"ipc-object-info"));
+		g_object_set_data(G_OBJECT(terminal), "ipc-object-info", NULL);
+		return 0;
+ 	}
+
+ 	return -1;
+ }
+
+ int pw3270_plugin_start(GtkWidget G_GNUC_UNUSED(*window), GtkWidget *terminal) {
+	return pw3270_plugin_page_added(terminal);
+ }
+
+ int pw3270_plugin_stop(GtkWidget G_GNUC_UNUSED(*window), GtkWidget *terminal) {
+ 	return pw3270_plugin_page_removed(terminal);
  }
 
 

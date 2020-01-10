@@ -226,31 +226,24 @@ void ipc3270_export_object(GObject *object, const char *name, GError **error) {
 		return;
 	}
 
-	g_autofree gchar *basename = g_strdup(name);
-	{
-		gchar *ptr = strrchr(basename,':');
-		if(ptr)
-			*ptr = 0;
-	}
-
 	g_dbus_connection_set_exit_on_close(ipc->dbus.connection,FALSE);
 
 	char id = lib3270_get_session_id(ipc->hSession);
 
 	if(id) {
 
-		if(register_object(ipc,basename,id))
+		if(register_object(ipc,name,id))
 			return;
 
 	}
 
 	for(id='a'; id < 'z' && !ipc->dbus.id && !*error; id++) {
 
-		if(register_object(ipc,basename,id))
+		if(register_object(ipc,name,id))
 			return;
 
 	}
 
-	g_message("Can't register IPC object for session \"%s\"",basename);
+	g_message("Can't register IPC object for session \"%s\"",name);
 
 }
