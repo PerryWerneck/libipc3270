@@ -46,8 +46,9 @@
 	#else
 
 		#define PW3270_IPC_SESSION_BUS_NAME			"br.com.bb.%s.%c"
+		#define PW3270_IPC_SESSION_BUS_PATH			"/br/com/bb/%s/%c"
+
 		#define PW3270_IPC_SESSION_INTERFACE_NAME	"br.com.bb.tn3270.session"
-		#define PW3270_IPC_SESSION_OBJECT_PATH		"/br/com/bb/tn3270/session"
 
 		#define PW3270_IPC_SERVICE_BUS_NAME			"br.com.bb.tn3270.service"
 		#define PW3270_IPC_SERVICE_INTERFACE_NAME	"br.com.bb.tn3270.service"

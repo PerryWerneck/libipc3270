@@ -98,7 +98,7 @@
 
 	char id = lib3270_get_session_id(v3270_get_session(terminal));
 	if(id) {
-		g_autofree gchar * widget_name = g_strdup_printf("%s:%c",v3270_get_session_name(terminal),id);
+		g_autofree gchar * widget_name = g_strdup_printf("%s:%c",session_name,id);
 		v3270_set_session_name(terminal, widget_name);
 	}
 

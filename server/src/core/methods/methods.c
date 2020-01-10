@@ -81,7 +81,7 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 
 	debug("%s(%s,request=%p,response=%p)",__FUNCTION__,method_name,request,response);
 
-	lib3270_trace_event(hSession,"Method %s called on session %c\n",method_name,lib3270_get_session_id(hSession));
+	lib3270_write_event_trace(hSession,"Method %s called on session %c\n",method_name,lib3270_get_session_id(hSession));
 
 	for(ix = 0; ix < G_N_ELEMENTS(methods); ix++) {
 

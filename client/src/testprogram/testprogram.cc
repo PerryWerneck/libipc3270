@@ -177,7 +177,7 @@
 
  int main(int argc, char **argv) {
 
-	const char * session = ""; // ":a";
+	const char * session = ":a";
 
 #ifndef _WIN32
 	#pragma GCC diagnostic push

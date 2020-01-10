@@ -128,11 +128,12 @@ static gboolean register_object(ipc3270 *ipc, const char *name, char id) {
 	gchar *ptr;
 
 	g_autofree gchar *object_name = g_strdup_printf(PW3270_IPC_SESSION_BUS_NAME,name,id);
+	g_autofree gchar *object_path = g_strdup_printf(PW3270_IPC_SESSION_BUS_PATH,name,id);
 
 	for(ptr=object_name;*ptr;ptr++)
 		*ptr = g_ascii_tolower(*ptr);
 
-	debug("Requesting \"%s\"",object_name);
+	debug("Requesting object \"%s\"",object_name);
 
 	// https://dbus.freedesktop.org/doc/dbus-specification.html
 	GVariant * response =
@@ -187,10 +188,12 @@ static gboolean register_object(ipc3270 *ipc, const char *name, char id) {
 
 		GDBusNodeInfo * introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
 
+		debug("interface=\"%s\" path=\"%s\"",PW3270_IPC_SESSION_INTERFACE_NAME,object_path);
+
 		// Register object-id
 		ipc->dbus.id = g_dbus_connection_register_object (
 							ipc->dbus.connection,
-							PW3270_IPC_SESSION_OBJECT_PATH,
+							object_path,
 							introspection_data->interfaces[0],
 							&interface_vtable,
 							ipc,
@@ -203,7 +206,11 @@ static gboolean register_object(ipc3270 *ipc, const char *name, char id) {
 
 		if(error) {
 
-			g_message("Can't register object \"%s\": %s",object_name,error->message);
+			g_message("Can't register object \"%s\" with interface \"%s\" and path \"%s\": %s",
+						object_name,
+						PW3270_IPC_SESSION_INTERFACE_NAME,
+						object_path,
+						error->message);
 			g_error_free(error);
 			return FALSE;
 

@@ -87,7 +87,11 @@
 
 		std::transform(this->name.begin(), this->name.end(), this->name.begin(),[](unsigned char c){ return std::tolower(c); });
 
-		this->path = "/br/com/bb/tn3270/session";
+		this->path = "/br/com/bb/";
+		this->path += string(id,(sep - id));
+		this->path += "/";
+		this->path += (sep+1);
+
 		this->interface = "br.com.bb.tn3270.session";
 
 		debug("D-Bus Object name=\"",this->name,"\" D-Bus Object path=\"",this->path,"\"");

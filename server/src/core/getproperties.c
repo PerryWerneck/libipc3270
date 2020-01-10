@@ -46,7 +46,7 @@ GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GEr
 
 	errno = 0; // Just in case.
 
-	lib3270_trace_event(hSession,"GetProperty(%s) called on session %c\n",property_name,lib3270_get_session_id(hSession));
+	lib3270_write_event_trace(hSession,"GetProperty(%s) called on session %c\n",property_name,lib3270_get_session_id(hSession));
 
 	// Boolean properties
 	const LIB3270_INT_PROPERTY * boolprop = lib3270_get_boolean_properties_list();
