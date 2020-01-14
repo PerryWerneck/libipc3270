@@ -429,6 +429,14 @@ AS_VAR_POPDEF([CACHEVAR])dnl
 
 AX_CHECK_COMPILE_FLAG([-std=gnu++11], [CXXFLAGS="$CXXFLAGS -std=gnu++11"])
 
+dnl ---------------------------------------------------------------------------
+dnl Set translation domain.
+dnl ---------------------------------------------------------------------------
+
+app_cv_gettext_package="libipc3270"
+
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$app_cv_gettext_package")
+AC_SUBST(GETTEXT_PACKAGE,"$app_cv_gettext_package")
 
 dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.

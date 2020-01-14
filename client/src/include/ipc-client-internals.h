@@ -67,7 +67,7 @@
 
 #ifdef HAVE_LIBINTL
 	#include <libintl.h>
-	#define _( x ) dgettext(PACKAGE_NAME, x)
+	#define _( x ) dgettext(GETTEXT_PACKAGE, x)
 	#define N_( x )	x
 #else
 	#define _( x ) x

@@ -57,6 +57,8 @@
 
 			rc = worker();
 
+			debug("rc=",rc);
+
 			if(rc == 0)
 				return;
 			else if(rc != ETIMEDOUT)
@@ -88,6 +90,8 @@
 	}
 
 	void IPC::Session::waitForReady(time_t timeout) const {
+
+		debug(__FUNCTION__,"(",timeout,")");
 
 		wait(timeout, [this]() {
 

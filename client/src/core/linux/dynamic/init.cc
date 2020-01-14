@@ -49,16 +49,8 @@
 
  int ipc3270_loaded(void) {
 
-#ifdef HAVE_LIBINTL
-
- 	static bool initialized = false;
-
-	if(!initialized) {
-		initialized = true;
-		bindtextdomain(PACKAGE_NAME, LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
-	}
-
-#endif // HAVE_LIBINTL
+	debug("LOCALEDIR=\"%s\"",LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
+	bindtextdomain(GETTEXT_PACKAGE, LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
 
 	return 0;
 

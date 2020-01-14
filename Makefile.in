@@ -44,6 +44,7 @@ localedir=@localedir@
 docdir=@docdir@
 sysconfdir=@sysconfdir@
 POTDIR=$(BASEDIR)/.pot
+GETTEXT_PACKAGE=@GETTEXT_PACKAGE@
 
 BASEDIR=@BASEDIR@
 
@@ -66,7 +67,7 @@ MSGCAT=@MSGCAT@
 all: \
 	$(BINRLS)/ipcserver@DLLEXT@ \
 	$(BINRLS)/libipc3270@LIBEXT@ \
-	locale/$(LIBNAME).pot
+	locale/$(GETTEXT_PACKAGE).pot
 
 plugin: \
 	$(BINRLS)/ipcserver@DLLEXT@
@@ -80,7 +81,7 @@ $(BINRLS)/ipcserver@DLLEXT@:
 $(BINRLS)/libipc3270@LIBEXT@:
 	@$(MAKE) -C client $@	
 
-locale/$(LIBNAME).pot:
+locale/$(GETTEXT_PACKAGE).pot:
 
 	@rm -f $@
 	@$(MKDIR) $(@D)

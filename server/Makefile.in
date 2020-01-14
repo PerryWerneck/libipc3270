@@ -102,6 +102,7 @@ CFLAGS= \
 	-I$(BASEDIR)/server/src/include \
 	-I$(BASEDIR)/common/src/include \
 	-DBUILD_DATE=`date +%Y%m%d` \
+	-DLOCALEDIR=$(localedir) \
 	@V3270_CFLAGS@ \
 	@GTK_CFLAGS@ \
 	@GLIB_CFLAGS@ \

@@ -33,7 +33,7 @@ datarootdir=@datarootdir@
 localedir=${datarootdir}/locale
 
 PACKAGE_NAME=@PACKAGE_NAME@
-LIBNAME=libipc3270
+GETTEXT_PACKAGE=@GETTEXT_PACKAGE@
 
 PACKAGE_VERSION=@PACKAGE_VERSION@
 PACKAGE_TARNAME=@PACKAGE_TARNAME@
@@ -52,21 +52,21 @@ INSTALL_DATA=@INSTALL_DATA@
 #---[ Rules ]----------------------------------------------------------------------------
 
 %.po: \
-	$(LIBNAME).pot
+	$(GETTEXT_PACKAGE).pot
 
 	@echo $(basename $@) ...
-	@$(MSGMERGE) --update --sort-output $@ $(LIBNAME).pot
+	@$(MSGMERGE) --update --sort-output $@ $(GETTEXT_PACKAGE).pot
 	@touch $@
 
-$(BINDIR)/%/LC_MESSAGES/$(LIBNAME).mo: \
+$(BINDIR)/%/LC_MESSAGES/$(GETTEXT_PACKAGE).mo: \
 	%.po
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
 	@$(MSGFMT) -c -v -o $@ $^
 
-$(DESTDIR)/$(localedir)/%/LC_MESSAGES/$(LIBNAME).mo: \
-	$(BINDIR)/%/LC_MESSAGES/$(LIBNAME).mo
+$(DESTDIR)/$(localedir)/%/LC_MESSAGES/$(GETTEXT_PACKAGE).mo: \
+	$(BINDIR)/%/LC_MESSAGES/$(GETTEXT_PACKAGE).mo
 
 	@echo $< ...
 	@$(MKDIR) `dirname $@`
@@ -75,10 +75,10 @@ $(DESTDIR)/$(localedir)/%/LC_MESSAGES/$(LIBNAME).mo: \
 #---[ Targets ]--------------------------------------------------------------------------
 
 all: \
-	$(foreach SRC, $(basename $(wildcard *.po)), $(BINDIR)/$(SRC)/LC_MESSAGES/$(LIBNAME).mo)
+	$(foreach SRC, $(basename $(wildcard *.po)), $(BINDIR)/$(SRC)/LC_MESSAGES/$(GETTEXT_PACKAGE).mo)
 
 install: \
-	$(foreach SRC, $(basename $(wildcard *.po)), $(DESTDIR)/$(localedir)/$(SRC)/LC_MESSAGES/$(LIBNAME).mo)
+	$(foreach SRC, $(basename $(wildcard *.po)), $(DESTDIR)/$(localedir)/$(SRC)/LC_MESSAGES/$(GETTEXT_PACKAGE).mo)
 
 
 

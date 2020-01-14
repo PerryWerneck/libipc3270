@@ -78,6 +78,9 @@ static void ipc3270_class_init(ipc3270Class *klass) {
 	object_class = G_OBJECT_CLASS (klass);
 	object_class->finalize = ipc3270_finalize;
 
+	debug("Localedir: \"%s\"",G_STRINGIFY(LOCALEDIR));
+	bindtextdomain(GETTEXT_PACKAGE, G_STRINGIFY(LOCALEDIR));
+
 }
 
 static void ipc3270_init(ipc3270 *object) {
