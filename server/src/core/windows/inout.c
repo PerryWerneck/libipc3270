@@ -36,6 +36,7 @@
 
  #include <config.h>
  #include <ipc-glib.h>
+ #include <lib3270/log.h>
  #include <string.h>
  #include <stdlib.h>
 

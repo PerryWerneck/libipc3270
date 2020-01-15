@@ -31,6 +31,7 @@
 #include <lib3270.h>
 #include <lib3270/actions.h>
 #include <lib3270/properties.h>
+#include <lib3270/log.h>
 #include <ipc-glib.h>
 #include <v3270.h>
 
@@ -53,8 +54,8 @@ static void ipc3270_finalize(GObject *object) {
 	if(ptr)
 		*ptr = 0;
 
-	v3270_set_session_name(ipc->terminal,widget_name);
 	lib3270_set_session_id(ipc->hSession, 0);
+	v3270_set_session_name(ipc->terminal,widget_name);
 
 	g_free(ipc->charset);
 
@@ -67,9 +68,13 @@ static void ipc3270_class_init(ipc3270Class *klass) {
 
 	debug("%s",__FUNCTION__);
 
-	GObjectClass *object_class;
-	object_class = G_OBJECT_CLASS (klass);
-	object_class->finalize = ipc3270_finalize;
+	G_OBJECT_CLASS (klass)->finalize = ipc3270_finalize;
+
+	{
+		g_autofree gchar * appdir = g_win32_get_package_installation_directory_of_module(NULL);
+		g_autofree gchar * locdir = g_build_filename(appdir,"locale",NULL);
+		bindtextdomain(GETTEXT_PACKAGE,locdir);
+	}
 
 }
 

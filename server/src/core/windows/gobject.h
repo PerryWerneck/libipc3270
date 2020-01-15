@@ -37,14 +37,14 @@
 
 	#define WINDOWS_GOBJECT_H_INCLUDED
 
+	#include <winsock2.h>
 	#include <windows.h>
 	#include <config.h>
 
 	#define ENABLE_NLS
-	#define GETTEXT_PACKAGE PACKAGE_NAME
 
 	#include <libintl.h>
-	#include <glib/gi18n.h>
+	#include <glib/gi18n-lib.h>
 	#include <gio/gio.h>
 
 	#include <lib3270.h>
