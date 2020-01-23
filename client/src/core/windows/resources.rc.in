@@ -10,7 +10,7 @@ BEGIN
 	BEGIN
         	BLOCK "080904E4"
 		BEGIN
-			VALUE "FileDescription",	"3270 Language Binding helper library\0"
+			VALUE "FileDescription",	"3270 Language Binding helper library for @host_cpu@\0"
 			VALUE "CompanyName",		"Banco do Brasil S/A.\0"
 			VALUE "FileVersion",		"@WIN32_VERSION@\0"
             		VALUE "LegalCopyright",		"(C) 2019 Banco do Brasil S/A. All Rights Reserved\0"

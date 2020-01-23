@@ -10,7 +10,7 @@ BEGIN
 	BEGIN
         	BLOCK "080904E4"
 		BEGIN
-			VALUE "FileDescription",	"@PACKAGE_NAME@ IPC Plugin\0"
+			VALUE "FileDescription",	"@PACKAGE_NAME@ IPC Plugin for @host_cpu@\0"
 			VALUE "CompanyName",		"Banco do Brasil S/A.\0"
 			VALUE "FileVersion",		"@WIN32_VERSION@\0"
             		VALUE "LegalCopyright",		"(C) 2017 Banco do Brasil S/A. All Rights Reserved\0"
