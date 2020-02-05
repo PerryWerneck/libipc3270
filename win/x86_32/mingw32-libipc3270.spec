@@ -1,5 +1,5 @@
 #
-# spec file for package mingw32-%{_libname}
+# spec file for package mingw32-libipc3270
 #
 # Copyright (c) 2015 SUSE LINUX GmbH, Nuernberg, Germany.
 # Copyright (C) <2008> <Banco do Brasil S.A.>
@@ -30,7 +30,7 @@
 
 Summary:		lib3270/pw3270 IPC client library for 32 bits Windows
 Name:			mingw32-%{_libname}
-Version:		5.2
+Version:		5.3
 Release:		0
 License:		LGPL-3.0
 
@@ -75,6 +75,9 @@ For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 %package -n %{name}-%{_libvrs}
 Summary:		TN3270 Access library
 Group:			Development/Libraries/C and C++
+
+Provides:		mingw32-%{_libname} = %{version}
+Conflicts:		otherproviders(mingw32-%{_libname})
 
 %description -n %{name}-%{_libvrs}
 IPC client library for lib3270/pw3270.
@@ -126,9 +129,11 @@ make all %{?_smp_mflags}
 
 %install
 %{_mingw32_makeinstall}
+%_mingw32_find_lang libipc3270 langfiles
+
 %fdupes %{buildroot}
 
-%files -n %{name}-%{_libvrs}
+%files -n %{name}-%{_libvrs} -f langfiles
 %defattr(-,root,root)
 
 %doc AUTHORS README.md
@@ -148,6 +153,8 @@ make all %{?_smp_mflags}
 
 %{_mingw32_libdir}/pkgconfig/*.pc
 
+%{_mingw32_datadir}/%{_product}/pot/*.pot
+
 %dir %{_mingw32_datadir}/%{_product}/def
 %{_mingw32_datadir}/%{_product}/def/*.def
 
@@ -158,4 +165,3 @@ make all %{?_smp_mflags}
 %{_mingw32_libdir}/%{_product}-plugins/ipcserver.dll
 
 %changelog
-
