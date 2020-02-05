@@ -114,8 +114,18 @@ install-linux-lib:
 install-static:
 	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-static
 
-install-devel:
+install-devel: \
+	locale/$(LIBNAME).pot
+
 	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-devel
+
+	# Install translation files
+	@$(MKDIR) \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
+
+	@$(INSTALL_DATA) \
+		locale/$(LIBNAME).pot \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 
 install-windows-lib:
 	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-windows-lib
