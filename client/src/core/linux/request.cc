@@ -302,6 +302,17 @@
 			dbus_message_iter_get_basic(&iter, &rc);
 			return (int) rc;
 
+		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_UINT32) {
+
+			dbus_uint32_t rc = 0;
+			dbus_message_iter_get_basic(&iter, &rc);
+			return (int) rc;
+
+		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INVALID) {
+
+			debug("Argument type is invalid");
+			throw std::runtime_error("Invalid data type");
+
 		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_VARIANT) {
 
 			DBusMessageIter sub;
@@ -316,6 +327,12 @@
 				if (current_type == DBUS_TYPE_INT32) {
 
 					dbus_int32_t rc = 0;
+					dbus_message_iter_get_basic(&sub, &rc);
+					return (int) rc;
+
+				} else if (current_type == DBUS_TYPE_UINT32) {
+
+					dbus_uint32_t rc = 0;
 					dbus_message_iter_get_basic(&sub, &rc);
 					return (int) rc;
 

@@ -131,6 +131,8 @@
 			<< "\tConnected: " << host["Connected"]
 			<< std::endl;
 
+		host.setUnlockDelay(0);
+		host.setTimeout(10);
 		host.connect(nullptr);
 
 		cout
