@@ -134,16 +134,9 @@
 
 	void IPC::Session::setUnlockDelay(unsigned short delay) {
 
-		int32_t rc = -1;
-
 		Request(*this,true,"unlock_delay")
 			.push((uint32_t) delay)
-			.call()
-			.pop(rc);
-
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
+			.call();
 
 	}
 
