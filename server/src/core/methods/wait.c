@@ -42,6 +42,8 @@ int ipc3270_method_wait_for_string(GObject *session, GVariant *request, GObject 
 	if(*error)
 		return 0;
 
+	debug("%s with %d arguments",__FUNCTION__,(int) g_variant_n_children(request));
+
 	switch(g_variant_n_children(request)) {
 	case 2:	// Text & timeout
 		{
@@ -84,6 +86,7 @@ int ipc3270_method_wait_for_string(GObject *session, GVariant *request, GObject 
 				g_autofree gchar * converted = g_convert_with_fallback(text,-1,lib3270_get_display_charset(hSession),"UTF-8","?",NULL,NULL,error);
 				rc = lib3270_wait_for_string_at(hSession,row,col,converted,seconds);
 
+				debug("lib3270_wait_for_string_at(%d,%d,\"%s\")=%d",row,col,converted,rc);
 			}
 
 		}

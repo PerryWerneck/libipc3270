@@ -35,6 +35,8 @@ int ipc3270_method_get_string(GObject *session, GVariant *request, GObject *resp
 
 	lib3270_autoptr(char) text = NULL;
 
+	debug("%s with %d arguments",__FUNCTION__,(int) g_variant_n_children(request));
+
 	switch(g_variant_n_children(request)) {
 	case 0: // No arguments
 		{
@@ -62,7 +64,10 @@ int ipc3270_method_get_string(GObject *session, GVariant *request, GObject *resp
 
 			g_variant_get(request, "(uuiy)", &row, &col, &len, &lf);
 
+			debug("lib3270_get_string_at(%d,%d,%d,%d",row,col,len,lf);
 			text = lib3270_get_string_at(hSession, row, col, len, lf);
+
+			debug("response=%s",text);
 
 		}
 		break;

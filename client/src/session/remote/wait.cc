@@ -182,6 +182,8 @@
 
 		string key = convertToHost(text,-1);
 
+		debug((const char *) __FUNCTION__, "(", (int) row, ",", (int) col, ", \"", text, "\", length=", key.size());
+
 		wait(seconds, [this, key, row, col]() {
 
 			int rc;
@@ -194,6 +196,7 @@
 				.call()
 				.pop(rc);
 
+			debug("rc=",rc);
 			return rc;
 
 		});
