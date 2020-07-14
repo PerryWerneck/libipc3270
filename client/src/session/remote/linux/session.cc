@@ -80,17 +80,22 @@
 			throw std::system_error(EINVAL, std::system_category());
 		}
 
-		this->name = "br.com.bb.";
-		this->name += string(id,(sep - id));
-		this->name += ".";
-		this->name += (sep+1);
+		string name(id,sep-id);
+		std::transform(name.begin(), name.end(), name.begin(),[](unsigned char c){ return std::tolower(c); });
 
-		std::transform(this->name.begin(), this->name.end(), this->name.begin(),[](unsigned char c){ return std::tolower(c); });
+		string path(sep+1);
+		std::transform(path.begin(), path.end(), path.begin(),[](unsigned char c){ return std::tolower(c); });
+
+		this->name = "br.com.bb.";
+		this->name += name;
+		this->name += ".";
+		this->name += path;
+
 
 		this->path = "/br/com/bb/";
-		this->path += string(id,(sep - id));
+		this->path += name;
 		this->path += "/";
-		this->path += (sep+1);
+		this->path += path;
 
 		this->interface = "br.com.bb.tn3270.session";
 
