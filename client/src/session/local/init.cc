@@ -69,7 +69,7 @@
 
 		this->setCharSet(charset);
 
-		lib3270_set_popup_handler(this->hSession, popupHandler);
+		lib3270_set_popup_handler(this->hSession, &popupHandler);
 
 		// Setup callbacks
 		struct lib3270_session_callbacks *cbk;

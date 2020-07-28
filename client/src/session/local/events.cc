@@ -37,6 +37,7 @@
  */
 
  #include "private.h"
+ #include <lib3270/popup.h>
 
  extern "C" {
 	 #include <lib3270/actions.h>
@@ -79,7 +80,7 @@
  namespace TN3270 {
 
 	/// @brief Popup Handler.
-	void Local::Session::popupHandler(H3270 *h3270, LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg) {
+	int Local::Session::popupHandler(H3270 *h3270, const LIB3270_POPUP *popup, unsigned char wait) {
 
 		Local::Session * session = (Local::Session *) lib3270_get_user_data(h3270);
 
@@ -91,35 +92,27 @@
 		private:
 			LIB3270_NOTIFY type;
 			string title;
-			string msg;
-			string description;
+			string summary;
+			string body;
 
 		public:
-			PopupEvent(LIB3270_NOTIFY type, const char *title, const char *msg, const char *fmt, va_list arg) : Event(Event::Popup) {
+			PopupEvent(LIB3270_NOTIFY type, const char *title, const char *summary, const char *body) : Event(Event::Popup) {
 
 				this->type = type;
-				this->title = title;
-				this->msg = msg;
 
-				char * buffer = NULL;
-#ifdef _WIN32
-				if(win32_vasprintf(&buffer,fmt,arg) != -1) {
-					this->description = buffer;
-					free(buffer);
-				}
-#else
-				if(vasprintf(&buffer,fmt,arg) != -1) {
-					this->description = buffer;
-					free(buffer);
-				}
-#endif
+				if(title)
+					this->title = title;
 
-#ifdef DEBUG
-				std::cerr	<< "Popup:"				<< std::endl
-							<<	"\t" << title		<< std::endl
-							<<	"\t" << msg			<< std::endl
-							<<	"\t" <<	description	<< std::endl;
-#endif // DEBUG
+				if(summary)
+					this->summary = summary;
+
+				if(body)
+					this->body = body;
+
+				std::clog	<< "Popup:"					<< std::endl
+							<<	"\t" << this->title		<< std::endl
+							<<	"\t" << this->summary	<< std::endl
+							<<	"\t" <<	this->body		<< std::endl;
 
 			}
 
@@ -128,13 +121,15 @@
 
 			/// @brief Get event description.
 			std::string toString() const override {
-				return msg;
+				return summary;
 			}
 
 
         };
 
-        session->fire(PopupEvent(type,title,msg,fmt,arg));
+        session->fire(PopupEvent(popup->type,popup->title,popup->summary,popup->body));
+
+        return ECANCELED;
 
 	}
 
