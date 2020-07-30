@@ -90,10 +90,10 @@
 		GObjectClass parent;
 	};
 
-	G_GNUC_INTERNAL GSourceFuncs	  ipc3270_source_funcs;
+	G_GNUC_INTERNAL GSourceFuncs	* ipc3270_get_source_funcs();
 
-	G_GNUC_INTERNAL void 			  ipc3270_release_object(ipc3270 *object);
-	G_GNUC_INTERNAL void			  ipc3270_wait_for_client(IPC3270_PIPE_SOURCE *source);
+	G_GNUC_INTERNAL void 				  ipc3270_release_object(ipc3270 *object);
+	G_GNUC_INTERNAL void				  ipc3270_wait_for_client(IPC3270_PIPE_SOURCE *source);
 
 	G_END_DECLS
 

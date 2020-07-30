@@ -57,16 +57,17 @@
 
 			rc = worker();
 
-			debug("rc=",rc);
+			debug("rc=",rc," (",strerror(rc),")");
 
 			if(rc == 0)
 				return;
-			else if(rc != ETIMEDOUT)
+
+			if(rc != ETIMEDOUT)
 				chkResponse(rc);
 
 		}
 
-		chkResponse(ETIMEDOUT);
+		throw runtime_error("Timeout");
 
 	}
 
@@ -196,7 +197,7 @@
 				.call()
 				.pop(rc);
 
-			debug("rc=",rc);
+			debug("waitForStringAt rc=",rc);
 			return rc;
 
 		});

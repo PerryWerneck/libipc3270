@@ -290,11 +290,17 @@ static void IO_finalize(GSource *source) {
 
 }
 
-GSourceFuncs ipc3270_source_funcs = {
-	IO_prepare,
-	IO_check,
-	IO_dispatch,
-	IO_finalize,
-	IO_closure,
-	NULL
-};
+GSourceFuncs * ipc3270_get_source_funcs() {
+
+	static GSourceFuncs source_funcs = {
+		IO_prepare,
+		IO_check,
+		IO_dispatch,
+		IO_finalize,
+		IO_closure,
+		NULL
+	};
+
+	return &source_funcs;
+}
+

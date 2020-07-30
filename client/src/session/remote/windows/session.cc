@@ -77,7 +77,10 @@
 		);
 
 		if (hPipe == INVALID_HANDLE_VALUE) {
-			throw std::runtime_error("Can't open IPC Channel");
+			string msg = "Can't open IPC Channel \"";
+			msg += pipename;
+			msg += "\"";
+			throw std::runtime_error(msg);
 		}
 
 		// The pipe connected; change to message-read mode.

@@ -111,7 +111,7 @@
 #ifdef _WIN32
 	{
 		// Setup font name
-		v3270_set_font_family(terminal,"Droid Sans Mono");
+		//v3270_set_font_family(terminal,"Droid Sans Mono");
 
 		// WIN32 path settings.
 		static const char * sep = "\\/.";

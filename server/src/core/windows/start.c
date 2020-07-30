@@ -68,7 +68,7 @@ void ipc3270_export_object(GObject *object, const char *name, GError G_GNUC_UNUS
 
 		if(hPipe != INVALID_HANDLE_VALUE) {
 
-			ipc->source = (IPC3270_PIPE_SOURCE *) g_source_new(&ipc3270_source_funcs,sizeof(IPC3270_PIPE_SOURCE));
+			ipc->source = (IPC3270_PIPE_SOURCE *) g_source_new(ipc3270_get_source_funcs(),sizeof(IPC3270_PIPE_SOURCE));
 
 			g_message("Got session \"%c\"",id);
 

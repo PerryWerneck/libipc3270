@@ -46,6 +46,8 @@ unsigned char * ipc3270_pack_error(const GError *error, size_t * szPacket) {
 
 	static const char * error_response = "error";
 
+	debug("%s(%d,%s)",__FUNCTION__,(int) error_response,error->message);
+
 	*szPacket = strlen(error_response) + 1 + (sizeof(guint16) * 2) + strlen(error->message);
 
 	// Allocate buffer
@@ -94,15 +96,21 @@ unsigned char * pack_value(unsigned char *txtptr, GVariant *value) {
 		strcpy((char *) txtptr,g_variant_get_string(value,NULL));
 		txtptr += (strlen((char *) txtptr)+1);
 
+		debug("%s(%s)",__FUNCTION__,g_variant_get_string(value,NULL));
+
 	} else if(g_variant_type_equal(type,G_VARIANT_TYPE_BOOLEAN)) {
 
 		*(txtptr++) = 'b';
 		*(txtptr++) = g_variant_get_boolean(value) ? 1 : 0;
 
+		debug("%s(%s)",__FUNCTION__,g_variant_get_boolean(value) ? "True" : "False");
+
 	} else if(g_variant_type_equal(type,G_VARIANT_TYPE_BYTE)) {
 
 		*(txtptr++) = 'y';
 		*(txtptr++) = g_variant_get_byte(value);
+
+		debug("%s(%d)",__FUNCTION__,(int) g_variant_get_byte(value));
 
 	} else if(g_variant_type_equal(type,G_VARIANT_TYPE_INT16)) {
 
@@ -110,11 +118,15 @@ unsigned char * pack_value(unsigned char *txtptr, GVariant *value) {
 		*((gint16 *) txtptr) = g_variant_get_int16(value);
 		txtptr += sizeof(gint16);
 
+		debug("%s(%d)",__FUNCTION__,(int) g_variant_get_int16(value));
+
 	} else if(g_variant_type_equal(type,G_VARIANT_TYPE_UINT16)) {
 
 		*(txtptr++) = 'q';
 		*((guint16 *) txtptr) = g_variant_get_uint16(value);
 		txtptr += sizeof(guint16);
+
+		debug("%s(%d)",__FUNCTION__,(int) g_variant_get_uint16(value));
 
 	} else if(g_variant_type_is_subtype_of(type,G_VARIANT_TYPE_INT32)) {
 
@@ -122,11 +134,15 @@ unsigned char * pack_value(unsigned char *txtptr, GVariant *value) {
 		*((gint32 *) txtptr) = g_variant_get_int32(value);
 		txtptr += sizeof(gint32);
 
+		debug("%s(%d)",__FUNCTION__,(int) g_variant_get_int32(value));
+
 	} else if(g_variant_type_equal(type,G_VARIANT_TYPE_UINT32)) {
 
 		*(txtptr++) = 'u';
 		*((guint32 *) txtptr) = g_variant_get_uint32(value);
 		txtptr += sizeof(guint32);
+
+		debug("%s(%d)",__FUNCTION__,(int) g_variant_get_uint32(value));
 
 	} else if(g_variant_type_equal(type,G_VARIANT_TYPE_INT64)) {
 
@@ -294,7 +310,7 @@ GVariant * ipc3270_unpack(const unsigned char *packet, int *id) {
 			break;
 
 		default:
-			g_message("Unexpected format for argument %d: \"%c\"",ix,descrs[ix+1]);
+			g_message("Unexpected format for argument %d: \"%c\"",(int) ix,descrs[ix+1]);
 			errno = EINVAL;
 			return NULL;
 		}
