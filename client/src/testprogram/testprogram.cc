@@ -120,6 +120,49 @@
 
  }
 
+ // Performance test.
+ static void testPerformance(const char *session) {
+
+	try {
+
+		TN3270::Host host{session};
+
+		host.connect();
+
+		// Check "WaitForReady"
+		{
+			time_t start = time(0);
+
+			host.waitForReady(5);
+			cout << "First run:" << (time(0) - start) << endl;
+
+			for(size_t ix=0;ix<100;ix++) {
+				host.waitForReady(1);
+			}
+			cout << "Time for 100 iterations: " << (time(0) - start) << endl;
+
+		}
+
+		// Check "Get"
+		{
+			time_t start = time(0);
+
+			for(size_t ix=0;ix<100;ix++) {
+				host.toString(14,1,75,0);
+			}
+			cout << "Time for 100 iterations: " << (time(0) - start) << endl;
+
+		}
+
+
+	} catch(const std::exception &e) {
+
+		cerr << std::endl << e.what() << std::endl << std::endl;
+
+	}
+
+ }
+
  // test host object
  static void testHost(const char *session) {
 
@@ -232,8 +275,8 @@
 
 	cout 	<< "Session: " << session << endl;
 
-	testHost(session);
-
+	// testHost(session);
+	testPerformance(session);
 
 
 	//testAttributes(session);
