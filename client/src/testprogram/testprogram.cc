@@ -131,7 +131,9 @@
 
 		cout << "------------------------------" << endl;
 		auto start = time(nullptr);
-		host.waitForReady(5);
+		for(size_t ix = 0; ix < 100; ix++) {
+			host.waitForReady(5);
+		}
 		cout << "Time: " << (time(nullptr) - start) << std::endl;
 		cout << "------------------------------" << endl;
 
