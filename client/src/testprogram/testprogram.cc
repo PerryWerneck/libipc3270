@@ -36,6 +36,8 @@
  *
  */
 
+ #include <ctime>
+
 #ifndef _WIN32
  #include <getopt.h>
  #pragma GCC diagnostic ignored "-Wunused-function"
@@ -125,6 +127,17 @@
 
 		TN3270::Host host{session};
 
+		host.connect();
+
+		cout << "------------------------------" << endl;
+		auto start = time(nullptr);
+		host.waitForReady(5);
+		cout << "Time: " << (time(nullptr) - start) << std::endl;
+		cout << "------------------------------" << endl;
+
+		host.disconnect();
+
+		/*
 		cout
 			<< "Version: " << host["version"]
 			<< "\tRevision: " << host["Revision"]
@@ -168,6 +181,8 @@
 		host.wait(10);
 
 		host.disconnect();
+
+		*/
 
 	} catch(const std::exception &e) {
 
