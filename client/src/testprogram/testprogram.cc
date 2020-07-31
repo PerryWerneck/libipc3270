@@ -129,13 +129,21 @@
 
 		host.connect();
 
-		cout << "------------------------------" << endl;
-		auto start = time(nullptr);
-		for(size_t ix = 0; ix < 100; ix++) {
-			host.waitForReady(5);
+		{
+			auto start = time(nullptr);
+			for(size_t ix = 0; ix < 100; ix++) {
+				host.waitForReady(5);
+			}
+			cout << endl << "Time for waitForReady method: " << (time(nullptr) - start) << endl << endl;
 		}
-		cout << "Time: " << (time(nullptr) - start) << std::endl;
-		cout << "------------------------------" << endl;
+
+		{
+			auto start = time(nullptr);
+			for(size_t ix = 0; ix < 100; ix++) {
+				host.toString(14,1,80,0);
+			}
+			cout << endl << "Time for toString method: " << (time(nullptr) - start) << endl << endl;
+		}
 
 		host.disconnect();
 
