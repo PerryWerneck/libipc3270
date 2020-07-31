@@ -187,6 +187,7 @@ static void read_input_pipe(IPC3270_PIPE_SOURCE *source) {
 	switch(GetLastError())
 	{
 	case 0:
+	case WSAEWOULDBLOCK:
 		break;
 
 	case ERROR_IO_PENDING:
