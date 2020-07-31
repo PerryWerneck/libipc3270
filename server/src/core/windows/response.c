@@ -93,6 +93,8 @@ GObject * ipc3270_response_new() {
 
 void ipc3270_response_append_int32(GObject *object, gint32 value) {
 
+	debug("%s(%d)",__FUNCTION__,value);
+
 	ipc3270Response * response = IPC3270_RESPONSE(object);
 
 	if(response->value)

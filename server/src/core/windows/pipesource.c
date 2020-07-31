@@ -110,6 +110,8 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 	g_autoptr (GVariant) response = NULL;
 	g_autoptr (GVariant) parameters = ipc3270_unpack(source->buffer, &request_type);
 
+	debug("************ error=%p",error);
+
 	if(parameters) {
 
 		// Process query
@@ -129,8 +131,11 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 
 				debug("Parameters: %p", parameters);
 				debug("rsp: %p", rsp);
+				debug("Error=%p",error);
 
 				ipc3270_method_call(source->object, request_name, parameters, rsp, &error);
+
+				debug("Error=%p",error);
 
 				if(ipc3270_response_has_values(rsp))
 					response = ipc3270_response_steal_value(rsp);

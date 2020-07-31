@@ -102,7 +102,7 @@
 			.call();
 
 		if(seconds)
-			this->waitForReady(seconds);
+			this->waitForConnectionState(CONNECTED_TN3270E,seconds);
 
 	}
 

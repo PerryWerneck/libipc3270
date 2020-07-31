@@ -119,7 +119,8 @@ int ipc3270_method_wait_for_ready(GObject *session, GVariant *request, GObject *
 int ipc3270_method_wait_for_cstate(GObject *session, GVariant *request, GObject *response, GError G_GNUC_UNUSED(**error)) {
 	guint seconds = 1;
 	guint cstate = 0;
-	g_variant_get(request, "(uu)", &seconds);
+	g_variant_get(request, "(uu)", &cstate, &seconds);
+	debug("cstate=%u seconds=%u",cstate,seconds);
 	ipc3270_response_append_int32(response,lib3270_wait_for_cstate(ipc3270_get_session(session),(LIB3270_CSTATE) cstate, seconds));
 	return 0;
 }
