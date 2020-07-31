@@ -171,6 +171,7 @@
 		TN3270::Host host{session};
 
 		host.connect();
+		host.wait(TN3270::CONNECTED_TN3270E);
 
 		{
 			auto start = time(nullptr);

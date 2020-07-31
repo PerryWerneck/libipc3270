@@ -113,6 +113,30 @@
 
 	}
 
+	void IPC::Session::waitForConnectionState(ConnectionState state, time_t timeout) const {
+
+		debug(__FUNCTION__,"(",timeout,")");
+
+		wait(timeout, [this,state]() {
+
+			int rc;
+
+			debug("Running waitForConnectionState request...");
+
+			Request(*this,"waitForConnectionState")
+				.push((uint32_t) state)
+				.push((uint32_t) 1)
+				.call()
+				.pop(rc);
+
+			debug("Wait for connection state returned ",rc);
+
+			return rc;
+
+		});
+
+	}
+
 	LIB3270_KEYBOARD_LOCK_STATE IPC::Session::waitForKeyboardUnlock(time_t timeout) const {
 
 		int rc;
