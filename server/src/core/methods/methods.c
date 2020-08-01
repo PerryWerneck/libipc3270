@@ -88,12 +88,21 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 
 		if(!g_ascii_strcasecmp(methods[ix].name,method_name)) {
 
+#ifdef _DEBUG_
+			g_message("Calling %s",methods[ix].name);
+#endif // _DEBUG_
+
 			int rc = methods[ix].call(object,request,response,error);
 
 			debug("rc=%d error=%p",rc,*error);
 
 			if(rc)
+			{
+				debug("%s exits with rc=%d (%s)",methods[ix].name,rc,ipc3270_get_error_message(rc));
+				g_message("%s exits with rc=%d (%s)",methods[ix].name,rc,ipc3270_get_error_message(rc));
 				ipc3270_set_error(object,rc,error);
+				debug("Error Message was set to %s",(*error)->message);
+			}
 
 			return 0;
 		}

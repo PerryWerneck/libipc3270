@@ -42,7 +42,6 @@
 
 /// @brief Writes characters to the associated file from the put area
 int TN3270::Host::sync() {
-	this->session->waitForReady(this->timeout);
 	return 0;
 }
 

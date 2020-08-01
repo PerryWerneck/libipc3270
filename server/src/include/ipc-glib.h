@@ -139,6 +139,7 @@
 	GQuark				  ipc3270_get_error_domain(GObject *object);
 
 	void				  ipc3270_set_error(GObject *object, int errcode, GError **error);
+	const char			* ipc3270_get_error_message(int errcode);
 
 	int					  ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *request, GObject *response, GError **error);
 	gboolean			  ipc3270_set_property(GObject *object, const gchar *property_name, GVariant *value, GError **error);

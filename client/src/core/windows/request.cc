@@ -147,7 +147,16 @@
 		uint16_t rc = *((uint16_t *) (in.block + in.current));
 		in.current += sizeof(uint16_t);
 
-		// Extract argc
+		if(rc) {
+
+			// It´s an error, extract message
+			in.block[in.used] = 0;
+			debug("Error was ",rc," (\"",(const char *) (in.block + in.current),"\")");
+			throw std::system_error(std::error_code(rc,std::system_category()),(const char *) (in.block + in.current));
+
+		}
+
+		// It´s not an error, extract argument count
 		uint16_t argc = *((uint16_t *) (in.block + in.current));
 		in.current += sizeof(uint16_t);
 

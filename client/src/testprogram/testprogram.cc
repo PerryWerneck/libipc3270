@@ -170,25 +170,13 @@
 
 		TN3270::Host host{session};
 
-		host.connect();
+		// host.connect();
 
-		{
-			auto start = time(nullptr);
-			for(size_t ix = 0; ix < 100; ix++) {
-				host.waitForReady(5);
-			}
-			cout << endl << "Time for waitForReady method: " << (time(nullptr) - start) << endl << endl;
-		}
+		cout << endl << "------------------------" << endl;
+		host.toString(14,1,75,0);
+		cout << endl << "------------------------" << endl;
 
-		{
-			auto start = time(nullptr);
-			for(size_t ix = 0; ix < 100; ix++) {
-				host.toString(14,1,80,0);
-			}
-			cout << endl << "Time for toString method: " << (time(nullptr) - start) << endl << endl;
-		}
-
-		host.disconnect();
+		// host.disconnect();
 
 		/*
 		cout
@@ -275,8 +263,8 @@
 
 	cout 	<< "Session: " << session << endl;
 
-	// testHost(session);
-	testPerformance(session);
+	testHost(session);
+	// testPerformance(session);
 
 
 	//testAttributes(session);

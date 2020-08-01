@@ -41,52 +41,32 @@
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
 std::string TN3270::Host::toString() const {
-
-	this->session->waitForReady(this->timeout);
 	return this->session->toString();
 }
 
 std::string TN3270::Host::toString(int baddr, int len, char lf) const {
-
-	this->session->waitForReady(this->timeout);
 	return this->session->toString(baddr,len,lf);
-
 }
 
 std::string TN3270::Host::toString(unsigned short row, unsigned short col, int len, char lf) const {
-
-	this->session->waitForReady(this->timeout);
 	return this->session->toString(row,col,len,lf);
-
 }
 
 /// @brief Checks if the terminal contains the string.
 size_t TN3270::Host::find(const char * str, size_t pos) const {
-
-	this->session->waitForReady(this->timeout);
 	return this->session->find(str,pos);
-
 }
 
 /// @brief Get the number of occurrences of a string in the terminal.
 size_t TN3270::Host::count(const char * str, size_t pos) const {
-
-	this->session->waitForReady(this->timeout);
 	return this->session->count(str,pos);
-
 }
 
 /// @brief Compare contents.
 int TN3270::Host::compare(int baddr, const char* s, int len) const {
-
-	this->session->waitForReady(this->timeout);
 	return this->session->compare(baddr, s, len);
-
 }
 
 int TN3270::Host::compare(unsigned short row, unsigned short col, const char* s, int len) const {
-
-	this->session->waitForReady(this->timeout);
 	return this->session->compare(row,col,s,len);
-
 }
