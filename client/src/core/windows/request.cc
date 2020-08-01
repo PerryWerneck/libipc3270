@@ -152,7 +152,22 @@
 			// It´s an error, extract message
 			in.block[in.used] = 0;
 			debug("Error was ",rc," (\"",(const char *) (in.block + in.current),"\")");
-			throw std::system_error(std::error_code(rc,std::system_category()),(const char *) (in.block + in.current));
+
+			// Overload system error mostly because of the lack of ENOTCONN message on windows.
+			class Error : public std::system_error {
+			private:
+				std::string message;
+
+			public:
+				Error(int rc, const char *msg) : std::system_error((int) rc, std::generic_category()), message(msg) {
+				}
+
+				const char *what() const noexcept override {
+					return message.c_str();
+				}
+			};
+
+ 			throw Error(rc, (const char *) (in.block + in.current));
 
 		}
 
