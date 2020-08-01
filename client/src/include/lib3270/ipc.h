@@ -591,7 +591,7 @@
 			virtual void action(const char *action_name) = 0;
 
 			// Connect/disconnect
-			virtual void connect(const char *url = nullptr, int seconds = DEFAULT_TIMEOUT) = 0;
+			virtual void connect(const char *url = nullptr, time_t seconds = DEFAULT_TIMEOUT) = 0;
 			virtual void disconnect() = 0;
 
 			/// @brief Wait.

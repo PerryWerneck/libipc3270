@@ -77,7 +77,7 @@
 		chkResponse(lib3270_action_activate_by_name(action_name,hSession));
 	}
 
- 	void Local::Session::connect(const char *url, int seconds) {
+ 	void Local::Session::connect(const char *url, time_t seconds) {
 
 		std::lock_guard<std::mutex> lock(sync);
 		chkResponse(lib3270_connect_url(hSession,url,seconds));

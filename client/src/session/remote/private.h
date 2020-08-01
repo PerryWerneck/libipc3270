@@ -112,7 +112,7 @@
 
 				// Actions
 				void action(const char *action_name) override;
-				void connect(const char *url, int seconds) override;
+				void connect(const char *url, time_t seconds) override;
 				void disconnect() override;
 				void pfkey(unsigned short value) override;
 				void pakey(unsigned short value) override;

@@ -92,7 +92,7 @@
 
 	}
 
- 	void IPC::Session::connect(const char *url, int seconds) {
+ 	void IPC::Session::connect(const char *url, time_t seconds) {
 
 		if(!url)
 			url = "";
