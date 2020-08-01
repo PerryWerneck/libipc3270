@@ -121,6 +121,7 @@
 
 				void wait(time_t seconds) const override;
 				void waitForReady(time_t timeout) const override;
+				void waitForConnectionState(ConnectionState state, time_t timeout) const override;
 				void waitForChange(time_t timeout) const override;
 
 				LIB3270_KEYBOARD_LOCK_STATE waitForKeyboardUnlock(time_t seconds) const override;

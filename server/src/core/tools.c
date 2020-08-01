@@ -43,3 +43,30 @@
 
  #endif // ! GLIB(2,44,0)
 
+ const char * ipc3270_get_error_message(int errcode) {
+
+	static const struct Messages {
+		int errcode;
+		const char *msg;
+	} messages[] = {
+		{ ENOTCONN, "Not connected to host" }
+	};
+
+	size_t ix;
+
+	for(ix = 0; ix < G_N_ELEMENTS(messages); ix++) {
+		if(messages[ix].errcode == errcode) {
+			return messages[ix].msg;
+		}
+	}
+
+	return strerror(errcode);
+}
+
+void ipc3270_set_error(GObject *object, int errcode, GError **error) {
+	if(error && !*error) {
+		g_set_error(error,ipc3270_get_error_domain(object),errcode,"%s",ipc3270_get_error_message(errcode));
+	}
+}
+
+

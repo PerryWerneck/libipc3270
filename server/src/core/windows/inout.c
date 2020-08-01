@@ -46,7 +46,7 @@ unsigned char * ipc3270_pack_error(const GError *error, size_t * szPacket) {
 
 	static const char * error_response = "error";
 
-	debug("%s(%d,%s)",__FUNCTION__,(int) error_response,error->message);
+	debug("%s(%d,%s)",__FUNCTION__,(int) error->code, (const char *) error->message);
 
 	*szPacket = strlen(error_response) + 1 + (sizeof(guint16) * 2) + strlen(error->message);
 

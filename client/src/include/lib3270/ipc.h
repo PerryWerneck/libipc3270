@@ -600,6 +600,9 @@
 			/// @brief Wait until session state changes to "ready".
 			virtual void waitForReady(time_t timeout = DEFAULT_TIMEOUT) const = 0;
 
+			/// @brief Wait for connection state.
+			virtual void waitForConnectionState(ConnectionState state, time_t timeout = DEFAULT_TIMEOUT) const = 0;
+
 			/// @brief Wait for screen changes.
 			virtual void waitForChange(time_t seconds = DEFAULT_TIMEOUT) const = 0;
 
@@ -663,17 +666,6 @@
 			/// @brief Writes characters to the associated output sequence from the put area.
 			int overflow(int c) override;
 
-			/*
-			/// @brief Write information to log file.
-			void info(const char *fmt, ...) const;
-
-			/// @brief Write warning to log file.
-			void warning(const char *fmt, ...) const;
-
-			/// @brief Write error to log file.
-			void error(const char *fmt, ...) const;
-			*/
-
 		public:
 			Host(const char *id, const char *charset = nullptr);
 
@@ -731,6 +723,15 @@
 
 			inline LIB3270_KEYBOARD_LOCK_STATE waitForKeyboardUnlock() noexcept {
 				return this->session->waitForKeyboardUnlock(timeout);
+			}
+
+			/// @brief Wait for connection state.
+			inline void waitForConnectionState(ConnectionState state, time_t timeout = DEFAULT_TIMEOUT) {
+				return this->session->waitForConnectionState(state,timeout);
+			}
+
+			inline void wait(ConnectionState state, time_t timeout = DEFAULT_TIMEOUT) {
+				return this->session->waitForConnectionState(state,timeout);
 			}
 
 			/// @brief Execute action by name.

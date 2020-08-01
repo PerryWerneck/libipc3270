@@ -41,41 +41,17 @@
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
 TN3270::Host & TN3270::Host::pop(int baddr, std::string &text) {
-
-	this->session->waitForReady(this->timeout);
-
-	if(this->session->getConnectionState() == TN3270::DISCONNECTED) {
-		chkResponse(ENOTCONN);
-	}
-
 	session->pop(baddr, text);
-
 	return *this;
 }
 
 TN3270::Host & TN3270::Host::pop(unsigned short row, unsigned short col, std::string &text) {
-
-	this->session->waitForReady(this->timeout);
-
-	if(this->session->getConnectionState() == TN3270::DISCONNECTED) {
-		chkResponse(ENOTCONN);
-	}
-
 	session->pop(row,col,text);
-
 	return *this;
 }
 
 TN3270::Host & TN3270::Host::pop(std::string &text) {
-
-	this->session->waitForReady(this->timeout);
-
-	if(this->session->getConnectionState() == TN3270::DISCONNECTED) {
-		chkResponse(ENOTCONN);
-	}
-
 	session->pop(text);
-
 	return *this;
 }
 

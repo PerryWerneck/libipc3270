@@ -48,6 +48,7 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 
 		{ "wait",						ipc3270_method_wait							},
 		{ "waitforready",				ipc3270_method_wait_for_ready				},
+		{ "waitForConnectionState",		ipc3270_method_wait_for_cstate				},
 		{ "waitforupdate",				ipc3270_method_wait_for_update				},
 		{ "waitforkeyboardunlock",		ipc3270_method_wait_for_keyboard_unlock		},
 
@@ -79,7 +80,7 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 	size_t	  ix;
 	H3270	* hSession = ipc3270_get_session(object);
 
-	debug("%s(%s,request=%p,response=%p)",__FUNCTION__,method_name,request,response);
+	debug("%s(%s,request=%p,response=%p,error=%p)",__FUNCTION__,method_name,request,response,*error);
 
 	lib3270_write_event_trace(hSession,"Method %s called on session %c\n",method_name,lib3270_get_session_id(hSession));
 
@@ -87,12 +88,21 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 
 		if(!g_ascii_strcasecmp(methods[ix].name,method_name)) {
 
+#ifdef _DEBUG_
+			g_message("Calling %s",methods[ix].name);
+#endif // _DEBUG_
+
 			int rc = methods[ix].call(object,request,response,error);
 
-			debug("rc=%d",rc);
+			debug("rc=%d error=%p",rc,*error);
 
 			if(rc)
+			{
+				debug("%s exits with rc=%d (%s)",methods[ix].name,rc,ipc3270_get_error_message(rc));
+				g_message("%s exits with rc=%d (%s)",methods[ix].name,rc,ipc3270_get_error_message(rc));
 				ipc3270_set_error(object,rc,error);
+				debug("Error Message was set to %s",(*error)->message);
+			}
 
 			return 0;
 		}

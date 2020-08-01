@@ -171,6 +171,11 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='u' name='seconds' direction='in' />" \
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>" \
+		"	<method name= 'waitForConnectionState'>" \
+		"		<arg type='u' name='cstate' direction='in' />" \
+		"		<arg type='u' name='seconds' direction='in' />" \
+		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>" \
 		"	<method name= 'waitForKeyboardUnlock'>" \
 		"		<arg type='u' name='seconds' direction='in' />" \
 		"		<arg type='i' name='result' direction='out' />" \
@@ -295,11 +300,6 @@ const gchar * ipc3270_get_display_charset(GObject *object) {
 
 H3270 * ipc3270_get_session(GObject *object) {
 	return IPC3270(object)->hSession;
-}
-
-void ipc3270_set_error(GObject *object, int errcode, GError **error) {
-	if(error && !*error)
-		g_set_error(error,IPC3270(object)->error_domain,errcode,"%s",strerror(errcode));
 }
 
 GQuark ipc3270_get_error_domain(GObject *object) {

@@ -170,15 +170,13 @@
 
 		TN3270::Host host{session};
 
-		host.connect();
+		// host.connect();
 
-		cout << "------------------------------" << endl;
-		auto start = time(nullptr);
-		host.waitForReady(5);
-		cout << "Time: " << (time(nullptr) - start) << std::endl;
-		cout << "------------------------------" << endl;
+		cout << endl << "------------------------" << endl;
+		host.toString(14,1,75,0);
+		cout << endl << "------------------------" << endl;
 
-		host.disconnect();
+		// host.disconnect();
 
 		/*
 		cout
@@ -265,8 +263,8 @@
 
 	cout 	<< "Session: " << session << endl;
 
-	// testHost(session);
-	testPerformance(session);
+	testHost(session);
+	// testPerformance(session);
 
 
 	//testAttributes(session);
