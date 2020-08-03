@@ -124,4 +124,11 @@ gchar * ipc3270_convert_from_3270(GObject *object, const gchar *string, GError *
 	return g_convert_with_fallback(string,-1,IPC3270(object)->charset,lib3270_get_display_charset(IPC3270(object)->hSession),"?",NULL,NULL,error);
 }
 
+int	ipc3270_set_wait(GObject *object, gboolean wait) {
+	IPC3270(object)->wait = wait;
+	return 0;
+}
 
+gboolean ipc3270_get_wait(GObject *object) {
+	return IPC3270(object)->wait;
+}

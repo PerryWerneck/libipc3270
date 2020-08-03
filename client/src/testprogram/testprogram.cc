@@ -38,13 +38,14 @@
 
  #include <ctime>
 
-#ifndef _WIN32
  #include <getopt.h>
- #pragma GCC diagnostic ignored "-Wunused-function"
-#endif // _WIN32
 
 #if defined(_MSC_VER)
 	#pragma comment(lib,"ipc3270.lib")
+#else
+	#pragma GCC diagnostic ignored "-Wunused-function"
+	#pragma GCC diagnostic ignored "-Wunused-parameter"
+	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 #endif // _MSC_VER
 
  #include <cstdlib>
@@ -170,11 +171,12 @@
 
 		TN3270::Host host{session};
 
-		// host.connect();
+		host.setTimeout(10);
 
-		cout << endl << "------------------------" << endl;
+		host.connect();
+		host.push(TN3270::ENTER);
+
 		host.toString(14,1,75,0);
-		cout << endl << "------------------------" << endl;
 
 		// host.disconnect();
 
@@ -186,7 +188,6 @@
 			<< std::endl;
 
 		host.setUnlockDelay(0);
-		host.setTimeout(10);
 		host.connect(nullptr);
 
 		cout
@@ -237,15 +238,12 @@
 
 	const char * session = ":A";
 
-#ifndef _WIN32
-	#pragma GCC diagnostic push
-	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
 	static struct option options[] = {
 		{ "session",	required_argument,	0,	's' },
+		{ "perftest",	no_argument,		0,	'P' },
 		{ 0, 0, 0, 0}
 
 	};
-	#pragma GCC diagnostic pop
 
 	int long_index =0;
 	int opt;
@@ -256,10 +254,13 @@
 			session = optarg;
 			break;
 
+		case 'P':
+			testPerformance(session);
+			return 0;
+
 		}
 
 	}
-#endif // _WIN32
 
 	cout 	<< "Session: " << session << endl;
 

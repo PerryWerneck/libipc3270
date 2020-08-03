@@ -131,6 +131,9 @@
     void				  ipc3270_set_terminal_widget(GObject *object, GtkWidget *widget);
     void				  ipc3270_export_object(GObject *object, const char *name, GError **error);
 
+	int				  	  ipc3270_set_wait(GObject *object, gboolean wait);
+	gboolean			  ipc3270_get_wait(GObject *object);
+
 	void				  ipc3270_add_terminal_introspection(GString *string);
 
 	const gchar			* ipc3270_get_display_charset(GObject *object);

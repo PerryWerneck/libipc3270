@@ -120,6 +120,10 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='s' name='name' direction='in' />" \
 		"		<arg type='b' name='result' direction='out' />" \
 		"	</method>"
+		"	<method name='setwaitmode'>"
+		"		<arg type='b' name='mode' direction='in' />" \
+		"		<arg type='i' name='result' direction='out' />" \
+		"	</method>"
 		"	<method name='pfkey'>" \
 		"		<arg type='i' name='keycode' direction='in'/>" \
 		"		<arg type='i' name='result' direction='out' />" \
@@ -312,4 +316,13 @@ gchar * ipc3270_convert_to_3270(GObject *object, const gchar *string, GError **e
 
 gchar * ipc3270_convert_from_3270(GObject *object, const gchar *string, GError **error) {
 	return g_convert_with_fallback(string,-1,IPC3270(object)->charset,lib3270_get_display_charset(IPC3270(object)->hSession),"?",NULL,NULL,error);
+}
+
+int	ipc3270_set_wait(GObject *object, gboolean wait) {
+	IPC3270(object)->wait = wait;
+	return 0;
+}
+
+gboolean ipc3270_get_wait(GObject *object) {
+	return IPC3270(object)->wait;
 }

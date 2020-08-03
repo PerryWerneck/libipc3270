@@ -569,6 +569,7 @@
 			virtual void setHostURL(const char *url) = 0;
 
 			virtual void setUnlockDelay(unsigned short delay = 350) = 0;
+			virtual void setWaitMode(bool mode) = 0;
 			virtual void setLockOnOperatorError(bool lock = true) = 0;
 
 			virtual unsigned short getScreenWidth() const = 0;
@@ -835,9 +836,7 @@
 			}
 
 			// Set properties
-			inline void setTimeout(time_t timeout = DEFAULT_TIMEOUT) noexcept {
-				this->timeout = timeout;
-			}
+			void setTimeout(time_t timeout = DEFAULT_TIMEOUT) noexcept;
 
 			inline void setUnlockDelay(unsigned short delay = 350) {
 				session->setUnlockDelay(delay);
