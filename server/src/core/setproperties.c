@@ -185,3 +185,19 @@ gboolean ipc3270_set_property(GObject *object, const gchar *property_name, GVari
 
 	return FALSE;
 }
+
+int ipc3270_method_set_wait_mode(GObject *session, GVariant *request, GObject *response, GError G_GNUC_UNUSED(**error)) {
+
+	if(g_variant_n_children(request) != 1) {
+		g_message("set wait was called with %u arguments.",(unsigned int) g_variant_n_children(request));
+		ipc3270_response_append_int32(response, EINVAL);
+	}
+
+	GVariant *value = g_variant_get_child_value(request,0);
+
+	ipc3270_response_append_int32(response, ipc3270_set_wait(session,g_variant_get_boolean(value)));
+
+	g_variant_unref(value);
+
+	return 0;
+}

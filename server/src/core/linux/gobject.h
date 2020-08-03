@@ -62,6 +62,7 @@
 		H3270			* hSession;
 		gchar			* charset;
 		GtkWidget		* terminal;
+		gboolean		  wait;				///< @brief If true enable automatic call of "wait for ready".
 		GQuark 			  error_domain;
 	};
 

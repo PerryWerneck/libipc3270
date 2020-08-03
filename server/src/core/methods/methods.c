@@ -74,6 +74,7 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 
 		{ "action",						ipc3270_method_action						},
 		{ "activatable",				ipc3270_method_activatable					},
+		{ "setwaitmode",				ipc3270_method_set_wait_mode				},
 
 	};
 
@@ -88,18 +89,16 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 
 		if(!g_ascii_strcasecmp(methods[ix].name,method_name)) {
 
-#ifdef _DEBUG_
-			g_message("Calling %s",methods[ix].name);
-#endif // _DEBUG_
-
+			g_message("Running method %s",method_name);
 			int rc = methods[ix].call(object,request,response,error);
 
 			debug("rc=%d error=%p",rc,*error);
 
 			if(rc)
 			{
+				g_message("Method %s failed with rc=%d (%s)",method_name,rc,ipc3270_get_error_message(rc));
 				debug("%s exits with rc=%d (%s)",methods[ix].name,rc,ipc3270_get_error_message(rc));
-				g_message("%s exits with rc=%d (%s)",methods[ix].name,rc,ipc3270_get_error_message(rc));
+				lib3270_write_log(hSession,"IPC","%s exits with rc=%d (%s)",methods[ix].name,rc,ipc3270_get_error_message(rc));
 				ipc3270_set_error(object,rc,error);
 				debug("Error Message was set to %s",(*error)->message);
 			}

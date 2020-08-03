@@ -60,6 +60,7 @@
 
 	G_GNUC_INTERNAL int ipc3270_method_action(GObject *session, GVariant *request, GObject *response, GError **error);
 	G_GNUC_INTERNAL int ipc3270_method_activatable(GObject *session, GVariant *request, GObject *response, GError **error);
+	G_GNUC_INTERNAL int ipc3270_method_set_wait_mode(GObject *session, GVariant *request, GObject *response, GError **error);
 
 	G_GNUC_INTERNAL int ipc3270_method_get_field_attribute(GObject *session, GVariant *request, GObject *response, GError **error);
 

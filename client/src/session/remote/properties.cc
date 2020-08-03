@@ -160,6 +160,19 @@
 
 	}
 
+	void IPC::Session::setWaitMode(bool mode) {
+
+		int32_t rc;
+
+		Request(*this,"setWaitMode")
+			.push(mode)
+			.call()
+			.pop(rc);
+
+		chkResponse(rc);
+
+	}
+
 	unsigned short IPC::Session::setCursor(unsigned short row, unsigned short col) {
 
 		int32_t rc;

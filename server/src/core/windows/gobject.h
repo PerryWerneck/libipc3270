@@ -82,6 +82,7 @@
 		H3270				* hSession;
 		GtkWidget			* terminal;
 		gchar				* charset;
+		gboolean			  wait;				///< @brief If true enable automatic call of "wait for ready".
 		IPC3270_PIPE_SOURCE	* source;
 		GQuark 				  error_domain;
 	};

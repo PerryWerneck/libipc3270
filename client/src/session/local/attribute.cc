@@ -484,6 +484,11 @@
 		chkResponse(lib3270_set_unlock_delay(hSession,delay));
 	}
 
+	void Local::Session::setWaitMode(bool mode) {
+		std::lock_guard<std::mutex> lock(sync);
+		chkResponse(ENOTSUP);
+	}
+
 	void Local::Session::setLockOnOperatorError(bool lock) {
 		std::lock_guard<std::mutex> guard(sync);
 		chkResponse(lib3270_set_lock_on_operator_error(hSession,lock ? 1 : 0));
