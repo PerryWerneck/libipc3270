@@ -74,9 +74,23 @@
 		// Setup callbacks
 		struct lib3270_session_callbacks *cbk;
 
-		cbk = lib3270_get_session_callbacks(this->hSession,sizeof(struct lib3270_session_callbacks));
+		cbk = lib3270_get_session_callbacks(this->hSession,LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION),sizeof(struct lib3270_session_callbacks));
 		if(!cbk) {
-			throw runtime_error( _("Invalid callback table, possible version mismatch in lib3270") );
+
+			string message(_("Invalid callback table; "));
+			message += "lib";
+			message += LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME);
+
+			if(strcasecmp(LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION),lib3270_get_revision())) {
+				 message += _(" is not in the required revision " );
+				 message += LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION);
+				 message += ".";
+			} else {
+				message += _(" is invalid.");
+			}
+
+			throw runtime_error(message);
+
 		}
 
 		cbk->update_connect	= connectHandler;

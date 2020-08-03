@@ -28,6 +28,8 @@
  */
 
 #include <lib3270.h>
+#include <errno.h>
+#include <string.h>
 #include <ipc-glib.h>
 
 /*--[ Implement ]------------------------------------------------------------------------------------*/
