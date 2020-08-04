@@ -154,8 +154,8 @@
 
 			debug("Wait for unlock returned ",rc);
 
-			if(rc == 0)
-				return (LIB3270_KEYBOARD_LOCK_STATE) 0;
+			if(rc == LIB3270_KL_UNLOCKED)
+				break;
 
 		}
 
