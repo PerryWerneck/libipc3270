@@ -66,7 +66,9 @@
 
 		std::lock_guard<std::recursive_mutex> lock(this->sync);
 
+		debug(__FUNCTION__,"(",row,",",col,",\"",str,"\")");
 		int rc = lib3270_set_string_at(hSession,row,col,(unsigned char *) str.c_str(),str.length());
+		debug("rc=",rc);
 		if(rc < 0)
 			chkResponse(-rc);
 

@@ -38,6 +38,8 @@
 
  #include "private.h"
  #include <lib3270/actions.h>
+ #include <signal.h>
+ #include <unistd.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
@@ -65,6 +67,7 @@
 	LIB3270_KEYBOARD_LOCK_STATE Local::Session::waitForKeyboardUnlock(time_t timeout) const {
 
 		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		debug("waitForKeyboardUnlock(",timeout,")");
 		return lib3270_wait_for_keyboard_unlock(this->hSession, timeout);
 	}
 
