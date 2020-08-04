@@ -104,7 +104,7 @@ TN3270_PUBLIC const char * toCharString(const TN3270::ProgramMessage programMess
 		"",
 		"X System",
 		"X Wait",
-		"Connected"
+		"Connected",
 		"X Not Connected",
 		"Awaiting first",
 		"X -f",

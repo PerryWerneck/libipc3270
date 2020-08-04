@@ -345,7 +345,7 @@
 
 	Attribute Local::Session::getAttribute(const char *name) const {
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 
 		// Check for integer properties.
 		{
@@ -415,7 +415,7 @@
 
 	void Local::Session::getAttributes(std::vector<Attribute> & attributes) const {
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 
 		// Add integer properties.
 		{
@@ -465,37 +465,37 @@
 	}
 
 	unsigned short Local::Session::getScreenWidth() const {
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 		return (unsigned short) lib3270_get_width(hSession);
 	}
 
 	unsigned short Local::Session::getScreenHeight() const {
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 		return (unsigned short) lib3270_get_height(hSession);
 	}
 
 	unsigned short Local::Session::getScreenLength() const {
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 		return (unsigned short) lib3270_get_length(hSession);
 	}
 
 	void Local::Session::setUnlockDelay(unsigned short delay) {
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::recursive_mutex> lock(sync);
 		chkResponse(lib3270_set_unlock_delay(hSession,delay));
 	}
 
-	void Local::Session::setWaitMode(bool mode) {
-		std::lock_guard<std::mutex> lock(sync);
-		chkResponse(ENOTSUP);
+	void Local::Session::setTimeout(time_t timeout) {
+		std::lock_guard<std::recursive_mutex> lock(sync);
+		this->timeout = timeout;
 	}
 
 	void Local::Session::setLockOnOperatorError(bool lock) {
-		std::lock_guard<std::mutex> guard(sync);
+		std::lock_guard<std::recursive_mutex> guard(sync);
 		chkResponse(lib3270_set_lock_on_operator_error(hSession,lock ? 1 : 0));
 	}
 
 	unsigned short Local::Session::setCursor(int addr) {
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::recursive_mutex> lock(sync);
 
 		int rc = lib3270_set_cursor_address(hSession,addr);
 		if(rc < 0)
@@ -506,7 +506,7 @@
 	}
 
 	unsigned short Local::Session::setCursor(unsigned short row, unsigned short col) {
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::recursive_mutex> lock(sync);
 
 		int rc = lib3270_set_cursor_position(hSession,row,col);
 		if(rc < 0)
@@ -517,7 +517,7 @@
 	}
 
 	unsigned short Local::Session::getCursorAddress() {
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::recursive_mutex> lock(sync);
 
 		int rc = lib3270_get_cursor_address(hSession);
 
@@ -529,35 +529,36 @@
 
 	std::string Local::Session::getVersion() const {
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 		return lib3270_get_version();
 
 	}
 
 	std::string Local::Session::getRevision() const {
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 		return lib3270_get_revision();
 
 	}
 
 	std::string Local::Session::getAssociatedLUName() const {
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return lib3270_get_associated_luname(hSession);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		const char * luname = lib3270_get_associated_luname(hSession);
+		return string(luname ? luname : "");
 
 	}
 
 	std::string Local::Session::getHostURL() const {
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 		return lib3270_get_url(hSession);
 
 	}
 
 	void Local::Session::setHostURL(const char *url) {
 
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::recursive_mutex> lock(sync);
 		chkResponse(lib3270_set_url(hSession, url));
 
 	}

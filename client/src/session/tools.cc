@@ -44,6 +44,8 @@
 
 	void chkResponse(int rc) {
 
+		debug("rc=",rc);
+
 		if(rc == 0)
 			return;
 

@@ -44,7 +44,7 @@
 
  	std::string	Local::Session::get() const {
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 
 		lib3270_auto_cleanup<char> text = lib3270_get_string_at_address(hSession, 0, -1, '\n');
 
@@ -57,7 +57,7 @@
 
 	std::string	Local::Session::get(int baddr, int len, char lf) const {
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 
 		lib3270_auto_cleanup<char> text = lib3270_get_string_at_address(hSession, baddr, len, lf);
 
@@ -70,7 +70,7 @@
 
 	std::string	Local::Session::get(unsigned int row, unsigned int col, int len, char lf) const {
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 
 		lib3270_auto_cleanup<char> text = lib3270_get_string_at(hSession, row, col, len, lf);
 
@@ -84,27 +84,28 @@
 
 	ProgramMessage Local::Session::getProgramMessage() const {
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 		return (ProgramMessage) lib3270_get_program_message(this->hSession);
 
 	}
 
 	ConnectionState Local::Session::getConnectionState() const {
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 		return (ConnectionState) lib3270_get_connection_state(this->hSession);
 
 	}
 
 	SSLState Local::Session::getSSLState() const {
 
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 		return (TN3270::SSLState) lib3270_get_ssl_state(hSession);
 
 	}
 
 	LIB3270_KEYBOARD_LOCK_STATE Local::Session::getKeyboardLockState() const {
-		std::lock_guard<std::mutex> lock(const_cast<Local::Session *>(this)->sync);
+
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 		return lib3270_get_keyboard_lock_state(hSession);
 	}
 

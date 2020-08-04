@@ -44,7 +44,7 @@
 
  	void Local::Session::set(const std::string &str) {
 
-		std::lock_guard<std::mutex> lock(this->sync);
+		std::lock_guard<std::recursive_mutex> lock(this->sync);
 
 		int rc = lib3270_set_field(hSession,str.c_str(),str.length());
 		if(rc < 0)
@@ -54,7 +54,7 @@
 
 	void Local::Session::set(int baddr, const std::string &str) {
 
-		std::lock_guard<std::mutex> lock(this->sync);
+		std::lock_guard<std::recursive_mutex> lock(this->sync);
 
 		int rc = lib3270_set_string_at_address(hSession,baddr,(unsigned char *) str.c_str(),str.length());
 		if(rc < 0)
@@ -64,7 +64,7 @@
 
 	void Local::Session::set(int row, int col, const std::string &str) {
 
-		std::lock_guard<std::mutex> lock(this->sync);
+		std::lock_guard<std::recursive_mutex> lock(this->sync);
 
 		int rc = lib3270_set_string_at(hSession,row,col,(unsigned char *) str.c_str(),str.length());
 		if(rc < 0)

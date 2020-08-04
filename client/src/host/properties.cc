@@ -60,7 +60,7 @@ std::vector<TN3270::Attribute> TN3270::Host::getAttributes() const {
 
 void TN3270::Host::setTimeout(time_t timeout) noexcept {
 	this->timeout = timeout;
-	this->session->setWaitMode(timeout != 0);
+	this->session->setTimeout(timeout);
 }
 
 

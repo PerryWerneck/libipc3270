@@ -77,11 +77,14 @@
 
 				friend class Action;
 
+				/// @brief Timeout for automatic waits.
+				time_t timeout;
+
 				/// @brief Handle of the related instance of lib3270
 				H3270 * hSession;
 
-				/// @brief Mutex to serialize access to lib3270
-				std::mutex sync;
+				/// @brief Recursive mutex to serialize access to lib3270
+				std::recursive_mutex sync;
 
 				/// @brief Popup Handler.
 				static int popupHandler(H3270 *session, const LIB3270_POPUP *popup, unsigned char wait);
@@ -152,7 +155,7 @@
 				unsigned short getScreenHeight() const override;
 				unsigned short getScreenLength() const override;
 				void setUnlockDelay(unsigned short delay) override;
-				void setWaitMode(bool mode) override;
+				void setTimeout(time_t timeout) override;
 				void setLockOnOperatorError(bool lock) override;
 				void setCharSet(const char *charset = NULL) override;
 				unsigned short setCursor(int addr) override;

@@ -42,15 +42,23 @@
 
 TN3270::Host::Host(const char *id, const char *charset) {
 
-	debug("Creating host id=\"", id);
+	if(!id)
+		id = "";
+
+	debug("Creating host id=\"", id, "\"");
 
 	this->timeout = 5;
 	this->session = Session::getInstance(id, charset);
+
+	debug("Create host with session ",this->session);
 
 }
 
 
 TN3270::Host::~Host() {
-	delete this->session;
-	this->session = nullptr;
+	debug("Deleting host session ",this->session);
+	if(this->session) {
+		delete this->session;
+		this->session = nullptr;
+	}
 }

@@ -98,7 +98,7 @@
  */
 
  // Test Attributes
- static void testAttributes(const char *session) {
+ static void testAttributes(const char *session, const char *url) {
 
 	TN3270::Host host{session};
 
@@ -122,7 +122,7 @@
  }
 
  // Performance test.
- static void testPerformance(const char *session) {
+ static void testPerformance(const char *session, const char *url) {
 
 	try {
 
@@ -165,30 +165,22 @@
  }
 
  // test host object
- static void testHost(const char *session) {
+ static void testHost(const char *session, const char *url) {
 
 	try {
 
 		TN3270::Host host{session};
 
-		host.setTimeout(10);
-
-		host.connect();
-		host.push(TN3270::ENTER);
-
-		host.toString(14,1,75,0);
-
-		// host.disconnect();
-
-		/*
 		cout
 			<< "Version: " << host["version"]
 			<< "\tRevision: " << host["Revision"]
 			<< "\tConnected: " << host["Connected"]
 			<< std::endl;
 
-		host.setUnlockDelay(0);
-		host.connect(nullptr);
+		host.setUnlockDelay(0);	// Disable the 350ms delay on screen changes.
+		host.setTimeout(10);	// Set the default timeout.
+		host["crlget"] = false;	// Disable CRL get to speed up the connection.
+		host.connect(url);
 
 		cout
 			<< "Wait for unlock returns " << host.getKeyboardLockState() << std::endl
@@ -203,28 +195,30 @@
 		}
 
 		host.setCursor(10,10);
-
-		host.wait(10);
-
+//		host.wait(10);
 		// host.input("test@0another line");
 
+		cout << "Sending ENTER" << endl;
 		host.push(TN3270::ENTER);
-		host.wait(10);
+		cout << "ENTER returns" << endl;
+
+		host.wait(2);
 
 		cout << host << endl;
 
 		cout << endl << "[" << host.toString((unsigned int) 1, (unsigned int) 3,7) << "]" << endl;
 		cout << endl << "[" << host.toString((int) 15, (int) 10) << "]" << endl;
 
+		cout << "Sending PF3" << endl;
 		host.pfkey(3);
-		host.wait(10);
+		cout << "PF3 returns" << endl;
 
 		cout << host << endl;
-		host.wait(10);
 
+		cout << "Disconnecting" << endl;
 		host.disconnect();
 
-		*/
+		cout << "Test complete" << endl;
 
 	} catch(const std::exception &e) {
 
@@ -237,10 +231,13 @@
  int main(int argc, char **argv) {
 
 	const char * session = ":A";
+	const char * url = nullptr;
 
 	static struct option options[] = {
 		{ "session",	required_argument,	0,	's' },
+		{ "url",		required_argument,	0,	'U' },
 		{ "perftest",	no_argument,		0,	'P' },
+		{ "info",		no_argument,		0,	'I' },
 		{ 0, 0, 0, 0}
 
 	};
@@ -252,19 +249,42 @@
 		switch(opt) {
 		case 's':
 			session = optarg;
+			cout << "Session: " << session << endl;
+			break;
+
+		case 'U':
+			url = optarg;
+			cout << "URL: " << session << endl;
 			break;
 
 		case 'P':
-			testPerformance(session);
+			testPerformance(session,url);
+			return 0;
+
+		case 'I':
+			testHost(session,url);
 			return 0;
 
 		}
 
 	}
 
-	cout 	<< "Session: " << session << endl;
+		/*
 
-	testHost(session);
+		host.setTimeout(10);
+
+		host.connect();
+		host.push(TN3270::ENTER);
+
+		host.toString(14,1,75,0);
+
+		// host.disconnect();
+		*/
+
+
+	// cout 	<< "Session: " << session << endl;
+
+	//testHost(session);
 	// testPerformance(session);
 
 

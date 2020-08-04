@@ -160,12 +160,12 @@
 
 	}
 
-	void IPC::Session::setWaitMode(bool mode) {
+	void IPC::Session::setTimeout(time_t timeout) {
 
 		int32_t rc;
 
 		Request(*this,"setWaitMode")
-			.push(mode)
+			.push(timeout != 0)
 			.call()
 			.pop(rc);
 

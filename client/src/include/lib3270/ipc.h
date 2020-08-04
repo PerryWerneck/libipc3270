@@ -569,7 +569,7 @@
 			virtual void setHostURL(const char *url) = 0;
 
 			virtual void setUnlockDelay(unsigned short delay = 350) = 0;
-			virtual void setWaitMode(bool mode) = 0;
+			virtual void setTimeout(time_t timeout = 0) = 0;
 			virtual void setLockOnOperatorError(bool lock = true) = 0;
 
 			virtual unsigned short getScreenWidth() const = 0;
@@ -668,6 +668,9 @@
 			int overflow(int c) override;
 
 		public:
+			Host(const Host &src) = delete;
+			Host(const Host *src) = delete;
+
 			Host(const char *id, const char *charset = nullptr);
 
 			~Host();

@@ -50,56 +50,63 @@
 	}
 
 	bool Local::Action::activatable() const noexcept {
-		std::lock_guard<std::mutex> lock(this->session->sync);
+		std::lock_guard<std::recursive_mutex> lock(this->session->sync);
 		debug(__FUNCTION__,"(",(void *) descriptor,")");
 		return lib3270_action_is_activatable(this->descriptor,this->session->hSession);
 	}
 
 	void Local::Action::activate() {
-		std::lock_guard<std::mutex> lock(this->session->sync);
+		std::lock_guard<std::recursive_mutex> lock(this->session->sync);
 
 		chkResponse(lib3270_action_activate(this->descriptor,this->session->hSession));
 
 	}
 
 	void Local::Action::wait(time_t seconds) {
-		std::lock_guard<std::mutex> lock(this->session->sync);
+		std::lock_guard<std::recursive_mutex> lock(this->session->sync);
 		chkResponse(lib3270_wait_for_ready(this->session->hSession,seconds));
 	}
 
 	TN3270::Action * Local::Session::getAction(const LIB3270_ACTION *descriptor) {
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::recursive_mutex> lock(sync);
 		return new Local::Action(this, descriptor);
 	}
 
 	void Local::Session::action(const char *action_name) {
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::recursive_mutex> lock(sync);
 		chkResponse(lib3270_action_activate_by_name(action_name,hSession));
+		if(this->timeout)
+			chkResponse(lib3270_wait_for_ready(hSession,this->timeout));
 	}
 
  	void Local::Session::connect(const char *url, time_t seconds) {
 
-		std::lock_guard<std::mutex> lock(sync);
-		chkResponse(lib3270_connect_url(hSession,url,seconds));
+		std::lock_guard<std::recursive_mutex> lock(sync);
+		chkResponse(lib3270_connect_url(hSession,url,seconds ? seconds : this->timeout));
+
 	}
 
 	void Local::Session::disconnect() {
 
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::recursive_mutex> lock(sync);
 		chkResponse(lib3270_disconnect(hSession));
 	}
 
 	void Local::Session::pfkey(unsigned short value) {
 
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::recursive_mutex> lock(sync);
 		chkResponse(lib3270_pfkey(hSession,value));
+		if(this->timeout)
+			chkResponse(lib3270_wait_for_ready(hSession,this->timeout));
 
 	}
 
 	void Local::Session::pakey(unsigned short value) {
 
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::recursive_mutex> lock(sync);
 		chkResponse(lib3270_pakey(hSession,value));
+		if(this->timeout)
+			chkResponse(lib3270_wait_for_ready(hSession,this->timeout));
 
 	}
 
@@ -142,14 +149,16 @@
             throw std::system_error(EINVAL, std::system_category());
 		}
 
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::recursive_mutex> lock(sync);
 		chkResponse(actions[(size_t) action](hSession));
+		if(this->timeout)
+			chkResponse(lib3270_wait_for_ready(hSession,this->timeout));
 
 	}
 
 	void Local::Session::print(LIB3270_CONTENT_OPTION option) {
 
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::recursive_mutex> lock(sync);
 
 		switch(option) {
 		case LIB3270_CONTENT_ALL:

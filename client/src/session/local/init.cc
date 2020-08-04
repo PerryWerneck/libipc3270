@@ -61,9 +61,10 @@
 
  	Local::Session::Session(const char *charset) : Abstract::Session() {
 
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::recursive_mutex> lock(sync);
 
 		this->hSession = lib3270_session_new("");
+		this->timeout = 5;
 
 		lib3270_set_user_data(this->hSession,(void *) this);
 
@@ -99,7 +100,7 @@
 
 	Local::Session::~Session() {
 
-		std::lock_guard<std::mutex> lock(sync);
+		std::lock_guard<std::recursive_mutex> lock(sync);
 
 		lib3270_session_free(this->hSession);
 		this->hSession = nullptr;
