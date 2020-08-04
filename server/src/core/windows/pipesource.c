@@ -101,16 +101,22 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 	H3270		* hSession		= ipc3270_get_session(source->object);
 	int			  request_type	= 0;
 
+	/*
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE))
 		lib3270_trace_data(hSession, "IPC Data block received on pipe", (const unsigned char *) source->buffer, (size_t) cbRead);
 
 	debug("Received packet \"%s\" with %u bytes", request_name, (unsigned int) cbRead);
+	*/
 
 	g_autoptr (GError) error = NULL;
 	g_autoptr (GVariant) response = NULL;
 	g_autoptr (GVariant) parameters = ipc3270_unpack(source->buffer, &request_type);
 
-	debug("************ error=%p",error);
+/*
+#ifdef DEBUG
+	clock_t begin_time = clock();
+#endif // DEBUG
+*/
 
 	if(parameters) {
 
@@ -155,7 +161,11 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 
 	}
 
-	debug("response=%p",response);
+/*
+#ifdef DEBUG
+	g_message("Command takes %lu",(unsigned long) (clock () - begin_time));
+#endif // DEBUG
+*/
 
 	// Pack response
 	size_t szPacket = 0;
@@ -174,8 +184,10 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 	// Send response
 	DWORD wrote = (DWORD) szPacket;
 
+	/*
 	if(lib3270_get_toggle(hSession,LIB3270_TOGGLE_EVENT_TRACE))
 		lib3270_trace_data(hSession, "IPC Data block sent to pipe", (const unsigned char *) buffer, szPacket);
+	*/
 
 	WriteFile(source->hPipe,buffer,wrote,&wrote,NULL);
 

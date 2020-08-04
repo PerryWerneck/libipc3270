@@ -42,6 +42,7 @@
  #include <stdlib.h>
  #include <glib.h>
  #include <glib/gstdio.h>
+ #include <lib3270/toggle.h>
 
  /*---[ Globals ]------------------------------------------------------------------------------------*/
 
@@ -226,6 +227,8 @@
 	}
 
 	g_signal_connect(terminal,"session_changed",G_CALLBACK(session_changed),window);
+
+	lib3270_set_toggle(v3270_get_session(terminal),LIB3270_TOGGLE_EVENT_TRACE,1);
 
 }
 

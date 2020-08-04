@@ -136,6 +136,7 @@
 		}
 
 		debug("Received response \"", in.block, "\" with ", in.used, " bytes");
+
 #ifdef DEBUG
 		// lib3270_trace_data(NULL,"Response block",(const char *) this->in.block, this->in.used);
 #endif // DEBUG

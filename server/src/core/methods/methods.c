@@ -83,24 +83,18 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 
 	debug("%s(%s,request=%p,response=%p,error=%p)",__FUNCTION__,method_name,request,response,*error);
 
-	lib3270_write_event_trace(hSession,"Method %s called on session %c\n",method_name,lib3270_get_session_id(hSession));
-
 	for(ix = 0; ix < G_N_ELEMENTS(methods); ix++) {
 
 		if(!g_ascii_strcasecmp(methods[ix].name,method_name)) {
 
-			g_message("Running method %s",method_name);
-			int rc = methods[ix].call(object,request,response,error);
+			lib3270_write_event_trace(hSession,"Method %s called on session %c\n",method_name,lib3270_get_session_id(hSession));
 
-			debug("rc=%d error=%p",rc,*error);
+			int rc = methods[ix].call(object,request,response,error);
 
 			if(rc)
 			{
-				g_message("Method %s failed with rc=%d (%s)",method_name,rc,ipc3270_get_error_message(rc));
-				debug("%s exits with rc=%d (%s)",methods[ix].name,rc,ipc3270_get_error_message(rc));
-				lib3270_write_log(hSession,"IPC","%s exits with rc=%d (%s)",methods[ix].name,rc,ipc3270_get_error_message(rc));
+				lib3270_write_event_trace(hSession,"Method %s failed with rc=%d (%s)",method_name,rc,ipc3270_get_error_message(rc));
 				ipc3270_set_error(object,rc,error);
-				debug("Error Message was set to %s",(*error)->message);
 			}
 
 			return 0;
@@ -110,6 +104,9 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 	// Check actions table.
 	const LIB3270_ACTION * action = lib3270_action_get_by_name(method_name);
 	if(action) {
+
+		lib3270_write_event_trace(hSession,"Action %s called on session %c\n",method_name,lib3270_get_session_id(hSession));
+
 		if(lib3270_action_activate(action,hSession)) {
 			ipc3270_set_error(object,errno,error);
 		}
@@ -122,6 +119,8 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 	for(ix = 0; int_methods[ix].name; ix++) {
 
 		if(!g_ascii_strcasecmp(int_methods[ix].name,method_name)) {
+
+			lib3270_write_event_trace(hSession,"Internal method %s called on session %c\n",method_name,lib3270_get_session_id(hSession));
 
 			gint value;
 			g_variant_get(request, "(i)", &value);
@@ -137,6 +136,7 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 
 	}
 
+	lib3270_write_event_trace(hSession,"Unknown method %s\n",method_name);
 	g_message("Unknown method \"%s\"",method_name);
 	return ENOENT;
 
