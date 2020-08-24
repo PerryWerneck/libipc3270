@@ -38,14 +38,15 @@
 
  #include <ctime>
 
- #include <getopt.h>
-
 #if defined(_MSC_VER)
 	#pragma comment(lib,"ipc3270.lib")
 #else
 	#pragma GCC diagnostic ignored "-Wunused-function"
 	#pragma GCC diagnostic ignored "-Wunused-parameter"
 	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+
+	#include <getopt.h>
+
 #endif // _MSC_VER
 
  #include <cstdlib>
@@ -233,6 +234,8 @@
 	const char * session = ":A";
 	const char * url = nullptr;
 
+#if ! defined(_MSC_VER)
+
 	static struct option options[] = {
 		{ "session",	required_argument,	0,	's' },
 		{ "url",		required_argument,	0,	'U' },
@@ -268,6 +271,11 @@
 		}
 
 	}
+
+#else
+
+
+#endif // !_MSC_VER
 
 		/*
 
