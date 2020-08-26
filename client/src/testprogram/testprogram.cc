@@ -275,6 +275,13 @@
 #else
 
 
+		TN3270::Host host{session};
+		host.setTimeout(10);
+		host.connect();
+		printf("\n\n\n");
+		host.wait(14,22,"SISTEMA");
+
+
 #endif // !_MSC_VER
 
 		/*
