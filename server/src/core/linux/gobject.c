@@ -120,7 +120,7 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='s' name='name' direction='in' />" \
 		"		<arg type='b' name='result' direction='out' />" \
 		"	</method>"
-		"	<method name='setwaitmode'>"
+		"	<method name='setWaitMode'>"
 		"		<arg type='b' name='mode' direction='in' />" \
 		"		<arg type='i' name='result' direction='out' />" \
 		"	</method>"
