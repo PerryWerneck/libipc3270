@@ -58,7 +58,6 @@
 			rc = worker();
 
 			debug("rc=",rc," (",strerror(rc),")");
-			printf("rc=%d\n",rc);
 
 			if(rc == 0)
 				return;
