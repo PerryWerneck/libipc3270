@@ -84,6 +84,7 @@ OBJ_FILES= \
 testprogram.exe: \
 	client\src\testprogram\testprogram.obj \
 	ipc3270.dll
+	
 	@echo Build exe file....
 	@link \
 		/nologo \
@@ -92,7 +93,7 @@ testprogram.exe: \
 
 install: \
 	$(OBJ_FILES) \
-	$(LIB3270_NAME).lib
+	ipc3270.dll
 	@echo Building library...
 	@-mkdir "$(PW3270_SDK_PATH)\lib"
 	@lib \
@@ -100,8 +101,9 @@ install: \
 		/OUT:"$(PW3270_SDK_PATH)\lib\ipc3270.lib" \
 		$(OBJ_FILES)		
 
+	@copy "ipc3270.dll" "$(PW3270_SDK_PATH)\..\ipc3270.dll"
+	@copy "ipc3270.dll.lib" "$(PW3270_SDK_PATH)\lib\ipc3270.dll.lib"
 
-	@copy "$(LIB3270_NAME).lib" "$(PW3270_SDK_PATH)\lib\$(LIB3270_NAME).lib"
 	@-mkdir "$(PW3270_SDK_PATH)\include\lib3270\ipc"
 	@copy "client\src\include\lib3270\ipc\*.h" "$(PW3270_SDK_PATH)\include\lib3270\ipc"
 	@copy "client\src\include\lib3270\*.h" "$(PW3270_SDK_PATH)\include\lib3270"
@@ -115,6 +117,7 @@ ipc3270.dll: \
 		/NOLOGO \
 		/DLL \
 		/OUT:"$@" \
+		/IMPLIB:ipc3270.dll.lib \
 		$(OBJ_FILES) \
 		client\src\core\windows\dynamic\init.obj \
 		/DELAYLOAD:$(LIB3270_NAME).dll
@@ -128,8 +131,8 @@ clean:
 	del \
 		$(LIB3270_NAME).lib \
 		$(LIB3270_NAME).dll \
-		ipc3270.lib \
-		ipc3270.dll \
+		*.lib \
+		*.dll \
 		$(OBJ_FILES) \
 		client\src\core\windows\dynamic\init.obj \
 		testprogram.*
