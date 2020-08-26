@@ -90,7 +90,7 @@
 
 		for(ix = 0; installLocation.empty() && ix < (sizeof(keys)/sizeof(keys[0])); ix++) {
 
-			debug(ix,"=",keys[ix]);
+//			debug(ix,"=",keys[ix]);
 
 			rc = RegOpenKeyEx(HKEY_LOCAL_MACHINE,keys[ix],0,KEY_QUERY_VALUE,&hKey);
 			if(rc == ERROR_SUCCESS) {
@@ -103,11 +103,8 @@
 
 				rc = RegQueryValueExA(hKey,"InstallLocation",NULL,&datatype,(LPBYTE) datadir,&datalen);
 				if(rc == ERROR_SUCCESS) {
-
-					debug("Found: ",datadir);
-
+//					debug("Found: ",datadir);
 					installLocation.assign(datadir);
-
 				}
 
 				RegCloseKey(hKey);

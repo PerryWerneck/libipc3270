@@ -274,13 +274,15 @@
 
 #else
 
+		printf("\nRunning IPC Client tests\n");
 
 		TN3270::Host host{session};
 		host.setTimeout(10);
 		host.connect();
-		printf("\n\n\n");
+		printf("\n\nWaiting...\n");
 		host.wait(14,22,"SISTEMA");
 
+		host.disconnect();
 
 #endif // !_MSC_VER
 
