@@ -93,9 +93,11 @@ testprogram.exe: \
 
 install: \
 	ipc3270.dll \
-	ipc3270.lib
+	ipc3270.lib \
+	$(LIB3270_NAME).lib
 	@echo Building library...
 	@-mkdir "$(PW3270_SDK_PATH)\lib"
+	copy "$(LIB3270_NAME).lib" "$(PW3270_SDK_PATH)\lib\$(LIB3270_NAME).lib"
 	copy "ipc3270.lib" "$(PW3270_SDK_PATH)\lib\ipc3270.lib"
 	copy "ipc3270.dll" "$(PW3270_SDK_PATH)\..\ipc3270.dll"
 	copy "ipc3270.dll.lib" "$(PW3270_SDK_PATH)\lib\ipc3270.dll.lib"
@@ -126,7 +128,7 @@ ipc3270.dll: \
 		/DELAYLOAD:$(LIB3270_NAME).dll
 
 $(LIB3270_NAME).lib:
-	lib \
+	@lib \
 		/def:"$(PW3270_SDK_PATH)\def\$(LIB3270_NAME).def" \
 		/out:$(LIB3270_NAME).lib
 
