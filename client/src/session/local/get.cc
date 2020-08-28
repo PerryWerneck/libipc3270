@@ -46,7 +46,7 @@
 
 		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 
-		lib3270_auto_cleanup<char> text = lib3270_get_string_at_address(hSession, 0, -1, '\n');
+		lib3270_ptr<char> text = lib3270_get_string_at_address(hSession, 0, -1, '\n');
 
         if(!text) {
             throw std::runtime_error( _("Can't get screen contents") );
@@ -59,7 +59,7 @@
 
 		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 
-		lib3270_auto_cleanup<char> text = lib3270_get_string_at_address(hSession, baddr, len, lf);
+		lib3270_ptr<char> text = lib3270_get_string_at_address(hSession, baddr, len, lf);
 
         if(!text) {
             throw std::runtime_error( _("Can't get screen contents") );
@@ -72,7 +72,7 @@
 
 		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 
-		lib3270_auto_cleanup<char> text = lib3270_get_string_at(hSession, row, col, len, lf);
+		lib3270_ptr<char> text = lib3270_get_string_at(hSession, row, col, len, lf);
 
         if(!text) {
             throw std::runtime_error( _("Can't get screen contents") );

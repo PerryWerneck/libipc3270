@@ -113,16 +113,16 @@
 		 *
 		 */
 		template<typename T>
-		class lib3270_auto_cleanup {
+		class lib3270_ptr {
 		private:
 			T *data;
 
 		public:
-			lib3270_auto_cleanup(T *data) {
+			lib3270_ptr(T *data) {
 				this->data = data;
 			}
 
-			~lib3270_auto_cleanup() {
+			~lib3270_ptr() {
 				lib3270_free((void *) this->data);
 			}
 
