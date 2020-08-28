@@ -212,7 +212,7 @@
 		/// @brief connection state.
 		enum ConnectionState : uint8_t {
 			DISCONNECTED		= LIB3270_NOT_CONNECTED,				///< @brief disconnected
-			RESOLVING			= LIB3270_RESOLVING,					///< @brief resolving hostname
+			RESOLVING			= LIB3270_CONNECTING,					///< @brief Connecting to host
 			PENDING				= LIB3270_PENDING,						///< @brief connection pending
 			CONNECTED_INITIAL	= LIB3270_CONNECTED_INITIAL,			///< @brief connected, no mode yet
 			CONNECTED_ANSI		= LIB3270_CONNECTED_ANSI,				///< @brief connected in NVT ANSI mode
