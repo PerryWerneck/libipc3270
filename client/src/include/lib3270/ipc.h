@@ -38,6 +38,7 @@
 	#include <lib3270.h>
 	#include <lib3270/keyboard.h>
 	#include <lib3270/actions.h>
+	#include <lib3270/ssl.h>
 
 	#if defined(_WIN32) || defined(_MSC_VER)
 
