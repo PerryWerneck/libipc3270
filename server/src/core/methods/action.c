@@ -39,7 +39,13 @@ int ipc3270_method_action(GObject *session, GVariant *request, GObject *response
 
 	GVariant *value = g_variant_get_child_value(request,0);
 
-	ipc3270_response_append_int32(response, lib3270_action_activate_by_name(g_variant_get_string(value,NULL), ipc3270_get_session(session)));
+	ipc3270_response_append_int32(
+		response,
+		lib3270_activate_by_name(
+			ipc3270_get_session(session),
+			g_variant_get_string(value,NULL)
+		)
+	);
 
 	g_variant_unref(value);
 
