@@ -3,10 +3,12 @@
 # https://stackoverflow.com/questions/48648952/set-get-property-using-dbus-send
 #
 
+. ./dbus.conf
+
 dbus-send \
 	--session \
-	--dest=br.com.bb.pw3270.a\
+	--dest=${DBUS_DEST} \
 	--print-reply \
-	"/br/com/bb/tn3270/session" \
-	"br.com.bb.tn3270.session.getString"
+	"${DBUS_PATH}" \
+	"${DBUS_INTERFACE}.getString"
 
