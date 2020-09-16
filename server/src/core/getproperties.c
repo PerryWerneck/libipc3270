@@ -127,6 +127,7 @@ GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GEr
 		if(strprop[ix].get && !g_ascii_strcasecmp(strprop[ix].name, property_name)) {
 
 			// Found it!
+			errno = 0;
 			const char * value = strprop[ix].get(hSession);
 
 			if(value) {
@@ -134,9 +135,14 @@ GVariant * ipc3270_get_property(GObject *object, const gchar *property_name, GEr
 				return g_variant_new_string(value);
 			}
 
-			// Erro!
-			ipc3270_set_error(object,errno,error);
-			return NULL;
+			debug("%s=%s",property_name,"NULL");
+
+			if(errno) {
+				ipc3270_set_error(object,errno,error);
+				return NULL;
+			}
+
+			return g_variant_new_string("");
 
 		}
 

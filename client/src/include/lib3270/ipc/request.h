@@ -58,12 +58,8 @@
 
 			/// @brief PW3270 IPC Request/Response.
 			class TN3270_PUBLIC Request {
-			private:
-
+			public:
 #ifdef _WIN32
-				/// @brief Pipe Handle.
-				HANDLE hPipe;
-
 				/// @brief IPC Data type.
 				enum Type : uint8_t {
 					String	= 's',
@@ -77,6 +73,13 @@
 					Int64	= 'x',
 					Uint64	= 't'
 				};
+#endif // _WIN32
+
+			private:
+
+#ifdef _WIN32
+				/// @brief Pipe Handle.
+				HANDLE hPipe;
 
 				struct {
 					DWORD 	  length;	///< @brief Length of input buffer.

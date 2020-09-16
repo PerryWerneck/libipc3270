@@ -37,6 +37,7 @@
  */
 
  #include <ipc-client-internals.h>
+ #include <lib3270/trace.h>
 
  using std::string;
 
@@ -45,6 +46,51 @@
  namespace TN3270 {
 
 	#define PIPE_BUFFER_LENGTH 8192
+
+#ifdef DEBUG
+
+	// From lib3270_trace_data
+	static void trace_data(const char *msg, const unsigned char *data, size_t datalen)
+{
+	// 00000000001111111111222222222233333333334444444444555555555566666666667777777777
+	// 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+	// xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx . . . . . . . . . . . . . . . .
+
+	size_t ix;
+	char buffer[80];
+	char hexvalue[3];
+
+	memset(buffer,0,sizeof(buffer));
+
+	std::cout << msg << "(" << datalen << " bytes)" << std::endl;
+
+	for(ix = 0; ix < datalen; ix++)
+	{
+		size_t col = (ix%15);
+
+		if(col == 0)
+		{
+			if(ix) {
+				std::cout << "\t" << buffer << std::endl;
+			}
+
+			memset(buffer,' ',79);
+			buffer[79] = 0;
+		}
+
+		snprintf(hexvalue,3,"%02x",data[ix]);
+		memcpy(buffer+(col*3),hexvalue,2);
+
+		if(data[ix] > ' ')
+			buffer[48 + (col*2)] = data[ix];
+
+	}
+
+	std::cout << "\t" << buffer << std::endl;
+
+}
+
+#endif // DEBUG
 
 	IPC::Request::Request(HANDLE hPipe, const char *name, uint16_t type) {
 
@@ -114,7 +160,7 @@
 	IPC::Request & IPC::Request::call() {
 
 #ifdef DEBUG
-		// lib3270_trace_data(NULL,"Request block",(const char *) this->out.block, this->out.used);
+		// trace_data("Request block",(const unsigned char *) this->out.block, this->out.used);
 #endif // DEBUG
 
 		debug("Sending request with ", *this->outvalues, " elements");
@@ -137,8 +183,19 @@
 
 		debug("Received response \"", in.block, "\" with ", in.used, " bytes");
 
+		//
+		// Heaer format:
+		//
+		// STRING	Response name
+		// uint16_t	Return code
+		// uint16_t	Arguments
+		//
+		// Data block:
+		//
+		//
+
 #ifdef DEBUG
-		// lib3270_trace_data(NULL,"Response block",(const char *) this->in.block, this->in.used);
+		trace_data("Response block",(const unsigned char *) this->in.block, this->in.used);
 #endif // DEBUG
 
 		// Extract response name

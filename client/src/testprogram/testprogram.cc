@@ -99,11 +99,18 @@
  */
 
  // Test Attributes
- static void testAttributes(const char *session, const char *url) {
+ static void testAttributes(const char *session, const char *name) {
 
 	TN3270::Host host{session};
 
+	name="url";
+
+	cout << endl << endl;
 	for(auto attribute : host.getAttributes()) {
+
+		if(name && *name && strcasecmp(name,"all") && strcasecmp(attribute.getName(),name)) {
+			continue;
+		}
 
 		cout << attribute.getName() << ":\t";
 
@@ -113,12 +120,16 @@
 
 		} catch(const std::exception &e) {
 
-			cout << e.what();
+			cout << "Exception(" << e.what() << ")";
 		}
 
 		cout << endl;
 
+		Sleep(100);
+
 	}
+
+	cout << endl << endl;
 
  }
 
@@ -237,22 +248,27 @@
 #if ! defined(_MSC_VER)
 
 	static struct option options[] = {
-		{ "session",	required_argument,	0,	's' },
-		{ "url",		required_argument,	0,	'U' },
-		{ "perftest",	no_argument,		0,	'P' },
-		{ "info",		no_argument,		0,	'I' },
+		{ "session",	required_argument,		0,	's' },
+		{ "url",		required_argument,		0,	'U' },
+		{ "perftest",	no_argument,			0,	'P' },
+		{ "attribute",	optional_argument,		0,	'A' },
+		{ "info",		no_argument,			0,	'I' },
 		{ 0, 0, 0, 0}
 
 	};
 
 	int long_index =0;
 	int opt;
-	while((opt = getopt_long(argc, argv, "s:", options, &long_index )) != -1) {
+	while((opt = getopt_long(argc, argv, "s:A", options, &long_index )) != -1) {
 
 		switch(opt) {
 		case 's':
 			session = optarg;
 			cout << "Session: " << session << endl;
+			break;
+
+		case 'A':
+			testAttributes(session,optarg);
 			break;
 
 		case 'U':

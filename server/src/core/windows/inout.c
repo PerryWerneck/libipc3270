@@ -59,7 +59,7 @@ unsigned char * ipc3270_pack_error(const GError *error, size_t * szPacket) {
 	txtptr += strlen((char *) txtptr) + 1;
 
 	// Add RC
-	*((guint16 *) txtptr) = (guint16) error->code;
+	*((guint16 *) txtptr) = (guint16) (error->code ? error->code : -1);
 	txtptr += sizeof(guint16);
 
 	// Add message
