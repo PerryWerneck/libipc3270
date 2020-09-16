@@ -197,6 +197,10 @@ void ipc3270_add_terminal_introspection(GString *introspection) {
 		"		<arg type='i' name='addr' direction='in' />" \
 		"		<arg type='i' name='old' direction='out' />" \
 		"	</method>" \
+		"	<method name= 'getCursorPosition'>" \
+		"		<arg type='u' name='row' direction='out' />" \
+		"		<arg type='u' name='col' direction='out' />" \
+		"	</method>" \
 		"	<method name= 'getFieldAttribute'>" \
 		"		<arg type='u' name='attribute' direction='out' />" \
 		"	</method>" \

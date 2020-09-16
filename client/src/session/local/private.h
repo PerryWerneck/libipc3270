@@ -161,7 +161,7 @@
 				unsigned short setCursor(int addr) override;
 				unsigned short setCursor(unsigned short row, unsigned short col) override;
 				unsigned short getCursorAddress() override;
-
+				Session::Cursor getCursorPosition() override;
 
 			};
 

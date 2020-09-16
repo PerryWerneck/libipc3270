@@ -68,9 +68,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/linux/gobject.h" />
-		<Unit filename="src/core/linux/response.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/core/linux/start.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -100,6 +97,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/methods/wait.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/core/response.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/core/setproperties.c">
@@ -161,9 +161,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
 			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>

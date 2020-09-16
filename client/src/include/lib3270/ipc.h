@@ -116,27 +116,26 @@
 		template<typename T>
 		class lib3270_ptr {
 		private:
-			T *data;
+			T *ptr;
 
 		public:
-			lib3270_ptr(T *data) {
-				this->data = data;
+			lib3270_ptr(T *d) : ptr(d) {
 			}
 
 			~lib3270_ptr() {
-				lib3270_free((void *) this->data);
+				lib3270_free((void *) this->ptr);
 			}
 
 			operator bool() const noexcept {
-				return this->data != NULL;
+				return this->ptr != NULL;
 			}
 
 			T * operator->() {
-				return this->data;
+				return this->ptr;
 			}
 
 			operator T *() const noexcept {
-				return this->data;
+				return this->ptr;
 			}
 
 		};
@@ -230,6 +229,7 @@
 			SSL_SECURE		= LIB3270_SSL_SECURE,						///< @brief Connection secure with CA check
 			SSL_NEGOTIATED	= LIB3270_SSL_NEGOTIATED,					///< @brief Connection secure, no CA, self-signed or expired CRL
 			SSL_NEGOTIATING	= LIB3270_SSL_NEGOTIATING,					///< @brief Negotiating SSL
+			SSL_VERIFYING	= LIB3270_SSL_VERIFYING,					///< @brief Verifying SSL (Getting CRL)
 			SSL_UNDEFINED	= LIB3270_SSL_UNDEFINED						///< @brief Undefined
 		};
 
@@ -451,6 +451,15 @@
 
 		public:
 
+			struct Cursor {
+				unsigned short row;
+				unsigned short col;
+
+				Cursor(unsigned short r, unsigned short c) : row(r), col(c) {
+				}
+
+			};
+
 			/// @brief Get an instance of the TN3270 session based on the supplied ID.
 			static Session * getInstance(const char *id = nullptr, const char *charset = nullptr);
 			virtual ~Session();
@@ -585,6 +594,9 @@
 
 			/// @brief Get cursor address
 			virtual unsigned short getCursorAddress() = 0;
+
+			/// @brief Get cursor position.
+			virtual struct Cursor getCursorPosition() = 0;
 
 			/// @brief Set local charset.
 			virtual void setCharSet(const char *charset = NULL) = 0;
@@ -781,6 +793,10 @@
 			/// @brief Get cursor address
 			inline unsigned short getCursorAddress() {
 				return session->getCursorAddress();
+			}
+
+			inline Session::Cursor getCursorPosition() {
+				return session->getCursorPosition();
 			}
 
 			inline void setHostURL(const char *url) {

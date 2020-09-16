@@ -1,10 +1,10 @@
 #!/bin/bash
 
-PRODUCT_NAME=$(pkg-config --variable=product_name lib3270)
+. ./dbus.conf
 
 gdbus \
 	introspect \
 	--session \
-	--dest=br.com.bb.${PRODUCT_NAME}.a \
-	--object-path=/br/com/bb/${PRODUCT_NAME}/a
+	--dest=${DBUS_DEST} \
+	--object-path="${DBUS_PATH}"
 

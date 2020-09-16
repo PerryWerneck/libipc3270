@@ -71,6 +71,7 @@ int ipc3270_method_call(GObject *object, const gchar *method_name, GVariant *req
 
 		{ "setCursorAddress",			ipc3270_method_set_cursor					},
 		{ "setCursorPosition",			ipc3270_method_set_cursor					},
+		{ "getCursorPosition",			ipc3270_method_get_cursor_position			},
 
 		{ "action",						ipc3270_method_action						},
 		{ "activatable",				ipc3270_method_activatable					},

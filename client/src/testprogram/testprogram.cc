@@ -103,7 +103,7 @@
 
 	TN3270::Host host{session};
 
-	name="url";
+	// name="url";
 
 	cout << endl << endl;
 	for(auto attribute : host.getAttributes()) {

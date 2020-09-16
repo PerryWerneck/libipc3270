@@ -113,6 +113,8 @@
 	void		  ipc3270_response_append_boolean(GObject *object, gboolean value);
 
 	gboolean	  ipc3270_response_has_values(GObject *object);
+	guint		  ipc3270_response_length(GObject *object);
+
 	GVariant	* ipc3270_response_steal_value(GObject *object);
 
 
