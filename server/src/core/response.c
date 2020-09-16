@@ -133,7 +133,7 @@ GVariant * ipc3270_response_steal_value(GObject *object) {
 }
 
 const GList	* ipc3270_get_values(GObject *object) {
-	IPC3270_RESPONSE(object)->values;
+	return IPC3270_RESPONSE(object)->values;
 }
 
 guint ipc3270_response_length(GObject *object) {

@@ -156,7 +156,7 @@
 	#ifdef _WIN32
 //		unsigned char	* ipc3270_pack(const gchar *name, int id, GVariant *values, size_t * szPacket);
 //		unsigned char	* ipc3270_pack_value(const gchar *name, int id, GVariant *value, size_t * szPacket);
-//		unsigned char	* ipc3270_pack_error(const GError *error, size_t * szPacket);
+		unsigned char	* ipc3270_pack_error(const GError *error, size_t * szPacket);
 		unsigned char	* ipc3270_pack(const gchar *name, GObject *object, int id, size_t * szPacket);
 		GVariant		* ipc3270_unpack(const unsigned char *packet, int *id);
 	#endif // _WIN32
