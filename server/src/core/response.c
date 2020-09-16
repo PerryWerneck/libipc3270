@@ -45,8 +45,10 @@
 #include <lib3270/toggle.h>
 #include <v3270.h>
 
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-bindings.h>
+#ifndef _WIN32
+	#include <dbus/dbus-glib.h>
+	#include <dbus/dbus-glib-bindings.h>
+#endif // _WIN32
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
@@ -128,6 +130,10 @@ GVariant * ipc3270_response_steal_value(GObject *object) {
 	response->values = g_list_remove(response->values,value);
 
 	return value;
+}
+
+const GList	* ipc3270_get_values(GObject *object) {
+	IPC3270_RESPONSE(object)->values;
 }
 
 guint ipc3270_response_length(GObject *object) {

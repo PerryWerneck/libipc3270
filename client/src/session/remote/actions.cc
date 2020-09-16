@@ -151,6 +151,10 @@
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 
+	Session::Cursor IPC::Session::getCursorPosition() {
+		throw std::system_error(ENOTSUP, std::system_category());
+	}
+
  }
 
 

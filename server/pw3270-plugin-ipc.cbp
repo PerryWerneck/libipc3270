@@ -121,9 +121,6 @@
 		<Unit filename="src/core/windows/resources.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
-		<Unit filename="src/core/windows/response.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src/core/windows/start.c">
 			<Option compilerVar="CC" />
 		</Unit>

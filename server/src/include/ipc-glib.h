@@ -106,7 +106,9 @@
 	typedef struct _ipc3270ResponseClass		ipc3270ResponseClass;
 
 	GObject		* ipc3270_response_new();
+	GType		  ipc3270Response_get_type(void);
 
+	void 		  ipc3270_response_append(GObject *object, GVariant *value);
 	void		  ipc3270_response_append_int32(GObject *object, gint32 value);
 	void		  ipc3270_response_append_uint32(GObject *object, guint32 value);
 	void		  ipc3270_response_append_string(GObject *object, const gchar *text);
@@ -114,6 +116,7 @@
 
 	gboolean	  ipc3270_response_has_values(GObject *object);
 	guint		  ipc3270_response_length(GObject *object);
+	const GList	* ipc3270_get_values(GObject *object);
 
 	GVariant	* ipc3270_response_steal_value(GObject *object);
 
@@ -151,9 +154,10 @@
 	GVariant			* ipc3270_get_property(GObject *object, const gchar *property_name, GError **error);
 
 	#ifdef _WIN32
-		unsigned char	* ipc3270_pack(const gchar *name, int id, GVariant *values, size_t * szPacket);
-		unsigned char	* ipc3270_pack_value(const gchar *name, int id, GVariant *value, size_t * szPacket);
-		unsigned char	* ipc3270_pack_error(const GError *error, size_t * szPacket);
+//		unsigned char	* ipc3270_pack(const gchar *name, int id, GVariant *values, size_t * szPacket);
+//		unsigned char	* ipc3270_pack_value(const gchar *name, int id, GVariant *value, size_t * szPacket);
+//		unsigned char	* ipc3270_pack_error(const GError *error, size_t * szPacket);
+		unsigned char	* ipc3270_pack(const gchar *name, GObject *object, int id, size_t * szPacket);
 		GVariant		* ipc3270_unpack(const unsigned char *packet, int *id);
 	#endif // _WIN32
 

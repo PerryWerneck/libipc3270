@@ -103,7 +103,7 @@
 
 	TN3270::Host host{session};
 
-	// name="url";
+	name="url";
 
 	cout << endl << endl;
 	for(auto attribute : host.getAttributes()) {
@@ -257,37 +257,45 @@
 
 	};
 
-	int long_index =0;
-	int opt;
-	while((opt = getopt_long(argc, argv, "s:A", options, &long_index )) != -1) {
+	try {
 
-		switch(opt) {
-		case 's':
-			session = optarg;
-			cout << "Session: " << session << endl;
-			break;
+		int long_index =0;
+		int opt;
+		while((opt = getopt_long(argc, argv, "s:A", options, &long_index )) != -1) {
 
-		case 'A':
-			testAttributes(session,optarg);
-			break;
+			switch(opt) {
+			case 's':
+				session = optarg;
+				cout << "Session: " << session << endl;
+				break;
 
-		case 'U':
-			url = optarg;
-			cout << "URL: " << session << endl;
-			break;
+			case 'A':
+				testAttributes(session,optarg);
+				break;
 
-		case 'P':
-			testPerformance(session,url);
-			return 0;
+			case 'U':
+				url = optarg;
+				cout << "URL: " << session << endl;
+				break;
 
-		case 'I':
-			testHost(session,url);
-			return 0;
+			case 'P':
+				testPerformance(session,url);
+				return 0;
+
+			case 'I':
+				testHost(session,url);
+				return 0;
+
+			}
 
 		}
 
-	}
+	} catch(const std::exception &e) {
 
+		cerr << "Error:" << endl << "\t" << e.what() << endl << endl;
+		exit(-1);
+
+	}
 #else
 
 		printf("\nRunning IPC Client tests\n");
