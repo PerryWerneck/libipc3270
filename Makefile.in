@@ -133,9 +133,16 @@ install-windows-lib:
 doc:
 	@$(DOXYGEN) ./doxygen/doxyfile
 
+#---[ Install Targets ]------------------------------------------------------------------
+
+Debug:
+
+	@$(MAKE) -C client $@
+	@$(MAKE) -C server $@
+
 #---[ Clean Targets ]--------------------------------------------------------------------
 
-clean: \
+clean:
 
 	@$(MAKE) -C client $@
 	@$(MAKE) -C server $@
