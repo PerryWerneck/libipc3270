@@ -533,11 +533,9 @@
 
 		unsigned short row = 0, col = 0;
 
-
 		return Session::Cursor(row,col);
 
 	};
-
 
 	std::string Local::Session::getVersion() const {
 

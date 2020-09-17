@@ -103,7 +103,7 @@
 
 	TN3270::Host host{session};
 
-	name="url";
+	//name="url";
 
 	cout << endl << endl;
 	for(auto attribute : host.getAttributes()) {
@@ -125,11 +125,21 @@
 
 		cout << endl;
 
-		Sleep(100);
-
 	}
 
-	cout << endl << endl;
+	cout << "Cursor position: ";
+
+	try {
+
+		auto cursor = host.getCursorPosition();
+		cout << cursor.row << "," << cursor.col;
+
+	} catch(const std::exception &e) {
+
+		cout << "Exception(" << e.what() << ")";
+	}
+
+	cout << endl << endl << endl;
 
  }
 
