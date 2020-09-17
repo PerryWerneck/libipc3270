@@ -856,7 +856,7 @@
 			}
 
 			// Set properties
-			void setTimeout(time_t timeout = DEFAULT_TIMEOUT) noexcept;
+			void setTimeout(time_t timeout = DEFAULT_TIMEOUT);
 
 			inline void setUnlockDelay(unsigned short delay = 350) {
 				session->setUnlockDelay(delay);

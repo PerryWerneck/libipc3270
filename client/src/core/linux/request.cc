@@ -77,7 +77,7 @@
 		if(!response.msg) {
 			string message = error.message;
 			dbus_error_free(&error);
-			throw std::runtime_error(message.c_str());
+			throw std::runtime_error(message);
 		}
 
 		dbus_message_iter_init(response.msg, &response.iter);
@@ -128,7 +128,8 @@
 	}
 
 	IPC::Request & IPC::Request::push(const bool arg) {
-		return push(DBUS_TYPE_BOOLEAN,&arg);
+		dbus_bool_t bl = (arg ? 1 : 0);
+		return push(DBUS_TYPE_BOOLEAN,&bl);
 	}
 
 	IPC::Request & IPC::Request::push(const uint8_t arg) {

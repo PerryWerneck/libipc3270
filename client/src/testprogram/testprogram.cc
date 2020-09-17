@@ -103,6 +103,8 @@
 
 	TN3270::Host host{session};
 
+	host.setTimeout(5);
+
 	//name="url";
 
 	cout << endl << endl;
@@ -280,7 +282,17 @@
 				break;
 
 			case 'A':
-				testAttributes(session,optarg);
+
+				try {
+
+					testAttributes(session,optarg);
+
+				} catch(const std::exception &e) {
+
+					cerr << e.what() << endl;
+					return -1;
+				}
+
 				break;
 
 			case 'U':
