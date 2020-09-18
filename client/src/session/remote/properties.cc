@@ -236,6 +236,22 @@
 
 	}
 
+	void IPC::Session::setProperty(const char *name, const int value) {
+		setAttribute(name,value);
+	}
+
+	void IPC::Session::setProperty(const char *name, const unsigned int value) {
+		setAttribute(name,value);
+	}
+
+	void IPC::Session::setProperty(const char *name, const bool value) {
+		setAttribute(name,value);
+	}
+
+	void IPC::Session::setProperty(const char *name, const char *value) {
+		setAttribute(name,value);
+	}
+
  }
 
 

@@ -167,6 +167,10 @@
 				unsigned short setCursor(unsigned short row, unsigned short col) override;
 				unsigned short getCursorAddress() override;
 				Session::Cursor getCursorPosition() override;
+				void setProperty(const char *name, const int value) override;
+				void setProperty(const char *name, const unsigned int value) override;
+				void setProperty(const char *name, const bool value) override;
+				void setProperty(const char *name, const char *value) override;
 
 			};
 

@@ -104,6 +104,7 @@
 	TN3270::Host host{session};
 
 	host.setTimeout(5);
+	// host.setProperty("crl_download",false);
 
 	//name="url";
 

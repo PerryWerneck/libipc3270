@@ -660,6 +660,11 @@
 			int compare(int baddr, const char* s, int len = -1) const;
 			int compare(unsigned short row, unsigned short col, const char* s, int len = -1) const;
 
+			virtual void setProperty(const char *name, const int value) = 0;
+			virtual void setProperty(const char *name, const unsigned int value) = 0;
+			virtual void setProperty(const char *name, const bool value) = 0;
+			virtual void setProperty(const char *name, const char *value) = 0;
+
 		};
 
 		/// @brief TN3270 Host
@@ -953,6 +958,19 @@
 			/// @brief Compare contents.
 			int compare(int baddr, const char* s, int len = -1) const;
 			int compare(unsigned short row, unsigned short col, const char* s, int len = -1) const;
+
+			/*
+			Host & setProperty(const char *name, const std::string &value) {
+				session->setProperty(name,value.c_str());
+				return *this;
+			}
+
+			template <typename T>
+			Host & setProperty(const char *name, const T value) {
+				session->setProperty(name,value);
+				return *this;
+			}
+			*/
 
 			// Set contents.
 
