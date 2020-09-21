@@ -821,6 +821,23 @@
 				return getAttribute(name);
 			}
 
+			// Set properties.
+			inline void setProperty(const char *name, const int value) {
+				session->setProperty(name,value);
+			}
+
+			inline void setProperty(const char *name, const unsigned int value) {
+				session->setProperty(name,value);
+			}
+
+			inline void setProperty(const char *name, const bool value) {
+				session->setProperty(name,value);
+			}
+
+			inline void setProperty(const char *name, const char *value) {
+				session->setProperty(name,value);
+			}
+
 			/// @brief Get lib3270 version.
 			inline std::string getVersion() const {
 				return session->getVersion();
