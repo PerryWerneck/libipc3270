@@ -67,8 +67,16 @@ static void
 		// It is an error if parameters is not of the right format: it must be a tuple containing the out-parameters of the D-Bus method.
 		// Even if the method has a single out-parameter, it must be contained in a tuple.
 
-		GVariant *values[] = { ipc3270_response_steal_value(response) };
-		g_dbus_method_invocation_return_value(invocation, g_variant_new_tuple(values,1));
+		guint ix;
+		guint length = ipc3270_response_length(response);
+
+		g_autofree GVariant ** values = g_new0(GVariant *, length);
+
+		for(ix = 0; ix < length; ix++) {
+			values[ix] = ipc3270_response_steal_value(response);
+		}
+
+		g_dbus_method_invocation_return_value(invocation, g_variant_new_tuple(values,length));
 
 	} else {
 

@@ -66,3 +66,22 @@ int ipc3270_method_set_cursor(GObject *session, GVariant *request, GObject *resp
 	return 0;
 }
 
+int ipc3270_method_get_cursor_position(GObject *session, GVariant G_GNUC_UNUSED(*request), GObject *response, GError **error) {
+
+	H3270 *hSession = ipc3270_get_session(session);
+
+	if(*error)
+		return 0;
+
+	unsigned short row, col;
+
+	int rc = lib3270_get_cursor_position(hSession,&row,&col);
+	if(rc)
+		return rc;
+
+	ipc3270_response_append_uint32(response, (guint32) row);
+	ipc3270_response_append_uint32(response, (guint32) col);
+
+	return 0;
+}
+

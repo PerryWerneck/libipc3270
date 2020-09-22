@@ -79,6 +79,8 @@
 	/// @brief Setup charsets
 	void Abstract::Session::setCharSet(const char *remote, const char *local) {
 
+		debug("Charsets: remote=",remote," local=",local);
+
 		if(!local) {
 
 			// TODO: Detect the current value (maybee something like g_charset)
@@ -117,8 +119,8 @@
 		converter = lib3270_iconv_new(remote,local);
 
 		debug("lib3270_iconv_new(",remote,",",local,"=",(void *) converter);
-#endif
 
+#endif
 
 	}
 
@@ -168,10 +170,16 @@
 #else
 		if(converter) {
 
-			lib3270_auto_cleanup<char> converted = lib3270_iconv_from_host(converter,str.c_str(),str.size());
+			char * converted = lib3270_iconv_from_host(converter,str.c_str(),str.size());
 			if(converted) {
-				return std::string(converted);
+				std::string rc(converted);
+				lib3270_free(converted);
+				return rc;
 			}
+
+		} else {
+
+			throw std::runtime_error("Unable to convert charsets");
 
 		}
 
@@ -185,22 +193,32 @@
 
 #ifdef HAVE_ICONV
 
+		debug("Using ICONV");
 		return convertCharset(const_cast<Abstract::Session *>(this)->converter.host,text,length);
 
 #else
 
 		if(converter) {
 
-			lib3270_auto_cleanup<char> converted = lib3270_iconv_to_host(converter,text,length);
+			debug("Converting \"",text,"\" with lib3270 converter ",((void *) converter));
+
+			char * converted = lib3270_iconv_to_host(converter,text,length);
+
 			if(converted) {
-				return std::string(converted);
+				std::string rc(converted);
+				debug("Converted=\"",rc,"\"");
+				lib3270_free(converted);
+				return rc;
 			}
 
 		}
 
 #endif // HAVE_ICONV
 
-        return std::string(text,length);
+		if(length > 0)
+			return std::string(text,length);
+
+        return std::string(text);
 
 	}
 

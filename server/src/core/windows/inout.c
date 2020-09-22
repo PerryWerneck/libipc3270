@@ -59,7 +59,7 @@ unsigned char * ipc3270_pack_error(const GError *error, size_t * szPacket) {
 	txtptr += strlen((char *) txtptr) + 1;
 
 	// Add RC
-	*((guint16 *) txtptr) = (guint16) error->code;
+	*((guint16 *) txtptr) = (guint16) (error->code ? error->code : -1);
 	txtptr += sizeof(guint16);
 
 	// Add message
@@ -168,6 +168,40 @@ unsigned char * pack_value(unsigned char *txtptr, GVariant *value) {
 
 }
 
+unsigned char * ipc3270_pack(const gchar *name, GObject *object, int id, size_t * szPacket) {
+
+	const GList	* node;
+	size_t vCount = 0;
+
+	g_return_val_if_fail(IS_IPC3270_RESPONSE(object),NULL);
+
+	// Set packet size.
+	*szPacket =
+		strlen(name) + 1
+		+ (sizeof(guint16) * 2);
+
+	for(node = ipc3270_get_values(object); node; node = g_list_next(node)) {
+		vCount++;
+		*szPacket += g_variant_get_size(node->data)+1;
+	}
+
+	unsigned char * outputBuffer = g_malloc0(*szPacket);
+	unsigned char * txtptr = setup_header(outputBuffer,name,id,vCount);
+
+	for(node = ipc3270_get_values(object); node; node = g_list_next(node)) {
+		txtptr = pack_value(txtptr, node->data);
+		if(!txtptr) {
+			g_free(outputBuffer);
+			return NULL;
+		}
+	}
+
+	debug("used=%u allocated=%u",(unsigned int) (txtptr-outputBuffer), (unsigned int) *szPacket);
+	return outputBuffer;
+
+}
+
+/*
 unsigned char * ipc3270_pack_value(const gchar *name, int id, GVariant *value, size_t * szPacket) {
 
 	debug("%s(%s)",__FUNCTION__,name);
@@ -239,6 +273,7 @@ unsigned char * ipc3270_pack(const gchar * name, int id, GVariant *values, size_
 
 	return outputBuffer;
 }
+*/
 
 GVariant * ipc3270_unpack(const unsigned char *packet, int *id) {
 
@@ -387,3 +422,4 @@ GVariant * ipc3270_unpack(const unsigned char *packet, int *id) {
 	return g_variant_builder_end(&builder);
 
 }
+

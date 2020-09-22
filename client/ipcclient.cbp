@@ -79,6 +79,7 @@
 		<Unit filename="src/session/local/get.cc" />
 		<Unit filename="src/session/local/init.cc" />
 		<Unit filename="src/session/local/private.h" />
+		<Unit filename="src/session/local/properties.cc" />
 		<Unit filename="src/session/local/set.cc" />
 		<Unit filename="src/session/local/wait.cc" />
 		<Unit filename="src/session/remote/actions.cc" />
@@ -97,9 +98,6 @@
 		<Unit filename="src/session/tools.cc" />
 		<Unit filename="src/testprogram/testprogram.cc" />
 		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
 			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>

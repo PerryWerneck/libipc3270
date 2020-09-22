@@ -10,5 +10,5 @@ dbus-send \
 	--dest=${DBUS_DEST} \
 	--print-reply \
 	"${DBUS_PATH}" \
-	"${DBUS_INTERFACE}.getString"
+	"${DBUS_INTERFACE}.getCursorPosition"
 

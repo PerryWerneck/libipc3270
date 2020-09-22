@@ -527,6 +527,16 @@
 		return rc;
 	}
 
+	struct Session::Cursor Local::Session::getCursorPosition() {
+
+		std::lock_guard<std::recursive_mutex> lock(sync);
+
+		unsigned short row = 0, col = 0;
+
+		return Session::Cursor(row,col);
+
+	};
+
 	std::string Local::Session::getVersion() const {
 
 		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);

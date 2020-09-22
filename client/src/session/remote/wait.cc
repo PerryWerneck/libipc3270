@@ -205,9 +205,9 @@
 
 	void IPC::Session::wait(unsigned short row, unsigned short col, const char *text, int seconds) {
 
-		string key = convertToHost(text,-1);
+		debug((const char *) __FUNCTION__, "(", row, ",", col, ",\"",text,"\")");
 
-		debug((const char *) __FUNCTION__, "(", (int) row, ",", (int) col, ", \"", text, "\", length=", key.size());
+		string key = convertToHost(text,-1);
 
 		wait(seconds, [this, key, row, col]() {
 

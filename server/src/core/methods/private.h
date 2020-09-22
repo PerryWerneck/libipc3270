@@ -57,6 +57,7 @@
 	G_GNUC_INTERNAL int ipc3270_method_wait_for_keyboard_unlock(GObject *session, GVariant *request, GObject *response, GError **error);
 
 	G_GNUC_INTERNAL int ipc3270_method_set_cursor(GObject *session, GVariant *request, GObject *response, GError **error);
+	G_GNUC_INTERNAL int ipc3270_method_get_cursor_position(GObject *session, GVariant *request, GObject *response, GError **error);
 
 	G_GNUC_INTERNAL int ipc3270_method_action(GObject *session, GVariant *request, GObject *response, GError **error);
 	G_GNUC_INTERNAL int ipc3270_method_activatable(GObject *session, GVariant *request, GObject *response, GError **error);

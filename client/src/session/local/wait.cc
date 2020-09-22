@@ -39,7 +39,10 @@
  #include "private.h"
  #include <lib3270/actions.h>
  #include <signal.h>
- #include <unistd.h>
+
+#ifndef _WIN32
+	#include <unistd.h>
+#endif // _WIN32
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 

@@ -12,13 +12,14 @@
 #	string:br.com.bb.tn3270.session \
 #	string:url
 
+. ./dbus.conf
 
 gdbus \
 	call \
 	--session \
-	--dest "br.com.bb.pw3270.a" \
-	--object-path "/br/com/bb/tn3270/session" \
+	--dest ${DBUS_DEST} \
+	--object-path "${DBUS_PATH}" \
 	--method org.freedesktop.DBus.Properties.Get \
-	"br.com.bb.tn3270.session" \
+	"${DBUS_INTERFACE}" \
 	"url"
 

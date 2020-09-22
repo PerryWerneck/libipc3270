@@ -38,14 +38,15 @@
 
  #include <ctime>
 
- #include <getopt.h>
-
 #if defined(_MSC_VER)
 	#pragma comment(lib,"ipc3270.lib")
 #else
 	#pragma GCC diagnostic ignored "-Wunused-function"
 	#pragma GCC diagnostic ignored "-Wunused-parameter"
 	#pragma GCC diagnostic ignored "-Wzero-as-null-pointer-constant"
+
+	#include <getopt.h>
+
 #endif // _MSC_VER
 
  #include <cstdlib>
@@ -98,11 +99,21 @@
  */
 
  // Test Attributes
- static void testAttributes(const char *session, const char *url) {
+ static void testAttributes(const char *session, const char *name) {
 
 	TN3270::Host host{session};
 
+	host.setTimeout(5);
+	host.setProperty("crl_download",false);
+
+	//name="url";
+
+	cout << endl << endl;
 	for(auto attribute : host.getAttributes()) {
+
+		if(name && *name && strcasecmp(name,"all") && strcasecmp(attribute.getName(),name)) {
+			continue;
+		}
 
 		cout << attribute.getName() << ":\t";
 
@@ -112,12 +123,26 @@
 
 		} catch(const std::exception &e) {
 
-			cout << e.what();
+			cout << "Exception(" << e.what() << ")";
 		}
 
 		cout << endl;
 
 	}
+
+	cout << "Cursor position: ";
+
+	try {
+
+		auto cursor = host.getCursorPosition();
+		cout << cursor.row << "," << cursor.col;
+
+	} catch(const std::exception &e) {
+
+		cout << "Exception(" << e.what() << ")";
+	}
+
+	cout << endl << endl << endl;
 
  }
 
@@ -233,41 +258,80 @@
 	const char * session = ":A";
 	const char * url = nullptr;
 
+#if ! defined(_MSC_VER)
+
 	static struct option options[] = {
-		{ "session",	required_argument,	0,	's' },
-		{ "url",		required_argument,	0,	'U' },
-		{ "perftest",	no_argument,		0,	'P' },
-		{ "info",		no_argument,		0,	'I' },
+		{ "session",	required_argument,		0,	's' },
+		{ "url",		required_argument,		0,	'U' },
+		{ "perftest",	no_argument,			0,	'P' },
+		{ "attribute",	optional_argument,		0,	'A' },
+		{ "info",		no_argument,			0,	'I' },
 		{ 0, 0, 0, 0}
 
 	};
 
-	int long_index =0;
-	int opt;
-	while((opt = getopt_long(argc, argv, "s:", options, &long_index )) != -1) {
+	try {
 
-		switch(opt) {
-		case 's':
-			session = optarg;
-			cout << "Session: " << session << endl;
-			break;
+		int long_index =0;
+		int opt;
+		while((opt = getopt_long(argc, argv, "s:A", options, &long_index )) != -1) {
 
-		case 'U':
-			url = optarg;
-			cout << "URL: " << session << endl;
-			break;
+			switch(opt) {
+			case 's':
+				session = optarg;
+				cout << "Session: " << session << endl;
+				break;
 
-		case 'P':
-			testPerformance(session,url);
-			return 0;
+			case 'A':
 
-		case 'I':
-			testHost(session,url);
-			return 0;
+				try {
+
+					testAttributes(session,optarg);
+
+				} catch(const std::exception &e) {
+
+					cerr << e.what() << endl;
+					return -1;
+				}
+
+				break;
+
+			case 'U':
+				url = optarg;
+				cout << "URL: " << session << endl;
+				break;
+
+			case 'P':
+				testPerformance(session,url);
+				return 0;
+
+			case 'I':
+				testHost(session,url);
+				return 0;
+
+			}
 
 		}
 
+	} catch(const std::exception &e) {
+
+		cerr << "Error:" << endl << "\t" << e.what() << endl << endl;
+		exit(-1);
+
 	}
+#else
+
+		printf("\nRunning IPC Client tests\n");
+
+		TN3270::Host host{session};
+		host.setTimeout(10);
+		host.connect();
+		printf("\n\nWaiting...\n");
+		host.wait(14,22,"SISTEMA");
+
+		host.disconnect();
+
+#endif // !_MSC_VER
 
 		/*
 

@@ -43,6 +43,7 @@
  #include <glib.h>
  #include <glib/gstdio.h>
  #include <lib3270/toggle.h>
+ #include <lib3270/ssl.h>
 
  /*---[ Globals ]------------------------------------------------------------------------------------*/
 
@@ -105,6 +106,9 @@
 	GtkWidget * terminal	= v3270_new();
 	GtkWidget * notebook	= gtk_notebook_new();
 	GModule   * module		= NULL;
+
+	// Hack to speed up the tests.
+	lib3270_ssl_set_crl_download(v3270_get_session(terminal),0);
 
 	gtk_widget_set_name(window,session_name);
 	v3270_set_session_name(terminal,session_name);

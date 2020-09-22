@@ -32,19 +32,29 @@
  *
  */
 
-#include "gobject.h"
+#include <internals.h>
+
+#include <glib.h>
+#include <gio/gio.h>
+
+#include <ipc-glib.h>
 #include <lib3270.h>
+
 #include <lib3270/actions.h>
 #include <lib3270/properties.h>
 #include <lib3270/toggle.h>
-#include <lib3270/log.h>
 #include <v3270.h>
+
+#ifndef _WIN32
+	#include <dbus/dbus-glib.h>
+	#include <dbus/dbus-glib-bindings.h>
+#endif // _WIN32
 
 /*--[ Widget definition ]----------------------------------------------------------------------------*/
 
 struct _ipc3270Response {
 	GObject		  parent;
-	GVariant	* value;
+	GList		* values;
 };
 
 struct _ipc3270ResponseClass {
@@ -63,10 +73,8 @@ static void ipc3270Response_finalize(GObject *object) {
 
 	ipc3270Response * response = IPC3270_RESPONSE(object);
 
-	debug("%s value=%p",__FUNCTION__,response->value);
-
-	if(response->value)
-		g_variant_unref(response->value);
+	if(response->values)
+		g_list_free_full(response->values,(GDestroyNotify) g_variant_unref);
 
 }
 
@@ -83,7 +91,7 @@ static void ipc3270Response_class_init(ipc3270ResponseClass *klass) {
 
 static void ipc3270Response_init(ipc3270Response *object) {
 
-	object->value = NULL;
+	object->values = NULL;
 
 }
 
@@ -91,60 +99,47 @@ GObject * ipc3270_response_new() {
 	return g_object_new(GLIB_TYPE_IPC3270_RESPONSE, NULL);
 }
 
-void ipc3270_response_append_int32(GObject *object, gint32 value) {
-
-	debug("%s(%d)",__FUNCTION__,value);
-
+void ipc3270_response_append(GObject *object, GVariant *value) {
 	ipc3270Response * response = IPC3270_RESPONSE(object);
+	response->values = g_list_append(response->values,value);
+}
 
-	if(response->value)
-		g_variant_unref(response->value);
-
-	response->value = g_variant_new_int32(value);
+void ipc3270_response_append_int32(GObject *object, gint32 value) {
+	ipc3270_response_append(object,g_variant_new_int32(value));
 }
 
 void ipc3270_response_append_uint32(GObject *object, guint32 value) {
-
-	ipc3270Response * response = IPC3270_RESPONSE(object);
-
-	if(response->value)
-		g_variant_unref(response->value);
-
-	response->value = g_variant_new_uint32(value);
+	ipc3270_response_append(object,g_variant_new_uint32(value));
 }
 
 void ipc3270_response_append_string(GObject *object, const gchar *text) {
-
-	ipc3270Response * response = IPC3270_RESPONSE(object);
-
-	if(response->value)
-		g_variant_unref(response->value);
-
-	response->value = g_variant_new_string(text);
-
+	ipc3270_response_append(object,g_variant_new_string(text));
 }
 
 void ipc3270_response_append_boolean(GObject *object, gboolean value) {
-
-	ipc3270Response * response = IPC3270_RESPONSE(object);
-
-	if(response->value)
-		g_variant_unref(response->value);
-
-	response->value = g_variant_new_boolean(value);
+	ipc3270_response_append(object,g_variant_new_boolean(value));
 }
-
 
 GVariant * ipc3270_response_steal_value(GObject *object) {
 
 	ipc3270Response * response = IPC3270_RESPONSE(object);
 
-	GVariant * value = response->value;
-	response->value = NULL;
+	GList *first = g_list_first(response->values);
+	GVariant * value = first->data;
+
+	response->values = g_list_remove(response->values,value);
 
 	return value;
 }
 
+const GList	* ipc3270_get_values(GObject *object) {
+	return IPC3270_RESPONSE(object)->values;
+}
+
+guint ipc3270_response_length(GObject *object) {
+	return g_list_length(IPC3270_RESPONSE(object)->values);
+}
+
 gboolean ipc3270_response_has_values(GObject *object) {
-	return IPC3270_RESPONSE(object)->value != NULL;
+	return IPC3270_RESPONSE(object)->values != NULL;
 }

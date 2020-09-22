@@ -109,7 +109,7 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 	*/
 
 	g_autoptr (GError) error = NULL;
-	g_autoptr (GVariant) response = NULL;
+	g_autoptr(GObject) response = ipc3270_response_new();
 	g_autoptr (GVariant) parameters = ipc3270_unpack(source->buffer, &request_type);
 
 /*
@@ -123,30 +123,16 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 		// Process query
 		switch(request_type) {
 		case 1: // getProperty
-			response = ipc3270_get_property(source->object, request_name, &error);
+			ipc3270_response_append(response,ipc3270_get_property(source->object, request_name, &error));
 			break;
 
 		case 2: // setProperty
 			ipc3270_set_property(source->object, request_name, parameters, &error);
-			response = g_variant_new_int32(0);
+			ipc3270_response_append_int32(response,0);
 			break;
 
 		case 3: // method
-			{
-				g_autoptr(GObject) rsp = ipc3270_response_new();
-
-				debug("Parameters: %p", parameters);
-				debug("rsp: %p", rsp);
-				debug("Error=%p",error);
-
-				ipc3270_method_call(source->object, request_name, parameters, rsp, &error);
-
-				debug("Error=%p",error);
-
-				if(ipc3270_response_has_values(rsp))
-					response = ipc3270_response_steal_value(rsp);
-
-			}
+			ipc3270_method_call(source->object, request_name, parameters, response, &error);
 			break;
 
 		default:
@@ -177,7 +163,7 @@ static void process_input(IPC3270_PIPE_SOURCE *source, DWORD cbRead) {
 
 	} else {
 
-		buffer = ipc3270_pack_value(request_name, 0, response, &szPacket);
+		buffer = ipc3270_pack(request_name,response,0,&szPacket);
 
 	}
 

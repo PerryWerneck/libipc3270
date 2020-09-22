@@ -489,7 +489,18 @@
 
 	}
 
+	Session::Cursor IPC::Session::getCursorPosition() {
 
+		uint32_t row, col;
+
+		Request(*this,"getCursorPosition")
+			.call()
+			.pop(row)
+			.pop(col);
+
+		return Session::Cursor(row,col);
+
+	}
 
  }
 

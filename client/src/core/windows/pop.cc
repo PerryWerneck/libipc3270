@@ -44,11 +44,31 @@
 
  namespace TN3270 {
 
+	class InvalidFormatException : public std::exception {
+	private:
+		string message;
+
+	public:
+		InvalidFormatException(const IPC::Request::Type received, const IPC::Request::Type expected) {
+
+			message = "Invalid format on IPC package, expecting \'";
+			message += (char) expected;
+			message += "\' but received \'";
+			message += (char) received;
+			message += "\'";
+
+		}
+
+		const char * what() const noexcept override {
+			return message.c_str();
+		}
+	};
+
 	IPC::Request & IPC::Request::pop(std::string &value) {
 		DataBlock * block = getNextBlock();
 
 		if(block->type != IPC::Request::String)
-			throw std::runtime_error("Invalid format");
+			throw InvalidFormatException(block->type, IPC::Request::String);
 
 		const char *ptr = (const char *) (block+1);
 
@@ -80,7 +100,7 @@
 			break;
 
 		default:
-			throw std::runtime_error("Invalid format");
+			throw InvalidFormatException(block->type, IPC::Request::Int16);
 		}
 
 		return *this;
@@ -107,7 +127,7 @@
 			break;
 
 		default:
-			throw std::runtime_error("Invalid format");
+			throw InvalidFormatException(block->type, IPC::Request::Uint16);
 		}
 
 		return *this;
@@ -139,7 +159,7 @@
 			break;
 
 		default:
-			throw std::runtime_error("Invalid format");
+			throw InvalidFormatException(block->type, IPC::Request::Boolean);
 		}
 
 		return *this;

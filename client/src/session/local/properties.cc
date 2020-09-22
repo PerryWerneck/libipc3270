@@ -37,31 +37,49 @@
  */
 
  #include "private.h"
+ #include <lib3270/ipc.h>
+ #include <lib3270/properties.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-TN3270::Attribute TN3270::Host::getAttribute(const char *name) const {
+ namespace TN3270 {
 
-	if(!this->session)
-		throw std::system_error(ENODATA, std::system_category());
+	void Local::Session::setProperty(const char *name, const int value) {
 
-	return this->session->getAttribute(name);
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		int rc = lib3270_set_int_property(hSession,name,value,0);
+		if(rc)
+			chkResponse(rc);
 
-}
+	}
 
-std::vector<TN3270::Attribute> TN3270::Host::getAttributes() const {
+	void Local::Session::setProperty(const char *name, const unsigned int value) {
 
-	if(!this->session)
-		throw std::system_error(ENODATA, std::system_category());
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		int rc = lib3270_set_uint_property(hSession,name,value,0);
+		if(rc)
+			chkResponse(rc);
 
-	return this->session->getAttributes();
+	}
 
-}
+	void Local::Session::setProperty(const char *name, const bool value) {
 
-void TN3270::Host::setTimeout(time_t timeout) {
-	this->timeout = timeout;
-	this->session->setTimeout(timeout);
-}
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		int rc = lib3270_set_boolean_property(hSession,name,(int) value, 0);
+		if(rc)
+			chkResponse(rc);
 
+	}
+
+	void Local::Session::setProperty(const char *name, const char *value) {
+
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		int rc = lib3270_set_string_property(hSession, name, value, 0);
+		if(rc)
+			chkResponse(rc);
+
+	}
+
+ }
 
 

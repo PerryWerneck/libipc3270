@@ -38,6 +38,7 @@
 	#include <lib3270.h>
 	#include <lib3270/keyboard.h>
 	#include <lib3270/actions.h>
+	#include <lib3270/ssl.h>
 
 	#if defined(_WIN32) || defined(_MSC_VER)
 
@@ -113,29 +114,28 @@
 		 *
 		 */
 		template<typename T>
-		class lib3270_auto_cleanup {
+		class lib3270_ptr {
 		private:
-			T *data;
+			T *ptr;
 
 		public:
-			lib3270_auto_cleanup(T *data) {
-				this->data = data;
+			lib3270_ptr(T *d) : ptr(d) {
 			}
 
-			~lib3270_auto_cleanup() {
-				lib3270_free((void *) this->data);
+			~lib3270_ptr() {
+				lib3270_free((void *) this->ptr);
 			}
 
 			operator bool() const noexcept {
-				return this->data != NULL;
+				return this->ptr != NULL;
 			}
 
 			T * operator->() {
-				return this->data;
+				return this->ptr;
 			}
 
 			operator T *() const noexcept {
-				return this->data;
+				return this->ptr;
 			}
 
 		};
@@ -212,7 +212,7 @@
 		/// @brief connection state.
 		enum ConnectionState : uint8_t {
 			DISCONNECTED		= LIB3270_NOT_CONNECTED,				///< @brief disconnected
-			RESOLVING			= LIB3270_RESOLVING,					///< @brief resolving hostname
+			RESOLVING			= LIB3270_CONNECTING,					///< @brief Connecting to host
 			PENDING				= LIB3270_PENDING,						///< @brief connection pending
 			CONNECTED_INITIAL	= LIB3270_CONNECTED_INITIAL,			///< @brief connected, no mode yet
 			CONNECTED_ANSI		= LIB3270_CONNECTED_ANSI,				///< @brief connected in NVT ANSI mode
@@ -229,6 +229,7 @@
 			SSL_SECURE		= LIB3270_SSL_SECURE,						///< @brief Connection secure with CA check
 			SSL_NEGOTIATED	= LIB3270_SSL_NEGOTIATED,					///< @brief Connection secure, no CA, self-signed or expired CRL
 			SSL_NEGOTIATING	= LIB3270_SSL_NEGOTIATING,					///< @brief Negotiating SSL
+			SSL_VERIFYING	= LIB3270_SSL_VERIFYING,					///< @brief Verifying SSL (Getting CRL)
 			SSL_UNDEFINED	= LIB3270_SSL_UNDEFINED						///< @brief Undefined
 		};
 
@@ -450,6 +451,15 @@
 
 		public:
 
+			struct Cursor {
+				unsigned short row;
+				unsigned short col;
+
+				Cursor(unsigned short r, unsigned short c) : row(r), col(c) {
+				}
+
+			};
+
 			/// @brief Get an instance of the TN3270 session based on the supplied ID.
 			static Session * getInstance(const char *id = nullptr, const char *charset = nullptr);
 			virtual ~Session();
@@ -585,6 +595,9 @@
 			/// @brief Get cursor address
 			virtual unsigned short getCursorAddress() = 0;
 
+			/// @brief Get cursor position.
+			virtual struct Cursor getCursorPosition() = 0;
+
 			/// @brief Set local charset.
 			virtual void setCharSet(const char *charset = NULL) = 0;
 
@@ -646,6 +659,11 @@
 			/// @brief Compare contents.
 			int compare(int baddr, const char* s, int len = -1) const;
 			int compare(unsigned short row, unsigned short col, const char* s, int len = -1) const;
+
+			virtual void setProperty(const char *name, const int value) = 0;
+			virtual void setProperty(const char *name, const unsigned int value) = 0;
+			virtual void setProperty(const char *name, const bool value) = 0;
+			virtual void setProperty(const char *name, const char *value) = 0;
 
 		};
 
@@ -782,6 +800,10 @@
 				return session->getCursorAddress();
 			}
 
+			inline Session::Cursor getCursorPosition() {
+				return session->getCursorPosition();
+			}
+
 			inline void setHostURL(const char *url) {
 				session->setHostURL(url);
 			}
@@ -797,6 +819,23 @@
 
 			inline Attribute operator[](const char *name) const {
 				return getAttribute(name);
+			}
+
+			// Set properties.
+			inline void setProperty(const char *name, const int value) {
+				session->setProperty(name,value);
+			}
+
+			inline void setProperty(const char *name, const unsigned int value) {
+				session->setProperty(name,value);
+			}
+
+			inline void setProperty(const char *name, const bool value) {
+				session->setProperty(name,value);
+			}
+
+			inline void setProperty(const char *name, const char *value) {
+				session->setProperty(name,value);
 			}
 
 			/// @brief Get lib3270 version.
@@ -839,7 +878,7 @@
 			}
 
 			// Set properties
-			void setTimeout(time_t timeout = DEFAULT_TIMEOUT) noexcept;
+			void setTimeout(time_t timeout = DEFAULT_TIMEOUT);
 
 			inline void setUnlockDelay(unsigned short delay = 350) {
 				session->setUnlockDelay(delay);
@@ -936,6 +975,19 @@
 			/// @brief Compare contents.
 			int compare(int baddr, const char* s, int len = -1) const;
 			int compare(unsigned short row, unsigned short col, const char* s, int len = -1) const;
+
+			/*
+			Host & setProperty(const char *name, const std::string &value) {
+				session->setProperty(name,value.c_str());
+				return *this;
+			}
+
+			template <typename T>
+			Host & setProperty(const char *name, const T value) {
+				session->setProperty(name,value);
+				return *this;
+			}
+			*/
 
 			// Set contents.
 
