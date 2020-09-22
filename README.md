@@ -74,3 +74,24 @@ Compiling for Windows (With MSYS2)
 
 	* make install
 
+Compiling for Windows (With MSVC)
+---------------------------------
+
+1. Install pw3270 with remote control and sdk modules
+
+2. Install git for windows
+
+3. Download and install Visual Studio Build Tools (https://visualstudio.microsoft.com/pt-br/downloads/)
+
+4. Get sources from git
+
+	```shell
+	git clone https://github.com/PerryWerneck/libipc3270.git ./ipc3270
+	```
+
+5. Build and install
+
+	```shell
+	cd ipc3270
+	install.bat
+	```
