@@ -129,6 +129,7 @@ dnl ---------------------------------------------------------------------------
 AC_PATH_TOOL([AR], [ar], [ar])
 AC_PATH_TOOL([WINDRES], [windres], [no])
 AC_PATH_TOOL([DLLTOOL], [dlltool], [no])
+AC_PATH_TOOL([STRIP], [strip], [true])
 
 PKG_CHECK_EXISTS
 
