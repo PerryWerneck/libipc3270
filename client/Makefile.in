@@ -64,6 +64,7 @@ WINDRES=@WINDRES@
 AR=@AR@
 VALGRIND=@VALGRIND@
 DLLTOOL=@DLLTOOL@
+STRIP=@STRIP@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -128,6 +129,11 @@ $(OBJDBG)/%.o: \
 	@echo $< ...
 	@$(MKDIR) $(@D)
 
+	@$(CC) \
+		$(CFLAGS) \
+		-DDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
 	@$(CXX) \
 		$(CFLAGS) \
 		-Wall -Wextra -fstack-check \
@@ -150,6 +156,12 @@ $(OBJRLS)/%.o: \
 
 	@echo $< ...
 	@$(MKDIR) $(@D)
+
+	@$(CC) \
+		$(CFLAGS) \
+		-DNDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
 	@$(CXX) \
 		$(CFLAGS) \
 		-DNDEBUG=1 \
@@ -190,7 +202,7 @@ $(POTDIR)/$(MODULE_NAME)/%.pot: \
 
 all: \
 	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@ \
-	$(BINRLS)/lib$(MODULE_NAME).a \
+	$(BINRLS)/lib$(MODULE_NAME).static.a \
 	$(POTDIR)/$(MODULE_NAME).pot
 
 Release: \
@@ -247,6 +259,10 @@ install-windows-lib: \
 
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@ \
+		$(DESTDIR)$(bindir)/lib$(MODULE_NAME)@LIBEXT@
+
+	@$(STRIP) \
+		--discard-all \
 		$(DESTDIR)$(bindir)/lib$(MODULE_NAME)@LIBEXT@
 		
 	@$(MKDIR) \
@@ -392,4 +408,9 @@ clean: \
 	cleanDebug \
 	cleanRelease
 
+-include $(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJDBG)/$(SRC).d)
+-include $(foreach SRC, $(basename $(DYNAMIC_SOURCES)), $(OBJDBG)/$(SRC).d)
+
+-include $(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).d)
+-include $(foreach SRC, $(basename $(DYNAMIC_SOURCES)), $(OBJRLS)/$(SRC).d)
 
