@@ -46,8 +46,7 @@ DYNAMIC_SOURCES= \
 TEST_SOURCES= \
 	$(wildcard src/testprogram/*.cc)
 
-TARGETS= \
-	@CLIENT_TARGETS@
+CLIENT_MODULES=@CLIENT_MODULES@
 
 #---[ Tools ]----------------------------------------------------------------------------
 
@@ -64,6 +63,7 @@ WINDRES=@WINDRES@
 AR=@AR@
 VALGRIND=@VALGRIND@
 DLLTOOL=@DLLTOOL@
+STRIP=@STRIP@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -128,6 +128,11 @@ $(OBJDBG)/%.o: \
 	@echo $< ...
 	@$(MKDIR) $(@D)
 
+	@$(CC) \
+		$(CFLAGS) \
+		-DDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
 	@$(CXX) \
 		$(CFLAGS) \
 		-Wall -Wextra -fstack-check \
@@ -150,6 +155,12 @@ $(OBJRLS)/%.o: \
 
 	@echo $< ...
 	@$(MKDIR) $(@D)
+
+	@$(CC) \
+		$(CFLAGS) \
+		-DNDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
 	@$(CXX) \
 		$(CFLAGS) \
 		-DNDEBUG=1 \
@@ -189,12 +200,15 @@ $(POTDIR)/$(MODULE_NAME)/%.pot: \
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
-	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@ \
-	$(BINRLS)/lib$(MODULE_NAME).a \
-	$(POTDIR)/$(MODULE_NAME).pot
+	$(foreach MODULE, $(CLIENT_MODULES), $(MODULE))
 
 Release: \
-	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@ \
+	$(foreach MODULE, $(CLIENT_MODULES), $(MODULE))
+
+library: \
+	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@
+
+static: \
 	$(BINRLS)/lib$(MODULE_NAME).static.a
 
 $(BINRLS)/lib$(MODULE_NAME)@LIBEXT@: \
@@ -223,9 +237,13 @@ $(BINRLS)/lib$(MODULE_NAME).static.a: \
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-       $(foreach TARGET, $(TARGETS), install-$(TARGET))
+	$(foreach MODULE, $(CLIENT_MODULES), install-$(MODULE)) \
+	install-devel	
 
-install-linux-lib: \
+install-library: \
+	install-@OSNAME@-library
+
+install-linux-library: \
 	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@
 
 	@$(MKDIR) \
@@ -239,7 +257,7 @@ install-linux-lib: \
 		lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
 		$(DESTDIR)$(libdir)/lib$(MODULE_NAME)@DLLEXT@
 
-install-windows-lib: \
+install-windows-library: \
 	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@
 
 	@$(MKDIR) \
@@ -247,6 +265,10 @@ install-windows-lib: \
 
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@ \
+		$(DESTDIR)$(bindir)/lib$(MODULE_NAME)@LIBEXT@
+
+	@$(STRIP) \
+		--discard-all \
 		$(DESTDIR)$(bindir)/lib$(MODULE_NAME)@LIBEXT@
 		
 	@$(MKDIR) \
@@ -392,4 +414,9 @@ clean: \
 	cleanDebug \
 	cleanRelease
 
+-include $(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJDBG)/$(SRC).d)
+-include $(foreach SRC, $(basename $(DYNAMIC_SOURCES)), $(OBJDBG)/$(SRC).d)
+
+-include $(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).d)
+-include $(foreach SRC, $(basename $(DYNAMIC_SOURCES)), $(OBJRLS)/$(SRC).d)
 

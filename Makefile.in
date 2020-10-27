@@ -27,9 +27,7 @@
 PACKAGE_NAME=@PACKAGE_NAME@
 PRODUCT_NAME=@PRODUCT_NAME@
 LIBNAME=libipc3270
-
-CLIENT_TARGETS= \
-	@CLIENT_TARGETS@
+PROJECT_MODULES=@PROJECT_MODULES@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -65,20 +63,25 @@ MSGCAT=@MSGCAT@
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
-	$(BINRLS)/ipcserver@DLLEXT@ \
-	$(BINRLS)/libipc3270@LIBEXT@ \
+	$(foreach MODULE, $(PROJECT_MODULES), $(MODULE)) \
 	locale/$(GETTEXT_PACKAGE).pot
 
-plugin: \
+server: \
 	$(BINRLS)/ipcserver@DLLEXT@
 
-library: \
+client: \
 	$(BINRLS)/libipc3270@LIBEXT@
 
-$(BINRLS)/ipcserver@DLLEXT@:
+$(BINRLS)/ipcserver@DLLEXT@: \
+	server/* \
+	Makefile
+
 	@$(MAKE) -C server $@	
 
-$(BINRLS)/libipc3270@LIBEXT@:
+$(BINRLS)/libipc3270@LIBEXT@: \
+	client/* \
+	Makefile
+
 	@$(MAKE) -C client $@	
 
 locale/$(GETTEXT_PACKAGE).pot:
@@ -97,38 +100,30 @@ locale/$(GETTEXT_PACKAGE).pot:
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	install-plugin \
-	install-locale \
-	$(foreach CLIENT_TARGET, $(CLIENT_TARGETS), install-$(CLIENT_TARGET))
+	$(foreach MODULE, $(PROJECT_MODULES), install-$(MODULE)) \
+	install-locale
 
 install-locale: \
 	locale/$(LIBNAME).pot
+	
 	@$(MAKE) -C locale DESTDIR=$(DESTDIR) install
 
-install-plugin:
-	@$(MAKE) -C server DESTDIR=$(DESTDIR) install
-
-install-linux-lib:
-	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-linux-lib
-
-install-static:
-	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-static
-
-install-devel: \
-	locale/$(LIBNAME).pot
-
-	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-devel
-
-	# Install translation files
 	@$(MKDIR) \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 
 	@$(INSTALL_DATA) \
 		locale/$(LIBNAME).pot \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot/$(LIBNAME).pot
 
-install-windows-lib:
-	@$(MAKE) -C client DESTDIR=$(DESTDIR) install-windows-lib
+install-server: \
+	server
+
+	@$(MAKE) -C server DESTDIR=$(DESTDIR) install
+
+install-client: \
+	client
+
+	@$(MAKE) -C client DESTDIR=$(DESTDIR) install
 
 doc:
 	@$(DOXYGEN) ./doxygen/doxyfile
