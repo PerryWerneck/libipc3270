@@ -46,7 +46,7 @@ DYNAMIC_SOURCES= \
 TEST_SOURCES= \
 	$(wildcard src/testprogram/*.cc)
 
-CLIENT_MODULES=library static
+CLIENT_MODULES=@CLIENT_MODULES@
 
 #---[ Tools ]----------------------------------------------------------------------------
 
