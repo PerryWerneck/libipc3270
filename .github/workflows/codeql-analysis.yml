@@ -86,7 +86,7 @@ jobs:
     - name: build
       run: | 
        ./autogen.sh
-       make Release
+       make all
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
