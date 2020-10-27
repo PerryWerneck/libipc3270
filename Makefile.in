@@ -27,9 +27,7 @@
 PACKAGE_NAME=@PACKAGE_NAME@
 PRODUCT_NAME=@PRODUCT_NAME@
 LIBNAME=libipc3270
-
-CLIENT_TARGETS= \
-	@CLIENT_TARGETS@
+PROJECT_MODULES=@PROJECT_MODULES@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -65,8 +63,7 @@ MSGCAT=@MSGCAT@
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
-	server \
-	client \
+	$(foreach MODULE, $(PROJECT_MODULES), $(MODULE)) \
 	locale/$(GETTEXT_PACKAGE).pot
 
 server: \
@@ -103,8 +100,7 @@ locale/$(GETTEXT_PACKAGE).pot:
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	install-server \
-	install-client \
+	$(foreach MODULE, $(PROJECT_MODULES), install-$(MODULE)) \
 	install-locale
 
 install-locale: \

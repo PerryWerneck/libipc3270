@@ -63,6 +63,7 @@ dnl ---------------------------------------------------------------------------
 CLIENT_LDFLAGS=""
 CLIENT_LIBS=""
 CLIENT_MODULES="library"
+PROJECT_MODULES="client"
 
 dnl ---------------------------------------------------------------------------
 dnl Check for OS specifics
@@ -187,8 +188,6 @@ if test "$app_cv_static" == "yes"; then
 	CLIENT_MODULES="$CLIENT_MODULES static"
 fi
 
-AC_SUBST(CLIENT_MODULES)
-
 dnl ---------------------------------------------------------------------------
 dnl Check for libintl
 dnl ---------------------------------------------------------------------------
@@ -265,10 +264,15 @@ dnl ---------------------------------------------------------------------------
 dnl Check for LIBV3270
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES( [V3270], [libv3270], AC_DEFINE(HAVE_V3270), AC_MSG_ERROR([V3270 not present.]))
+PKG_CHECK_MODULES( [V3270], [libv3270], app_cv_libv3270=yes, AC_MSG_NOTICE([V3270 not present.]))
 
 AC_SUBST(V3270_LIBS)
 AC_SUBST(V3270_CFLAGS)
+
+if test "$app_cv_libv3270" == "yes"; then
+	AC_DEFINE(HAVE_V3270)
+	PROJECT_MODULES="$PROJECT_MODULES server"
+fi
 
 dnl ---------------------------------------------------------------------------
 dnl Check for GTK
@@ -450,8 +454,12 @@ dnl ---------------------------------------------------------------------------
 dnl Output the generated config.status script.
 dnl ---------------------------------------------------------------------------
 AC_SUBST(BASEDIR,$ac_pwd)
+
 CFLAGS="$CFLAGS -DHAVE_CONFIG_H"
 CXXFLAGS="$CXXFLAGS -DHAVE_CONFIG_H"
+
+AC_SUBST(CLIENT_MODULES)
+AC_SUBST(PROJECT_MODULES)
 
 AC_OUTPUT
 
