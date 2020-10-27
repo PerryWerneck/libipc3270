@@ -46,8 +46,7 @@ DYNAMIC_SOURCES= \
 TEST_SOURCES= \
 	$(wildcard src/testprogram/*.cc)
 
-TARGETS= \
-	@CLIENT_TARGETS@
+CLIENT_MODULES=library static
 
 #---[ Tools ]----------------------------------------------------------------------------
 
@@ -201,12 +200,15 @@ $(POTDIR)/$(MODULE_NAME)/%.pot: \
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
-	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@ \
-	$(BINRLS)/lib$(MODULE_NAME).static.a \
-	$(POTDIR)/$(MODULE_NAME).pot
+	$(foreach MODULE, $(CLIENT_MODULES), $(MODULE))
 
 Release: \
-	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@ \
+	$(foreach MODULE, $(CLIENT_MODULES), $(MODULE))
+
+library: \
+	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@
+
+static: \
 	$(BINRLS)/lib$(MODULE_NAME).static.a
 
 $(BINRLS)/lib$(MODULE_NAME)@LIBEXT@: \
@@ -235,9 +237,13 @@ $(BINRLS)/lib$(MODULE_NAME).static.a: \
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-       $(foreach TARGET, $(TARGETS), install-$(TARGET))
+	$(foreach MODULE, $(CLIENT_MODULES), install-$(MODULE)) \
+	install-devel	
 
-install-linux-lib: \
+install-library: \
+	install-@OSNAME@-library
+
+install-linux-library: \
 	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@
 
 	@$(MKDIR) \
@@ -251,7 +257,7 @@ install-linux-lib: \
 		lib$(MODULE_NAME)@DLLEXT@.@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@ \
 		$(DESTDIR)$(libdir)/lib$(MODULE_NAME)@DLLEXT@
 
-install-windows-lib: \
+install-windows-library: \
 	$(BINRLS)/lib$(MODULE_NAME)@LIBEXT@
 
 	@$(MKDIR) \

@@ -62,7 +62,7 @@ dnl ---------------------------------------------------------------------------
 
 CLIENT_LDFLAGS=""
 CLIENT_LIBS=""
-CLIENT_TARGETS="devel"
+CLIENT_MODULES="library"
 
 dnl ---------------------------------------------------------------------------
 dnl Check for OS specifics
@@ -77,8 +77,6 @@ case "$host" in
 		CLIENT_LDFLAGS="-shared -static-libgcc -static-libstdc++ -Wl,--output-def,\$(@D)/\lib\$(MODULE_NAME).def"
 		CLIENT_LIBS="-Wl,-Bstatic,--whole-archive -lwinpthread -Wl,--no-whole-archive,-Bdynamic"
 		DLLEXT=".dll"
-
-		CLIENT_TARGETS="windows-lib $CLIENT_TARGETS"
 
 		app_win32_revision=$(date +%-y.%-m.%-d.%-H)
 		AC_SUBST(WIN32_VERSION,$app_win32_revision)
@@ -104,8 +102,6 @@ case "$host" in
 		LOGDIR="/var/log"
 		DLLEXT=".so"
 		CLIENT_LDFLAGS="-shared"
-
-		CLIENT_TARGETS="linux-lib $CLIENT_TARGETS"
 
 		app_cv_static='no'
 
@@ -188,10 +184,10 @@ AC_ARG_ENABLE([static],
 ])
 
 if test "$app_cv_static" == "yes"; then
-	CLIENT_TARGETS="$CLIENT_TARGETS static"
+	CLIENT_MODULES="$CLIENT_MODULES static"
 fi
 
-AC_SUBST(CLIENT_TARGETS)
+AC_SUBST(CLIENT_MODULES)
 
 dnl ---------------------------------------------------------------------------
 dnl Check for libintl
