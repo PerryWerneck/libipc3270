@@ -16,7 +16,9 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-Summary:		lib3270/pw3270 IPC client library.
+%define product %(pkg-config --variable=product_name lib3270)
+
+Summary:		IPC client library for lib3270/%{product} 
 Name:			libipc3270
 Version:		5.2
 Release:		0
@@ -46,21 +48,16 @@ BuildRequires:	pkgconfig(gtk+-3.0)
 
 %else
 
-BuildRequires:	lib3270-devel >= 5.2
-BuildRequires:	libv3270-devel >= 5.2
+BuildRequires:	lib3270-devel >= 5.3
+BuildRequires:	libv3270-devel >= 5.3
 BuildRequires:	dbus-1-devel
 BuildRequires:	dbus-glib-devel
 BuildRequires:	gtk3-devel
 
 %endif
 
-%if 0%{?centos_version}
-# centos requires python for genmarshal
-BuildRequires:  python
-%endif
-
 %description
-IPC client library for lib3270/pw3270.
+IPC client library for lib3270/%{product}.
 
 Designed as framework for language bindings.
 
@@ -68,13 +65,12 @@ For more details, see https://github.com/PerryWerneck/libipc3270 .
 
 #---[ Library ]-------------------------------------------------------------------------------------------------------
 
-%define product %(pkg-config --variable=product_name lib3270)
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
-%define MINOR_VERSION %(echo %{version} | cut -d. -f2)
+%define MINOR_VERSION %(echo %{version} | cut -d. -f2 | cut -d+ -f1)
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
 %package -n %{name}-%{_libvrs}
-Summary:	IPC Library for pw3270
+Summary:	IPC Library for %{product}
 Group:		Development/Libraries/C and C++
 
 %if 0%{?suse_version}
@@ -82,7 +78,7 @@ Recommends: lib3270-ipc-service
 %endif
 
 %description -n %{name}-%{_libvrs}
-IPC client library for lib3270/pw3270.
+IPC client library for lib3270/%{product}.
 
 Designed as framework for language bindings.
 
@@ -95,14 +91,14 @@ Summary: Development files for %{name}
 Requires: %{name}-%{_libvrs} = %{version}
 
 %if 0%{?fedora} ||  0%{?suse_version} > 1200
-Requires:	pkgconfig(lib3270)
+Requires:	pkgconfig(lib3270) >= 5.3
 %else
-Requires:	lib3270-devel
+Requires:	lib3270-devel >= 5.3
 %endif
 
 %description -n libipc3270-devel
 
-Development files for lib3270/pw3270 IPC client library.
+Development files for lib3270/%{product} IPC client library.
 
 For more details, see https://github.com/PerryWerneck/libipc3270 .
 
@@ -117,7 +113,7 @@ Conflicts: otherproviders(pw3270-plugin-dbus)
 Provides: lib3270-ipc-service
 Conflicts: otherproviders(lib3270-ipc-service)
 
-Requires: %{product} >= 5.2
+Requires: %{product} >= 5.3
 
 %description -n %{product}-plugin-ipc
 
@@ -167,6 +163,7 @@ make all
 %{_includedir}/lib3270/ipc/*.h
 %{_libdir}/%{name}.so
 %{_libdir}/pkgconfig/*.pc
+%{_datadir}/%{product}/pot/*.pot
 
 %pre -n %{name}-%{_libvrs} -p /sbin/ldconfig
 
