@@ -56,16 +56,13 @@ install: build
 	make all
 
 	# Install libipc3270
-	make DESTDIR=$(PWD)/debian/libipc3270 install-linux-lib
-	find $(PWD)/debian/libipc3270 -type f | sed -e "s@^$(PWD)/debian/libipc3270/@/@g" > $(PWD)/debian/libipc3270.install
+	make DESTDIR=$(PWD)/debian/libipc3270 -C client install-library
 
 	# Install dev
-	make DESTDIR=$(PWD)/debian/libipc3270-dev install-devel
-	find $(PWD)/debian/libipc3270-dev -type f | sed -e "s@^$(PWD)/debian/libipc3270-dev/@/@g" > $(PWD)/debian/libipc3270-dev.install
+	make DESTDIR=$(PWD)/debian/libipc3270-dev -C client install-devel
 
 	# Install plugin module
-	make DESTDIR=$(PWD)/debian/pw3270-plugin-ipc install-plugin
-	find $(PWD)/debian/libipc3270-dev -type f | sed -e "s@^$(PWD)/debian/pw3270-plugin-ipc/@/@g" > $(PWD)/debian/pw3270-plugin-ipc.install
+	make DESTDIR=$(PWD)/debian/pw3270-plugin-ipc -C server install-plugin-linux
 
 	# --- end custom part for installing
 
