@@ -68,17 +68,21 @@ Compiling for Windows (With MSYS2)
 
 3. Get sources from git
 
-	* git clone https://github.com/PerryWerneck/libipc3270.git ./libipc3270
-
+	```shell
+	git clone https://github.com/PerryWerneck/libipc3270.git ./libipc3270
+	```
 4. Build library using the mingw shell
 
-	* cd libipc3270
-	* ./autogen.sh
-	* make all
-
+	```shell
+	cd libipc3270
+	./autogen.sh
+	make all
+	```
 5. Install
 
-	* make install
+	```shell
+	make install
+	```
 
 Compiling for Windows (With MSVC)
 ---------------------------------
@@ -101,3 +105,4 @@ Compiling for Windows (With MSVC)
 	cd ipc3270
 	install.bat
 	```
+
