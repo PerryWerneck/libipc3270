@@ -32,6 +32,7 @@ BuildRoot:		/var/tmp/%{name}-%{version}
 
 BuildRequires:	autoconf >= 2.61
 BuildRequires:	automake
+BuildRequires:	libtool
 BuildRequires:	binutils
 BuildRequires:	coreutils
 BuildRequires:	gcc-c++
@@ -128,14 +129,14 @@ For more details, see https://github.com/PerryWerneck/libipc3270 .
 NOCONFIGURE=1 \
 	./autogen.sh
 
-%configure
+%configure --disable-static
 
 %build
 make all
 
 %install
 %makeinstall
-%find_lang %{name} langfiles
+%find_lang %{name}-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 
 %files -n %{product}-plugin-ipc
 %defattr(-,root,root)
