@@ -19,7 +19,6 @@ For the supported distributions get the install repositories and instructions fr
 
 ### Requirements
 
- * [GTK3](https://www.gtk.org/)
  * [lib3270](../../../lib3270)
  * [libv3270](../../../libv3270)
 
