@@ -85,7 +85,7 @@ For the supported distributions get the install repositories and instructions fr
 
 ### Windows native with MSVC
 
-1. Install pw3270 with remote control and sdk modules
+1. Install pw3270 with sdk modules
 
 2. Install git for windows
 
