@@ -1,6 +1,6 @@
 ## IPC (interprocess communication) plugin & library for pw3270.
 
-Created originally as part of PW3270 application.
+Created originally as part of PW3270 application this library is designed to act as a standard ABI for lib320 and pw3270 language bindings using the same method and objects for direct lib3270 calls and IPC based requests do the pw3270 GUI application.
 
 See more details at https://softwarepublico.gov.br/social/pw3270/
 
