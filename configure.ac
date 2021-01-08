@@ -434,7 +434,7 @@ dnl ---------------------------------------------------------------------------
 dnl Set translation domain.
 dnl ---------------------------------------------------------------------------
 
-app_cv_gettext_package="libipc3270"
+app_cv_gettext_package="libipc3270-$app_vrs_major.$app_vrs_minor"
 
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$app_cv_gettext_package")
 AC_SUBST(GETTEXT_PACKAGE,"$app_cv_gettext_package")

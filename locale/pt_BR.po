@@ -1,12 +1,12 @@
 #
-# Perry Werneck <perry.werneck@gmail.com>, 2012, 2013, 2014, 2016, 2017, 2018, 2019, 2020.
+# Perry Werneck <perry.werneck@gmail.com>, 2012, 2013, 2014, 2016, 2017, 2018, 2019, 2020, 2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-10 15:55-0300\n"
-"PO-Revision-Date: 2020-01-10 15:59-0300\n"
+"POT-Creation-Date: 2021-01-08 10:10-0300\n"
+"PO-Revision-Date: 2021-01-08 10:11-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
 "Language: pt_BR\n"
@@ -16,8 +16,16 @@ msgstr ""
 "X-Poedit-Language: Portuguese\n"
 "X-Poedit-Country: BRAZIL\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Gtranslator 2.91.7\n"
+
+#: src/session/local/init.cc:90
+msgid " is invalid."
+msgstr "é inválido"
+
+#: src/session/local/init.cc:86
+msgid " is not in the required revision "
+msgstr "não está na versão necessária"
 
 #: src/session/local/get.cc:52 src/session/local/get.cc:65
 #: src/session/local/get.cc:78
@@ -28,24 +36,23 @@ msgstr "Não foi possível obter o conteúdo da tela"
 msgid "Can't start IPC Module"
 msgstr "Não foi possível iniciar o módulo IPC"
 
-#: src/session/local/init.cc:79
-msgid "Invalid callback table, possible version mismatch in lib3270"
-msgstr ""
-"Tabela de callbacks inválida, possível divergência de versão na lib3270"
+#: src/session/local/init.cc:81
+msgid "Invalid callback table; "
+msgstr "Tabela de chamadas inválida"
 
-#: src/session/local/events.cc:87 src/session/local/events.cc:147
+#: src/session/local/events.cc:88 src/session/local/events.cc:142
 msgid "Invalid session handler"
 msgstr "Identificador de sessão é inválido"
 
-#: src/session/local/events.cc:70
+#: src/session/local/events.cc:71
 msgid "Out of memory in vasprintf"
 msgstr "Memória insuficiente em vasprintf"
 
-#: src/session/local/events.cc:169
+#: src/session/local/events.cc:164
 msgid "connected"
 msgstr "Conectado"
 
-#: src/session/local/events.cc:169
+#: src/session/local/events.cc:164
 msgid "disconnected"
 msgstr "Desconectado"
 
@@ -1340,11 +1347,12 @@ msgstr "Desconectado"
 #~ msgid "Invalid argument format"
 #~ msgstr "O formato do argumento é inválido"
 
+#~ msgid "Invalid callback table, possible version mismatch in lib3270"
+#~ msgstr ""
+#~ "Tabela de callbacks inválida, possível divergência de versão na lib3270"
+
 #~ msgid "Invalid cgcsgid value"
 #~ msgstr "Valor cgcsgid é inválido"
-
-#~ msgid "Invalid character value"
-#~ msgstr "Valor de caractere inválido"
 
 #~ msgid "Invalid charset entry '%s' (#%d)"
 #~ msgstr "Invalid charset entry '%s' (#%d)"
@@ -1571,9 +1579,6 @@ msgstr "Desconectado"
 
 #~ msgid "OIA separator"
 #~ msgstr "Separador da OIA"
-
-#~ msgid "OIA status invalid"
-#~ msgstr "Estado inválido na OIA"
 
 #~ msgid "OIA status ok"
 #~ msgstr "Estado normal na OIA"

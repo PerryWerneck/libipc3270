@@ -20,14 +20,14 @@
 
 Summary:		IPC client library for lib3270/%{product} 
 Name:			libipc3270
-Version:		5.2
+Version:		5.3
 Release:		0
 License:		LGPL-3.0
 Source:			%{name}-%{version}.tar.xz
 
 URL:			https://github.com/PerryWerneck/libipc3270
 
-Group:			System/Libraries
+Group:			Development/Libraries/C and C++
 BuildRoot:		/var/tmp/%{name}-%{version}
 
 BuildRequires:	autoconf >= 2.61
@@ -71,7 +71,6 @@ For more details, see https://github.com/PerryWerneck/libipc3270 .
 
 %package -n %{name}-%{_libvrs}
 Summary:	IPC Library for %{product}
-Group:		Development/Libraries/C and C++
 
 %if 0%{?suse_version}
 Recommends: lib3270-ipc-service
