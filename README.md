@@ -6,7 +6,7 @@ See more details at https://softwarepublico.gov.br/social/pw3270/
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 ![CodeQL](https://github.com/PerryWerneck/lib3270/workflows/CodeQL/badge.svg)
-![Analytics](https://ga-beacon.appspot.com/G-RSMGQ9Q5BG/github/libipc3270)
+![Analytics](https://ga-beacon.appspot.com/UA-35100728-2/github/libipc3270)
 ![Downloads](https://img.shields.io/github/downloads/PerryWerneck/libipc3270/total.svg)
 
 ## Instalation
@@ -44,13 +44,17 @@ For the supported distributions get the install repositories and instructions fr
 	$ git clone https://github.com/PerryWerneck/libipc3270.git ./libipc3270
 	```
 
-3. Install cross compilers
+3. Install 64 bits cross compilers
 
-	TODO
+	```shell
+	$ ./libipc3270/win/install-cross.sh --64
+	```
 
-3. Configure build
+3. Configure 64 bits build environment
 
-	TODO
+        ```shell
+        $ ./libipc3270/win/win-configure.sh --64
+        ```
 
 4. Build
 
