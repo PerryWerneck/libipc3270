@@ -1,0 +1,40 @@
+# Maintainer: Perry Werneck <perry.werneck@gmail.com>
+
+pkgname=libipc3270
+
+pkgver=5.3
+pkgrel=0
+pkgdesc="IPC client library for lib3270/pw3270"
+url="https://github.com/PerryWerneck/libipc3270"
+arch=(i686 x86_64)
+license=(GPL)
+depends=()
+makedepends=(autoconf automake make openssl lib3270 libv3270 python3 gtk3 libtool dbus-glib)
+checkdepends=()
+
+#groups=(gnome)
+
+source=($pkgname-$pkgver.tar.xz)
+sha256sums=('SKIP')
+
+provides=($pkgname)
+conflicts=($pkgname)
+
+prepare() {
+  cd $pkgname-$pkgver
+  mkdir -p scripts
+  touch scripts/config.rpath
+  NOCONFIGURE=1 ./autogen.sh
+  ./configure --prefix=/usr --disable-static
+}
+
+build() {
+  cd $pkgname-$pkgver
+  make all
+}
+
+package() {
+  cd $pkgname-$pkgver
+  DESTDIR="$pkgdir" make install
+}
+
