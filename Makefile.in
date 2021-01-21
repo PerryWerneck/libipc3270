@@ -104,7 +104,7 @@ install: \
 	install-locale
 
 install-locale: \
-	locale/$(LIBNAME).pot
+	locale/$(GETTEXT_PACKAGE).pot
 	
 	@$(MAKE) -C locale DESTDIR=$(DESTDIR) install
 
@@ -112,7 +112,7 @@ install-locale: \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
 
 	@$(INSTALL_DATA) \
-		locale/$(LIBNAME).pot \
+		locale/$(GETTEXT_PACKAGE).pot \
 		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot/$(LIBNAME).pot
 
 install-server: \
