@@ -33,35 +33,35 @@ For the supported distributions get the install repositories and instructions fr
 1. Add the MinGW Repositories
 
 	```
-	$ sudo zypper ar obs://windows:mingw:win32 mingw32
-	$ sudo zypper ar obs://windows:mingw:win64 mingw64
-	$ sudo zypper ar obs://home:PerryWerneck:pw3270 pw3270
-	$ sudo zypper ref
+	sudo zypper ar obs://windows:mingw:win32 mingw32
+	sudo zypper ar obs://windows:mingw:win64 mingw64
+	sudo zypper ar obs://home:PerryWerneck:pw3270 pw3270
+	sudo zypper ref
 	```
 2. Get sources from git
 
 	```shell
-	$ git clone https://github.com/PerryWerneck/libipc3270.git ./libipc3270
+	git clone https://github.com/PerryWerneck/libipc3270.git ./libipc3270
 	```
 
 3. Install 64 bits cross compilers
 
 	```shell
-	$ ./libipc3270/win/install-cross.sh --64
+	./libipc3270/win/install-cross.sh --64
 	```
 
 3. Configure 64 bits build environment
 
         ```shell
-        $ ./libipc3270/win/win-configure.sh --64
+        ./libipc3270/win/win-configure.sh --64
         ```
 
 4. Build
 
 	```shell
-	$ cd libipc3270
-	$ make clean
-	$ make all
+	cd libipc3270
+	make clean
+	make all
 	```
 
 ### Windows native with MSYS2
@@ -71,20 +71,20 @@ For the supported distributions get the install repositories and instructions fr
 2. Get sources from git
 
 	```shell
-	$ git clone https://github.com/PerryWerneck/libipc3270.git ./libipc3270
+	git clone https://github.com/PerryWerneck/libipc3270.git ./libipc3270
 	```
 
 4. Build library using the mingw shell
 
 	```shell
-	$ cd libipc3270
-	$ ./autogen.sh
-	$ make all
+	cd libipc3270
+	./autogen.sh
+	make all
 	```
 5. Install
 
 	```shell
-	$ make install
+	make install
 	```
 
 ### Windows native with MSVC
@@ -98,13 +98,13 @@ For the supported distributions get the install repositories and instructions fr
 4. Get sources from git
 
 	```shell
-	$ git clone https://github.com/PerryWerneck/libipc3270.git ./ipc3270
+	git clone https://github.com/PerryWerneck/libipc3270.git ./ipc3270
 	```
 
 5. Build and install
 
 	```shell
-	$ cd ipc3270
-	$ install.bat
+	cd ipc3270
+	install.bat
 	```
 
