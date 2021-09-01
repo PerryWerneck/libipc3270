@@ -32,6 +32,7 @@
 #include <lib3270/actions.h>
 #include <lib3270/properties.h>
 #include <lib3270/log.h>
+#include <lib3270/win32.h>
 #include <ipc-glib.h>
 
 void ipc3270_export_object(GObject *object, const char *name, GError G_GNUC_UNUSED(**error)) {
@@ -71,6 +72,12 @@ void ipc3270_export_object(GObject *object, const char *name, GError G_GNUC_UNUS
 			ipc->source = (IPC3270_PIPE_SOURCE *) g_source_new(ipc3270_get_source_funcs(),sizeof(IPC3270_PIPE_SOURCE));
 
 			g_message("Got session \"%c\"",id);
+
+			// Update registry
+			{
+				g_autofree gchar * session_name = g_strdup_printf("%s:%c",name,id);
+				lib3270_win32_set_string(PACKAGE_NAME,"last_session",session_name);
+			}
 
 			lib3270_set_session_id(ipc->hSession, id);
 
