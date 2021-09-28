@@ -34,6 +34,7 @@ OBJ_FILES= \
 	client\src\core\events.obj \
 	client\src\core\session.obj \
 	client\src\core\windows\attribute.obj \
+	client\src\core\windows\dynamic\init.obj \
 	client\src\core\windows\pop.obj \
 	client\src\core\windows\push.obj \
 	client\src\core\windows\request.obj \
@@ -48,13 +49,12 @@ OBJ_FILES= \
 	client\src\host\string.obj \
 	client\src\session\action.obj \
 	client\src\session\get.obj \
-	client\src\session\set.obj \
-	client\src\session\tools.obj \
 	client\src\session\local\actions.obj \
 	client\src\session\local\attribute.obj \
 	client\src\session\local\events.obj \
 	client\src\session\local\get.obj \
 	client\src\session\local\init.obj \
+	client\src\session\local\properties.obj \
 	client\src\session\local\set.obj \
 	client\src\session\local\wait.obj \
 	client\src\session\remote\actions.obj \
@@ -65,7 +65,9 @@ OBJ_FILES= \
 	client\src\session\remote\tools.obj \
 	client\src\session\remote\wait.obj \
 	client\src\session\remote\windows\request.obj \
-	client\src\session\remote\windows\session.obj
+	client\src\session\remote\windows\session.obj \
+	client\src\session\set.obj \
+	client\src\session\tools.obj
 
 .cc.obj:
 	@echo Compiling...

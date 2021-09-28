@@ -30,3 +30,5 @@ doxygen/html
 *.lib
 *.exp
 *.pot
+*~
+
