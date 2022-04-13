@@ -48,6 +48,9 @@ AM_INIT_AUTOMAKE
 dnl Check for iconv
 AM_ICONV
 
+dnl Set gettext version
+AM_GNU_GETTEXT_VERSION([0.14])
+
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
@@ -264,7 +267,7 @@ dnl ---------------------------------------------------------------------------
 dnl Check for LIBV3270
 dnl ---------------------------------------------------------------------------
 
-PKG_CHECK_MODULES( [V3270], [libv3270], app_cv_libv3270=yes, AC_MSG_NOTICE([V3270 not present.]))
+PKG_CHECK_MODULES( [V3270], [libv3270], app_cv_libv3270=yes, AC_MSG_ERROR([V3270 not present.]))
 
 AC_SUBST(V3270_LIBS)
 AC_SUBST(V3270_CFLAGS)
