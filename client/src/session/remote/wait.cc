@@ -139,7 +139,7 @@
 
 	LIB3270_KEYBOARD_LOCK_STATE IPC::Session::waitForKeyboardUnlock(time_t timeout) const {
 
-		int rc;
+		int rc = 0;
 
 		time_t end = time(nullptr) + timeout;
 
