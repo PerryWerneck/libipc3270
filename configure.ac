@@ -176,6 +176,20 @@ case "$host" in
 esac
 
 dnl ---------------------------------------------------------------------------
+dnl Application ID
+dnl ---------------------------------------------------------------------------
+
+AC_ARG_WITH([application-id], [AS_HELP_STRING([--application-id], [Set the application ID])], [ app_cv_application_id="$withval" ],[ app_cv_application_id=`pkg-config --variable=product_id lib3270` ])
+AC_DEFINE_UNQUOTED(APPLICATION_ID, "$app_cv_application_id")
+AC_SUBST(APPLICATION_ID,$app_cv_application_id)
+
+app_cv_application_path="/"`echo $app_cv_application_id | sed -e "s@\.@/@g"`
+AC_DEFINE_UNQUOTED(DBUS_OBJECT_PATH, "$app_cv_application_path")
+AC_SUBST(DBUS_OBJECT_PATH,$app_cv_application_path)
+
+AC_CONFIG_FILES(server/src/include/ipc-glib.h)
+
+dnl ---------------------------------------------------------------------------
 dnl Build options
 dnl ---------------------------------------------------------------------------
 

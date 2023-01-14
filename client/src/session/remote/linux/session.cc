@@ -86,18 +86,18 @@
 		string path(sep+1);
 		std::transform(path.begin(), path.end(), path.begin(),[](unsigned char c){ return std::tolower(c); });
 
-		this->name = "br.com.bb.";
+		this->name = APPLICATION_ID ".";
 		this->name += name;
 		this->name += ".";
 		this->name += path;
 
 
-		this->path = "/br/com/bb/";
+		this->path = DBUS_OBJECT_PATH "/";
 		this->path += name;
 		this->path += "/";
 		this->path += path;
 
-		this->interface = "br.com.bb.tn3270.session";
+		this->interface = APPLICATION_ID ".session";
 
 		debug("D-Bus Object name=\"",this->name,"\" D-Bus Object path=\"",this->path,"\"");
 

@@ -45,14 +45,14 @@
 
 	#else
 
-		#define PW3270_IPC_SESSION_BUS_NAME			"br.com.bb.%s.%c"
-		#define PW3270_IPC_SESSION_BUS_PATH			"/br/com/bb/%s/%c"
+		#define PW3270_IPC_SESSION_BUS_NAME			"@APPLICATION_ID@.%s.%c"
+		#define PW3270_IPC_SESSION_BUS_PATH			"@DBUS_OBJECT_PATH@/%s/%c"
 
-		#define PW3270_IPC_SESSION_INTERFACE_NAME	"br.com.bb.tn3270.session"
+		#define PW3270_IPC_SESSION_INTERFACE_NAME	"@APPLICATION_ID@.session"
 
-		#define PW3270_IPC_SERVICE_BUS_NAME			"br.com.bb.tn3270.service"
-		#define PW3270_IPC_SERVICE_INTERFACE_NAME	"br.com.bb.tn3270.service"
-		#define PW3270_IPC_SERVICE_OBJECT_PATH		"/br/com/bb/tn3270/service"
+		#define PW3270_IPC_SERVICE_BUS_NAME			"@APPLICATION_ID@.service"
+		#define PW3270_IPC_SERVICE_INTERFACE_NAME	"@APPLICATION_ID@.service"
+		#define PW3270_IPC_SERVICE_OBJECT_PATH		"@DBUS_OBJECT_PATH@/service"
 
 	#endif // _WIN32
 
