@@ -135,8 +135,8 @@ static gboolean register_object(ipc3270 *ipc, const char *name, char id) {
 	GError * error = NULL;
 	gchar *ptr;
 
-	g_autofree gchar *object_name = g_strdup_printf(PW3270_IPC_SESSION_BUS_NAME,name,id);
-	g_autofree gchar *object_path = g_strdup_printf(PW3270_IPC_SESSION_BUS_PATH,name,id);
+	g_autofree gchar *object_name = g_strdup_printf(PW3270_IPC_SESSION_BUS_NAME,id);
+	g_autofree gchar *object_path = g_strdup_printf(PW3270_IPC_SESSION_BUS_PATH,id);
 
 	for(ptr=object_name;*ptr;ptr++)
 		*ptr = g_ascii_tolower(*ptr);

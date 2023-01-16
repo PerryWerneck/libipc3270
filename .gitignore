@@ -31,4 +31,8 @@ doxygen/html
 *.exp
 *.pot
 *~
+ABOUT-NLS
+intl
+po
+ipc-glib.h
 

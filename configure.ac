@@ -109,6 +109,14 @@ case "$host" in
 
 		app_cv_static='no'
 
+		PKG_CHECK_MODULES( [DBUS], [dbus-1], app_cv_libdbus=yes, AC_MSG_ERROR([ No DBUS support.]) )
+		AC_SUBST(DBUS_LIBS)
+		AC_SUBST(DBUS_CFLAGS)
+
+		PKG_CHECK_MODULES( [GDBUS], [dbus-glib-1], app_cv_dbus=yes, AC_MSG_ERROR([No GDBUS support.])  )
+		AC_SUBST(GDBUS_LIBS)
+		AC_SUBST(GDBUS_CFLAGS)
+
 esac
 
 AC_SUBST(DATADIR,$app_cv_datadir)
@@ -179,7 +187,7 @@ dnl ---------------------------------------------------------------------------
 dnl Application ID
 dnl ---------------------------------------------------------------------------
 
-AC_ARG_WITH([application-id], [AS_HELP_STRING([--application-id], [Set the application ID])], [ app_cv_application_id="$withval" ],[ app_cv_application_id=`pkg-config --variable=product_id lib3270` ])
+AC_ARG_WITH([application-id], [AS_HELP_STRING([--application-id], [Set the application ID])], [ app_cv_application_id="$withval" ],[ app_cv_application_id="`pkg-config --variable=product_id lib3270`.terminal" ])
 AC_DEFINE_UNQUOTED(APPLICATION_ID, "$app_cv_application_id")
 AC_SUBST(APPLICATION_ID,$app_cv_application_id)
 
@@ -307,18 +315,6 @@ dnl ---------------------------------------------------------------------------
 PKG_CHECK_MODULES( [GLIB], [glib-2.0 gobject-2.0 gmodule-2.0 gio-2.0], AC_DEFINE(HAVE_GLIB), AC_MSG_ERROR([GLIB not present.] ))
 AC_SUBST(GLIB_LIBS)
 AC_SUBST(GLIB_CFLAGS)
-
-dnl ---------------------------------------------------------------------------
-dnl Check for D-Bus
-dnl ---------------------------------------------------------------------------
-
-PKG_CHECK_MODULES( [DBUS], [dbus-1], app_cv_libdbus=yes, AC_MSG_NOTICE([ No DBUS support.]) )
-AC_SUBST(DBUS_LIBS)
-AC_SUBST(DBUS_CFLAGS)
-
-PKG_CHECK_MODULES( [GDBUS], [dbus-glib-1], app_cv_dbus=yes, AC_MSG_NOTICE([No GDBUS support.])  )
-AC_SUBST(GDBUS_LIBS)
-AC_SUBST(GDBUS_CFLAGS)
 
 dnl ---------------------------------------------------------------------------
 dnl systemd integration

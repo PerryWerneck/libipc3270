@@ -87,14 +87,10 @@
 		std::transform(path.begin(), path.end(), path.begin(),[](unsigned char c){ return std::tolower(c); });
 
 		this->name = APPLICATION_ID ".";
-		this->name += name;
-		this->name += ".";
 		this->name += path;
 
 
 		this->path = DBUS_OBJECT_PATH "/";
-		this->path += name;
-		this->path += "/";
 		this->path += path;
 
 		this->interface = APPLICATION_ID ".session";
