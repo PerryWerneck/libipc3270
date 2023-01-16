@@ -197,14 +197,14 @@
 		TN3270::Host host{session};
 
 		cout
-			<< "Version: " << host["version"]
-			<< "\tRevision: " << host["Revision"]
-			<< "\tConnected: " << host["Connected"]
+			<< "Version: " << host["version"] << endl
+			<< "\tRevision: " << host["Revision"] << endl
+			<< "\tConnected: " << host["Connected"] << endl
 			<< std::endl;
 
 		host.setUnlockDelay(0);	// Disable the 350ms delay on screen changes.
 		host.setTimeout(10);	// Set the default timeout.
-		host["crlget"] = false;	// Disable CRL get to speed up the connection.
+		//host["crlget"] = false;	// Disable CRL get to speed up the connection.
 		host.connect(url);
 
 		cout

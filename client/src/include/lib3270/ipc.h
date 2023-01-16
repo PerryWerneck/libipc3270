@@ -976,42 +976,6 @@
 			int compare(int baddr, const char* s, int len = -1) const;
 			int compare(unsigned short row, unsigned short col, const char* s, int len = -1) const;
 
-			/*
-			Host & setProperty(const char *name, const std::string &value) {
-				session->setProperty(name,value.c_str());
-				return *this;
-			}
-
-			template <typename T>
-			Host & setProperty(const char *name, const T value) {
-				session->setProperty(name,value);
-				return *this;
-			}
-			*/
-
-			// Set contents.
-
-			/// @brief Input string.
-			///
-			/// Input the supplied string processing commands delimited by the control char in
-			/// the same way of the old HLLAPI.
-			///
-			/// @param text			String with the text to input.
-			/// @param control_char	Control character used to identify commands.
-			// Host & input(const char *text, const char control_char = '@');
-
-			// Host & input(const char *text, size_t sz);
-
-
-			/*
-			// Event listeners
-			inline Host & insert(Event::Type type, std::function <void(const Event &event)> listener) noexcept {
-				session->insert(type, listener);
-				return *this;
-			}
-			*/
-
-
 		};
 
 	}

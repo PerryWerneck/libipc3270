@@ -45,6 +45,10 @@
 	#undef LIB3270_DYNAMIC
 
 	#undef HAVE_VASPRINTF
+	
+	#undef APPLICATION_ID
+	#undef DBUS_OBJECT_PATH
+	
 
 
 #endif /* LIBV3270_CONFIG_INCLUDED */
