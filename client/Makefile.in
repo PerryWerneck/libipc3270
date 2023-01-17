@@ -18,7 +18,7 @@ TEST_SOURCES= \
 	$(wildcard src/testprogram/*.cc) \
 	$(wildcard src/testprogram/@OSNAME@/*.rc)
 	
-TARGETS=@OSNAME@-lib devel conf @OPTIONAL_MODULES@ locale
+TARGETS=@OSNAME@-lib devel locale
 
 #---[ Tools ]----------------------------------------------------------------------------
 
@@ -68,14 +68,18 @@ CXXFLAGS= \
 	-Isrc/include \
 	-DBUILD_DATE=`date +%Y%m%d` \
 	-DLIBDIR=$(libdir) \
-	-DLOCALEDIR=$(localedir)
+	-DLOCALEDIR=$(localedir) \
+	@DBUS_CFLAGS@ \
+	@LIB3270_CFLAGS@
 
 LDFLAGS=\
 	@LDFLAGS@
 
 LIBS= \
 	@LIBS@ \
-	@LIBICONV@
+	@LIBICONV@ \
+	@DBUS_LIBS@ \
+	@LIB3270_LIBS@
 
 #---[ Debug Rules ]----------------------------------------------------------------------
 
@@ -87,12 +91,12 @@ $(OBJDBG)/%.o: \
 	@$(MKDIR) $(@D)
 
 	@$(CXX) \
-		$(CFLAGS) \
+		$(CXXFLAGS) \
 		-DDEBUG=1 \
 		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 
 	@$(CXX) \
-		$(CFLAGS) \
+		$(CXXFLAGS) \
 		-Wall -Wextra -fstack-check \
 		-DDEBUG=1 \
 		-o $@ \
@@ -118,12 +122,12 @@ $(OBJRLS)/%.o: \
 	@$(MKDIR) $(@D)
 
 	@$(CXX) \
-		$(CFLAGS) \
+		$(CXXFLAGS) \
 		-DNDEBUG=1 \
 		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
 
 	@$(CXX) \
-		$(CFLAGS) \
+		$(CXXFLAGS) \
 		-DNDEBUG=1 \
 		-o $@ \
 		-c $<
@@ -228,8 +232,7 @@ install-doc: \
 	cp -rv ${srcdir}/doc/html/* "$(DESTDIR)${docdir}/@PACKAGE_TARNAME@/reference/html"
 
 install-linux-lib: \
-	$(BINRLS)/@SONAME@ \
-	install-conf
+	$(BINRLS)/@SONAME@
 
 	@$(MKDIR) \
 		$(DESTDIR)$(libdir)
@@ -287,7 +290,7 @@ install-devel:
 		$(DESTDIR)$(libdir)/pkgconfig/@PACKAGE_NAME@.pc
 
 	@$(INSTALL_DATA) \
-		sdk/@OSNAME@/static.pc \
+		sdk/static.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/@PACKAGE_NAME@-static.pc
 
 #---[ Uninstall Targets ]----------------------------------------------------------------
@@ -322,11 +325,6 @@ uninstall-devel:
 	# Uninstall PKG-CONFIG files
 	@rm -f \
 		$(DESTDIR)$(libdir)/pkgconfig/@PACKAGE_NAME@.pc
-
-uninstall-conf:
-
-	@rm -f \
-		$(DESTDIR)$(sysconfdir)/$(PRODUCT_NAME).d/00-$(PACKAGE_NAME)-defaults.conf
 
 #---[ Debug Targets ]--------------------------------------------------------------------
 

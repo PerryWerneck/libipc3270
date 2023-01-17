@@ -36,6 +36,7 @@
  *
  */
 
+ #include <config.h>
  #include <ipc-client-internals.h>
 
  extern "C" {
@@ -49,7 +50,7 @@
 
  int ipc3270_loaded(void) {
 
-	debug("LOCALEDIR=\"%s\"",LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
+	debug("LOCALEDIR=",LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
 	bindtextdomain(GETTEXT_PACKAGE, LIB3270_STRINGIZE_VALUE_OF(LOCALEDIR));
 
 	return 0;

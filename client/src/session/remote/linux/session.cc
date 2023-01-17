@@ -36,6 +36,7 @@
  *
  */
 
+ #include <config.h>
  #include "../private.h"
  #include <ipc-client-internals.h>
  #include <cstring>
@@ -88,7 +89,6 @@
 
 		this->name = APPLICATION_ID ".";
 		this->name += path;
-
 
 		this->path = DBUS_OBJECT_PATH "/";
 		this->path += path;

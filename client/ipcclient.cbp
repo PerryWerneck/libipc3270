@@ -67,6 +67,7 @@
 		<Unit filename="src/host/states.cc" />
 		<Unit filename="src/host/stream.cc" />
 		<Unit filename="src/host/string.cc" />
+		<Unit filename="src/include/config.h" />
 		<Unit filename="src/include/ipc-client-internals.h" />
 		<Unit filename="src/include/lib3270/ipc.h" />
 		<Unit filename="src/include/lib3270/ipc/action.h" />
