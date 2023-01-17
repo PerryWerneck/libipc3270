@@ -39,14 +39,15 @@
 
 	#include <internals.h>
 	#include <ipc-glib.h>
+	#include <lib3270.h>
 
 	G_BEGIN_DECLS
 
-	int pw3270_plugin_start(GtkWidget *window, GtkWidget *terminal);
-	int pw3270_plugin_stop(GtkWidget *window, GtkWidget *terminal);
+	LIB3270_EXPORT int pw3270_plugin_start(GtkWidget *window, GtkWidget *terminal);
+	LIB3270_EXPORT int pw3270_plugin_stop(GtkWidget *window, GtkWidget *terminal);
 
-	int pw3270_plugin_page_added(GtkWidget *terminal);
-	int pw3270_plugin_page_removed(GtkWidget *terminal);
+	LIB3270_EXPORT int pw3270_plugin_page_added(GtkWidget *terminal);
+	LIB3270_EXPORT int pw3270_plugin_page_removed(GtkWidget *terminal);
 
 	G_END_DECLS
 

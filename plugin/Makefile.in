@@ -1,0 +1,293 @@
+
+#---[ Library configuration ]------------------------------------------------------------
+
+PACKAGE_NAME=@PACKAGE_NAME@
+PRODUCT_NAME=@PRODUCT_NAME@
+
+MAIN_SOURCES= \
+	$(wildcard src/core/*.c) \
+	$(wildcard src/core/@OSNAME@/*.c) \
+	$(wildcard src/core/methods/*.c) \
+	$(wildcard src/plugin/*.c) \
+	$(wildcard src/plugin/@OSNAME@/*.c) \
+	$(wildcard src/plugin/@OSNAME@/*.rc)
+	
+TEST_SOURCES= \
+	$(wildcard src/testprogram/*.c) \
+	$(wildcard src/testprogram/@OSNAME@/*.rc)
+	
+TARGETS=@OSNAME@-lib devel locale
+
+#---[ Tools ]----------------------------------------------------------------------------
+
+CC=@CC@
+LD=@CC@
+LN_S=@LN_S@
+MKDIR=@MKDIR_P@
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+INSTALL_STRIP_PROGRAM=@INSTALL_STRIP_PROGRAM@
+XGETTEXT=@XGETTEXT@
+MSGCAT=@MSGCAT@
+WINDRES=@WINDRES@
+AR=@AR@
+VALGRIND=@VALGRIND@
+DLLTOOL=@DLLTOOL@
+
+#---[ Paths ]----------------------------------------------------------------------------
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+localedir=@localedir@
+docdir=@docdir@
+sysconfdir=/etc
+srcdir=@srcdir@
+
+OBJDIR=.obj/@OSNAME@
+OBJDBG=$(OBJDIR)/Debug
+OBJRLS=$(OBJDIR)/Release
+
+BINDIR=.bin
+BINDBG=$(BINDIR)/Debug
+BINRLS=$(BINDIR)/Release
+
+POTDIR=.pot
+
+#---[ Rules ]----------------------------------------------------------------------------
+
+CFLAGS= \
+	@CFLAGS@ \
+	-Isrc/include \
+	-DBUILD_DATE=`date +%Y%m%d` \
+	-DLIBDIR=$(libdir) \
+	-DLOCALEDIR=$(localedir) \
+	@DBUS_CFLAGS@ \
+	@LIB3270_CFLAGS@ \
+	@LIBV3270_CFLAGS@ \
+	@GTK_CFLAGS@ \
+	@GLIB_CFLAGS@
+
+LDFLAGS=\
+	@LDFLAGS@
+
+LIBS= \
+	@LIBS@ \
+	@LIBICONV@ \
+	@DBUS_LIBS@ \
+	@LIB3270_LIBS@ \
+	@LIBV3270_LIBS@ \
+	@GTK_LIBS@ \
+	@GLIB_LIBS@
+
+#---[ Debug Rules ]----------------------------------------------------------------------
+
+$(OBJDBG)/%.o: \
+	%.c \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) $(@D)
+
+	@$(CC) \
+		$(CFLAGS) \
+		-DDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
+	@$(CC) \
+		$(CFLAGS) \
+		-Wall -Wextra -fstack-check \
+		-DDEBUG=1 \
+		-DPLUGIN_PATH=$(BINDBG) \
+		-o $@ \
+		-c $<
+
+$(OBJDBG)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) $(@D)
+	@$(WINDRES) \
+		$< \
+		-O coff \
+		-o $@
+
+#---[ Release Rules ]--------------------------------------------------------------------
+
+$(OBJRLS)/%.o: \
+	%.c \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) $(@D)
+
+	@$(CC) \
+		$(CFLAGS) \
+		-DNDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
+	@$(CC) \
+		$(CFLAGS) \
+		-DNDEBUG=1 \
+		-o $@ \
+		-c $<
+
+$(OBJRLS)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) $(@D)
+	@$(WINDRES) $< -O coff -o $@
+
+#---[ Misc Rules ]-----------------------------------------------------------------------
+
+$(POTDIR)/%.pot: \
+	%.c
+
+	@echo $(notdir $@) ...
+	@$(MKDIR) $(dir $@)
+	@$(XGETTEXT) \
+		--from-code=UTF-8 \
+		--language=C \
+		--keyword=_ \
+		--keyword=N_ \
+		--keyword=MSG_:2 \
+		--output=$@ \
+		$<
+	@touch $@
+
+$(POTDIR)/%.pot: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) $(dir $@)
+	@touch $@
+
+install-%: \
+	%/Makefile
+
+	@$(MAKE) -C `dirname $<` DESTDIR=$(DESTDIR) install
+
+#---[ Release Targets ]------------------------------------------------------------------
+
+all: \
+	$(BINRLS)/@SONAME@ \
+	locale/$(PACKAGE_NAME).pot
+
+Release: \
+	$(BINRLS)/@SONAME@
+
+$(BINRLS)/@SONAME@: \
+	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o)
+	
+	@$(MKDIR) $(@D)
+	@echo $< ...
+	@$(LD) \
+		-shared \
+		-Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$^ \
+		$(LIBS)
+
+locale/$(PACKAGE_NAME).pot: \
+	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(POTDIR)/$(SRC).pot)
+
+	@rm -f $@
+	@$(MKDIR) $(dir $@)
+	@$(MSGCAT) --sort-output $^ > $@
+
+locale: \
+	locale/$(PACKAGE_NAME).pot
+
+#---[ Install Targets ]------------------------------------------------------------------
+
+
+#---[ Uninstall Targets ]----------------------------------------------------------------
+
+#---[ Debug Targets ]--------------------------------------------------------------------
+
+Debug: \
+	$(BINDBG)/@PACKAGE_NAME@@EXEEXT@
+
+$(BINDBG)/@PACKAGE_NAME@@EXEEXT@: \
+	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
+	$(BINDBG)/@SONAME@
+
+	@$(MKDIR) $(@D)
+	@echo $< ...
+	@$(LD) \
+		-o $@ \
+		$^ \
+		-L$(BINDBG) \
+		-Wl,-rpath,$(BINDBG) \
+		$(LDFLAGS) \
+		$(LIBS)
+
+
+$(BINDBG)/@SONAME@: \
+	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJDBG)/$(SRC).o)
+
+	@$(MKDIR) $(@D)
+	@echo $< ...
+	@$(LD) \
+		-shared \
+		-Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$^ \
+		$(LIBS)
+
+
+memcheck: \
+	$(BINDBG)/@PACKAGE_NAME@@EXEEXT@
+	
+ifeq ($(VALGRIND),no)
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(BINDBG)/@PACKAGE_NAME@@EXEEXT@
+
+else
+	@touch valgrind.suppression
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(VALGRIND) --leak-check=full --track-origins=yes --gen-suppressions=all --suppressions=valgrind.suppression \
+		$(BINDBG)/@PACKAGE_NAME@@EXEEXT@
+endif
+
+run: \
+	$(BINDBG)/@PACKAGE_NAME@@EXEEXT@
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(BINDBG)/@PACKAGE_NAME@@EXEEXT@
+
+#---[ Clean Targets ]--------------------------------------------------------------------
+
+clean: \
+	cleanDebug \
+	cleanRelease
+
+cleanDebug:
+
+	@rm -fr $(OBJDBG)
+	@rm -fr $(BINDBG)
+
+cleanRelease:
+
+	@rm -fr $(OBJRLS)
+	@rm -fr $(BINRLS)
+
+clean: \
+	cleanDebug \
+	cleanRelease
+
+
+-include $(foreach SRC, $(basename $(MAIN_SOURCES) $(TEST_SOURCES)), $(OBJDBG)/$(SRC).d)
+-include $(foreach SRC, $(basename $(MAIN_SOURCES) $(TEST_SOURCES)), $(OBJRLS)/$(SRC).d)
+
+

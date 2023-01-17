@@ -52,7 +52,7 @@
  #else
  const gchar * plugin_path 	= G_STRINGIFY(PLUGIN_PATH);
  #endif // _WIN32
- const gchar * session_name	= G_STRINGIFY(PRODUCT_NAME);
+ const gchar * session_name	= PRODUCT_NAME;
  const gchar * plugin_name	= "ipcserver." G_MODULE_SUFFIX;
 
  /*---[ Implement ]----------------------------------------------------------------------------------*/

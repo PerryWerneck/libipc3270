@@ -23,7 +23,7 @@ AC_PREREQ(2.59)
 
 dnl Initialise automake with the package name, version and
 dnl bug-reporting address.
-AC_INIT([libipc3270], [5.4], [perry.werneck@gmail.com], [libipc3270], [https://github.com/PerryWerneck/libipc3270])
+AC_INIT([pw3270-plugin-ipc], [5.4], [perry.werneck@gmail.com], [libipc3270], [https://github.com/PerryWerneck/libipc3270])
 
 dnl Place auxilliary scripts here.
 AC_CONFIG_AUX_DIR([scripts])
@@ -44,28 +44,11 @@ dnl Set gettext version
 AM_GNU_GETTEXT_VERSION([0.14])
 
 dnl Checks for programs.
-AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_SED
 AC_PROG_LN_S
 
 AC_LANG([C++])
-
-dnl ---------------------------------------------------------------------------
-dnl Version info - https://semver.org/
-dnl ---------------------------------------------------------------------------
-
-app_vrs_major=$(echo $VERSION | cut -d. -f1)
-app_vrs_minor=$(echo $VERSION | cut -d. -f2)
-app_vrs_patch=0
-
-AC_DEFINE_UNQUOTED(PACKAGE_MAJOR_VERSION, $app_vrs_major, [The library major version])
-AC_DEFINE_UNQUOTED(PACKAGE_MINOR_VERSION, $app_vrs_minor, [The library minor version])
-AC_DEFINE_UNQUOTED(PACKAGE_PATCH_LEVEL, $app_vrs_patch, [The patch level])
-
-AC_SUBST(PACKAGE_MAJOR_VERSION,$app_vrs_major)
-AC_SUBST(PACKAGE_MINOR_VERSION,$app_vrs_minor)
-AC_SUBST(PACKAGE_PATCH_LEVEL,$app_vrs_patch)
 
 dnl ---------------------------------------------------------------------------
 dnl Set application id & product name
@@ -104,9 +87,6 @@ dnl ---------------------------------------------------------------------------
 dnl Check for OS specifics
 dnl ---------------------------------------------------------------------------
 
-CFLAGS="$CFLAGS -I$ac_pwd/src/include"
-CXXFLAGS="$CXXFLAGS -I$ac_pwd/src/include"
-
 case "$host" in
 	*-mingw32|*-pc-msys)
 		CFLAGS="$CFLAGS -pthread"
@@ -115,18 +95,17 @@ case "$host" in
 		LIBS="-lws2_32 -lshlwapi $LIBS -lshell32 -lole32 -luuid -liphlpapi"		
 		AC_SUBST(LIBEXT,.dll)
 		AC_SUBST(EXEEXT,.exe)
-		AC_SUBST(SONAME,libipc3270.dll)
+		AC_SUBST(SONAME,ipcserver.dll)
 		AC_SUBST(OSNAME,windows)
 		;;
 
  	*)
 		CFLAGS="$CFLAGS -pthread -DLIBDIR=\"\$(libdir)\" -DDATADIR=\"\$(datarootdir)\""
-		CXXFLAGS="$CXXFLAGS -DLIBDIR=\"\$(libdir)\" -DDATADIR=\"\$(datarootdir)\""
 		LDFLAGS="$LDFLAGS -pthread"
 		LIBS="$LIBS -ldl"
 		AC_SUBST(LIBEXT,.so)
 		AC_SUBST(EXEEXT)
-		AC_SUBST(SONAME,libipc3270.so.$app_vrs_major.$app_vrs_minor)
+		AC_SUBST(SONAME,ipcserver.so)
 		AC_SUBST(OSNAME,linux)
 
 		PKG_CHECK_MODULES( [DBUS], [dbus-1], app_cv_libdbus=yes, AC_MSG_ERROR([ No DBUS support.]) )
@@ -202,7 +181,6 @@ CC="$ac_save_cc"])
 AC_MSG_RESULT($app_cv_fvisibility_ok)
 if test $app_cv_fvisibility_ok = yes; then
   CFLAGS="$CFLAGS -fvisibility=hidden"
-  CXXFLAGS="$CXXFLAGS -fvisibility=hidden"
 fi
 
 dnl ---------------------------------------------------------------------------
@@ -230,67 +208,41 @@ AC_ARG_ENABLE([pic],
 
 if test "$app_cv_pic" == "yes"; then
 	CFLAGS="$CFLAGS -fPIC"
-	CXXFLAGS="$CXXFLAGS -fPIC"
 fi
 
 dnl ---------------------------------------------------------------------------
-dnl Check for LIB3270
+dnl Check for LIB3270 & LIBV3270
 dnl ---------------------------------------------------------------------------
 
-AC_ARG_WITH([delayed-lib3270],
-        [AS_HELP_STRING([--with-delayed-lib3270], [Uses delayed version of lib3270 (WIN32 Only)])],
-[
-	app_cv_delayed_lib3270=$withval
-],[
-
-	case "$host" in
-	*-mingw32|*-pc-msys)
-		app_cv_delayed_lib3270="yes"
-		;;
-
-	*)
-		app_cv_delayed_lib3270="no"
-
-	esac
-
-])
-
-if test "$app_cv_delayed_lib3270" == "yes"; then
-
-	PKG_CHECK_MODULES( [LIB3270], [lib3270-delayed], AC_DEFINE(LIB3270_DELAYED,1,[Using lib3270 delayed]), AC_MSG_ERROR([LIB3270 delayed module is not present.]))
-	AC_MSG_NOTICE([Not using libintl to avoid the dependency.])
-
-else
-	PKG_CHECK_MODULES( [LIB3270], [lib3270], AC_DEFINE(LIB3270_DYNAMIC,1,[Using standard lib3270]), AC_MSG_ERROR([LIB3270 dynamic module is not present.]))
-
-	# Use libintl only if using dynamic lib3270 to avoid an extra DLL dependency.
-	AC_CHECK_HEADER(libintl.h, [
-
-		AC_DEFINE(HAVE_LIBINTL, 1,[Using libintl])
-
-		case "$host" in
-		*-mingw32|*-pc-msys)
-			INTL_LIBS="-lintl"
-			;;
-
-		*)
-			INTL_LIBS=""
-
-		esac
-
-	])
-
-fi
-
+PKG_CHECK_MODULES( [LIB3270], [lib3270], AC_DEFINE(HAVE_LIB3270,1,[Do we have lib3270]), AC_MSG_ERROR([LIB3270 is not present.]))
 AC_SUBST(LIB3270_LIBS)
 AC_SUBST(LIB3270_CFLAGS)
+
+PKG_CHECK_MODULES( [LIBV3270], [libv3270], AC_DEFINE(HAVE_LIBV3270,1,[Do we have lib3270]), AC_MSG_ERROR([LIBV3270 is not present.]))
+AC_SUBST(LIBV3270_LIBS)
+AC_SUBST(LIBV3270_CFLAGS)
+
+dnl ---------------------------------------------------------------------------
+dnl Check for GTK
+dnl ---------------------------------------------------------------------------
+
+PKG_CHECK_MODULES( [GTK], [gtk+-3.0], AC_DEFINE(HAVE_GTK,1,[Do we have gtk?]), AC_MSG_ERROR([GTK not present.]))
+AC_SUBST(GTK_LIBS)
+AC_SUBST(GTK_CFLAGS)
+
+dnl ---------------------------------------------------------------------------
+dnl Check for GLIB
+dnl ---------------------------------------------------------------------------
+
+PKG_CHECK_MODULES( [GLIB], [glib-2.0 gobject-2.0 gmodule-2.0 gio-2.0], AC_DEFINE(HAVE_GLIB,1,[Do we have glib?]), AC_MSG_ERROR([GLIB not present.] ))
+AC_SUBST(GLIB_LIBS)
+AC_SUBST(GLIB_CFLAGS)
 
 dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
 
-AC_CONFIG_FILES(sdk/dynamic.pc)
-AC_CONFIG_FILES(sdk/static.pc)
+AC_CONFIG_FILES(src/include/ipc-glib.h)
 AC_CONFIG_FILES(locale/Makefile)
 AC_CONFIG_FILES(Makefile)
 
