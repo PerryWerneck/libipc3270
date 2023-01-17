@@ -24,132 +24,36 @@
 # erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
 #
 
-PACKAGE_NAME=@PACKAGE_NAME@
-PRODUCT_NAME=@PRODUCT_NAME@
-LIBNAME=libipc3270
-PROJECT_MODULES=@PROJECT_MODULES@
-
-#---[ Paths ]----------------------------------------------------------------------------
-
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-bindir=@bindir@
-sbindir=@sbindir@
-libdir=@libdir@
-includedir=@includedir@
-datarootdir=@datarootdir@
-localedir=@localedir@
-docdir=@docdir@
-sysconfdir=@sysconfdir@
-POTDIR=$(BASEDIR)/.pot
-GETTEXT_PACKAGE=@GETTEXT_PACKAGE@
-
-BASEDIR=@BASEDIR@
-
-BINDIR=$(BASEDIR)/.bin
-BINDBG=$(BINDIR)/Debug
-BINRLS=$(BINDIR)/Release
-
-#---[ Tools ]----------------------------------------------------------------------------
-
-LN_S=@LN_S@
-MKDIR=@MKDIR_P@
-INSTALL=@INSTALL@
-INSTALL_DATA=@INSTALL_DATA@
-INSTALL_PROGRAM=@INSTALL_PROGRAM@
-DOXYGEN=@DOXYGEN@
-MSGCAT=@MSGCAT@
-
 #---[ Release Targets ]------------------------------------------------------------------
 
-all: \
-	$(foreach MODULE, $(PROJECT_MODULES), $(MODULE)) \
-	locale/$(GETTEXT_PACKAGE).pot
-
-server: \
-	$(BINRLS)/ipcserver@DLLEXT@
-
-client: \
-	$(BINRLS)/libipc3270@LIBEXT@
-
-$(BINRLS)/ipcserver@DLLEXT@: \
-	server/* \
-	Makefile
-
-	@$(MAKE) -C server $@	
-
-$(BINRLS)/libipc3270@LIBEXT@: \
-	client/* \
-	Makefile
-
-	@$(MAKE) -C client $@	
-
-locale/$(GETTEXT_PACKAGE).pot:
-
-	@rm -f $@
-	@$(MKDIR) $(@D)
-	@$(MAKE) -C client locale
-	@$(MAKE) -C server locale
-	@$(MSGCAT) \
-		--sort-output \
-		$(POTDIR)/ipc3270.pot \
-		$(POTDIR)/ipcserver.pot \
-		> $@
-
-
-#---[ Install Targets ]------------------------------------------------------------------
-
-install: \
-	$(foreach MODULE, $(PROJECT_MODULES), install-$(MODULE)) \
-	install-locale
-
-install-locale: \
-	locale/$(GETTEXT_PACKAGE).pot
+all:
+	@$(MAKE) -C client $@
+	@$(MAKE) -C plugin $@
 	
-	@$(MAKE) -C locale DESTDIR=$(DESTDIR) install
-
-	@$(MKDIR) \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
-
-	@$(INSTALL_DATA) \
-		locale/$(GETTEXT_PACKAGE).pot \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot/$(LIBNAME).pot
-
-install-server: \
-	server
-
-	@$(MAKE) -C server DESTDIR=$(DESTDIR) install
-
-install-client: \
-	client
-
-	@$(MAKE) -C client DESTDIR=$(DESTDIR) install
-
-doc:
-	@$(DOXYGEN) ./doxygen/doxyfile
-
-#---[ Install Targets ]------------------------------------------------------------------
+#---[ Debug Targets ]--------------------------------------------------------------------
 
 Debug:
-
 	@$(MAKE) -C client $@
-	@$(MAKE) -C server $@
+	@$(MAKE) -C plugin $@
+
+#---[ Install Targets ]------------------------------------------------------------------
+
+install:
+	@$(MAKE) -C client $@
+	@$(MAKE) -C plugin $@
 
 #---[ Clean Targets ]--------------------------------------------------------------------
 
 clean:
-
 	@$(MAKE) -C client $@
-	@$(MAKE) -C server $@
+	@$(MAKE) -C plugin $@
 
 cleanDebug:
-
 	@$(MAKE) -C client $@
-	@$(MAKE) -C server $@
+	@$(MAKE) -C plugin $@
 
 cleanRelease:
-
 	@$(MAKE) -C client $@
-	@$(MAKE) -C server $@
+	@$(MAKE) -C plugin $@
 
 
