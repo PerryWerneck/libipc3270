@@ -5,6 +5,7 @@ Created originally as part of PW3270 application this library is designed to act
 See more details at https://softwarepublico.gov.br/social/pw3270/
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![CodeQL](https://github.com/PerryWerneck/libipc3270/workflows/CodeQL/badge.svg)
 ![Downloads](https://img.shields.io/github/downloads/PerryWerneck/libipc3270/total.svg)
 [![build result](https://build.opensuse.org/projects/home:PerryWerneck:pw3270/packages/libipc3270/badge.svg?type=percent)](https://build.opensuse.org/package/show/home:PerryWerneck:pw3270/libipc3270)
 
