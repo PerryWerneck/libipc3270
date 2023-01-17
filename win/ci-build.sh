@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 #
 # References:
 #
@@ -19,14 +19,14 @@ die ( ) {
 myDIR=$(dirname $(dirname $(readlink -f ${0})))
 
 cd ${myDIR}
-rm -fr ${myDIR}/.build
+rm -fr ./.build
+mkdir -p ./.build
 
 #
 # Build LIB3270
 #
 echo "Building lib3270"
-mkdir -p ./.build/lib3270
-git clone https://github.com/PerryWerneck/lib3270.git ${myDIR}/.build/lib3270 > $LOGFILE 2>&1 || die "clone lib3270 failure"
+git clone https://github.com/PerryWerneck/lib3270.git ./.build/lib3270 > $LOGFILE 2>&1 || die "clone lib3270 failure"
 cd ./.build/lib3270
 ./autogen.sh > $LOGFILE 2>&1 || die "Autogen failure"
 ./configure > $LOGFILE 2>&1 || die "Configure failure"
@@ -40,7 +40,7 @@ cd ../..
 #
 echo "Building libv3270"
 mkdir -p  ./.build/libv3270
-git clone https://github.com/PerryWerneck/libv3270.git ${myDIR}/.build/libv3270 > $LOGFILE 2>&1 || die "clone libv3270 failure"
+git clone https://github.com/PerryWerneck/libv3270.git ./.build/libv3270 > $LOGFILE 2>&1 || die "clone libv3270 failure"
 cd ./.build/libv3270
 ./autogen.sh > $LOGFILE 2>&1 || die "Autogen failure"
 ./configure > $LOGFILE 2>&1 || die "Configure failure"
@@ -50,7 +50,7 @@ make install  > $LOGFILE 2>&1 || die "Install failure"
 cd ../..
 
 #
-# Build PW3270
+# Build IPC3270
 #
 echo "Building IPC"
 ./autogen.sh > $LOGFILE 2>&1 || die "Autogen failure"
