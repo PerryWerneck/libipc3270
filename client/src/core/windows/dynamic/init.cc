@@ -36,6 +36,7 @@
  *
  */
 
+ #include <config.h>
  #include <ipc-client-internals.h>
  #include <delayimp.h>
  #include <fcntl.h>
