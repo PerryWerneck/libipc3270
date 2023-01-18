@@ -62,7 +62,7 @@ For the supported distributions get the install repositories and instructions fr
 
 ### Windows native with MSYS2
 
-1. Build and install [libv3270](../../../libv3270)
+1. Build and install [lib3270](../../../lib3270)
 
 2. Get sources from git
 
