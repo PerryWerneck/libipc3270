@@ -28,6 +28,10 @@ AC_INIT([libipc3270], [5.5], [perry.werneck@gmail.com], [libipc3270], [https://g
 dnl Place auxilliary scripts here.
 AC_CONFIG_AUX_DIR([scripts])
 
+LT_INIT 
+
+AC_CONFIG_MACRO_DIRS([m4])
+
 dnl Compute the canonical host-system type
 AC_CANONICAL_HOST
 
