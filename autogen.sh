@@ -1,6 +1,14 @@
 #!/bin/bash
 
-builddir=${PWD}
+builddir=$(readlink -f ${PWD})
+
+cd ${builddir}/plugin
+NOCONFIGURE=1 ./autogen.sh
+
+cd ${builddir}/client
+NOCONFIGURE=1 ./autogen.sh
+
+cd ${builddir}
 
 test -n "$srcdir" || srcdir=`dirname "$0"`
 test -n "$srcdir" || srcdir=.

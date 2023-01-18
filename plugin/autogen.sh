@@ -2,18 +2,6 @@
 
 builddir=${PWD}
 
-NOCONFIGURE=1 ./plugin/autogen.sh
-if test $? != 0 ; then
-        echo "plugin autogen failed."
-        exit -1
-fi
-
-NOCONFIGURE=1 ./client/autogen.sh
-if test $? != 0 ; then
-        echo "client autogen failed."
-        exit -1
-fi
-
 test -n "$srcdir" || srcdir=$(readlink -f $(dirname "$0"))
 test -n "$srcdir" || srcdir=$(readlink -f .)
 
