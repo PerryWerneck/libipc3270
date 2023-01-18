@@ -36,6 +36,8 @@ AC_INIT([ipc3270], [5.4], [perry.werneck@gmail.com])
 dnl Place auxilliary scripts here.
 AC_CONFIG_AUX_DIR([scripts])
 
+AC_CONFIG_MACRO_DIRS([m4])
+
 dnl Compute the canonical host-system type
 AC_CANONICAL_HOST
 
