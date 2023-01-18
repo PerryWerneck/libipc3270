@@ -23,7 +23,7 @@ AC_PREREQ(2.59)
 
 dnl Initialise automake with the package name, version and
 dnl bug-reporting address.
-AC_INIT([libipc3270], [5.4], [perry.werneck@gmail.com], [libipc3270], [https://github.com/PerryWerneck/libipc3270])
+AC_INIT([libipc3270], [5.5], [perry.werneck@gmail.com], [libipc3270], [https://github.com/PerryWerneck/libipc3270])
 
 dnl Place auxilliary scripts here.
 AC_CONFIG_AUX_DIR([scripts])
