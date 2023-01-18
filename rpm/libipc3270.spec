@@ -122,7 +122,6 @@ make all
 %{_includedir}/lib3270/ipc/*.h
 %{_libdir}/%{name}.so
 %{_libdir}/pkgconfig/*.pc
-%{_datadir}/%{product}/pot/*.pot
 
 %pre -n %{name}-%{_libvrs} -p /sbin/ldconfig
 
