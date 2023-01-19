@@ -68,7 +68,10 @@
 		<Unit filename="src/include/ipc-client-internals.h" />
 		<Unit filename="src/include/lib3270/ipc.h" />
 		<Unit filename="src/include/lib3270/ipc/action.h" />
+		<Unit filename="src/include/lib3270/ipc/host.h" />
 		<Unit filename="src/include/lib3270/ipc/request.h" />
+		<Unit filename="src/include/lib3270/ipc/session.h" />
+		<Unit filename="src/include/private/session.h" />
 		<Unit filename="src/session/action.cc" />
 		<Unit filename="src/session/get.cc" />
 		<Unit filename="src/session/local/actions.cc" />
@@ -87,6 +90,7 @@
 		<Unit filename="src/session/remote/linux/session.cc" />
 		<Unit filename="src/session/remote/private.h" />
 		<Unit filename="src/session/remote/properties.cc" />
+		<Unit filename="src/session/remote/session.cc" />
 		<Unit filename="src/session/remote/set.cc" />
 		<Unit filename="src/session/remote/tools.cc" />
 		<Unit filename="src/session/remote/wait.cc" />

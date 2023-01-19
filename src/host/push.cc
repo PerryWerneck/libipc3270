@@ -36,7 +36,8 @@
  *
  */
 
- #include "private.h"
+#include <config.h>
+#include <lib3270/ipc/host.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
@@ -71,6 +72,6 @@ TN3270::Host & TN3270::Host::push(const std::string &text) {
 }
 
 LIB3270_KEYBOARD_LOCK_STATE TN3270::Host::input(const char *text, int length, const char control_char) {
-	return session->input(string(text,(size_t) length),control_char);
+	return session->input(std::string(text,(size_t) length),control_char);
 }
 

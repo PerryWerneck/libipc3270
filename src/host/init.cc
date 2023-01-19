@@ -36,7 +36,9 @@
  *
  */
 
- #include "private.h"
+#include <config.h>
+#include <lib3270/ipc.h>
+#include <lib3270/ipc/host.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
@@ -45,20 +47,11 @@ TN3270::Host::Host(const char *id, const char *charset) {
 	if(!id)
 		id = "";
 
-	debug("Creating host id=\"", id, "\"");
-
 	this->timeout = 5;
 	this->session = Session::getInstance(id, charset);
-
-	debug("Create host with session ",this->session);
 
 }
 
 
 TN3270::Host::~Host() {
-	debug("Deleting host session ",this->session);
-	if(this->session) {
-		delete this->session;
-		this->session = nullptr;
-	}
 }

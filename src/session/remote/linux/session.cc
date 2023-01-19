@@ -37,28 +37,13 @@
  */
 
  #include <config.h>
- #include "../private.h"
- #include <ipc-client-internals.h>
- #include <cstring>
- #include <lib3270/trace.h>
- #include <algorithm>
+ #include <private/session.h>
 
- using std::string;
+ using namespace std;
 
-/*---[ Implement ]----------------------------------------------------------------------------------*/
 
- static void throws_if_error(DBusError &err) {
 
- 	if(dbus_error_is_set(&err)) {
-		string message = err.message;
-		dbus_error_free(&err);
-		throw std::runtime_error(message.c_str());
- 	}
-
- 	return;
-
- }
-
+ /*
  namespace TN3270 {
 
 	IPC::Session::Session(const char *id, const char *charset) : Abstract::Session() {
@@ -107,4 +92,5 @@
 
  }
 
+	*/
 

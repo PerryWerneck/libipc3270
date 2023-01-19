@@ -133,6 +133,7 @@
 
 		namespace Abstract {
 
+			/*
 			class TN3270_PRIVATE Session : public TN3270::Session {
 			private:
 
@@ -195,6 +196,7 @@
 				void pop(std::string &text) override;
 
 			};
+			*/
 
 		}
 

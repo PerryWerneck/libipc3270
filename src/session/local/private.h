@@ -46,6 +46,7 @@
 
 	#include <ipc-client-internals.h>
 	#include <lib3270/ipc/action.h>
+	#include <private/session.h>
 	#include <string>
 	#include <lib3270.h>
 	#include <lib3270/popup.h>

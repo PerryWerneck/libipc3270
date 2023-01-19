@@ -53,6 +53,8 @@
  #include <lib3270.h>
  #include <lib3270/ipc.h>
  #include <lib3270/ipc/action.h>
+ #include <lib3270/ipc/session.h>
+ #include <lib3270/ipc/host.h>
 
  using namespace std;
 
@@ -61,7 +63,7 @@
  // Test "Session" object
  static void chkSession() {
 
-	TN3270::Session * hSession = TN3270::Session::getInstance();
+	auto hSession = TN3270::Session::getInstance();
 
 	try {
 
@@ -90,8 +92,6 @@
 		cerr << "Exception: " << e.what() << endl;
 
 	}
-
-	delete hSession;
 
  }
 

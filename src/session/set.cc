@@ -36,7 +36,8 @@
  *
  */
 
- #include <ipc-client-internals.h>
+ #include <config.h>
+ #include <private/session.h>
  #include <cstring>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/

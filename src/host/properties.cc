@@ -27,16 +27,8 @@
  *
  */
 
-/**
- * @file
- *
- * @brief
- *
- * @author perry.werneck@gmail.com
- *
- */
-
- #include "private.h"
+#include <config.h>
+#include <lib3270/ipc/host.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 

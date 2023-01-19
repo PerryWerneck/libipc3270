@@ -36,23 +36,14 @@
  *
  */
 
- #include <ipc-client-internals.h>
+ #include <config.h>
+ #include <private/session.h>
  #include <cstring>
-
-
-/*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
 
-	Abstract::Session::Session() {
-
-#ifdef HAVE_ICONV
-		this->converter.local	= (iconv_t) (-1);
-		this->converter.host	= (iconv_t) (-1);
-#else
-		this->converter = nullptr;
-#endif
-
+	Abstract::Session::Session(const char *remote_charset, const char *local_charset) {
+//		set_charset(remote_charset,local_charset);
 	}
 
 	Abstract::Session::~Session() {
@@ -79,6 +70,10 @@
 	/// @brief Setup charsets
 	void Abstract::Session::setCharSet(const char *remote, const char *local) {
 
+		if(!remote) {
+			remote = "ISO-8859-1";
+		}
+
 		if(!local) {
 
 			// TODO: Detect the current value (maybee something like g_charset)
@@ -90,7 +85,7 @@
 
 		}
 
-		debug("Charsets: remote=",remote," local=",local);
+//		debug("Charsets: remote=",remote," local=",local);
 
 #ifdef HAVE_ICONV
 
@@ -193,7 +188,7 @@
 
 #ifdef HAVE_ICONV
 
-		debug("Using ICONV");
+//		debug("Using ICONV");
 		return convertCharset(const_cast<Abstract::Session *>(this)->converter.host,text,length);
 
 #else

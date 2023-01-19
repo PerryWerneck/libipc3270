@@ -1,30 +1,20 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
 /*
- * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
- * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
- * aplicativos mainframe. Registro no INPI sob o nome G3270.
- *
  * Copyright (C) <2008> <Banco do Brasil S.A.>
  *
- * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
- * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
- * Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
- * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
- * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
- * obter mais detalhes.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
- * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
- * St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Este programa está nomeado como - e possui - linhas de código.
- *
- * Contatos:
- *
- * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
- * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
- *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 /**
@@ -36,31 +26,24 @@
  *
  */
 
- #include <ipc-client-internals.h>
+ #include <config.h>
+ #include <lib3270/ipc/session.h>
+ #include <private/session.h>
  #include <string>
  #include <cstring>
+ #include <stdexcept>
 
-/*---[ Implement ]----------------------------------------------------------------------------------*/
+ using namespace std;
 
  namespace TN3270 {
 
-	Session * Session::getInstance(const char *id, const char *charset) {
+	std::shared_ptr<Session> Session::getInstance(const char *id, const char *charset) {
 
-		if(!(id && *id)) {
-			return Local::getSessionInstance(charset);
+		if(id && *id) {
+			throw runtime_error("Remote session is not implemented");
 		}
 
-		if(*id == ':') {
-
-			std::string name{LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME)};
-			name += id;
-
-			return IPC::getSessionInstance(name.c_str(), charset);
-
-		}
-
-		return IPC::getSessionInstance(id, charset);
-
+		throw runtime_error("Local session is not implemented");
 	}
 
 	Session::Session() {
@@ -70,8 +53,8 @@
 	}
 
 	/// @brief Fire event.
-	void Session::fire(const Event GNUC_UNUSED(&event)) {
-	}
+	//void Session::fire(const Event GNUC_UNUSED(&event)) {
+	//}
 
 	void Session::push(const PFKey key) {
 		pfkey( ((unsigned short) key) + 1);
@@ -381,13 +364,13 @@
 
 	}
 
-	void Session::setAttribute(const char GNUC_UNUSED(*name), const int GNUC_UNUSED(value)) {
-		throw std::system_error(ENOTSUP, std::system_category());
-	}
+	//void Session::setAttribute(const char GNUC_UNUSED(*name), const int GNUC_UNUSED(value)) {
+	//	throw std::system_error(ENOTSUP, std::system_category());
+	//}
 
-	void Session::setAttribute(const char GNUC_UNUSED(*name), const char GNUC_UNUSED(*value)) {
-		throw std::system_error(ENOTSUP, std::system_category());
-	}
+	//void Session::setAttribute(const char GNUC_UNUSED(*name), const char GNUC_UNUSED(*value)) {
+	//	throw std::system_error(ENOTSUP, std::system_category());
+	//}
 
 	std::vector<Attribute> Session::getAttributes() const {
 		std::vector<Attribute> attributes;
@@ -412,9 +395,10 @@
 	}
 
 	/// @brief Create an action object
-	Action * Session::getAction(const LIB3270_ACTION GNUC_UNUSED(*descriptor)) {
-		throw std::system_error(ENOTSUP, std::system_category());
-	}
+	//Action * Session::getAction(const LIB3270_ACTION GNUC_UNUSED(*descriptor)) {
+	//	throw std::system_error(ENOTSUP, std::system_category());
+	//}
+
 
 	Action * Session::getAction(const char *name) {
 

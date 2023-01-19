@@ -46,6 +46,7 @@
 
 	#include <ipc-client-internals.h>
 	#include <lib3270/ipc/action.h>
+	#include <private/session.h>
 	#include <string>
 	#include <lib3270.h>
 	#include <stdexcept>
@@ -167,7 +168,7 @@
 				unsigned short setCursor(unsigned short row, unsigned short col) override;
 				unsigned short getCursorAddress() override;
 				Session::Cursor getCursorPosition() override;
-				
+
 				void setProperty(const char *name, const int value) override;
 				void setProperty(const char *name, const unsigned int value) override;
 				void setProperty(const char *name, const bool value) override;
