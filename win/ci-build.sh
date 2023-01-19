@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 #
 # References:
 #
@@ -11,54 +11,50 @@ LOGFILE=build.log
 rm -f ${LOGFILE}
 
 die ( ) {
-	[ -s $LOGFILE ] && tail $LOGFILE
 	[ "$1" ] && echo "$*"
 	exit -1
 }
 
 myDIR=$(dirname $(dirname $(readlink -f ${0})))
-echo "myDIR=${myDIR}"
 
 cd ${myDIR}
-rm -fr ${myDIR}/.build
+rm -fr ./.build
+mkdir -p ./.build
 
 #
 # Build LIB3270
 #
 echo "Building lib3270"
-mkdir -p ${myDIR}/.build/lib3270
-git clone https://github.com/PerryWerneck/lib3270.git ${myDIR}/.build/lib3270 > $LOGFILE 2>&1 || die "clone lib3270 failure"
-pushd  ${myDIR}/.build/lib3270
-./autogen.sh > $LOGFILE 2>&1 || die "Autogen failure"
-./configure > $LOGFILE 2>&1 || die "Configure failure"
-make clean > $LOGFILE 2>&1 || die "Make clean failure"
-make all  > $LOGFILE 2>&1 || die "Make failure"
-make install  > $LOGFILE 2>&1 || die "Install failure"
-popd
+git clone https://github.com/PerryWerneck/lib3270.git ./.build/lib3270 || die "clone lib3270 failure"
+cd ./.build/lib3270
+./autogen.sh || die "Lib3270 autogen failure"
+./configure || die "Lib3270 Configure failure"
+make clean || die "Lib3270 Make clean failure"
+make all || die "Lib3270 Make failure"
+make install || die "Lib3270 Install failure"
+cd ../..
 
 #
 # Build LIBV3270
 #
 echo "Building libv3270"
-mkdir -p  ${myDIR}/.build/libv3270
-git clone https://github.com/PerryWerneck/libv3270.git ${myDIR}/.build/libv3270 > $LOGFILE 2>&1 || die "clone libv3270 failure"
-pushd ${myDIR}/.build/libv3270
-./autogen.sh > $LOGFILE 2>&1 || die "Autogen failure"
-./configure > $LOGFILE 2>&1 || die "Configure failure"
-make clean > $LOGFILE 2>&1 || die "Make clean failure"
-make all  > $LOGFILE 2>&1 || die "Make failure"
-make install  > $LOGFILE 2>&1 || die "Install failure"
-popd
+git clone https://github.com/PerryWerneck/libv3270.git ./.build/libv3270 || die "clone libv3270 failure"
+cd ./.build/libv3270
+./autogen.sh || die "Libv3270 Autogen failure"
+./configure || die "Libv3270 Configure failure"
+make clean || die "Libv3270 Make clean failure"
+make all || die "Libv3270 Make failure"
+make install || die "Libv3270 Install failure"
+cd ../..
 
 #
-# Build PW3270
+# Build IPC3270
 #
-echo "Building PW3270"
-cd ${myDIR}
-./autogen.sh > $LOGFILE 2>&1 || die "Autogen failure"
-./configure > $LOGFILE 2>&1 || die "Configure failure"
-make clean > $LOGFILE 2>&1 || die "Make clean failure"
-make all  > $LOGFILE 2>&1 || die "Make failure"
+echo "Building IPC"
+./autogen.sh || die "Autogen failure"
+./configure || die "Configure failure"
+make clean || die "Make clean failure"
+make all  || die "Make failure"
 
 echo "Build complete"
 
