@@ -82,8 +82,6 @@
 
 		dbus_message_iter_init(response.msg, &response.iter);
 
-//		debug(__FUNCTION__," got a valid response");
-
 		return *this;
 
 	}
@@ -357,8 +355,6 @@
 
 		value = getIntValue(response.iter);
 		dbus_message_iter_next(&response.iter);
-//		debug(__FUNCTION__,"= \"",value,"\"");
-
 		return *this;
 
 	}
@@ -367,8 +363,6 @@
 
 		value = getUIntValue(response.iter);
 		dbus_message_iter_next(&response.iter);
-//		debug(__FUNCTION__,"= \"",value,"\"");
-
 		return *this;
 
 	}
@@ -377,8 +371,6 @@
 
 		value = getBooleanValue(response.iter);
 		dbus_message_iter_next(&response.iter);
-//		debug(__FUNCTION__,"= \"",value,"\"");
-
 		return *this;
 
 	}

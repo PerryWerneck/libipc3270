@@ -40,7 +40,6 @@
 		<Linker>
 			<Add option="`pkg-config --libs lib3270`" />
 		</Linker>
-		<Unit filename="../include/config.h.in" />
 		<Unit filename="src/core/abstract.cc" />
 		<Unit filename="src/core/actions.cc" />
 		<Unit filename="src/core/attribute.cc" />
@@ -55,8 +54,6 @@
 		<Unit filename="src/core/windows/pop.cc" />
 		<Unit filename="src/core/windows/push.cc" />
 		<Unit filename="src/core/windows/request.cc" />
-		<Unit filename="src/core/windows/resources.rc" />
-		<Unit filename="src/core/windows/resources.rc.in" />
 		<Unit filename="src/core/windows/tools.cc" />
 		<Unit filename="src/host/actions.cc" />
 		<Unit filename="src/host/init.cc" />
