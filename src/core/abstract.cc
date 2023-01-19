@@ -79,8 +79,6 @@
 	/// @brief Setup charsets
 	void Abstract::Session::setCharSet(const char *remote, const char *local) {
 
-		debug("Charsets: remote=",remote," local=",local);
-
 		if(!local) {
 
 			// TODO: Detect the current value (maybee something like g_charset)
@@ -91,6 +89,8 @@
 #endif // _WIN32
 
 		}
+
+		debug("Charsets: remote=",remote," local=",local);
 
 #ifdef HAVE_ICONV
 

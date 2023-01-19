@@ -58,7 +58,6 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-/*
  // Test "Session" object
  static void chkSession() {
 
@@ -71,7 +70,6 @@
 			<< "\tRevision: " << hSession->getRevision()
 			<< endl;
 
-		hSession->connect("tn3270s://3270.df.bb:9023");
 		hSession->waitForReady(30);
 
 		cout
@@ -96,7 +94,6 @@
 	delete hSession;
 
  }
- */
 
  // Test Attributes
  static void testAttributes(const char *session, const char *name) {
@@ -259,6 +256,11 @@
 	const char * url = nullptr;
 
 #if ! defined(_MSC_VER)
+
+	if(argc == 1) {
+		chkSession();
+		return 0;
+	}
 
 	static struct option options[] = {
 		{ "session",	required_argument,		0,	's' },
