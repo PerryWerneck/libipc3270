@@ -269,6 +269,25 @@
 		/// @brief Get Request.
 		virtual std::shared_ptr<Request> RequestFactory(const Request::Type type, const char *name) const;
 
+		/// @brief Get a single value from remote, convert it to local value.
+		/// @tparam F The data type from source (usually uint32_t).
+		/// @tparam T The local data type.
+		/// @return The remote property converted to local type.
+		template <typename F, typename T>
+		T getProperty(const char *name) const {
+			F value;
+			RequestFactory(Request::GetProperty,name)->call().pop(value);
+			return (T) value;
+		}
+
+		/// @brief Set a single value on remote remote.
+		/// @tparam T The remote data type.
+		template <typename F, typename T>
+		void setProperty(const char *name, T value) const {
+			RequestFactory(Request::SetProperty,name)->push(value).call();
+		}
+
+
 	};
 
 

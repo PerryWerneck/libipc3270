@@ -57,32 +57,43 @@
 	}
 
 	ProgramMessage Abstract::Session::getProgramMessage() const {
-		uint32_t program_message;
-		RequestFactory(Request::GetProperty,"program_message")->get(program_message);
-		return (ProgramMessage) program_message;
+		return getProperty<uint32_t,ProgramMessage>("program_message");
 	}
 
 	ConnectionState Abstract::Session::getConnectionState() const {
-
-		uint32_t cstate;
-		RequestFactory(Request::GetProperty,"cstate")->get(cstate);
-		return (ConnectionState) cstate;
-
+		return getProperty<uint32_t,ConnectionState>("cstate");
 	}
 
 	SSLState Abstract::Session::getSSLState() const {
-
-		int32_t sslstate;
-		RequestFactory(Request::GetProperty,"sslstate")->get(sslstate);
-		return (TN3270::SSLState) sslstate;
-
+		return getProperty<int32_t,SSLState>("sslstate");
 	}
 
 	LIB3270_KEYBOARD_LOCK_STATE Abstract::Session::getKeyboardLockState() const {
-		uint32_t kybdlock;
-		RequestFactory(Request::GetProperty,"kybdlock")->get(kybdlock);
-		return (LIB3270_KEYBOARD_LOCK_STATE) kybdlock;
+		return getProperty<uint32_t,LIB3270_KEYBOARD_LOCK_STATE>("kybdlock");
 	}
+
+	Session::Cursor Abstract::Session::getCursorPosition() {
+
+		uint32_t row = 0, col = 0;
+
+		RequestFactory(Request::Method,"getCursorPosition")->call().pop(row,col);
+
+		return Session::Cursor(row,col);
+
+	}
+
+	unsigned short Abstract::Session::getScreenWidth() const {
+		return getProperty<uint32_t,unsigned short>("width");
+	}
+
+	unsigned short Abstract::Session::getScreenHeight() const {
+		return getProperty<uint32_t,unsigned short>("height");
+	}
+
+	unsigned short Abstract::Session::getScreenLength() const {
+		return getProperty<uint32_t,unsigned short>("length");
+	}
+
 
  }
 

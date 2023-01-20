@@ -117,6 +117,11 @@
 		virtual Request & pop(unsigned int &value) = 0;
 		virtual Request & pop(bool &value) = 0;
 
+		template<typename T, typename... Targs>
+		Request & pop(T &value, Targs... Fargs) {
+			pop(value);
+			return pop(Fargs...);
+		}
 	};
 
 	template <typename T>

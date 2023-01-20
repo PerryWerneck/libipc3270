@@ -39,6 +39,7 @@
  #include <config.h>
  #include <private/session.h>
  #include <lib3270/ipc/request.h>
+ #include <ipc-client-internals.h>
  #include <cstring>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
@@ -55,6 +56,34 @@
 
 	void Abstract::Session::push(unsigned short row, unsigned short col, const char *text, int length) {
 		set(row,col,convertToHost(text,length));
+	}
+
+	void Abstract::Session::setUnlockDelay(unsigned short delay) {
+		setProperty<uint32_t>("unlock_delay",delay);
+	}
+
+	void Abstract::Session::setLockOnOperatorError(bool lock) {
+		setProperty<uint32_t>("oerrlock",lock);
+	}
+
+	unsigned short Abstract::Session::setCursor(int addr) {
+
+		int32_t rc;
+		RequestFactory(Request::Method,"setCursorAddress")->push(addr).call().pop(rc);
+
+		if(rc < 0)
+			chkResponse(-rc);
+
+		return (unsigned short) rc;
+
+	}
+
+	void Abstract::Session::setTimeout(time_t timeout) {
+
+		int32_t rc;
+		RequestFactory(Request::Method,"setWaitMode")->push( (int32_t) (timeout != 0) ).call().pop(rc);
+		chkResponse(rc);
+
 	}
 
  }

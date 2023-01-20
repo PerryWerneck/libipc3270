@@ -376,7 +376,7 @@
 		}
 	};
 
-	Attribute IPC::Session::getAttribute(const char *name) const {
+	Attribute Abstract::Session::getAttribute(const char *name) const {
 
 		// Check for integer properties.
 		{
@@ -445,7 +445,7 @@
 
 	}
 
-	void IPC::Session::getAttributes(std::vector<Attribute> & attributes) const {
+	void Abstract::Session::getAttributes(std::vector<Attribute> & attributes) const {
 
 		// Add integer properties.
 		{
@@ -490,18 +490,6 @@
 
 	}
 
-	Session::Cursor IPC::Session::getCursorPosition() {
-
-		uint32_t row, col;
-
-		Request(*this,"getCursorPosition")
-			.call()
-			.pop(row)
-			.pop(col);
-
-		return Session::Cursor(row,col);
-
-	}
 	*/
 
  }

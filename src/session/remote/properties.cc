@@ -46,7 +46,7 @@
  namespace TN3270 {
 
 	/*
-	void IPC::Session::getAttribute(const char *name, int &value) const {
+	void Abstract::Session::getAttribute(const char *name, int &value) const {
 
 		Request(*this,false,name)
 			.call()
@@ -54,7 +54,7 @@
 
 	}
 
-	void IPC::Session::getAttribute(const char *name, unsigned int &value) const {
+	void Abstract::Session::getAttribute(const char *name, unsigned int &value) const {
 
 		Request(*this,false,name)
 			.call()
@@ -62,7 +62,7 @@
 
 	}
 
-	void IPC::Session::getAttribute(const char *name, std::string &value) const {
+	void Abstract::Session::getAttribute(const char *name, std::string &value) const {
 
 		Request(*this,false,name)
 			.call()
@@ -70,11 +70,11 @@
 
 	}
 
-	void IPC::Session::getAttribute(const char GNUC_UNUSED(*name), bool GNUC_UNUSED(&value)) const {
+	void Abstract::Session::getAttribute(const char GNUC_UNUSED(*name), bool GNUC_UNUSED(&value)) const {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
 
-	void IPC::Session::setAttribute(const char *name, const int value) {
+	void Abstract::Session::setAttribute(const char *name, const int value) {
 
 		int32_t rc;
 
@@ -89,7 +89,7 @@
 
 	}
 
-	void IPC::Session::setAttribute(const char *name, const char *value) {
+	void Abstract::Session::setAttribute(const char *name, const char *value) {
 
 		int32_t rc;
 
@@ -104,77 +104,12 @@
 
 	}
 
-	void IPC::Session::setCharSet(const char *charset) {
+	void Abstract::Session::setCharSet(const char *charset) {
 		// D-Bus calls are always UTF-8
 		Abstract::Session::setCharSet("UTF-8",charset);
 	}
 
-	unsigned short IPC::Session::getScreenWidth() const {
-
-		uint32_t value;
-		getAttribute("width",value);
-		return (unsigned short) value;
-
-	}
-
-	unsigned short IPC::Session::getScreenHeight() const {
-
-		uint32_t value;
-		getAttribute("height",value);
-		return (unsigned short) value;
-
-	}
-
-	unsigned short IPC::Session::getScreenLength() const {
-
-		uint32_t value;
-		getAttribute("length",value);
-		return (unsigned short) value;
-
-	}
-
-	void IPC::Session::setUnlockDelay(unsigned short delay) {
-
-		Request(*this,true,"unlock_delay")
-			.push((uint32_t) delay)
-			.call();
-
-	}
-
-	void IPC::Session::setLockOnOperatorError(bool lock) {
-		setAttribute("oerrlock", (uint32_t) lock);
-	}
-
-	unsigned short IPC::Session::setCursor(int addr) {
-
-		int32_t rc;
-
-		Request(*this,"setCursorAddress")
-			.push((int32_t) addr)
-			.call()
-			.pop(rc);
-
-		if(rc < 0)
-			chkResponse(-rc);
-
-		return (unsigned short) rc;
-
-	}
-
-	void IPC::Session::setTimeout(time_t timeout) {
-
-		int32_t rc;
-
-		Request(*this,"setWaitMode")
-			.push(timeout != 0)
-			.call()
-			.pop(rc);
-
-		chkResponse(rc);
-
-	}
-
-	unsigned short IPC::Session::setCursor(unsigned short row, unsigned short col) {
+	unsigned short Abstract::Session::setCursor(unsigned short row, unsigned short col) {
 
 		int32_t rc;
 
@@ -191,7 +126,7 @@
 
 	}
 
-	unsigned short IPC::Session::getCursorAddress() {
+	unsigned short Abstract::Session::getCursorAddress() {
 
 		int32_t address;
 		getAttribute("cursor_address",address);
@@ -199,7 +134,7 @@
 
 	}
 
-	std::string IPC::Session::getVersion() const {
+	std::string Abstract::Session::getVersion() const {
 
 		string rc;
 		getAttribute("version",rc);
@@ -207,7 +142,7 @@
 
 	}
 
-	std::string IPC::Session::getRevision() const {
+	std::string Abstract::Session::getRevision() const {
 
 		string rc;
 		getAttribute("revision",rc);
@@ -215,7 +150,7 @@
 
 	}
 
-	std::string IPC::Session::getAssociatedLUName() const {
+	std::string Abstract::Session::getAssociatedLUName() const {
 
 		string rc;
 		getAttribute("associated_lu",rc);
@@ -223,7 +158,7 @@
 
 	}
 
-	std::string IPC::Session::getHostURL() const {
+	std::string Abstract::Session::getHostURL() const {
 
 		std::string value;
 		getAttribute("url",value);
@@ -231,25 +166,25 @@
 
 	}
 
-	void IPC::Session::setHostURL(const char *url) {
+	void Abstract::Session::setHostURL(const char *url) {
 
 		setAttribute("url",url);
 
 	}
 
-	void IPC::Session::setProperty(const char *name, const int value) {
+	void Abstract::Session::setProperty(const char *name, const int value) {
 		setAttribute(name,value);
 	}
 
-	void IPC::Session::setProperty(const char *name, const unsigned int value) {
+	void Abstract::Session::setProperty(const char *name, const unsigned int value) {
 		setAttribute(name,value);
 	}
 
-	void IPC::Session::setProperty(const char *name, const bool value) {
+	void Abstract::Session::setProperty(const char *name, const bool value) {
 		setAttribute(name,value);
 	}
 
-	void IPC::Session::setProperty(const char *name, const char *value) {
+	void Abstract::Session::setProperty(const char *name, const char *value) {
 		setAttribute(name,value);
 	}
 	*/
