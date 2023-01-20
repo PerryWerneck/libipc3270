@@ -90,6 +90,7 @@
 		<Unit filename="src/session/remote/linux/session.cc" />
 		<Unit filename="src/session/remote/private.h" />
 		<Unit filename="src/session/remote/properties.cc" />
+		<Unit filename="src/session/remote/request.cc" />
 		<Unit filename="src/session/remote/session.cc" />
 		<Unit filename="src/session/remote/set.cc" />
 		<Unit filename="src/session/remote/tools.cc" />

@@ -264,7 +264,7 @@
 		virtual void setProperty(const char *name, const char *value);
 
 		/// @brief Get Request.
-		virtual std::shared_ptr<Request> RequestFactory(const Request::Type type, const char *name);
+		virtual std::shared_ptr<Request> RequestFactory(const Request::Type type, const char *name) const;
 
 	};
 

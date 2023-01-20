@@ -52,7 +52,7 @@
 	Session::~Session() {
 	}
 
-	std::shared_ptr<Request> Session::RequestFactory(const Request::Type type, const char *name) {
+	std::shared_ptr<Request> Session::RequestFactory(const Request::Type type, const char *name) const {
 		throw runtime_error("The back end is unable to handle remote requests");
 	}
 

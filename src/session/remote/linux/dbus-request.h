@@ -42,26 +42,26 @@
 				bool			  variant	= false;		///< @brief Put arguments as variants?
 			} request;
 
-			Request & push(int type, const void *value);
+			DBus::Request & push(int type, const void *value);
 
 		public:
 			Request(DBusConnection *c, const char *id, const Type type, const char *name);
 			virtual ~Request();
 
-			Request & call() override;
+			TN3270::Request & call() override;
 
 			// Push values
-			Request & push(const char *arg) override;
-			Request & push(const bool arg) override;
-			Request & push(const int32_t arg) override;
-			Request & push(const uint32_t arg) override;
-			Request & push(const uint8_t arg) override;
+			TN3270::Request & push(const char *arg) override;
+			TN3270::Request & push(const bool arg) override;
+			TN3270::Request & push(const int32_t arg) override;
+			TN3270::Request & push(const uint32_t arg) override;
+			TN3270::Request & push(const uint8_t arg) override;
 
 			// Pop values
-			Request & pop(std::string &value) override;
-			Request & pop(int &value) override;
-			Request & pop(unsigned int &value) override;
-			Request & pop(bool &value) override;
+			TN3270::Request & pop(std::string &value) override;
+			TN3270::Request & pop(int &value) override;
+			TN3270::Request & pop(unsigned int &value) override;
+			TN3270::Request & pop(bool &value) override;
 
 		};
 

@@ -57,6 +57,9 @@
 		/// @brief Call request, exception when failed.
 		virtual Request & call() = 0;
 
+		/// @brief Call request, get an string as response.
+		std::string get_string();
+
 		// Push values
 		Request & push();
 		virtual Request & push(const char *arg) = 0;

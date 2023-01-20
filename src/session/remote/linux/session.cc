@@ -73,7 +73,7 @@
 			Session(DBusConnection *c, const char *i) : Abstract::Session{}, connection{c}, id{i} {
 			}
 
-			std::shared_ptr<Request> RequestFactory(const Request::Type type, const char *name) override {
+			std::shared_ptr<Request> RequestFactory(const Request::Type type, const char *name) const override {
 				return make_shared<DBus::Request>(connection,id.c_str(),type,name);
 			}
 

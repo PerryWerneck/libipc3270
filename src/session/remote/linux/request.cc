@@ -40,6 +40,7 @@
  #include <ipc-client-internals.h>
  #include "dbus-request.h"
  #include <string>
+ #include <cstring>
 
  using namespace std;
 
@@ -68,7 +69,7 @@
 				throw runtime_error("Invalid request id");
 			}
 
-			object_name = string{id,ptr-id};
+			object_name = string{id, (size_t) (ptr-id) };
 			object_path += (ptr+1);
 
 		}
@@ -142,7 +143,7 @@
 
 		DBusError error;
 		dbus_error_init(&error);
-		response.msg = dbus_connection_send_with_reply_and_block(this->conn,request.msg,10000,&error);
+		response.msg = dbus_connection_send_with_reply_and_block(this->connection,request.msg,10000,&error);
 
 		if(!response.msg) {
 			string message = error.message;
@@ -156,7 +157,7 @@
 
 	}
 
-	Request & DBus::Request::push(int type, const void *value) {
+	DBus::Request & DBus::Request::push(int type, const void *value) {
 
 		if(request.variant) {
 
@@ -191,29 +192,29 @@
 
 	}
 
-	Request & DBus::Request::push(const char *arg) {
+	TN3270::Request & DBus::Request::push(const char *arg) {
 		return push(DBUS_TYPE_STRING,&arg);
 	}
 
-	Request & DBus::Request::push(const bool arg) {
+	TN3270::Request & DBus::Request::push(const bool arg) {
 		dbus_bool_t bl = (arg ? 1 : 0);
 		return push(DBUS_TYPE_BOOLEAN,&bl);
 	}
 
-	Request & DBus::Request::push(const uint8_t arg) {
+	TN3270::Request & DBus::Request::push(const uint8_t arg) {
 		return push(DBUS_TYPE_BYTE,&arg);
 	}
 
-	Request & DBus::Request::push(const int32_t arg) {
+	TN3270::Request & DBus::Request::push(const int32_t arg) {
 		return push(DBUS_TYPE_INT32,&arg);
 	}
 
-	Request & DBus::Request::push(const uint32_t arg) {
+	TN3270::Request & DBus::Request::push(const uint32_t arg) {
 		return push(DBUS_TYPE_UINT32,&arg);
 	}
 
 	// Pop values
-	Request & DBus::Request::pop(std::string &value) {
+	TN3270::Request & DBus::Request::pop(std::string &value) {
 
 		const char * str = "";
 
@@ -251,36 +252,36 @@
 		return *this;
 	}
 
-	Request & DBus::Request::pop(int &value) {
+	TN3270::Request & DBus::Request::pop(int &value) {
 
-		if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INT32) {
+		if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_INT32) {
 
 			dbus_int32_t rc = 0;
-			dbus_message_iter_get_basic(&iter, &rc);
+			dbus_message_iter_get_basic(&response.iter, &rc);
 			value = rc;
 
-		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INT16) {
+		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_INT16) {
 
 			dbus_int16_t rc = 0;
-			dbus_message_iter_get_basic(&iter, &rc);
+			dbus_message_iter_get_basic(&response.iter, &rc);
 			value = rc;
 
-		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_UINT32) {
+		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_UINT32) {
 
 			dbus_uint32_t rc = 0;
-			dbus_message_iter_get_basic(&iter, &rc);
+			dbus_message_iter_get_basic(&response.iter, &rc);
 			value = rc;
 
-		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_INVALID) {
+		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_INVALID) {
 
 			throw std::runtime_error("Invalid data type");
 
-		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_VARIANT) {
+		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_VARIANT) {
 
 			DBusMessageIter sub;
 			int current_type;
 
-			dbus_message_iter_recurse(&iter, &sub);
+			dbus_message_iter_recurse(&response.iter, &sub);
 
 			while ((current_type = dbus_message_iter_get_arg_type(&sub)) != DBUS_TYPE_INVALID) {
 
@@ -320,26 +321,26 @@
 
 	}
 
-	Request & DBus::Request::pop(unsigned int &value) {
+	TN3270::Request & DBus::Request::pop(unsigned int &value) {
 
-		if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_UINT32) {
+		if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_UINT32) {
 
 			dbus_uint32_t rc = 0;
-			dbus_message_iter_get_basic(&iter, &rc);
+			dbus_message_iter_get_basic(&response.iter, &rc);
 			value = rc;
 
-		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_UINT16) {
+		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_UINT16) {
 
 			dbus_uint16_t rc = 0;
-			dbus_message_iter_get_basic(&iter, &rc);
+			dbus_message_iter_get_basic(&response.iter, &rc);
 			value = rc;
 
-		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_VARIANT) {
+		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_VARIANT) {
 
 			DBusMessageIter sub;
 			int current_type;
 
-			dbus_message_iter_recurse(&iter, &sub);
+			dbus_message_iter_recurse(&response.iter, &sub);
 
 			while ((current_type = dbus_message_iter_get_arg_type(&sub)) != DBUS_TYPE_INVALID) {
 
@@ -370,32 +371,32 @@
 		return *this;
 	}
 
-	Request & DBus::Request::pop(bool &value) {
+	TN3270::Request & DBus::Request::pop(bool &value) {
 
-		if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_UINT32) {
+		if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_UINT32) {
 
 			dbus_uint32_t rc = 0;
-			dbus_message_iter_get_basic(&iter, &rc);
+			dbus_message_iter_get_basic(&response.iter, &rc);
 			value = (rc != 0);
 
-		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_UINT16) {
+		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_UINT16) {
 
 			dbus_uint16_t rc = 0;
-			dbus_message_iter_get_basic(&iter, &rc);
+			dbus_message_iter_get_basic(&response.iter, &rc);
 			value = (rc != 0);
 
-		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_BOOLEAN) {
+		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_BOOLEAN) {
 
 			dbus_bool_t rc = 0;
-			dbus_message_iter_get_basic(&iter, &rc);
+			dbus_message_iter_get_basic(&response.iter, &rc);
 			value = (rc != 0);
 
-		} else if(dbus_message_iter_get_arg_type(&iter) == DBUS_TYPE_VARIANT) {
+		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_VARIANT) {
 
 			DBusMessageIter sub;
 			int current_type;
 
-			dbus_message_iter_recurse(&iter, &sub);
+			dbus_message_iter_recurse(&response.iter, &sub);
 
 			while ((current_type = dbus_message_iter_get_arg_type(&sub)) != DBUS_TYPE_INVALID) {
 
