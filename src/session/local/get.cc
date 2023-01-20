@@ -109,6 +109,70 @@
 		return lib3270_get_keyboard_lock_state(hSession);
 	}
 
+	unsigned short Local::Session::getScreenWidth() const {
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return (unsigned short) lib3270_get_width(hSession);
+	}
+
+	unsigned short Local::Session::getScreenHeight() const {
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return (unsigned short) lib3270_get_height(hSession);
+	}
+
+	unsigned short Local::Session::getScreenLength() const {
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return (unsigned short) lib3270_get_length(hSession);
+	}
+
+	unsigned short Local::Session::getCursorAddress() {
+		std::lock_guard<std::recursive_mutex> lock(sync);
+
+		int rc = lib3270_get_cursor_address(hSession);
+
+		if(!rc)
+			chkResponse(errno);
+
+		return rc;
+	}
+
+	struct Session::Cursor Local::Session::getCursorPosition() {
+
+		std::lock_guard<std::recursive_mutex> lock(sync);
+
+		unsigned short row = 0, col = 0;
+
+		return Session::Cursor(row,col);
+
+	};
+
+	std::string Local::Session::getVersion() const {
+
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return lib3270_get_version();
+
+	}
+
+	std::string Local::Session::getRevision() const {
+
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return lib3270_get_revision();
+
+	}
+
+	std::string Local::Session::getAssociatedLUName() const {
+
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		const char * luname = lib3270_get_associated_luname(hSession);
+		return string(luname ? luname : "");
+
+	}
+
+	std::string Local::Session::getHostURL() const {
+
+		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return lib3270_get_url(hSession);
+
+	}
 
  }
 

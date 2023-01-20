@@ -74,6 +74,54 @@
 
 	}
 
+	void Local::Session::setCharSet(const char *charset) {
+		Abstract::Session::setCharSet(lib3270_get_display_charset(this->hSession),charset);
+	}
+
+	void Local::Session::setUnlockDelay(unsigned short delay) {
+		std::lock_guard<std::recursive_mutex> lock(sync);
+		chkResponse(lib3270_set_unlock_delay(hSession,delay));
+	}
+
+	void Local::Session::setTimeout(time_t timeout) {
+		std::lock_guard<std::recursive_mutex> lock(sync);
+		this->timeout = timeout;
+	}
+
+	void Local::Session::setLockOnOperatorError(bool lock) {
+		std::lock_guard<std::recursive_mutex> guard(sync);
+		chkResponse(lib3270_set_lock_on_operator_error(hSession,lock ? 1 : 0));
+	}
+
+	unsigned short Local::Session::setCursor(int addr) {
+		std::lock_guard<std::recursive_mutex> lock(sync);
+
+		int rc = lib3270_set_cursor_address(hSession,addr);
+		if(rc < 0)
+			chkResponse(-rc);
+
+		return (unsigned short) rc;
+
+	}
+
+	unsigned short Local::Session::setCursor(unsigned short row, unsigned short col) {
+		std::lock_guard<std::recursive_mutex> lock(sync);
+
+		int rc = lib3270_set_cursor_position(hSession,row,col);
+		if(rc < 0)
+			chkResponse(-rc);
+
+		return (unsigned short) rc;
+
+	}
+
+	void Local::Session::setHostURL(const char *url) {
+
+		std::lock_guard<std::recursive_mutex> lock(sync);
+		chkResponse(lib3270_set_url(hSession, url));
+
+	}
+
  }
 
 
