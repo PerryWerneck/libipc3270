@@ -34,5 +34,14 @@
 
 	}
 
+	int32_t Request::get_int() {
+
+		int32_t rc;
+		call();
+		pop(rc);
+		return rc;
+
+	}
+
  }
 

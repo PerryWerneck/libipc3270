@@ -60,6 +60,18 @@
 		/// @brief Call request, get an string as response.
 		std::string get_string();
 
+		/// @brief Call request, get an int32 as response.
+		int32_t get_int();
+
+		/// @brief Call request, get response.
+		template<typename T>
+		inline T get() {
+			T rc;
+			call();
+			pop(rc);
+			return rc;
+		}
+
 		template<typename T>
 		inline Request & get(T &value) {
 			call();

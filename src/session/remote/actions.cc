@@ -47,8 +47,63 @@
 
  namespace TN3270 {
 
+	void Abstract::Session::action(const char *action_name) {
+
+		int32_t rc = RequestFactory(Request::Method,"action")->push(action_name).get_int();
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
+	}
+
+ 	void Abstract::Session::connect(const char *url, time_t seconds) {
+
+		RequestFactory(Request::Method,"connect")->push(url ? url : "").call();
+
+		if(seconds)
+			this->waitForConnectionState(CONNECTED_TN3270E,seconds);
+
+	}
+
+	void Abstract::Session::disconnect() {
+
+		RequestFactory(Request::Method,"disconnect")->call();
+
+	}
+
+	void Abstract::Session::pfkey(unsigned short value) {
+
+		int32_t rc = RequestFactory(Request::Method,"pfkey")->push((int32_t) value).get_int();
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
+	}
+
+	void Abstract::Session::pakey(unsigned short value) {
+
+		int32_t rc = RequestFactory(Request::Method,"pakey")->push((int32_t) value).get_int();
+
+		if(rc) {
+            throw std::system_error((int) rc, std::system_category());
+		}
+
+	}
+
+	void Abstract::Session::print(LIB3270_CONTENT_OPTION GNUC_UNUSED(option)) {
+		throw std::system_error(ENOTSUP, std::system_category());
+	}
+
+	void Abstract::Session::push(const KeyboardAction action) {
+		this->action(toCharString(action));
+	}
+
 	/*
-	TN3270::Action * IPC::Session::getAction(const LIB3270_ACTION *descriptor) {
+
+
+	TN3270::Action * Abstract::Session::getAction(const LIB3270_ACTION *descriptor) {
 		return new IPC::Action(this, descriptor);
 	}
 
@@ -78,79 +133,6 @@
 		session->waitForReady(seconds);
 	}
 
-	void IPC::Session::action(const char *action_name) {
-
-		int32_t rc;
-
-		Request(*this,"action")
-			.push(action_name)
-			.call()
-			.pop(rc);
-
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
-
-	}
-
- 	void IPC::Session::connect(const char *url, time_t seconds) {
-
-		if(!url)
-			url = "";
-
-		Request(*this,"connect")
-			.push(url)
-			.call();
-
-		if(seconds)
-			this->waitForConnectionState(CONNECTED_TN3270E,seconds);
-
-	}
-
-	void IPC::Session::disconnect() {
-
-		Request(*this,"disconnect")
-			.call();
-
-	}
-
-	void IPC::Session::pfkey(unsigned short value) {
-
-		int32_t rc;
-
-		Request(*this,"pfkey")
-			.push((int32_t) value)
-			.call()
-			.pop(rc);
-
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
-
-	}
-
-	void IPC::Session::pakey(unsigned short value) {
-
-		int32_t rc;
-
-		Request(*this,"pakey")
-			.push((int32_t) value)
-			.call()
-			.pop(rc);
-
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
-
-	}
-
-	void IPC::Session::push(const KeyboardAction action) {
-		this->action(toCharString(action));
-	}
-
-	void IPC::Session::print(LIB3270_CONTENT_OPTION GNUC_UNUSED(option)) {
-		throw std::system_error(ENOTSUP, std::system_category());
-	}
 	*/
 
  }
