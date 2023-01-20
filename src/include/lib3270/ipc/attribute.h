@@ -22,6 +22,7 @@
 
  namespace TN3270 {
 
+	/*
 	namespace Abstract {
 
 		class TN3270_PUBLIC Attribute {
@@ -92,5 +93,7 @@
 		}
 
 	};
+	*/
+
  }
 

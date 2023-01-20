@@ -24,6 +24,7 @@
 
  namespace TN3270 {
 
+	/*
 	const char * Abstract::Attribute::name() const {
 		return "";
 	}
@@ -35,6 +36,7 @@
 	bool Abstract::Attribute::as_bool() {
 		return as_int() != 0;
 	}
+	*/
 
  }
 

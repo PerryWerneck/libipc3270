@@ -60,6 +60,12 @@
 		/// @brief Call request, get an string as response.
 		std::string get_string();
 
+		template<typename T>
+		inline Request & get(T &value) {
+			call();
+			return pop(value);
+		}
+
 		// Push values
 		Request & push();
 		virtual Request & push(const char *arg) = 0;

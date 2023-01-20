@@ -106,8 +106,8 @@
 			void pop(std::string &text) override;
 
 			// Attributes
-			std::shared_ptr<Abstract::Attribute> getAttribute(const char *name) const override;
-			void getAttributes(std::vector<std::shared_ptr<Abstract::Attribute>> & attributes) const override;
+			//std::shared_ptr<Abstract::Attribute> getAttribute(const char *name) const override;
+			//void getAttributes(std::vector<std::shared_ptr<Abstract::Attribute>> & attributes) const override;
 
 			/// @brief Get the lib3270 version string.
 			std::string getVersion() const override;

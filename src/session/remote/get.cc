@@ -56,38 +56,33 @@
 		return RequestFactory(Request::Method,"getStringAt")->push(row,col,len,lf).get_string();
 	}
 
-	/*
-
 	ProgramMessage Abstract::Session::getProgramMessage() const {
-
-		int program_message;
-		getAttribute("program_message",program_message);
+		uint32_t program_message;
+		RequestFactory(Request::GetProperty,"program_message")->get(program_message);
 		return (ProgramMessage) program_message;
-
 	}
 
 	ConnectionState Abstract::Session::getConnectionState() const {
 
-		int cstate;
-		getAttribute("cstate",cstate);
+		uint32_t cstate;
+		RequestFactory(Request::GetProperty,"cstate")->get(cstate);
 		return (ConnectionState) cstate;
 
 	}
 
 	SSLState Abstract::Session::getSSLState() const {
 
-		int value;
-		getAttribute("sslstate",value);
-		return (TN3270::SSLState) value;
+		int32_t sslstate;
+		RequestFactory(Request::GetProperty,"sslstate")->get(sslstate);
+		return (TN3270::SSLState) sslstate;
 
 	}
 
 	LIB3270_KEYBOARD_LOCK_STATE Abstract::Session::getKeyboardLockState() const {
-		unsigned int value;
-		getAttribute("kybdlock",value);
-		return (LIB3270_KEYBOARD_LOCK_STATE) value;
+		uint32_t kybdlock;
+		RequestFactory(Request::GetProperty,"kybdlock")->get(kybdlock);
+		return (LIB3270_KEYBOARD_LOCK_STATE) kybdlock;
 	}
-	*/
 
  }
 

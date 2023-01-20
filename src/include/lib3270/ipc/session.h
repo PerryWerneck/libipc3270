@@ -150,9 +150,9 @@
 		LIB3270_KEYBOARD_LOCK_STATE input(const std::string &str, const char control_char = '@');
 
 		// Attributes
-		virtual std::shared_ptr<Abstract::Attribute> getAttribute(const char *name) const = 0;
-		virtual void getAttributes(std::vector<std::shared_ptr<Abstract::Attribute>> & attributes) const = 0;
-		std::vector<std::shared_ptr<Abstract::Attribute>> getAttributes() const;
+		// virtual std::shared_ptr<Abstract::Attribute> getAttribute(const char *name) const = 0;
+		// virtual void getAttributes(std::vector<std::shared_ptr<Abstract::Attribute>> & attributes) const = 0;
+		// std::vector<std::shared_ptr<Abstract::Attribute>> getAttributes() const;
 
 		/*
 		virtual void getAttribute(const char *name, int &value) const;

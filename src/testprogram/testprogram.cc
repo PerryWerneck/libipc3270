@@ -103,8 +103,8 @@
 	host.setTimeout(5);
 	host.setProperty("crl_download",false);
 
-	//name="url";
 
+	/*
 	cout << endl << endl;
 	for(auto attribute : host.getAttributes()) {
 
@@ -126,6 +126,7 @@
 		cout << endl;
 
 	}
+	*/
 
 	cout << "Cursor position: ";
 
@@ -193,11 +194,11 @@
 
 		TN3270::Host host{session};
 
-		cout
-			<< "Version: " << host["version"] << endl
-			<< "\tRevision: " << host["Revision"] << endl
-			<< "\tConnected: " << host["Connected"] << endl
-			<< std::endl;
+		//cout
+		//	<< "Version: " << host["version"] << endl
+		//	<< "\tRevision: " << host["Revision"] << endl
+		//	<< "\tConnected: " << host["Connected"] << endl
+		//	<< std::endl;
 
 		host.setUnlockDelay(0);	// Disable the 350ms delay on screen changes.
 		host.setTimeout(10);	// Set the default timeout.

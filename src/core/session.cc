@@ -377,11 +377,11 @@
 	//	throw std::system_error(ENOTSUP, std::system_category());
 	//}
 
-	std::vector<std::shared_ptr<Abstract::Attribute>> Session::getAttributes() const {
-		std::vector<std::shared_ptr<Abstract::Attribute>> attributes;
-		this->getAttributes(attributes);
-		return attributes;
-	}
+	//std::vector<std::shared_ptr<Abstract::Attribute>> Session::getAttributes() const {
+	//	std::vector<std::shared_ptr<Abstract::Attribute>> attributes;
+	//	this->getAttributes(attributes);
+	//	return attributes;
+	//}
 
 	/*
 	void Session::getAttribute(const char *name, int &value) const {
