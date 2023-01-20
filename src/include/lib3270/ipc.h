@@ -301,6 +301,7 @@
 			KYBD_UNLOCK,	///< @brief Unlock the keyboard if it was locked by operator error.
 		};
 
+		/*
 		/// @brief Dynamic Data type
 		class TN3270_PUBLIC Attribute {
 		public:
@@ -432,6 +433,7 @@
 
 
 		};
+		*/
 
 
 	}

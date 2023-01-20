@@ -55,7 +55,7 @@
         return std::string((char *) text);
 	}
 
-	std::string	Local::Session::get(int baddr, int len, char lf) const {
+	std::string	Local::Session::get(int32_t baddr, int32_t len, uint8_t lf) const {
 
 		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 
@@ -65,10 +65,10 @@
             throw std::runtime_error( _("Can't get screen contents") );
         }
 
-        return std::string((char *) text);
+        return std::string{(char *) text};
 	}
 
-	std::string	Local::Session::get(unsigned int row, unsigned int col, int len, char lf) const {
+	std::string	Local::Session::get(uint32_t row, uint32_t col, int32_t len, uint8_t lf) const {
 
 		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
 

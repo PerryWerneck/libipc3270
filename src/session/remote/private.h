@@ -72,6 +72,7 @@
 
 			};
 
+			/*
 			class TN3270_PRIVATE Session : public TN3270::Abstract::Session {
 			private:
 
@@ -175,6 +176,7 @@
 				void setProperty(const char *name, const char *value) override;
 
 			};
+			*/
 
 		}
 

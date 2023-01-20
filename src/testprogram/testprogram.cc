@@ -108,15 +108,15 @@
 	cout << endl << endl;
 	for(auto attribute : host.getAttributes()) {
 
-		if(name && *name && strcasecmp(name,"all") && strcasecmp(attribute.getName(),name)) {
+		if(name && *name && strcasecmp(name,"all") && strcasecmp(attribute->name(),name)) {
 			continue;
 		}
 
-		cout << attribute.getName() << ":\t";
+		cout << attribute->name() << ":\t";
 
 		try {
 
-			cout << attribute.toString();
+			cout << attribute->as_string();
 
 		} catch(const std::exception &e) {
 

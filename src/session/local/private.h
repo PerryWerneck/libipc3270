@@ -100,8 +100,8 @@
 
 				// Get strings from lib3270 without charset conversion.
 				std::string	get() const override;
-				std::string	get(int baddr, int len, char lf) const override;
-				std::string	get(unsigned int row, unsigned int col, int len, char lf) const override;
+				std::string	get(int32_t baddr, int32_t len, uint8_t lf) const override;
+				std::string	get(uint32_t row, uint32_t col, int32_t len, uint8_t lf) const override;
 
 				// Set strings to lib3270 without charset conversion.
 				void set(const std::string &str) override;
@@ -141,8 +141,8 @@
 				SSLState getSSLState() const override;
 
 				// Attributes
-				Attribute getAttribute(const char *name) const override;
-				void getAttributes(std::vector<Attribute> & attributes) const override;
+				std::shared_ptr<Abstract::Attribute> getAttribute(const char *name) const override;
+				void getAttributes(std::vector<std::shared_ptr<Abstract::Attribute>> & attributes) const override;
 
 				std::string getVersion() const override;
 				std::string getRevision() const override;

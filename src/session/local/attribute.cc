@@ -46,6 +46,7 @@
 
  namespace TN3270 {
 
+	/*
 	// Class template
 	template<typename T>
 	class TN3270_PRIVATE TemplateAttribute : public Attribute {
@@ -572,7 +573,7 @@
 		chkResponse(lib3270_set_url(hSession, url));
 
 	}
-
+	*/
 
  }
 

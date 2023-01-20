@@ -377,12 +377,13 @@
 	//	throw std::system_error(ENOTSUP, std::system_category());
 	//}
 
-	std::vector<Attribute> Session::getAttributes() const {
-		std::vector<Attribute> attributes;
+	std::vector<std::shared_ptr<Abstract::Attribute>> Session::getAttributes() const {
+		std::vector<std::shared_ptr<Abstract::Attribute>> attributes;
 		this->getAttributes(attributes);
 		return attributes;
 	}
 
+	/*
 	void Session::getAttribute(const char *name, int &value) const {
 		value = getAttribute(name).getInt32();
 	}
@@ -398,6 +399,7 @@
 	void Session::getAttribute(const char *name, bool &value) const {
 		value = getAttribute(name).getBoolean();
 	}
+	*/
 
 	/// @brief Create an action object
 	//Action * Session::getAction(const LIB3270_ACTION GNUC_UNUSED(*descriptor)) {

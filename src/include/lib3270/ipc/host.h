@@ -167,14 +167,14 @@
 
 
 		// Get properties
-		Attribute getAttribute(const char *name) const;
-		std::vector<Attribute> getAttributes() const;
+		std::shared_ptr<Abstract::Attribute> getAttribute(const char *name) const;
+		std::vector<std::shared_ptr<Abstract::Attribute>> getAttributes() const;
 
 		inline time_t getTimeout() const noexcept {
 			return this->timeout;
 		}
 
-		inline Attribute operator[](const char *name) const {
+		inline std::shared_ptr<Abstract::Attribute> operator[](const char *name) const {
 			return getAttribute(name);
 		}
 

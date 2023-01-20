@@ -18,24 +18,21 @@
  */
 
  #include <config.h>
- #include <lib3270/ipc/attribute.h>
+ #include <lib3270/ipc/request.h>
+ #include <string>
 
  using namespace std;
 
  namespace TN3270 {
 
-	const char * Abstract::Attribute::name() const {
-		return "";
-	}
+	std::string Request::get_string() {
 
-	const char * Abstract::Attribute::description() const {
-		return "";
-	}
+		std::string rc;
+		call();
+		pop(rc);
+		return rc;
 
-	bool Abstract::Attribute::as_bool() {
-		return as_int() != 0;
 	}
 
  }
-
 

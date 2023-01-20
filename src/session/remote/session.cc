@@ -43,7 +43,7 @@
  namespace TN3270 {
 
 	Abstract::Session::Session(const char *remote_charset, const char *local_charset) {
-//		set_charset(remote_charset,local_charset);
+		setCharSet(remote_charset,local_charset);
 	}
 
 	Abstract::Session::~Session() {

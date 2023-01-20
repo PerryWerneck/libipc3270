@@ -32,6 +32,7 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
+/*
 TN3270::Attribute TN3270::Host::getAttribute(const char *name) const {
 
 	if(!this->session)
@@ -49,6 +50,7 @@ std::vector<TN3270::Attribute> TN3270::Host::getAttributes() const {
 	return this->session->getAttributes();
 
 }
+*/
 
 void TN3270::Host::setTimeout(time_t timeout) {
 	this->timeout = timeout;

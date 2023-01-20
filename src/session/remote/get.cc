@@ -36,57 +36,29 @@
  *
  */
 
- #include "private.h"
+ #include <config.h>
+ #include <lib3270/ipc/request.h>
+ #include <private/session.h>
 
-/*---[ Implement ]----------------------------------------------------------------------------------*/
+ using namespace std;
 
  namespace TN3270 {
 
+	std::string	Abstract::Session::get() const {
+		return RequestFactory(Request::Method,"getString")->get_string();
+	}
+
+	std::string	Abstract::Session::get(int32_t baddr, int32_t len, uint8_t lf) const {
+		return RequestFactory(Request::Method,"getStringAtAddress")->push(baddr,len,lf).get_string();
+	}
+
+	std::string	Abstract::Session::get(uint32_t row, uint32_t col, int32_t len, uint8_t lf) const {
+		return RequestFactory(Request::Method,"getStringAt")->push(row,col,len,lf).get_string();
+	}
+
 	/*
- 	std::string	IPC::Session::get() const {
 
-		std::string rc;
-
-		Request(*this,"getString")
-			.call()
-			.pop(rc);
-
-		return rc;
-
-	}
-
-	std::string	IPC::Session::get(int baddr, int len, char lf) const {
-
-		std::string rc;
-
-		Request(*this,"getStringAtAddress")
-			.push((int32_t) baddr)
-			.push((int32_t) len)
-			.push((uint8_t) lf)
-			.call()
-			.pop(rc);
-
-		return rc;
-
-	}
-
-	std::string	IPC::Session::get(unsigned int row, unsigned int col, int len, char lf) const {
-
-		std::string rc;
-
-		Request(*this,"getStringAt")
-			.push((uint32_t) row)
-			.push((uint32_t) col)
-			.push((int32_t) len)
-			.push((uint8_t) lf)
-			.call()
-			.pop(rc);
-
-		return rc;
-
-	}
-
-	ProgramMessage IPC::Session::getProgramMessage() const {
+	ProgramMessage Abstract::Session::getProgramMessage() const {
 
 		int program_message;
 		getAttribute("program_message",program_message);
@@ -94,7 +66,7 @@
 
 	}
 
-	ConnectionState IPC::Session::getConnectionState() const {
+	ConnectionState Abstract::Session::getConnectionState() const {
 
 		int cstate;
 		getAttribute("cstate",cstate);
@@ -102,7 +74,7 @@
 
 	}
 
-	SSLState IPC::Session::getSSLState() const {
+	SSLState Abstract::Session::getSSLState() const {
 
 		int value;
 		getAttribute("sslstate",value);
@@ -110,7 +82,7 @@
 
 	}
 
-	LIB3270_KEYBOARD_LOCK_STATE IPC::Session::getKeyboardLockState() const {
+	LIB3270_KEYBOARD_LOCK_STATE Abstract::Session::getKeyboardLockState() const {
 		unsigned int value;
 		getAttribute("kybdlock",value);
 		return (LIB3270_KEYBOARD_LOCK_STATE) value;
