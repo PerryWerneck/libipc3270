@@ -55,6 +55,7 @@
 
  namespace TN3270 {
 
+	/*
 	Session * Local::getSessionInstance(const char *charset) {
 		return new Local::Session(charset);
 	}
@@ -106,6 +107,7 @@
 		this->hSession = nullptr;
 
 	}
+	*/
 
  }
 

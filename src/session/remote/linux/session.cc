@@ -38,10 +38,52 @@
 
  #include <config.h>
  #include <private/session.h>
+ #include <dbus/dbus.h>
+ #include <string>
+ #include <mutex>
+ #include "dbus-request.h"
 
  using namespace std;
 
+ namespace TN3270 {
 
+	std::shared_ptr<Abstract::Session> Abstract::Session::getRemoteInstance(const char *id, const char *charset) {
+
+		// Get D-Bus Session.
+		DBusError err;
+
+		dbus_error_init(&err);
+		DBusConnection *connection = dbus_bus_get(DBUS_BUS_SESSION, &err);
+		if (dbus_error_is_set(&err)) {
+			std::string message(err.message);
+			dbus_error_free(&err);
+			throw std::runtime_error(message);
+		}
+
+		if(!connection) {
+			throw runtime_error("Unexpected error getting session bus");
+		}
+
+		class Session : public Abstract::Session {
+		private:
+			DBusConnection *connection;
+			string id;
+
+		public:
+			Session(DBusConnection *c, const char *i) : Abstract::Session{}, connection{c}, id{i} {
+			}
+
+			std::shared_ptr<Request> RequestFactory(const Request::Type type, const char *name) override {
+				return make_shared<DBus::Request>(connection,id.c_str(),type,name);
+			}
+
+		};
+
+		return make_shared<Session>(connection,id);
+
+	}
+
+ }
 
  /*
  namespace TN3270 {

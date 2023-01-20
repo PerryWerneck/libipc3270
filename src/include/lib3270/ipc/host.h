@@ -18,8 +18,6 @@
  */
 
  #pragma once
-
- #pragma once
  #include <lib3270/ipc.h>
  #include <lib3270/ipc/session.h>
  #include <iostream>
@@ -340,6 +338,11 @@
  }
 
  namespace std {
+
+	template <typename T>
+	inline TN3270_PUBLIC TN3270::Host & operator<<(TN3270::Host& host, const T value) {
+		return host.push(value);
+	}
 
 	inline std::ostream & operator<<(std::ostream &stream, const TN3270::Host& host) {
         stream << host.toString();

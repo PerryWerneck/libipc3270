@@ -47,7 +47,7 @@
 
  namespace TN3270 {
 
-	void IPC::Session::wait(int seconds, std::function<int()> worker) const {
+	void Abstract::Session::wait(int seconds, const std::function<int()> worker) const {
 
 		int rc;
 
@@ -68,6 +68,12 @@
 		}
 
 		throw runtime_error("Timeout");
+
+	}
+
+	/*
+	void IPC::Session::wait(int seconds, std::function<int()> worker) const {
+
 
 	}
 
@@ -248,6 +254,7 @@
 		});
 
 	 }
+	 */
 
  }
 

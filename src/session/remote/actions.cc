@@ -47,6 +47,7 @@
 
  namespace TN3270 {
 
+	/*
 	TN3270::Action * IPC::Session::getAction(const LIB3270_ACTION *descriptor) {
 		return new IPC::Action(this, descriptor);
 	}
@@ -150,6 +151,7 @@
 	void IPC::Session::print(LIB3270_CONTENT_OPTION GNUC_UNUSED(option)) {
 		throw std::system_error(ENOTSUP, std::system_category());
 	}
+	*/
 
  }
 

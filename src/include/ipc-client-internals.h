@@ -200,20 +200,6 @@
 
 		}
 
-		/// @brief lib3270 direct access (no IPC)
-		namespace Local {
-
-			TN3270_PRIVATE Session * getSessionInstance(const char *charset = nullptr);
-
-		}
-
-		/// @brief IPC Based access (Using an active instance of pw3270 or pw3270d)
-		namespace IPC {
-
-			TN3270_PRIVATE TN3270::Session * getSessionInstance(const char *id, const char *charset = nullptr);
-			class Session;
-
-		}
 
 	}
 

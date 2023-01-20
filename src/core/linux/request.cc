@@ -45,6 +45,7 @@
 
  namespace TN3270 {
 
+	/*
 	IPC::Request::Request(DBusConnection * conn) {
 		this->conn = conn;
 
@@ -374,6 +375,7 @@
 		return *this;
 
 	}
+	*/
 
  }
 

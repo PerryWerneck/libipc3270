@@ -42,6 +42,7 @@
 
  namespace TN3270 {
 
+	/*
  	std::string	IPC::Session::get() const {
 
 		std::string rc;
@@ -114,7 +115,7 @@
 		getAttribute("kybdlock",value);
 		return (LIB3270_KEYBOARD_LOCK_STATE) value;
 	}
-
+	*/
 
  }
 

@@ -40,7 +40,7 @@
 	std::shared_ptr<Session> Session::getInstance(const char *id, const char *charset) {
 
 		if(id && *id) {
-			throw runtime_error("Remote session is not implemented");
+			return Abstract::Session::getRemoteInstance(id,charset);
 		}
 
 		throw runtime_error("Local session is not implemented");
@@ -51,6 +51,11 @@
 
 	Session::~Session() {
 	}
+
+	std::shared_ptr<Request> Session::RequestFactory(const Request::Type type, const char *name) {
+		throw runtime_error("The back end is unable to handle remote requests");
+	}
+
 
 	/// @brief Fire event.
 	//void Session::fire(const Event GNUC_UNUSED(&event)) {
@@ -414,6 +419,21 @@
 
 	}
 
+	void Session::setProperty(const char *name, const int value) {
+		RequestFactory(Request::SetProperty,name)->push(value).call();
+	}
+
+	void Session::setProperty(const char *name, const unsigned int value) {
+		RequestFactory(Request::SetProperty,name)->push(value).call();
+	}
+
+	void Session::setProperty(const char *name, const bool value) {
+		RequestFactory(Request::SetProperty,name)->push(value).call();
+	}
+
+	void Session::setProperty(const char *name, const char *value) {
+		RequestFactory(Request::SetProperty,name)->push(value).call();
+	}
 
  }
 

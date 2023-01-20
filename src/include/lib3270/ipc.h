@@ -457,16 +457,6 @@
 	/// @return The action description.
 	TN3270_PUBLIC const char * toCharString(const TN3270::KeyboardAction action);
 
-	template <typename T>
-	inline TN3270_PUBLIC TN3270::Host & operator<<(TN3270::Host& host, const T value) {
-		return host.push(value);
-	}
-
-	inline std::ostream & operator<<(std::ostream &stream, const TN3270::Attribute& attribute) {
-        stream << attribute.toString();
-        return stream;
-	}
-
 #endif
 
 #endif // LIB3270_IPC_H_INCLUDED

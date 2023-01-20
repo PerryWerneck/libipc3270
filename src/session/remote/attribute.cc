@@ -46,6 +46,7 @@
 
  namespace TN3270 {
 
+	/*
 	// Class template
 	template<typename T>
 	class TN3270_PRIVATE TemplateAttribute : public Attribute {
@@ -501,6 +502,7 @@
 		return Session::Cursor(row,col);
 
 	}
+	*/
 
  }
 

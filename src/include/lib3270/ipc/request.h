@@ -36,6 +36,82 @@
  *
  */
 
+ #pragma once
+ #include <lib3270/ipc.h>
+
+ namespace TN3270 {
+
+	/// @brief PW3270 IPC Request/Response.
+	class TN3270_PUBLIC Request {
+	public:
+
+		enum Type : uint8_t {
+			Method,
+			GetProperty,
+			SetProperty
+		};
+
+		Request(const Type type = Method);
+		virtual ~Request();
+
+		/// @brief Call request, exception when failed.
+		virtual Request & call() = 0;
+
+		// Push values
+		Request & push();
+		virtual Request & push(const char *arg) = 0;
+		virtual Request & push(const bool arg) = 0;
+		virtual Request & push(const int32_t arg) = 0;
+		virtual Request & push(const uint32_t arg) = 0;
+		virtual Request & push(const uint8_t arg) = 0;
+
+		template<typename... Targs>
+		Request & push(const char *str, Targs... Fargs) {
+			push(str);
+			return push(Fargs...);
+		}
+
+		template<typename... Targs>
+		Request & push(const std::string &str, Targs... Fargs) {
+			push(str.c_str());
+			return push(Fargs...);
+		}
+
+		template<typename... Targs>
+		Request & push(const bool value, Targs... Fargs) {
+			push(value);
+			return push(Fargs...);
+		}
+
+		template<typename T, typename... Targs>
+		Request & push(const T str, Targs... Fargs) {
+			push(str);
+			return push(Fargs...);
+		}
+
+		// Pop values
+		Request & pop();
+		virtual Request & pop(std::string &value) = 0;
+		virtual Request & pop(int &value) = 0;
+		virtual Request & pop(unsigned int &value) = 0;
+		virtual Request & pop(bool &value) = 0;
+
+	};
+
+	template <typename T>
+	inline TN3270_PUBLIC Request & operator<<(Request & request, const T value) {
+		return request.push(value);
+	}
+
+	template <typename T>
+	inline TN3270_PUBLIC Request & operator>>(Request & request, const T value) {
+		return request.pop(value);
+	}
+
+ }
+
+
+/*
 #ifndef IPC3270_REQUEST_H_INCLUDED
 
 	#define IPC3270_REQUEST_H_INCLUDED
@@ -179,3 +255,4 @@
 	}
 
 #endif // IPC3270_REQUEST_H_INCLUDED
+*/

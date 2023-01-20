@@ -45,6 +45,7 @@
 
  namespace TN3270 {
 
+	/*
 	void IPC::Session::getAttribute(const char *name, int &value) const {
 
 		Request(*this,false,name)
@@ -251,6 +252,7 @@
 	void IPC::Session::setProperty(const char *name, const char *value) {
 		setAttribute(name,value);
 	}
+	*/
 
  }
 

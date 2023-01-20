@@ -19,6 +19,8 @@
 
  #pragma once
  #include <lib3270/ipc.h>
+ #include <lib3270/ipc/session.h>
+ #include <lib3270/ipc/request.h>
  #include <iostream>
  #include <memory>
 
@@ -256,10 +258,13 @@
 		int compare(int baddr, const char* s, int len = -1) const;
 		int compare(unsigned short row, unsigned short col, const char* s, int len = -1) const;
 
-		virtual void setProperty(const char *name, const int value) = 0;
-		virtual void setProperty(const char *name, const unsigned int value) = 0;
-		virtual void setProperty(const char *name, const bool value) = 0;
-		virtual void setProperty(const char *name, const char *value) = 0;
+		virtual void setProperty(const char *name, const int value);
+		virtual void setProperty(const char *name, const unsigned int value);
+		virtual void setProperty(const char *name, const bool value);
+		virtual void setProperty(const char *name, const char *value);
+
+		/// @brief Get Request.
+		virtual std::shared_ptr<Request> RequestFactory(const Request::Type type, const char *name);
 
 	};
 

@@ -42,6 +42,7 @@
 
  namespace TN3270 {
 
+	/*
  	void IPC::Session::set(const std::string &str) {
 
 		int rc;
@@ -86,6 +87,7 @@
 			chkResponse(-rc);
 
 	}
+	*/
 
  }
 

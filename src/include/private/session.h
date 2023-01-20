@@ -22,6 +22,7 @@
  #include <lib3270/ipc.h>
  #include <lib3270/ipc/session.h>
  #include <string>
+ #include <functional>
 
  #ifdef HAVE_ICONV
 	#include <iconv.h>
@@ -59,6 +60,9 @@
 			Session(const char *remote_charset = nullptr, const char *local_charset = nullptr);
 			virtual ~Session();
 
+			/// @brief Wait.
+			void wait(int seconds, const std::function<int()> worker) const;
+
 			/// @brief Setup charsets
 			void setCharSet(const char *remote, const char *local);
 
@@ -80,6 +84,8 @@
 			virtual void set(int row, int col, const std::string &str) = 0;
 
 		public:
+
+			static std::shared_ptr<Abstract::Session> getRemoteInstance(const char *id, const char *charset);
 
 			// Contents
 			std::string	toString(int baddr, int len, char lf) const override;

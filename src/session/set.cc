@@ -38,6 +38,7 @@
 
  #include <config.h>
  #include <private/session.h>
+ #include <lib3270/ipc/request.h>
  #include <cstring>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
