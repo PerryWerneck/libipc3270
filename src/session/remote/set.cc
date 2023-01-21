@@ -37,57 +37,61 @@
  */
 
  #include "private.h"
+ #include <lib3270/ipc/request.h>
+ #include <private/session.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
 
-	/*
- 	void IPC::Session::set(const std::string &str) {
+ 	void Abstract::Session::set(const std::string &str) {
 
-		int rc;
-
-		Request(*this,"setField")
-			.push(str.c_str())
-			.call()
-			.pop(rc);
+		int32_t rc = RequestFactory(Request::Method,"setField")->push(str).get_int();
 
 		if(rc < 0)
 			chkResponse(-rc);
 
 	}
 
-	void IPC::Session::set(int baddr, const std::string &str) {
+	void Abstract::Session::set(int32_t baddr, const std::string &str) {
 
-		int32_t rc;
-
-		Request(*this,"setStringAtAddress")
-			.push((int32_t) baddr)
-			.push(str.c_str())
-			.call()
-			.pop(rc);
+		int32_t rc = RequestFactory(Request::Method,"setField")->push(baddr,str).get_int();
 
 		if(rc < 0)
 			chkResponse(-rc);
 
 	}
 
-	void IPC::Session::set(int row, int col, const std::string &str) {
+	void Abstract::Session::set(uint32_t row, uint32_t col, const std::string &str) {
 
-		int32_t rc;
-
-		Request(*this,"setStringAt")
-			.push((uint32_t) row)
-			.push((uint32_t) col)
-			.push(str.c_str())
-			.call()
-			.pop(rc);
+		int32_t rc = RequestFactory(Request::Method,"setStringAt")->push(row,col,str).get_int();
 
 		if(rc < 0)
 			chkResponse(-rc);
 
 	}
-	*/
+
+	void Abstract::Session::setCharSet(const char *charset) {
+		// D-Bus calls are always UTF-8
+		Abstract::Session::setCharSet("UTF-8",charset);
+	}
+
+	unsigned short Abstract::Session::setCursor(unsigned short row, unsigned short col) {
+
+		int32_t rc = RequestFactory(Request::Method,"setCursorPosition")->push(row,col).get_int();
+
+		if(rc < 0)
+			chkResponse(-rc);
+
+		return (unsigned short) rc;
+
+	}
+
+	void Abstract::Session::setHostURL(const char *url) {
+
+		RequestFactory(Request::SetProperty,"url")->push(url).call();
+
+	}
 
  }
 

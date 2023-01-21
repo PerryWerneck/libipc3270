@@ -105,8 +105,8 @@
 
 				// Set strings to lib3270 without charset conversion.
 				void set(const std::string &str) override;
-				void set(int baddr, const std::string &str) override;
-				void set(int row, int col, const std::string &str) override;
+				void set(int32_t baddr, const std::string &str) override;
+				void set(uint32_t row, uint32_t col, const std::string &str) override;
 
 			public:
 

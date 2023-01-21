@@ -80,8 +80,8 @@
 
 			// Set strings to lib3270 without charset conversion.
 			virtual void set(const std::string &str);
-			virtual void set(int baddr, const std::string &str);
-			virtual void set(int row, int col, const std::string &str);
+			virtual void set(int32_t baddr, const std::string &str);
+			virtual void set(uint32_t row, uint32_t col, const std::string &str);
 
 		public:
 

@@ -52,7 +52,7 @@
 
 	}
 
-	void Local::Session::set(int baddr, const std::string &str) {
+	void Local::Session::set(int32_t baddr, const std::string &str) {
 
 		std::lock_guard<std::recursive_mutex> lock(this->sync);
 
@@ -62,7 +62,7 @@
 
 	}
 
-	void Local::Session::set(int row, int col, const std::string &str) {
+	void Local::Session::set(uint32_t row, uint32_t col, const std::string &str) {
 
 		std::lock_guard<std::recursive_mutex> lock(this->sync);
 

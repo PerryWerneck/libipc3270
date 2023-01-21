@@ -282,7 +282,7 @@
 
 		/// @brief Set a single value on remote remote.
 		/// @tparam T The remote data type.
-		template <typename F, typename T>
+		template <typename T>
 		void setProperty(const char *name, T value) const {
 			RequestFactory(Request::SetProperty,name)->push(value).call();
 		}
