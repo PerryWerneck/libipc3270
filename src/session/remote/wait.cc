@@ -47,7 +47,7 @@
 
  namespace TN3270 {
 
-	void Abstract::Session::wait(int seconds, const std::function<int()> worker) const {
+	void Abstract::Session::wait(int seconds, const std::function<int32_t()> worker) const {
 
 		int rc;
 
@@ -71,13 +71,7 @@
 
 	}
 
-	/*
-	void IPC::Session::wait(int seconds, std::function<int()> worker) const {
-
-
-	}
-
-	void IPC::Session::wait(time_t seconds) const {
+	void Abstract::Session::wait(time_t seconds) const {
 
 		time_t end = time(nullptr) + seconds;
 
@@ -96,20 +90,15 @@
 
 	}
 
-	void IPC::Session::waitForReady(time_t timeout) const {
+	void Abstract::Session::waitForReady(time_t timeout) const {
 
 		debug(__FUNCTION__,"(",timeout,")");
 
 		wait(timeout, [this]() {
 
-			int rc;
-
 			debug("Running waitForReady request...");
 
-			Request(*this,"waitForReady")
-				.push((uint32_t) 1)
-				.call()
-				.pop(rc);
+			int32_t rc = RequestFactory(Request::Method,"waitForReady")->push((uint32_t) 1).get_int();
 
 			debug("Wait for ready returned ",rc);
 
@@ -119,21 +108,15 @@
 
 	}
 
-	void IPC::Session::waitForConnectionState(ConnectionState state, time_t timeout) const {
+	void Abstract::Session::waitForConnectionState(ConnectionState state, time_t timeout) const {
 
 		debug(__FUNCTION__,"(",timeout,")");
 
 		wait(timeout, [this,state]() {
 
-			int rc;
-
 			debug("Running waitForConnectionState request...");
 
-			Request(*this,"waitForConnectionState")
-				.push((uint32_t) state)
-				.push((uint32_t) 1)
-				.call()
-				.pop(rc);
+			int32_t rc = RequestFactory(Request::Method,"waitForConnectionState")->push((uint32_t) state, (uint32_t) 1).get_int();
 
 			debug("Wait for connection state returned ",rc);
 
@@ -143,7 +126,7 @@
 
 	}
 
-	LIB3270_KEYBOARD_LOCK_STATE IPC::Session::waitForKeyboardUnlock(time_t timeout) const {
+	LIB3270_KEYBOARD_LOCK_STATE Abstract::Session::waitForKeyboardUnlock(time_t timeout) const {
 
 		int rc = 0;
 
@@ -153,10 +136,7 @@
 
 			debug("Running waitForKeyboardUnlock request...");
 
-			Request(*this,"waitForKeyboardUnlock")
-				.push((uint32_t) 1)
-				.call()
-				.pop(rc);
+			int32_t rc = RequestFactory(Request::Method,"waitForKeyboardUnlock")->push((uint32_t) 1).get_int();
 
 			debug("Wait for unlock returned ",rc);
 
@@ -169,17 +149,13 @@
 
 	}
 
-	void IPC::Session::waitForChange(time_t seconds) const {
+	void Abstract::Session::waitForChange(time_t seconds) const {
 
 		wait(seconds, [this]() {
 
-			int rc;
 			debug("Running waitForUpdate request...");
 
-			Request(*this,"waitForUpdate")
-				.push((uint32_t) 1)
-				.call()
-				.pop(rc);
+			int32_t rc = RequestFactory(Request::Method,"waitForUpdate")->push((uint32_t) 1).get_int();
 
 			debug("Wait for update returned ",rc);
 
@@ -189,27 +165,19 @@
 
 	}
 
-	void IPC::Session::wait(const char *text, int seconds) {
+	void Abstract::Session::wait(const char *text, int seconds) {
 
 		string key = convertToHost(text,-1);
 
 		wait(seconds, [this, key]() {
 
-			int rc;
-
-			Request(*this,"waitForString")
-				.push(key.c_str())
-				.push((uint32_t) 1)
-				.call()
-				.pop(rc);
-
-			return rc;
+			return RequestFactory(Request::Method,"waitForString")->push(key.c_str(), (uint32_t) 1).get_int();
 
 		});
 
 	}
 
-	void IPC::Session::wait(unsigned short row, unsigned short col, const char *text, int seconds) {
+	void Abstract::Session::wait(uint32_t row, uint32_t col, const char *text, int seconds) {
 
 		debug((const char *) __FUNCTION__, "(", row, ",", col, ",\"",text,"\")");
 
@@ -217,16 +185,7 @@
 
 		wait(seconds, [this, key, row, col]() {
 
-			int rc;
-
-			Request(*this,"waitForStringAt")
-				.push((uint32_t) row)
-				.push((uint32_t) col)
-				.push(key.c_str())
-				.push((uint32_t) 1)
-				.call()
-				.pop(rc);
-
+			int32_t rc = RequestFactory(Request::Method,"waitForStringAt")->push(row,col,key,(uint32_t) 1).get_int();
 			debug("waitForStringAt rc=",rc);
 			return rc;
 
@@ -234,27 +193,17 @@
 
 	 }
 
-	 void IPC::Session::wait(int addr, const char *text, int seconds) {
+	 void Abstract::Session::wait(int32_t addr, const char *text, int seconds) {
 
 		string key = convertToHost(text,-1);
 
 		wait(seconds, [this, key, addr]() {
 
-			int rc;
-
-			Request(*this,"waitForStringAtAddress")
-				.push((int32_t) addr)
-				.push(key.c_str())
-				.push((uint32_t) 1)
-				.call()
-				.pop(rc);
-
-			return rc;
+			return RequestFactory(Request::Method,"waitForStringAtAddress")->push(addr,key,(uint32_t) 1).get_int();
 
 		});
 
 	 }
-	 */
 
  }
 

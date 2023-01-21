@@ -228,10 +228,10 @@
 		virtual void wait(const char *text, int seconds = DEFAULT_TIMEOUT) = 0;
 
 		/// @brief Wait for string.
-		virtual void wait(unsigned short row, unsigned short col, const char *text, int seconds = DEFAULT_TIMEOUT) = 0;
+		virtual void wait(uint32_t row, uint32_t col, const char *text, int seconds = DEFAULT_TIMEOUT) = 0;
 
 		/// @brief Wait for string.
-		virtual void wait(int addr, const char *text, int seconds = DEFAULT_TIMEOUT) = 0;
+		virtual void wait(int32_t addr, const char *text, int seconds = DEFAULT_TIMEOUT) = 0;
 
 		/// @brief Send PF.
 		virtual void pfkey(unsigned short value) = 0;

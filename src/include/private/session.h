@@ -173,7 +173,7 @@
 			void wait(const char *text, int seconds = DEFAULT_TIMEOUT) override;
 
 			/// @brief Wait for string.
-			void wait(unsigned short row, unsigned short col, const char *text, int seconds = DEFAULT_TIMEOUT) override;
+			void wait(uint32_t row, uint32_t col, const char *text, int seconds = DEFAULT_TIMEOUT) override;
 
 			/// @brief Wait for string.
 			void wait(int addr, const char *text, int seconds = DEFAULT_TIMEOUT) override;

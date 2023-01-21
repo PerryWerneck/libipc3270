@@ -133,7 +133,7 @@
 
 				void wait(const char *text, int seconds) override;
 				void wait(int addr, const char *text, int seconds) override;
-				void wait(unsigned short row, unsigned short col, const char *text, int seconds) override;
+				void wait(uint32_t row, uint32_t col, const char *text, int seconds) override;
 
 				// States
 				ProgramMessage getProgramMessage() const override;
