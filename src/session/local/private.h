@@ -79,14 +79,30 @@
 
 				friend class Action;
 
+				struct Handler : public std::mutex {
+
+					/// @brief Handle of the related instance of lib3270
+					H3270 * hSession;
+
+					Handler() {
+						std::lock_guard<std::mutex> lock(*this);
+						hSession = lib3270_session_new("");
+					}
+
+					~Handler() {
+						std::lock_guard<std::mutex> lock(*this);
+						lib3270_session_free(hSession);
+					}
+
+					void chkResponse(int rc);
+					void call(const std::function<int(H3270 * hSession)> &method);
+
+				};
+
+				std::shared_ptr<Handler> handler;
+
 				/// @brief Timeout for automatic waits.
 				time_t timeout;
-
-				/// @brief Handle of the related instance of lib3270
-				H3270 * hSession;
-
-				/// @brief Recursive mutex to serialize access to lib3270
-				std::recursive_mutex sync;
 
 				/// @brief Popup Handler.
 				static int popupHandler(H3270 *session, const LIB3270_POPUP *popup, unsigned char wait);

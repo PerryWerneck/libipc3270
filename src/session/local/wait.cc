@@ -50,55 +50,65 @@
 
 	void Local::Session::wait(time_t seconds) const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		chkResponse(lib3270_wait(this->hSession, seconds));
+		handler->call([seconds](H3270 * hSession){
+			return lib3270_wait(hSession, seconds);
+		});
 
 	}
 
 	void Local::Session::waitForReady(time_t timeout) const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		chkResponse(lib3270_wait_for_ready(this->hSession, timeout));
+		handler->call([timeout](H3270 * hSession){
+			return lib3270_wait_for_ready(hSession, timeout);
+		});
+
 	}
 
 	void Local::Session::waitForConnectionState(ConnectionState state, time_t timeout) const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		chkResponse(lib3270_wait_for_cstate(this->hSession, (LIB3270_CSTATE) state, timeout));
+		handler->call([state,timeout](H3270 * hSession){
+			return lib3270_wait_for_cstate(hSession, (LIB3270_CSTATE) state, timeout);
+		});
+
 	}
 
 	LIB3270_KEYBOARD_LOCK_STATE Local::Session::waitForKeyboardUnlock(time_t timeout) const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		std::lock_guard<std::mutex> lock(*handler);
 		debug("waitForKeyboardUnlock(",timeout,")");
-		return lib3270_wait_for_keyboard_unlock(this->hSession, timeout);
+		return lib3270_wait_for_keyboard_unlock(handler->hSession, timeout);
 	}
 
 	void Local::Session::waitForChange(time_t seconds) const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		chkResponse(lib3270_wait_for_update(this->hSession, seconds));
+		handler->call([seconds](H3270 * hSession){
+			debug("waitForUpdate(",seconds,")");
+			return lib3270_wait_for_update(hSession, seconds);
+		});
 
 	}
 
 	void Local::Session::wait(const char *text, int seconds) {
 
-		std::lock_guard<std::recursive_mutex> lock(sync);
-		chkResponse(lib3270_wait_for_string(hSession,convertToHost(text,-1).c_str(),seconds));
+		handler->call([this,text,seconds](H3270 * hSession){
+			return lib3270_wait_for_string(hSession,convertToHost(text,-1).c_str(),seconds);
+		});
 
 	}
 
 	void Local::Session::wait(uint32_t row, uint32_t col, const char *text, int seconds) {
 
-		std::lock_guard<std::recursive_mutex> lock(sync);
-		chkResponse(lib3270_wait_for_string_at(hSession,row,col,convertToHost(text,-1).c_str(),seconds));
+		handler->call([this,row,col,text,seconds](H3270 * hSession){
+			return lib3270_wait_for_string_at(hSession,row,col,convertToHost(text,-1).c_str(),seconds);
+		});
 
 	}
 
 	void Local::Session::wait(int addr, const char *text, int seconds) {
 
-		std::lock_guard<std::recursive_mutex> lock(sync);
-		chkResponse(lib3270_wait_for_string_at_address(hSession,addr,convertToHost(text,-1).c_str(),seconds));
+		handler->call([this,addr,text,seconds](H3270 * hSession){
+			return lib3270_wait_for_string_at_address(hSession,addr,convertToHost(text,-1).c_str(),seconds);
+		});
 
 	}
 

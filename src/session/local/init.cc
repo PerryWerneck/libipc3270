@@ -55,22 +55,25 @@
 
  namespace TN3270 {
 
-	//Session * Local::getSessionInstance(const char *charset) {
-	//	return new Local::Session(charset);
-	//}
+	void Local::Session::Handler::chkresponse(int rc) {
+	}
 
- 	Local::Session::Session(const char *charset) : Abstract::Session() {
+	void Local::Session::Handler::call(const std::function<int(H3270 * hSession)> &method) {
+		std::lock_guard<std::mutex> lock(handler);
+		TN3270::chkResponse(method(hSession));
+	}
 
-		std::lock_guard<std::recursive_mutex> lock(sync);
+ 	Local::Session::Session(const char *charset) : Abstract::Session(), handler{std::make_shared<Handler>()} {
 
-		this->hSession = lib3270_session_new("");
+		std::lock_guard<std::mutex> lock(*handler);
+
 		this->timeout = 5;
 
-		lib3270_set_user_data(this->hSession,(void *) this);
+		lib3270_set_user_data(handler->hSession,(void *) this);
 
 		this->setCharSet(charset);
 
-		lib3270_set_popup_handler(this->hSession, &popupHandler);
+		lib3270_set_popup_handler(handler->hSession, &popupHandler);
 
 		// Setup callbacks
 		struct lib3270_session_callbacks *cbk;
@@ -99,12 +102,6 @@
 	}
 
 	Local::Session::~Session() {
-
-		std::lock_guard<std::recursive_mutex> lock(sync);
-
-		lib3270_session_free(this->hSession);
-		this->hSession = nullptr;
-
 	}
 
  }
