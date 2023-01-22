@@ -27,6 +27,7 @@
  */
 
  #include <config.h>
+ #include <ipc-client-internals.h>
  #include <lib3270/ipc/session.h>
  #include <private/session.h>
  #include <string>
@@ -402,18 +403,22 @@
 	*/
 
 	void Session::setProperty(const char *name, const int value) {
+		debug("Property ",name,"=",value);
 		RequestFactory(Request::SetProperty,name)->push(value).call();
 	}
 
 	void Session::setProperty(const char *name, const unsigned int value) {
+		debug("Property ",name,"=",value);
 		RequestFactory(Request::SetProperty,name)->push(value).call();
 	}
 
 	void Session::setProperty(const char *name, const bool value) {
+		debug("Property ",name,"=",value);
 		RequestFactory(Request::SetProperty,name)->push(value).call();
 	}
 
 	void Session::setProperty(const char *name, const char *value) {
+		debug("Property ",name,"=",value);
 		RequestFactory(Request::SetProperty,name)->push(value).call();
 	}
 

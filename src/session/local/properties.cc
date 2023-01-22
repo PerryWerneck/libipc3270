@@ -46,6 +46,7 @@
 
 	void Local::Session::setProperty(const char *name, const int value) {
 
+		debug("Setting ",name,"=",value);
 		handler->call([name,value](H3270 * hSession){
 			return lib3270_set_int_property(hSession,name,value,0);
 		});
@@ -54,6 +55,7 @@
 
 	void Local::Session::setProperty(const char *name, const unsigned int value) {
 
+		debug("Setting ",name,"=",value);
 		handler->call([name,value](H3270 * hSession){
 			return lib3270_set_uint_property(hSession,name,value,0);
 		});
@@ -62,6 +64,7 @@
 
 	void Local::Session::setProperty(const char *name, const bool value) {
 
+		debug("Setting ",name,"=",value);
 		handler->call([name,value](H3270 * hSession){
 			return lib3270_set_boolean_property(hSession,name,(int) value, 0);
 		});
@@ -70,6 +73,7 @@
 
 	void Local::Session::setProperty(const char *name, const char *value) {
 
+		debug("Setting ",name,"=",value);
 		handler->call([name,value](H3270 * hSession){
 			return lib3270_set_string_property(hSession, name, value, 0);
 		});

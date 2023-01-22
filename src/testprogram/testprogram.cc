@@ -78,7 +78,7 @@
 			cout << "Connecting to " << ( (url && *url) ? url : "default host" ) << " ..." << endl;
 			hSession->setProperty("crl_download",false);
 			hSession->connect(url);
-			cout << "Connected!" << endl;
+			cout << "--------------------------------------Connected!" << endl;
 		}
 
 		hSession->waitForReady(30);
@@ -213,9 +213,9 @@
 
 		host.setUnlockDelay(0);	// Disable the 350ms delay on screen changes.
 		host.setTimeout(10);	// Set the default timeout.
-		//host["crlget"] = false;	// Disable CRL get to speed up the connection.
 
 		cout << "Connecting to " << ( (url && *url) ? url : "default host" ) << " ..." << endl;
+		host.setProperty("crl_download",false);
 		host.connect(url);
 		cout << "Connected!" << endl;
 
