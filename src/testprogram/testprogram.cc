@@ -76,6 +76,7 @@
 
 		if(url && *url) {
 			cout << "Connecting to " << ( (url && *url) ? url : "default host" ) << " ..." << endl;
+			hSession->setProperty("crl_download",false);
 			hSession->connect(url);
 			cout << "Connected!" << endl;
 		}
