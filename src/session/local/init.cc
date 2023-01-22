@@ -73,13 +73,14 @@
 
  	Local::Session::Session(const char *charset) : Abstract::Session(), handler{std::make_shared<Handler>()} {
 
+		this->timeout = 5;
+
 		handler->call([this,charset](H3270 * hSession){
 
-			this->timeout = 5;
 
 			lib3270_set_user_data(hSession,(void *) this);
 
-			this->setCharSet(charset);
+			Abstract::Session::setCharSet(lib3270_get_display_charset(hSession),charset);
 
 			lib3270_set_popup_handler(hSession, &popupHandler);
 
