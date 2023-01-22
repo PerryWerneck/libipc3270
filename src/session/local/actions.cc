@@ -115,7 +115,6 @@
 
 	void Local::Session::pakey(unsigned short value) {
 
-
  		handler->call([value](H3270 * hSession){
 			return lib3270_pakey(hSession,value);
  		});

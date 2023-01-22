@@ -86,6 +86,7 @@
 		public:
 
 			static std::shared_ptr<Abstract::Session> getRemoteInstance(const char *id, const char *charset);
+			static std::shared_ptr<Abstract::Session> getLocalInstance(const char *charset);
 
 			// States
 			ProgramMessage getProgramMessage() const override;

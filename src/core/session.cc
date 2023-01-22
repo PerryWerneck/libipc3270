@@ -43,7 +43,7 @@
 			return Abstract::Session::getRemoteInstance(id,charset);
 		}
 
-		throw runtime_error("Local session is not implemented");
+		return Abstract::Session::getLocalInstance(charset);
 	}
 
 	Session::Session() {

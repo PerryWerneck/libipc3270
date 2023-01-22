@@ -36,7 +36,10 @@
  *
  */
 
+ #include <config.h>
  #include "private.h"
+ #include <memory>
+ #include <lib3270/ipc/session.h>
 
 #ifdef _WIN32
  #include <lmcons.h>
@@ -54,6 +57,10 @@
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
+
+	std::shared_ptr<Abstract::Session> Abstract::Session::getLocalInstance(const char *charset) {
+		return std::make_shared<Local::Session>(charset);
+	}
 
 	void Local::Session::Handler::chkResponse(int rc) {
 		TN3270::chkResponse(rc);
