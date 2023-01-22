@@ -79,10 +79,15 @@
 
 				friend class Action;
 
-				struct Handler : public std::mutex {
+				/// @brief lib3270 handler.
+				/// Do serialized calls to lib3270 methods.
+				class Handler : private std::mutex {
+				private:
 
 					/// @brief Handle of the related instance of lib3270
 					H3270 * hSession;
+
+				public:
 
 					Handler() {
 						std::lock_guard<std::mutex> lock(*this);
@@ -96,6 +101,12 @@
 
 					void chkResponse(int rc);
 					void call(const std::function<int(H3270 * hSession)> &method);
+
+					template <typename T>
+					T get(const std::function<T (H3270 * hSession)> &method) {
+						std::lock_guard<std::mutex> lock(*this);
+						return method(hSession);
+					}
 
 				};
 

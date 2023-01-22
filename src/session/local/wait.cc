@@ -74,9 +74,11 @@
 
 	LIB3270_KEYBOARD_LOCK_STATE Local::Session::waitForKeyboardUnlock(time_t timeout) const {
 
-		std::lock_guard<std::mutex> lock(*handler);
-		debug("waitForKeyboardUnlock(",timeout,")");
-		return lib3270_wait_for_keyboard_unlock(handler->hSession, timeout);
+		return handler->get<LIB3270_KEYBOARD_LOCK_STATE>([timeout](H3270 *hSession){
+			debug("waitForKeyboardUnlock(",timeout,")");
+			return lib3270_wait_for_keyboard_unlock(hSession, timeout);
+		});
+
 	}
 
 	void Local::Session::waitForChange(time_t seconds) const {
