@@ -55,49 +55,54 @@
 
  namespace TN3270 {
 
-	void Local::Session::Handler::chkresponse(int rc) {
+	void Local::Session::Handler::chkResponse(int rc) {
+		TN3270::chkResponse(rc);
 	}
 
 	void Local::Session::Handler::call(const std::function<int(H3270 * hSession)> &method) {
-		std::lock_guard<std::mutex> lock(handler);
-		TN3270::chkResponse(method(hSession));
+		std::lock_guard<std::mutex> lock(*this);
+		chkResponse(method(hSession));
 	}
 
  	Local::Session::Session(const char *charset) : Abstract::Session(), handler{std::make_shared<Handler>()} {
 
-		std::lock_guard<std::mutex> lock(*handler);
+		handler->call([this,charset](H3270 * hSession){
 
-		this->timeout = 5;
+			this->timeout = 5;
 
-		lib3270_set_user_data(handler->hSession,(void *) this);
+			lib3270_set_user_data(hSession,(void *) this);
 
-		this->setCharSet(charset);
+			this->setCharSet(charset);
 
-		lib3270_set_popup_handler(handler->hSession, &popupHandler);
+			lib3270_set_popup_handler(hSession, &popupHandler);
 
-		// Setup callbacks
-		struct lib3270_session_callbacks *cbk;
+			// Setup callbacks
+			struct lib3270_session_callbacks *cbk;
 
-		cbk = lib3270_get_session_callbacks(this->hSession,LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION),sizeof(struct lib3270_session_callbacks));
-		if(!cbk) {
+			cbk = lib3270_get_session_callbacks(hSession,LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION),sizeof(struct lib3270_session_callbacks));
+			if(!cbk) {
 
-			string message(_("Invalid callback table; "));
-			message += "lib";
-			message += LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME);
+				string message(_("Invalid callback table; "));
+				message += "lib";
+				message += LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME);
 
-			if(strcasecmp(LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION),lib3270_get_revision())) {
-				 message += _(" is not in the required revision " );
-				 message += LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION);
-				 message += ".";
-			} else {
-				message += _(" is invalid.");
+				if(strcasecmp(LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION),lib3270_get_revision())) {
+					 message += _(" is not in the required revision " );
+					 message += LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION);
+					 message += ".";
+				} else {
+					message += _(" is invalid.");
+				}
+
+				throw runtime_error(message);
+
 			}
 
-			throw runtime_error(message);
+			cbk->update_connect	= connectHandler;
 
-		}
+			return 0;
 
-		cbk->update_connect	= connectHandler;
+		});
 
 	}
 

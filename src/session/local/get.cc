@@ -43,134 +43,152 @@
  namespace TN3270 {
 
  	std::string	Local::Session::get() const {
-
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-
-		lib3270_ptr<char> text = lib3270_get_string_at_address(hSession, 0, -1, '\n');
-
-        if(!text) {
-            throw std::runtime_error( _("Can't get screen contents") );
-        }
-
-        return std::string((char *) text);
+		return get(0,-1,'\n');
 	}
 
 	std::string	Local::Session::get(int32_t baddr, int32_t len, uint8_t lf) const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return handler->get<std::string>([baddr,len,lf](H3270 * hSession){
 
-		lib3270_ptr<char> text = lib3270_get_string_at_address(hSession, baddr, len, lf);
+			lib3270_ptr<char> text = lib3270_get_string_at_address(hSession, baddr, len, lf);
 
-        if(!text) {
-            throw std::runtime_error( _("Can't get screen contents") );
-        }
+			if(!text) {
+				throw std::runtime_error( _("Can't get screen contents") );
+			}
 
-        return std::string{(char *) text};
+			return std::string{(char *) text};
+
+		});
+
 	}
 
 	std::string	Local::Session::get(uint32_t row, uint32_t col, int32_t len, uint8_t lf) const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
+		return handler->get<std::string>([row,col,len,lf](H3270 * hSession){
 
-		lib3270_ptr<char> text = lib3270_get_string_at(hSession, row, col, len, lf);
+			lib3270_ptr<char> text = lib3270_get_string_at(hSession, row, col, len, lf);
 
-        if(!text) {
-            throw std::runtime_error( _("Can't get screen contents") );
-        }
+			if(!text) {
+				throw std::runtime_error( _("Can't get screen contents") );
+			}
 
-        return std::string((char *) text);
+			return std::string{(char *) text};
+
+		});
 
 	}
 
 	ProgramMessage Local::Session::getProgramMessage() const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return (ProgramMessage) lib3270_get_program_message(this->hSession);
+		return handler->get<ProgramMessage>([](H3270 * hSession){
+			return (ProgramMessage) lib3270_get_program_message(hSession);
+		});
 
 	}
 
 	ConnectionState Local::Session::getConnectionState() const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return (ConnectionState) lib3270_get_connection_state(this->hSession);
+		return handler->get<ConnectionState>([](H3270 * hSession){
+			return (ConnectionState) lib3270_get_connection_state(hSession);
+		});
 
 	}
 
 	SSLState Local::Session::getSSLState() const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return (TN3270::SSLState) lib3270_get_ssl_state(hSession);
+		return handler->get<SSLState>([](H3270 * hSession){
+			return (SSLState) lib3270_get_ssl_state(hSession);
+		});
 
 	}
 
 	LIB3270_KEYBOARD_LOCK_STATE Local::Session::getKeyboardLockState() const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return lib3270_get_keyboard_lock_state(hSession);
+		return handler->get<LIB3270_KEYBOARD_LOCK_STATE>([](H3270 * hSession){
+			return lib3270_get_keyboard_lock_state(hSession);
+		});
+
 	}
 
 	unsigned short Local::Session::getScreenWidth() const {
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return (unsigned short) lib3270_get_width(hSession);
+
+		return handler->get<unsigned short>([](H3270 * hSession){
+			return lib3270_get_width(hSession);
+		});
+
 	}
 
 	unsigned short Local::Session::getScreenHeight() const {
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return (unsigned short) lib3270_get_height(hSession);
+
+		return handler->get<unsigned short>([](H3270 * hSession){
+			return lib3270_get_height(hSession);
+		});
+
 	}
 
 	unsigned short Local::Session::getScreenLength() const {
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return (unsigned short) lib3270_get_length(hSession);
+
+		return handler->get<unsigned short>([](H3270 * hSession){
+			return lib3270_get_length(hSession);
+		});
+
 	}
 
 	unsigned short Local::Session::getCursorAddress() {
-		std::lock_guard<std::recursive_mutex> lock(sync);
 
-		int rc = lib3270_get_cursor_address(hSession);
+		return handler->get<unsigned short>([this](H3270 * hSession){
 
-		if(!rc)
-			chkResponse(errno);
+			int rc = lib3270_get_cursor_address(hSession);
 
-		return rc;
+			if(!rc)
+				handler->chkResponse(errno);
+
+			return rc;
+
+		});
+
 	}
 
 	struct Session::Cursor Local::Session::getCursorPosition() {
 
-		std::lock_guard<std::recursive_mutex> lock(sync);
-
 		unsigned short row = 0, col = 0;
-
+		handler->call([&row,&col](H3270 * hSession){
+			return lib3270_get_cursor_position(hSession,&row,&col);
+		});
 		return Session::Cursor(row,col);
 
 	};
 
 	std::string Local::Session::getVersion() const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return lib3270_get_version();
+		return handler->get<std::string>([](H3270 * hSession){
+			return lib3270_get_version();
+		});
 
 	}
 
 	std::string Local::Session::getRevision() const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return lib3270_get_revision();
+		return handler->get<std::string>([](H3270 * hSession){
+			return lib3270_get_revision();
+		});
 
 	}
 
 	std::string Local::Session::getAssociatedLUName() const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		const char * luname = lib3270_get_associated_luname(hSession);
-		return string(luname ? luname : "");
+		return handler->get<std::string>([](H3270 * hSession){
+			const char * luname = lib3270_get_associated_luname(hSession);
+			return string{luname ? luname : ""};
+		});
 
 	}
 
 	std::string Local::Session::getHostURL() const {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		return lib3270_get_url(hSession);
+		return handler->get<std::string>([](H3270 * hSession){
+			return lib3270_get_url(hSession);
+		});
 
 	}
 

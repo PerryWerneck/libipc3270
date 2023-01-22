@@ -46,37 +46,33 @@
 
 	void Local::Session::setProperty(const char *name, const int value) {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		int rc = lib3270_set_int_property(hSession,name,value,0);
-		if(rc)
-			chkResponse(rc);
+		handler->call([name,value](H3270 * hSession){
+			return lib3270_set_int_property(hSession,name,value,0);
+		});
 
 	}
 
 	void Local::Session::setProperty(const char *name, const unsigned int value) {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		int rc = lib3270_set_uint_property(hSession,name,value,0);
-		if(rc)
-			chkResponse(rc);
+		handler->call([name,value](H3270 * hSession){
+			return lib3270_set_uint_property(hSession,name,value,0);
+		});
 
 	}
 
 	void Local::Session::setProperty(const char *name, const bool value) {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		int rc = lib3270_set_boolean_property(hSession,name,(int) value, 0);
-		if(rc)
-			chkResponse(rc);
+		handler->call([name,value](H3270 * hSession){
+			return lib3270_set_boolean_property(hSession,name,(int) value, 0);
+		});
 
 	}
 
 	void Local::Session::setProperty(const char *name, const char *value) {
 
-		std::lock_guard<std::recursive_mutex> lock(const_cast<Local::Session *>(this)->sync);
-		int rc = lib3270_set_string_property(hSession, name, value, 0);
-		if(rc)
-			chkResponse(rc);
+		handler->call([name,value](H3270 * hSession){
+			return lib3270_set_string_property(hSession, name, value, 0);
+		});
 
 	}
 
