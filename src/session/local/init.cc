@@ -77,7 +77,6 @@
 
 		handler->call([this,charset](H3270 * hSession){
 
-
 			lib3270_set_user_data(hSession,(void *) this);
 
 			Abstract::Session::setCharSet(lib3270_get_display_charset(hSession),charset);

@@ -44,33 +44,42 @@
 
  namespace TN3270 {
 
-	/*
-	Local::Action::Action(Session *session, const LIB3270_ACTION *descriptor) : TN3270::Action(descriptor) {
-		debug(__FUNCTION__,"(",(void *) descriptor,")");
-		this->session = session;
-	}
-
-	bool Local::Action::activatable() const noexcept {
-		std::lock_guard<std::recursive_mutex> lock(this->session->sync);
-		debug(__FUNCTION__,"(",(void *) descriptor,")");
-		return lib3270_action_is_activatable(this->descriptor,this->session->hSession);
-	}
-
-	void Local::Action::activate() {
-		std::lock_guard<std::recursive_mutex> lock(this->session->sync);
-
-		chkResponse(lib3270_action_activate(this->descriptor,this->session->hSession));
-
-	}
-
-	void Local::Action::wait(time_t seconds) {
-		std::lock_guard<std::recursive_mutex> lock(this->session->sync);
-		chkResponse(lib3270_wait_for_ready(this->session->hSession,seconds));
-	}
-	*/
-
 	std::shared_ptr<TN3270::Action> Local::Session::ActionFactory(const LIB3270_ACTION *descriptor) {
 
+		class Action : public TN3270::Action {
+		private:
+			time_t timeout;
+			std::shared_ptr<Handler> handler;
+
+		public:
+			Action(std::shared_ptr<Handler> h, time_t t, const LIB3270_ACTION *descriptor) : TN3270::Action{descriptor}, timeout{t}, handler{h} {
+			}
+
+			bool activatable() const override {
+
+				return handler->get<bool>([this](H3270 * hSession) {
+					return lib3270_action_is_activatable(descriptor,hSession) != 0;
+				});
+
+			}
+
+			void activate() override {
+
+				handler->call([this](H3270 * hSession){
+					return lib3270_action_activate(descriptor,hSession);
+				});
+
+				if(timeout) {
+					handler->call([this](H3270 * hSession){
+						return lib3270_wait_for_ready(hSession,timeout);
+					});
+				}
+
+			}
+
+		};
+
+		return std::make_shared<Action>(handler,timeout,descriptor);
 
 	}
 
@@ -127,7 +136,7 @@
 
 	}
 
-	void Local::Session::push(const KeyboardAction action) {
+	void Local::Session::push(const KeyboardAction id) {
 
 		typedef int (*ActionCallback)(H3270 *);
 
@@ -162,12 +171,14 @@
             lib3270_clear_operator_error,	// KYBD_UNLOCK
 		};
 
-		if( ((size_t) action) > (sizeof(actions)/sizeof(actions[0]))) {
+		if( ((size_t) id) > (sizeof(actions)/sizeof(actions[0]))) {
             throw std::system_error(EINVAL, std::system_category());
 		}
 
-		handler->call([&actions,action](H3270 * hSession){
-			return actions[(size_t) action](hSession);
+		auto callback = actions[(size_t) id];
+
+		handler->call([callback](H3270 * hSession){
+			return callback(hSession);
  		});
 
  		if(this->timeout) {

@@ -59,25 +59,8 @@
 
 		namespace Local {
 
-			class Session;
-
-			/*
-			class Action : public TN3270::Action {
-			private:
-				Session *session;
-
-			public:
-				Action(Session *hSession, const LIB3270_ACTION *descriptor);
-				bool activatable() const noexcept override;
-				void activate() override;
-
-			};
-			*/
-
 			class TN3270_PRIVATE Session : public TN3270::Abstract::Session {
 			private:
-
-				friend class Action;
 
 				/// @brief lib3270 handler.
 				/// Do serialized calls to lib3270 methods.

@@ -61,9 +61,11 @@
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  // Test "Session" object
- static void chkSession() {
+ static void chkSession(const char *session, const char *url) {
 
-	auto hSession = TN3270::Session::getInstance();
+	cout << "Testing TN3270::Session{" << (session ? session : "") << "}" << endl;
+
+	auto hSession = TN3270::Session::getInstance(session);
 
 	try {
 
@@ -71,6 +73,12 @@
 			<< "Version: " << hSession->getVersion()
 			<< "\tRevision: " << hSession->getRevision()
 			<< endl;
+
+		if(url && *url) {
+			cout << "Connecting to " << ( (url && *url) ? url : "default host" ) << " ..." << endl;
+			hSession->connect(url);
+			cout << "Connected!" << endl;
+		}
 
 		hSession->waitForReady(30);
 
@@ -190,6 +198,8 @@
  // test host object
  static void testHost(const char *session, const char *url) {
 
+	cout << "Testing TN3270::Host{" << (session ? session : "") << "}" << endl;
+
 	try {
 
 		TN3270::Host host{session};
@@ -203,7 +213,10 @@
 		host.setUnlockDelay(0);	// Disable the 350ms delay on screen changes.
 		host.setTimeout(10);	// Set the default timeout.
 		//host["crlget"] = false;	// Disable CRL get to speed up the connection.
+
+		cout << "Connecting to " << ( (url && *url) ? url : "default host" ) << " ..." << endl;
 		host.connect(url);
+		cout << "Connected!" << endl;
 
 		cout
 			<< "Wait for unlock returns " << host.getKeyboardLockState() << std::endl
@@ -253,13 +266,13 @@
 
  int main(int argc, char **argv) {
 
-	const char * session = ":A";
-	const char * url = nullptr;
+	const char * session = nullptr;
+	const char * url = getenv("LIB3270_DEFAULT_HOST");
 
 #if ! defined(_MSC_VER)
 
 	if(argc == 1) {
-		chkSession();
+		chkSession(session,url);
 		return 0;
 	}
 
@@ -301,7 +314,7 @@
 
 			case 'U':
 				url = optarg;
-				cout << "URL: " << session << endl;
+				cout << "URL: " << url << endl;
 				break;
 
 			case 'P':
