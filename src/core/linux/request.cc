@@ -46,7 +46,7 @@
  namespace TN3270 {
 
 	/*
-	IPC::Request::Request(DBusConnection * conn) {
+	Request::Request(DBusConnection * conn) {
 		this->conn = conn;
 
 		memset(&response,0,sizeof(response));
@@ -54,7 +54,7 @@
 
 	}
 
-	IPC::Request::~Request() {
+	Request::~Request() {
 		if(request.msg) {
 			dbus_message_unref(request.msg);
 		}
@@ -64,7 +64,7 @@
 		}
 	}
 
-	IPC::Request & IPC::Request::call() {
+	IPC::Request & Request::call() {
 
 		if(response.msg) {
 			dbus_message_unref(response.msg);
@@ -87,7 +87,7 @@
 
 	}
 
-	IPC::Request & IPC::Request::push(int type, const void *value) {
+	IPC::Request & Request::push(int type, const void *value) {
 
 		if(request.variant) {
 
@@ -122,28 +122,28 @@
 
 	}
 
-	IPC::Request & IPC::Request::push(const char *arg) {
+	IPC::Request & Request::push(const char *arg) {
 		return push(DBUS_TYPE_STRING,&arg);
 	}
 
-	IPC::Request & IPC::Request::push(const bool arg) {
+	IPC::Request & Request::push(const bool arg) {
 		dbus_bool_t bl = (arg ? 1 : 0);
 		return push(DBUS_TYPE_BOOLEAN,&bl);
 	}
 
-	IPC::Request & IPC::Request::push(const uint8_t arg) {
+	IPC::Request & Request::push(const uint8_t arg) {
 		return push(DBUS_TYPE_BYTE,&arg);
 	}
 
-	IPC::Request & IPC::Request::push(const int32_t arg) {
+	IPC::Request & Request::push(const int32_t arg) {
 		return push(DBUS_TYPE_INT32,&arg);
 	}
 
-	IPC::Request & IPC::Request::push(const uint32_t arg) {
+	IPC::Request & Request::push(const uint32_t arg) {
 		return push(DBUS_TYPE_UINT32,&arg);
 	}
 
-	IPC::Request & IPC::Request::pop(std::string &value) {
+	IPC::Request & Request::pop(std::string &value) {
 
 		const char * str = "";
 
@@ -352,7 +352,7 @@
 
 	}
 
-	IPC::Request & IPC::Request::Request::pop(int &value) {
+	IPC::Request & Request::Request::pop(int &value) {
 
 		value = getIntValue(response.iter);
 		dbus_message_iter_next(&response.iter);
@@ -360,7 +360,7 @@
 
 	}
 
-	IPC::Request & IPC::Request::Request::pop(unsigned int &value) {
+	IPC::Request & Request::Request::pop(unsigned int &value) {
 
 		value = getUIntValue(response.iter);
 		dbus_message_iter_next(&response.iter);
@@ -368,7 +368,7 @@
 
 	}
 
-	IPC::Request & IPC::Request::Request::pop(bool &value) {
+	IPC::Request & Request::Request::pop(bool &value) {
 
 		value = getBooleanValue(response.iter);
 		dbus_message_iter_next(&response.iter);

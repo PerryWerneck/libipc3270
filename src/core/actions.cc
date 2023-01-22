@@ -41,38 +41,41 @@
  #include <lib3270/toggle.h>
  #include <lib3270/properties.h>
  #include <lib3270/ipc/action.h>
+ #include <lib3270/ipc/session.h>
+ #include <stdexcept>
 
-/*---[ Implement ]----------------------------------------------------------------------------------*/
+ using namespace std;
 
- TN3270::Action::Action(const LIB3270_ACTION *descriptor) {
-	debug(__FUNCTION__,"(",(void *) descriptor,",",descriptor->name,",",descriptor->summary,")");
- 	this->descriptor = descriptor;
- }
+ namespace TN3270 {
 
- TN3270::Action::~Action() {
- }
-
- const char * TN3270::Action::getName() const noexcept {
- 	return ((const LIB3270_PROPERTY *) this->descriptor)->name;
- }
-
- const char * TN3270::Action::getDescription() const noexcept {
- 	return lib3270_property_get_description((const LIB3270_PROPERTY *) this->descriptor);
- }
-
- const char * TN3270::Action::getSummary() const noexcept {
- 	return lib3270_property_get_summary((const LIB3270_PROPERTY *) this->descriptor);
- }
-
- std::vector<const LIB3270_ACTION *> TN3270::getActions() {
-
- 	std::vector<const LIB3270_ACTION *> actions;
-
-	for(auto action = lib3270_get_actions(); action->name; action++) {
-		actions.push_back(action);
+	Action::~Action() {
 	}
 
- 	return actions;
+	const char * Action::name() const noexcept {
+		return ((const LIB3270_PROPERTY *) this->descriptor)->name;
+	}
+
+	const char * Action::description() const noexcept {
+		return lib3270_property_get_description((const LIB3270_PROPERTY *) this->descriptor);
+	}
+
+	const char * Action::summary() const noexcept {
+		return lib3270_property_get_summary((const LIB3270_PROPERTY *) this->descriptor);
+	}
+
+	std::shared_ptr<Action> Session::ActionFactory(const char *name) {
+
+		for(auto action = lib3270_get_actions(); action->name; action++) {
+
+			if(!strcasecmp(action->name,name) == 0) {
+				return ActionFactory(action);
+			}
+
+		}
+
+		throw runtime_error("Invalid action name");
+
+	}
 
  }
 

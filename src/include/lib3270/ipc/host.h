@@ -20,6 +20,7 @@
  #pragma once
  #include <lib3270/ipc.h>
  #include <lib3270/ipc/session.h>
+ #include <lib3270/ipc/action.h>
  #include <iostream>
 
  namespace TN3270 {
@@ -115,7 +116,7 @@
 
 		/// @brief Execute action by name.
 		inline Host & action(const char *action_name) {
-			session->action(action_name);
+			session->ActionFactory(action_name)->activate();
 			return *this;
 		}
 
@@ -253,21 +254,8 @@
 		// Actions
 
 		/// @brief Create new action object.
-		///
-		/// Alocate a new action object associated with the session, delete it
-		/// when no longer necessary.
-		///
-		inline TN3270::Action * getAction(const LIB3270_ACTION *descriptor) {
-			return session->getAction(descriptor);
-		}
-
-		/// @brief Create new action object.
-		///
-		/// Alocate a new action object associated with the session, delete it
-		/// when no longer necessary.
-		///
-		inline TN3270::Action * getAction(const char *name) {
-			return session->getAction(name);
+		inline std::shared_ptr<TN3270::Action> ActionFactory(const char *name) {
+			return session->ActionFactory(name);
 		}
 
 		/// @brief Send PF.

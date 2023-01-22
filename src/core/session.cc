@@ -58,8 +58,8 @@
 
 
 	/// @brief Fire event.
-	//void Session::fire(const Event GNUC_UNUSED(&event)) {
-	//}
+	void Session::fire(const Event &event) {
+	}
 
 	void Session::push(const PFKey key) {
 		pfkey( ((unsigned short) key) + 1);
@@ -400,26 +400,6 @@
 		value = getAttribute(name).getBoolean();
 	}
 	*/
-
-	/// @brief Create an action object
-	//Action * Session::getAction(const LIB3270_ACTION GNUC_UNUSED(*descriptor)) {
-	//	throw std::system_error(ENOTSUP, std::system_category());
-	//}
-
-
-	Action * Session::getAction(const char *name) {
-
-		for(auto action : getActions()) {
-
-			if(strcasecmp(action->name,name) == 0) {
-				return getAction(action);
-			}
-
-		}
-
-		throw std::system_error(EINVAL, std::system_category());
-
-	}
 
 	void Session::setProperty(const char *name, const int value) {
 		RequestFactory(Request::SetProperty,name)->push(value).call();

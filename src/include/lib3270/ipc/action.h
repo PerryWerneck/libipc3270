@@ -50,21 +50,21 @@
 		protected:
 			const LIB3270_ACTION *descriptor;
 
-			Action(const LIB3270_ACTION *descriptor);
+			constexpr Action(const LIB3270_ACTION *dsc) : descriptor{dsc} {
+			}
 
 		public:
 			virtual bool activatable() const = 0;
 			virtual void activate() = 0;
-			virtual void wait(time_t seconds = 0) = 0;
 			virtual ~Action();
 
 			inline operator bool() const {
 				return activatable();
 			}
 
-			const char * getName() const noexcept;
-			const char * getDescription() const noexcept;
-			const char * getSummary() const noexcept;
+			const char * name() const noexcept;
+			const char * description() const noexcept;
+			const char * summary() const noexcept;
 
 		};
 

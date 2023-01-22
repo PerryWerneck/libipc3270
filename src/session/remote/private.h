@@ -60,6 +60,7 @@
 
 			class Session;
 
+			/*
 			class Action : public TN3270::Action {
 			private:
 				Session *session;
@@ -71,6 +72,7 @@
 				void wait(time_t seconds) override;
 
 			};
+			*/
 
 			/*
 			class TN3270_PRIVATE Session : public TN3270::Abstract::Session {

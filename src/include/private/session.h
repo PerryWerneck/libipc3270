@@ -147,9 +147,6 @@
 			/// @brief Set local charset.
 			void setCharSet(const char *charset = NULL) override;
 
-			/// @brief Execute action by name.
-			void action(const char *action_name) override;
-
 			// Connect/disconnect
 			void connect(const char *url = nullptr, time_t seconds = DEFAULT_TIMEOUT) override;
 			void disconnect() override;

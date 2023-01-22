@@ -44,6 +44,7 @@
 
  namespace TN3270 {
 
+	/*
 	Local::Action::Action(Session *session, const LIB3270_ACTION *descriptor) : TN3270::Action(descriptor) {
 		debug(__FUNCTION__,"(",(void *) descriptor,")");
 		this->session = session;
@@ -66,18 +67,21 @@
 		std::lock_guard<std::recursive_mutex> lock(this->session->sync);
 		chkResponse(lib3270_wait_for_ready(this->session->hSession,seconds));
 	}
+	*/
 
-	TN3270::Action * Local::Session::getAction(const LIB3270_ACTION *descriptor) {
-		std::lock_guard<std::recursive_mutex> lock(sync);
-		return new Local::Action(this, descriptor);
+	std::shared_ptr<TN3270::Action> Local::Session::ActionFactory(const LIB3270_ACTION *descriptor) {
+
+
 	}
 
+	/*
 	void Local::Session::action(const char *action_name) {
 		std::lock_guard<std::recursive_mutex> lock(sync);
 		chkResponse(lib3270_activate_by_name(hSession,action_name));
 		if(this->timeout)
 			chkResponse(lib3270_wait_for_ready(hSession,this->timeout));
 	}
+	*/
 
  	void Local::Session::connect(const char *url, time_t seconds) {
 

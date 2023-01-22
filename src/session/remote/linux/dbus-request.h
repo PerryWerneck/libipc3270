@@ -46,6 +46,10 @@
 
 		public:
 			Request(DBusConnection *c, const char *id, const Type type, const char *name);
+
+			Request(DBusConnection *c, const std::string &id, const Type type, const char *name) : Request{c,id.c_str(),type,name} {
+			}
+
 			virtual ~Request();
 
 			TN3270::Request & call() override;

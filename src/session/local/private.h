@@ -61,6 +61,7 @@
 
 			class Session;
 
+			/*
 			class Action : public TN3270::Action {
 			private:
 				Session *session;
@@ -69,9 +70,9 @@
 				Action(Session *hSession, const LIB3270_ACTION *descriptor);
 				bool activatable() const noexcept override;
 				void activate() override;
-				void wait(time_t seconds) override;
 
 			};
+			*/
 
 			class TN3270_PRIVATE Session : public TN3270::Abstract::Session {
 			private:
@@ -114,9 +115,8 @@
 				virtual ~Session();
 
 				// Actions
-				TN3270::Action * getAction(const LIB3270_ACTION *descriptor) override;
+				std::shared_ptr<TN3270::Action> ActionFactory(const LIB3270_ACTION *descriptor) override;
 
-				void action(const char *action_name) override;
 				void connect(const char *url, time_t seconds) override;
 				void disconnect() override;
 				void pfkey(unsigned short value) override;

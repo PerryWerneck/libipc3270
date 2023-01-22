@@ -108,7 +108,7 @@
 		 * @brief Get list of actions.
 		 *
 		 */
-		TN3270_PUBLIC std::vector<const LIB3270_ACTION *> getActions();
+		// TN3270_PUBLIC std::vector<const LIB3270_ACTION *> getActions();
 
 		/**
 		 * @brief Lib3270 dynamic memory block wrapper.

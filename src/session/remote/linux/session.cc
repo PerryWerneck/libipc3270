@@ -42,6 +42,7 @@
  #include <string>
  #include <mutex>
  #include "dbus-request.h"
+ #include <lib3270/ipc/action.h>
 
  using namespace std;
 
@@ -64,6 +65,30 @@
 			throw runtime_error("Unexpected error getting session bus");
 		}
 
+		class Action : public TN3270::Action {
+		private:
+			DBusConnection *connection;
+			string id;
+
+		public:
+			Action(DBusConnection *c, const std::string &i, const LIB3270_ACTION *dsc) : TN3270::Action{dsc}, connection{c}, id{i} {
+			}
+
+			bool activatable() const override {
+				bool rc;
+				DBus::Request{connection,id,Request::Method,"activatable"}.push(name()).call().pop(rc);
+				return rc;
+			}
+
+			void activate() override {
+				int32_t rc = DBus::Request{connection,id,Request::Method,"action"}.push(name()).call().get_int();
+				if(rc) {
+					throw std::system_error((int) rc, std::system_category());
+				}
+			}
+
+		};
+
 		class Session : public Abstract::Session {
 		private:
 			DBusConnection *connection;
@@ -75,6 +100,10 @@
 
 			std::shared_ptr<Request> RequestFactory(const Request::Type type, const char *name) const override {
 				return make_shared<DBus::Request>(connection,id.c_str(),type,name);
+			}
+
+			std::shared_ptr<TN3270::Action> ActionFactory(const LIB3270_ACTION *descriptor) {
+				return make_shared<Action>(connection,id,descriptor);
 			}
 
 		};

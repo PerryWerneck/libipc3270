@@ -44,6 +44,9 @@
 		/// @brief Fire event.
 		void fire(const Event &event);
 
+		/// @brief Create an action object.
+		virtual std::shared_ptr<Action> ActionFactory(const LIB3270_ACTION *descriptor) = 0;
+
 	public:
 
 		/// @brief Get an instance of the TN3270 session based on the supplied ID.
@@ -202,9 +205,6 @@
 		/// @brief Set local charset.
 		virtual void setCharSet(const char *charset = NULL) = 0;
 
-		/// @brief Execute action by name.
-		virtual void action(const char *action_name) = 0;
-
 		// Connect/disconnect
 		virtual void connect(const char *url = nullptr, time_t seconds = DEFAULT_TIMEOUT) = 0;
 		virtual void disconnect() = 0;
@@ -246,10 +246,7 @@
 		// void insert(Event::Type type, std::function <void(const Event &event)> listener);
 
 		/// @brief Create an action object.
-		virtual Action * getAction(const LIB3270_ACTION *descriptor);
-
-		/// @brief Create an action object.
-		Action * getAction(const char *name);
+		std::shared_ptr<Action> ActionFactory(const char *name);
 
 		/// @brief Checks if the terminal contains the string.
 		size_t find(const char * str, size_t pos = 0) const;

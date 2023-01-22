@@ -47,6 +47,7 @@
 
  namespace TN3270 {
 
+	/*
 	void Abstract::Session::action(const char *action_name) {
 
 		int32_t rc = RequestFactory(Request::Method,"action")->push(action_name).get_int();
@@ -56,6 +57,7 @@
 		}
 
 	}
+	*/
 
  	void Abstract::Session::connect(const char *url, time_t seconds) {
 
@@ -97,7 +99,7 @@
 	}
 
 	void Abstract::Session::push(const KeyboardAction action) {
-		this->action(toCharString(action));
+		this->ActionFactory(toCharString(action))->activate();
 	}
 
 	/*
