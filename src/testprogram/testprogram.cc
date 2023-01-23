@@ -82,11 +82,13 @@
 		}
 
 		hSession->waitForReady(30);
+		auto cursor = hSession->getCursorPosition();
 
 		cout
 			<< "Connection state is " << toCharString(hSession->getConnectionState()) << std::endl
 			<< "Program message is " << toCharString(hSession->getProgramMessage()) << std::endl
 			<< "Luname is " << hSession->getAssociatedLUName() << std::endl
+			<< "Cursor at " << cursor.row << "," << cursor.col << std::endl
 			<< std::endl;
 
 		cout

@@ -129,8 +129,7 @@
 
         session->fire(PopupEvent(popup->type,popup->title,popup->summary,popup->body));
 
-        debug("Returning 'ok' from popup dialog!!");
-        return 0;	// Allway zero to ignore dialogs.
+        return ENOTSUP; // Use default response.
 
 	}
 
