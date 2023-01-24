@@ -36,24 +36,35 @@
  *
  */
 
+ #include <config.h>
+ #include <private/session.h>
+ #include "pipe-request.h"
+ #include <lib3270/ipc/session.h>
+ #include <algorithm>
+ #include <udjat/tools/logger.h>
+
+ /*
  #include "../private.h"
  #include <ipc-client-internals.h>
  #include <cstring>
  #include <lib3270/trace.h>
  #include <algorithm>
+ */
 
- using std::string;
+ using namespace std;
+ using namespace Udjat;
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
 
-	IPC::Session::Session(const char *id, const char *charset) : Abstract::Session() {
+ 	std::shared_ptr<Abstract::Session> Abstract::Session::getRemoteInstance(const char *id, const char *charset) {
 
 		const char *ptr = strchr(id,':');
 
-		if(!ptr)
+		if(!ptr) {
 			throw std::system_error(EINVAL, std::system_category());
+		}
 
 		string pipename{"\\\\.\\pipe\\"};
 
@@ -65,7 +76,7 @@
 
 		debug("id: \"", id, "\" pipename: \"", pipename , "\"");
 
-		this->hPipe = CreateFile(
+		HANDLE hPipe = CreateFile(
 			TEXT(pipename.c_str()),		// pipe name
 			GENERIC_READ |  			// read and write access
 			GENERIC_WRITE,
@@ -89,12 +100,40 @@
 			throw std::runtime_error("Can't set IPC Channel mode");
 		}
 
+		class Session : public Abstract::Session {
+		private:
+			std::shared_ptr<Pipe::Handler> handler;
+
+		public:
+			Session(HANDLE h) : Abstract::Session{}, handler{std::make_shared<Pipe::Handler>(h)} {
+			}
+
+			std::shared_ptr<Request> RequestFactory(const Request::Type type, const char *name) const override {
+				return make_shared<Pipe::Request>(handler,type,name);
+			}
+
+			std::shared_ptr<TN3270::Action> ActionFactory(const LIB3270_ACTION *descriptor) {
+				throw runtime_error("Not implemented");
+//				return make_shared<Action>(connection,id,descriptor);
+			}
+
+		};
+
+		return make_shared<Session>(hPipe);
+
+ 	}
+
+	/*
+	IPC::Session::Session(const char *id, const char *charset) : Abstract::Session() {
+
+
 		this->setCharSet(charset);
 	}
 
 	IPC::Session::~Session() {
 		CloseHandle(this->hPipe);
 	}
+	*/
 
  }
 

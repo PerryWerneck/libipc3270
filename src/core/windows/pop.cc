@@ -44,6 +44,7 @@
 
  namespace TN3270 {
 
+	/*
 	class InvalidFormatException : public std::exception {
 	private:
 		string message;
@@ -164,6 +165,7 @@
 
 		return *this;
 	}
+	*/
 
  }
 

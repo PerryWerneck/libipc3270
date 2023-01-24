@@ -226,7 +226,6 @@
 #endif // HAVE_ICONV
 	}
 
-
  }
 
 

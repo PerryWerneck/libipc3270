@@ -44,11 +44,13 @@
 
  namespace TN3270 {
 
+	/*
 	IPC::Request::Request(const Session &session, const char *method) : Request(session.hPipe, method, 3) {
 	}
 
 	IPC::Request::Request(const Session &session, bool isSet, const char *property) : Request(session.hPipe, property, (isSet ? 2 : 1)) {
 	}
+	*/
 
  }
 

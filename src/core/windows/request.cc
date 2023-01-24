@@ -92,6 +92,8 @@
 
 #endif // DEBUG
 
+
+	/*
 	IPC::Request::Request(HANDLE hPipe, const char *name, uint16_t type) {
 
 		this->hPipe = hPipe;
@@ -237,6 +239,7 @@
 
 		return *this;
 	}
+	*/
 
  }
 

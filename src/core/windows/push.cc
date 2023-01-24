@@ -44,6 +44,7 @@
 
  namespace TN3270 {
 
+	/*
 	IPC::Request & IPC::Request::push(const char *arg) {
 		(*this->outvalues)++;
 		pushBlock(arg, strlen(arg)+1)->type = IPC::Request::String;
@@ -74,6 +75,7 @@
 		pushBlock(&arg, sizeof(arg))->type = IPC::Request::Uint32;
 		return *this;
 	}
+	*/
 
  }
 
