@@ -83,7 +83,7 @@
 
 			void activate() override {
 				debug("Calling remote action '",name(),"'");
-				int32_t rc = DBus::Request{connection,id,Request::Method,"action"}.push(name()).call().get_int();
+				int32_t rc = DBus::Request{connection,id,Request::Method,"action"}.push(name()).get_int();
 				debug("Remote action '",name(),"' has returned ",rc);
 				if(rc) {
 					throw std::system_error((int) rc, std::system_category());

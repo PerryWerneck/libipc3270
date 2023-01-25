@@ -56,6 +56,10 @@
  #include <lib3270/ipc/session.h>
  #include <lib3270/ipc/host.h>
 
+#ifndef _WIN32
+	#include <unistd.h>
+#endif // _WIN32
+
  using namespace std;
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/

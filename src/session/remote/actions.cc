@@ -102,40 +102,6 @@
 		this->ActionFactory(toCharString(action))->activate();
 	}
 
-	/*
-
-
-	TN3270::Action * Abstract::Session::getAction(const LIB3270_ACTION *descriptor) {
-		return new IPC::Action(this, descriptor);
-	}
-
-	IPC::Action::Action(Session *session, const LIB3270_ACTION *descriptor) : TN3270::Action(descriptor) {
-		this->session = session;
-	}
-
-	bool IPC::Action::activatable() const {
-
-		bool rc;
-
-		debug(__FUNCTION__);
-		Request(*session,"activatable")
-			.push(descriptor->name)
-			.call()
-			.pop(rc);
-		debug(__FUNCTION__);
-
-		return rc;
-	}
-
-	void IPC::Action::activate() {
-		session->action(descriptor->name);
-	}
-
-	void IPC::Action::wait(time_t seconds) {
-		session->waitForReady(seconds);
-	}
-
-	*/
 
  }
 
