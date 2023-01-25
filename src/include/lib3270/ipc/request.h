@@ -46,9 +46,9 @@
 	public:
 
 		enum Type : uint8_t {
-			Method,
-			GetProperty,
-			SetProperty
+			Method = 3,
+			GetProperty = 1,
+			SetProperty = 2
 		};
 
 		Request(const Type type = Method);

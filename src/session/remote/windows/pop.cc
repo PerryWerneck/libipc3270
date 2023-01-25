@@ -37,6 +37,7 @@
  */
 
  #include <config.h>
+ #include <ipc-client-internals.h>
  #include "pipe-request.h"
 
  using namespace std;
@@ -85,7 +86,14 @@
 
 		DataBlock * block = getNextBlock();
 
+		debug("Popping 'int' value");
+
 		switch(block->type) {
+		case Pipe::Request::Uint16:
+			value = * ((uint16_t *) (block+1));
+			in.current += sizeof(uint16_t) + sizeof(DataBlock);
+			break;
+
 		case Pipe::Request::Int16:
 			value = * ((int16_t *) (block+1));
 			in.current += sizeof(int16_t) + sizeof(DataBlock);
@@ -110,9 +118,16 @@
 
 	TN3270::Request & Pipe::Request::Request::pop(unsigned int &value) {
 
+		debug("Popping 'unsigned int' value");
+
 		DataBlock * block = getNextBlock();
 
 		switch(block->type) {
+		case Pipe::Request::Int16:
+			value = * ((int16_t *) (block+1));
+			in.current += sizeof(int16_t) + sizeof(DataBlock);
+			break;
+
 		case Pipe::Request::Uint16:
 			value = * ((uint16_t *) (block+1));
 			in.current += sizeof(uint16_t) + sizeof(DataBlock);

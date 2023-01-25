@@ -57,7 +57,7 @@
 	}
 
 	ProgramMessage Abstract::Session::getProgramMessage() const {
-		return getProperty<uint32_t,ProgramMessage>("program_message");
+		return getProperty<int32_t,ProgramMessage>("program_message");
 	}
 
 	ConnectionState Abstract::Session::getConnectionState() const {

@@ -37,6 +37,7 @@
  */
 
  #include <config.h>
+ #include <ipc-client-internals.h>
  #include "pipe-request.h"
 
  using namespace std;
@@ -47,6 +48,7 @@
 
 	TN3270::Request & Pipe::Request::push(const char *arg) {
 		(*this->outvalues)++;
+		debug("Argument ",(*this->outvalues)," is '",arg,"' with type '",((char) Pipe::Request::String),"'");
 		pushBlock(arg, strlen(arg)+1)->type = Pipe::Request::String;
 		return *this;
 	}

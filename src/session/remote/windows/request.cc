@@ -95,6 +95,8 @@
 
 	Pipe::Request::Request(std::shared_ptr<Pipe::Handler> h, const TN3270::Request::Type type, const char *name) : TN3270::Request{type}, handler{h} {
 
+		debug("New request '", name, "', with type ",((int) type));
+
 		// Create buffers
 		in.length = PIPE_BUFFER_LENGTH;
 		in.used = 0;
@@ -159,6 +161,10 @@
 	TN3270::Request & Pipe::Request::call() {
 
 		debug("Sending request with ", *this->outvalues, " elements");
+
+#ifdef DEBUG
+		trace_data("Request block",(const unsigned char *) this->out.block, this->out.used);
+#endif // DEBUG
 
 		in.current = 0;
 		if(!handler->transact(this->out.block,this->out.used,this->in.block,this->in.length,&this->in.used)) {

@@ -63,15 +63,33 @@
 			throw std::system_error(EINVAL, std::system_category(),"Empty session id");
 		}
 
-		const char *ptr = strchr(id,':');
+		string pipename{"\\\\.\\pipe\\"};
+		const char *ptr = id;
 
-		if(!ptr) {
-			throw std::system_error(EINVAL, std::system_category(),string{"Invalid remote session id '"} + id + "'");
+		if(id[0] == ':') {
+
+#ifdef PRODUCT_NAME
+			pipename += PRODUCT_NAME;
+#else
+			pipename += "pw3270";
+#endif // PRODUCT_NAME
+
+			if(!id[1]) {
+				throw std::system_error(EINVAL, std::system_category(),string{"Invalid remote session id '"} + id + "'");
+			}
+
+		} else {
+
+			ptr = strchr(id,':');
+
+			if(!ptr) {
+				throw std::system_error(EINVAL, std::system_category(),string{"Invalid remote session id '"} + id + "'");
+			}
+
+			pipename += string{id,ptr - id};
+
 		}
 
-		string pipename{"\\\\.\\pipe\\"};
-
-		pipename += string(id,ptr - id);
 		pipename += "\\";
 		pipename += (ptr+1);
 
