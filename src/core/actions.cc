@@ -67,7 +67,7 @@
 
 		for(auto action = lib3270_get_actions(); action->name; action++) {
 
-			if(!strcasecmp(action->name,name) == 0) {
+			if(!strcasecmp(action->name,name)) {
 				return ActionFactory(action);
 			}
 

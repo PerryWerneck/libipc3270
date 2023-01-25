@@ -43,6 +43,7 @@
  #include <mutex>
  #include "dbus-request.h"
  #include <lib3270/ipc/action.h>
+ #include <ipc-client-internals.h>
 
  using namespace std;
 
@@ -81,7 +82,9 @@
 			}
 
 			void activate() override {
+				debug("Calling remote action '",name(),"'");
 				int32_t rc = DBus::Request{connection,id,Request::Method,"action"}.push(name()).call().get_int();
+				debug("Remote action '",name(),"' has returned ",rc);
 				if(rc) {
 					throw std::system_error((int) rc, std::system_category());
 				}

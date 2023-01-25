@@ -97,7 +97,7 @@
 			<< hSession->toString()
 			<< endl << endl;
 
-		hSession->disconnect();
+		hSession->activate("disconnect");
 
 	} catch(const std::exception &e) {
 

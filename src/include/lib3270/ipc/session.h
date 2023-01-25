@@ -248,6 +248,9 @@
 		/// @brief Create an action object.
 		std::shared_ptr<Action> ActionFactory(const char *name);
 
+		void activate(const char *name);
+		bool activatable(const char *name);
+
 		/// @brief Checks if the terminal contains the string.
 		size_t find(const char * str, size_t pos = 0) const;
 

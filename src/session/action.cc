@@ -36,13 +36,23 @@
  *
  */
 
-#include <ipc-client-internals.h>
+ #include <config.h>
+ #include <ipc-client-internals.h>
+ #include <lib3270/ipc/session.h>
+ #include <lib3270/ipc/action.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
 
+	void Session::activate(const char *name) {
+		debug("Activating action '",name,"'");
+		ActionFactory(name)->activate();
+	}
 
+	bool Session::activatable(const char *name) {
+		return ActionFactory(name)->activatable();
+	}
 
  }
 
