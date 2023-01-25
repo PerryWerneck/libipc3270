@@ -418,7 +418,6 @@
 				throw std::runtime_error("No integer data type in variant response");
 			}
 
-
 		} else {
 
 			throw std::runtime_error("Expected an integer data type");
@@ -430,6 +429,8 @@
 	}
 
 	TN3270::Request & DBus::Request::pop(bool &value) {
+
+		value = false;
 
 		if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_UINT32) {
 
@@ -452,7 +453,7 @@
 		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_VARIANT) {
 
 			DBusMessageIter sub;
-			int current_type;
+			int current_type = DBUS_TYPE_INVALID;
 
 			dbus_message_iter_recurse(&response.iter, &sub);
 
@@ -483,6 +484,10 @@
 
 				dbus_message_iter_next(&sub);
 
+			}
+
+			if(current_type == DBUS_TYPE_INVALID) {
+				throw std::runtime_error("No boolean data type in variant response");
 			}
 
 		} else {
