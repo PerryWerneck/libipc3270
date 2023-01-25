@@ -61,7 +61,7 @@
 	}
 
 	ConnectionState Abstract::Session::getConnectionState() const {
-		return getProperty<uint32_t,ConnectionState>("cstate");
+		return getProperty<int32_t,ConnectionState>("cstate");
 	}
 
 	SSLState Abstract::Session::getSSLState() const {

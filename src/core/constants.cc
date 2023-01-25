@@ -39,6 +39,7 @@
 
  #include <ipc-client-internals.h>
  #include <lib3270.h>
+ #include <string>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
@@ -141,7 +142,7 @@ TN3270_PUBLIC const char * toCharString(const TN3270::ConnectionState connection
 	};
 
     if( ((size_t) connectionState) > (sizeof(states)/sizeof(states[0]))) {
-        throw std::system_error(EINVAL, std::system_category());
+        throw std::system_error(EINVAL, std::system_category(), std::string{"Unexpected session state '"} + std::to_string((int) connectionState) + "'");
     }
 
     return states[connectionState];

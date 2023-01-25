@@ -41,6 +41,7 @@
  #include "dbus-request.h"
  #include <string>
  #include <cstring>
+ #include <algorithm>
 
  using namespace std;
 
@@ -51,6 +52,8 @@
 		if(!(id && *id)) {
 			throw runtime_error("Empty request id");
 		}
+
+		debug("Session-id=",id);
 
 		string object_name;
 		string object_path{DBUS_OBJECT_PATH "/"};
@@ -74,6 +77,9 @@
 
 		}
 
+		std::transform(object_name.begin(), object_name.end(), object_name.begin(), ::tolower);
+		std::transform(object_path.begin(), object_path.end(), object_path.begin(), ::tolower);
+
 		debug("Object name=",object_name);
 		debug("Object path=",object_path);
 
@@ -81,15 +87,21 @@
 
 		switch(type) {
 		case Request::Method:
+			debug("Creating new method call '",name,"'");
 			request.msg = dbus_message_new_method_call(
 							object_name.c_str(),			// Destination
 							object_path.c_str(),			// Path
 							interface_name,					// Interface
 							name							// Method
 						);
+
+			debug("Initializing dbus iter");
+			dbus_message_iter_init_append(request.msg, &request.iter);
+
 			break;
 
 		case Request::GetProperty:
+			debug("Creating new get property call '",name,"'");
 			request.msg = dbus_message_new_method_call(
 							object_name.c_str(),				// Destination
 							object_path.c_str(),				// Path
@@ -97,18 +109,25 @@
 							"Get"								// Method
 						);
 
+			debug("Initializing dbus iter");
+			dbus_message_iter_init_append(request.msg, &request.iter);
+
 			push(DBUS_TYPE_STRING,&interface_name);
 			push(DBUS_TYPE_STRING,&name);
 
 			break;
 
 		case Request::SetProperty:
+			debug("Creating new set property call '",name,"'");
 			request.msg = dbus_message_new_method_call(
 							object_name.c_str(),				// Destination
 							object_path.c_str(),				// Path
 							"org.freedesktop.DBus.Properties",	// Interface
 							"Set"								// Method
 						);
+
+			debug("Initializing dbus iter");
+			dbus_message_iter_init_append(request.msg, &request.iter);
 
 			push(DBUS_TYPE_STRING,&interface_name);
 			push(DBUS_TYPE_STRING,&name);
@@ -120,8 +139,6 @@
 		default:
 			throw runtime_error("Unexpected request type");
 		}
-
-		dbus_message_iter_init_append(request.msg, &request.iter);
 
 	}
 
@@ -248,11 +265,14 @@
 		dbus_message_iter_next(&response.iter);
 
 		value.assign(str);
+		debug("pop(",value,")");
 
 		return *this;
 	}
 
 	TN3270::Request & DBus::Request::pop(int &value) {
+
+		value = -1;
 
 		if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_INT32) {
 
@@ -279,7 +299,7 @@
 		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_VARIANT) {
 
 			DBusMessageIter sub;
-			int current_type;
+			int current_type = DBUS_TYPE_INVALID;
 
 			dbus_message_iter_recurse(&response.iter, &sub);
 
@@ -311,55 +331,8 @@
 				dbus_message_iter_next(&sub);
 			}
 
-		} else {
-
-			throw std::runtime_error("Expected an integer data type");
-
-		}
-
-		return *this;
-
-	}
-
-	TN3270::Request & DBus::Request::pop(unsigned int &value) {
-
-		if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_UINT32) {
-
-			dbus_uint32_t rc = 0;
-			dbus_message_iter_get_basic(&response.iter, &rc);
-			value = rc;
-
-		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_UINT16) {
-
-			dbus_uint16_t rc = 0;
-			dbus_message_iter_get_basic(&response.iter, &rc);
-			value = rc;
-
-		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_VARIANT) {
-
-			DBusMessageIter sub;
-			int current_type;
-
-			dbus_message_iter_recurse(&response.iter, &sub);
-
-			while ((current_type = dbus_message_iter_get_arg_type(&sub)) != DBUS_TYPE_INVALID) {
-
-				if (current_type == DBUS_TYPE_UINT32) {
-
-					dbus_uint32_t rc = 0;
-					dbus_message_iter_get_basic(&sub, &rc);
-					value = rc;
-					break;
-
-				} else if (current_type == DBUS_TYPE_UINT16) {
-					dbus_uint16_t rc = 0;
-					dbus_message_iter_get_basic(&sub, &rc);
-					value = rc;
-					break;
-
-				}
-
-				dbus_message_iter_next(&sub);
+			if(current_type == DBUS_TYPE_INVALID) {
+				throw std::runtime_error("No integer data type in variant response");
 			}
 
 		} else {
@@ -368,6 +341,91 @@
 
 		}
 
+		debug("pop(",value,")");
+		return *this;
+
+	}
+
+	TN3270::Request & DBus::Request::pop(unsigned int &value) {
+
+		value = (unsigned int) -1;
+
+		if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_UINT32) {
+
+			debug("DBUS_TYPE_UINT32");
+			dbus_uint32_t rc = 0;
+			dbus_message_iter_get_basic(&response.iter, &rc);
+			value = rc;
+
+		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_UINT16) {
+
+			debug("DBUS_TYPE_UINT16");
+			dbus_uint16_t rc = 0;
+			dbus_message_iter_get_basic(&response.iter, &rc);
+			value = rc;
+
+		} else if(dbus_message_iter_get_arg_type(&response.iter) == DBUS_TYPE_VARIANT) {
+
+			debug("DBUS_TYPE_VARIANT");
+
+			DBusMessageIter sub;
+			int current_type = DBUS_TYPE_INVALID;
+
+			dbus_message_iter_recurse(&response.iter, &sub);
+
+			while ((current_type = dbus_message_iter_get_arg_type(&sub)) != DBUS_TYPE_INVALID) {
+
+				if (current_type == DBUS_TYPE_UINT32) {
+
+					dbus_uint32_t rc = 0;
+					debug("DBUS_TYPE_VARIANT-DBUS_TYPE_UINT32");
+					dbus_message_iter_get_basic(&sub, &rc);
+					value = rc;
+					break;
+
+				} else if (current_type == DBUS_TYPE_UINT16) {
+					dbus_uint16_t rc = 0;
+					debug("DBUS_TYPE_VARIANT-DBUS_TYPE_UINT16");
+					dbus_message_iter_get_basic(&sub, &rc);
+					value = rc;
+					break;
+
+				} else if (current_type == DBUS_TYPE_INT16) {
+					dbus_int16_t rc = 0;
+					debug("DBUS_TYPE_VARIANT-DBUS_TYPE_UINT16");
+					dbus_message_iter_get_basic(&sub, &rc);
+					value = rc;
+					break;
+
+				} else if (current_type == DBUS_TYPE_INT32) {
+					dbus_int32_t rc = 0;
+					debug("DBUS_TYPE_VARIANT-DBUS_TYPE_INT32");
+					dbus_message_iter_get_basic(&sub, &rc);
+					value = rc;
+					break;
+
+				}
+#ifdef DEBUG
+				else {
+					debug("Variant type is '",((char) current_type),"'");
+				}
+#endif // DEBUG
+
+				dbus_message_iter_next(&sub);
+			}
+
+			if(current_type == DBUS_TYPE_INVALID) {
+				throw std::runtime_error("No integer data type in variant response");
+			}
+
+
+		} else {
+
+			throw std::runtime_error("Expected an integer data type");
+
+		}
+
+		debug("pop(",value,")");
 		return *this;
 	}
 
@@ -433,6 +491,7 @@
 
 		}
 
+		debug("pop(",value,")");
 		return *this;
 	}
 

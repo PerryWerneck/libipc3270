@@ -72,6 +72,7 @@
 		cout
 			<< "Version: " << hSession->getVersion()
 			<< "\tRevision: " << hSession->getRevision()
+			<< "Connection state is " << toCharString(hSession->getConnectionState()) << std::endl
 			<< endl;
 
 		if(url && *url) {
@@ -280,11 +281,12 @@
 	}
 
 	static struct option options[] = {
-		{ "session",	required_argument,		0,	's' },
-		{ "url",		required_argument,		0,	'U' },
-		{ "perftest",	no_argument,			0,	'P' },
-		{ "attribute",	optional_argument,		0,	'A' },
-		{ "info",		no_argument,			0,	'I' },
+		{ "session",		required_argument,		0,	's' },
+		{ "url",			required_argument,		0,	'U' },
+		{ "perftest",		no_argument,			0,	'P' },
+		{ "sessiontest",	no_argument,			0,	'S' },
+		{ "attribute",		optional_argument,		0,	'A' },
+		{ "info",			no_argument,			0,	'I' },
 		{ 0, 0, 0, 0}
 
 	};
@@ -293,12 +295,16 @@
 
 		int long_index =0;
 		int opt;
-		while((opt = getopt_long(argc, argv, "s:A", options, &long_index )) != -1) {
+		while((opt = getopt_long(argc, argv, "s:AS", options, &long_index )) != -1) {
 
 			switch(opt) {
 			case 's':
 				session = optarg;
 				cout << "Session: " << session << endl;
+				break;
+
+			case 'S':
+				chkSession(session,url);
 				break;
 
 			case 'A':

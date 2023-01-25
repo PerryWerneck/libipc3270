@@ -59,10 +59,14 @@
 
  	std::shared_ptr<Abstract::Session> Abstract::Session::getRemoteInstance(const char *id, const char *charset) {
 
+		if(!(id && *id)) {
+			throw std::system_error(EINVAL, std::system_category(),"Empty session id");
+		}
+
 		const char *ptr = strchr(id,':');
 
 		if(!ptr) {
-			throw std::system_error(EINVAL, std::system_category());
+			throw std::system_error(EINVAL, std::system_category(),string{"Invalid remote session id '"} + id + "'");
 		}
 
 		string pipename{"\\\\.\\pipe\\"};
