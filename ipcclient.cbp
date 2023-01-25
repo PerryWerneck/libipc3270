@@ -98,6 +98,8 @@
 		<Unit filename="src/session/remote/tools.cc" />
 		<Unit filename="src/session/remote/wait.cc" />
 		<Unit filename="src/session/remote/windows/pipe-request.h" />
+		<Unit filename="src/session/remote/windows/pop.cc" />
+		<Unit filename="src/session/remote/windows/push.cc" />
 		<Unit filename="src/session/remote/windows/request.cc" />
 		<Unit filename="src/session/remote/windows/session.cc" />
 		<Unit filename="src/session/set.cc" />

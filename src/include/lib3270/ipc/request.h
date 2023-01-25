@@ -162,19 +162,6 @@
 			class TN3270_PUBLIC Request {
 			public:
 #ifdef _WIN32
-				/// @brief IPC Data type.
-				enum Type : uint8_t {
-					String	= 's',
-					Boolean	= 'b',
-					Uchar	= 'y',
-					Int16	= 'n',
-					Uint16	= 'q',
-					Int32	= 'i',
-					Int32x	= 'h',
-					Uint32	= 'u',
-					Int64	= 'x',
-					Uint64	= 't'
-				};
 #endif // _WIN32
 
 			private:

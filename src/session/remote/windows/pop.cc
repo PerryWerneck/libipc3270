@@ -36,21 +36,21 @@
  *
  */
 
- #include <ipc-client-internals.h>
+ #include <config.h>
+ #include "pipe-request.h"
 
- using std::string;
+ using namespace std;
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
 
-	/*
 	class InvalidFormatException : public std::exception {
 	private:
 		string message;
 
 	public:
-		InvalidFormatException(const IPC::Request::Type received, const IPC::Request::Type expected) {
+		InvalidFormatException(const Pipe::Request::Type received, const Pipe::Request::Type expected) {
 
 			message = "Invalid format on IPC package, expecting \'";
 			message += (char) expected;
@@ -65,11 +65,12 @@
 		}
 	};
 
-	IPC::Request & IPC::Request::pop(std::string &value) {
+	TN3270::Request & Pipe::Request::pop(std::string &value) {
+
 		DataBlock * block = getNextBlock();
 
-		if(block->type != IPC::Request::String)
-			throw InvalidFormatException(block->type, IPC::Request::String);
+		if(block->type != Pipe::Request::String)
+			throw InvalidFormatException(block->type, Pipe::Request::String);
 
 		const char *ptr = (const char *) (block+1);
 
@@ -80,92 +81,91 @@
 		return *this;
 	}
 
-	IPC::Request & IPC::Request::Request::pop(int &value) {
+	TN3270::Request & Pipe::Request::Request::pop(int &value) {
 
 		DataBlock * block = getNextBlock();
 
 		switch(block->type) {
-		case IPC::Request::Int16:
+		case Pipe::Request::Int16:
 			value = * ((int16_t *) (block+1));
 			in.current += sizeof(int16_t) + sizeof(DataBlock);
 			break;
 
-		case IPC::Request::Int32:
+		case Pipe::Request::Int32:
 			value = * ((int32_t *) (block+1));
 			in.current += sizeof(int32_t) + sizeof(DataBlock);
 			break;
 
-		case IPC::Request::Int64:
+		case Pipe::Request::Int64:
 			value = * ((int64_t *) (block+1));
 			in.current += sizeof(int64_t) + sizeof(DataBlock);
 			break;
 
 		default:
-			throw InvalidFormatException(block->type, IPC::Request::Int16);
+			throw InvalidFormatException(block->type, Pipe::Request::Int16);
 		}
 
 		return *this;
 	}
 
-	IPC::Request & IPC::Request::Request::pop(unsigned int &value) {
+	TN3270::Request & Pipe::Request::Request::pop(unsigned int &value) {
 
 		DataBlock * block = getNextBlock();
 
 		switch(block->type) {
-		case IPC::Request::Uint16:
+		case Pipe::Request::Uint16:
 			value = * ((uint16_t *) (block+1));
 			in.current += sizeof(uint16_t) + sizeof(DataBlock);
 			break;
 
-		case IPC::Request::Uint32:
+		case Pipe::Request::Uint32:
 			value = * ((uint32_t *) (block+1));
 			in.current += sizeof(uint32_t) + sizeof(DataBlock);
 			break;
 
-		case IPC::Request::Uint64:
+		case Pipe::Request::Uint64:
 			value = * ((uint64_t *) (block+1));
 			in.current += sizeof(uint64_t) + sizeof(DataBlock);
 			break;
 
 		default:
-			throw InvalidFormatException(block->type, IPC::Request::Uint16);
+			throw InvalidFormatException(block->type, Pipe::Request::Uint16);
 		}
 
 		return *this;
 	}
 
-	IPC::Request & IPC::Request::Request::pop(bool &value) {
+	TN3270::Request & Pipe::Request::Request::pop(bool &value) {
 
 		DataBlock * block = getNextBlock();
 
 		switch(block->type) {
-		case IPC::Request::Boolean:
+		case Pipe::Request::Boolean:
 			value = (* ((uint8_t *) (block+1))) != 0;
 			in.current += sizeof(uint8_t) + sizeof(DataBlock);
 			break;
 
-		case IPC::Request::Uint16:
+		case Pipe::Request::Uint16:
 			value = (* ((uint16_t *) (block+1))) != 0;
 			in.current += sizeof(uint16_t) + sizeof(DataBlock);
 			break;
 
-		case IPC::Request::Uint32:
+		case Pipe::Request::Uint32:
 			value = (* ((uint32_t *) (block+1))) != 0;
 			in.current += sizeof(uint32_t) + sizeof(DataBlock);
 			break;
 
-		case IPC::Request::Uint64:
+		case Pipe::Request::Uint64:
 			value = (* ((uint64_t *) (block+1))) != 0;
 			in.current += sizeof(uint64_t) + sizeof(DataBlock);
 			break;
 
 		default:
-			throw InvalidFormatException(block->type, IPC::Request::Boolean);
+			throw InvalidFormatException(block->type, Pipe::Request::Boolean);
 		}
 
 		return *this;
 	}
-	*/
 
  }
 

@@ -36,21 +36,191 @@
  *
  */
 
- #include "../private.h"
+ #include <config.h>
+ #include <lib3270/ipc/request.h>
+ #include "pipe-request.h"
+ #include <ipc-client-internals.h>
 
- using std::string;
+ using namespace std;
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
 
-	/*
-	IPC::Request::Request(const Session &session, const char *method) : Request(session.hPipe, method, 3) {
+	#define PIPE_BUFFER_LENGTH 8192
+
+#ifdef DEBUG
+
+	// From lib3270_trace_data
+	static void trace_data(const char *msg, const unsigned char *data, size_t datalen) {
+		// 00000000001111111111222222222233333333334444444444555555555566666666667777777777
+		// 01234567890123456789012345678901234567890123456789012345678901234567890123456789
+		// xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx . . . . . . . . . . . . . . . .
+
+		size_t ix;
+		char buffer[80];
+		char hexvalue[3];
+
+		memset(buffer,0,sizeof(buffer));
+
+		std::cout << msg << "(" << datalen << " bytes)" << std::endl;
+
+		for(ix = 0; ix < datalen; ix++)
+		{
+			size_t col = (ix%15);
+
+			if(col == 0)
+			{
+				if(ix) {
+					std::cout << "\t" << buffer << std::endl;
+				}
+
+				memset(buffer,' ',79);
+				buffer[79] = 0;
+			}
+
+			snprintf(hexvalue,3,"%02x",data[ix]);
+			memcpy(buffer+(col*3),hexvalue,2);
+
+			if(data[ix] > ' ')
+				buffer[48 + (col*2)] = data[ix];
+
+		}
+
+		std::cout << "\t" << buffer << std::endl;
+
 	}
 
-	IPC::Request::Request(const Session &session, bool isSet, const char *property) : Request(session.hPipe, property, (isSet ? 2 : 1)) {
+#endif // DEBUG
+
+	Pipe::Request::Request(std::shared_ptr<Pipe::Handler> h, const TN3270::Request::Type type, const char *name) : TN3270::Request{type}, handler{h} {
+
+		// Create buffers
+		in.length = PIPE_BUFFER_LENGTH;
+		in.used = 0;
+		in.block = new uint8_t[in.length];
+
+		out.length = PIPE_BUFFER_LENGTH;
+		out.used = 0;
+		out.block = new uint8_t[out.length];
+
+		// Add name
+		strcpy((char *) out.block, name);
+		out.used += strlen((char *) name) + 1;
+
+		// Add type
+		debug("Request type stored @",out.used);
+
+		*((uint16_t *) (out.block + out.used)) = type;
+		out.used += sizeof(uint16_t);
+
+		// Add argument counter.
+		this->outvalues = (uint16_t *) (out.block + out.used);
+		out.used += sizeof(uint16_t);
+
+		*this->outvalues = 0;
+
 	}
-	*/
+
+	Pipe::Request::~Request() {
+
+		delete[] ((uint8_t *) in.block);
+		delete[] ((uint8_t *) out.block);
+
+	}
+
+	/// @brief Store value on data block.
+	Pipe::Request::DataBlock * Pipe::Request::pushBlock(const void *ptr, size_t length) {
+
+		if((out.used + length + sizeof(Pipe::Request::DataBlock)) >= out.length) {
+			throw std::runtime_error("Too big");
+		}
+
+		Pipe::Request::DataBlock * rc = (Pipe::Request::DataBlock *) (out.block + out.used);
+		memcpy(((uint8_t *) (rc+1)), ((uint8_t *) ptr), length);
+
+		out.used += (sizeof(Pipe::Request::DataBlock) + length);
+
+		return rc;
+
+	}
+
+	/// @brief Get next argument.
+	Pipe::Request::DataBlock * Pipe::Request::getNextBlock() const {
+
+		if((in.current + sizeof(Pipe::Request::DataBlock)) >= in.used) {
+			throw std::runtime_error("Out of range");
+		}
+
+		return (Pipe::Request::DataBlock *) (in.block + in.current);
+
+	}
+
+	TN3270::Request & Pipe::Request::call() {
+
+		debug("Sending request with ", *this->outvalues, " elements");
+
+		in.current = 0;
+		if(!handler->transact(this->out.block,this->out.used,this->in.block,this->in.length,&this->in.used)) {
+			throw std::runtime_error("Can't transact on IPC Channel");
+		}
+
+		debug("Received response \"", in.block, "\" with ", in.used, " bytes");
+
+		//
+		// Header format:
+		//
+		// STRING	Response name
+		// uint16_t	Return code
+		// uint16_t	Arguments
+		//
+		// Data block:
+		//
+		//
+
+#ifdef DEBUG
+		trace_data("Response block",(const unsigned char *) this->in.block, this->in.used);
+#endif // DEBUG
+
+		// Extract response name
+		in.current = strlen((const char *) in.block)+1;
+
+		// Extract return code
+		uint16_t rc = *((uint16_t *) (in.block + in.current));
+		in.current += sizeof(uint16_t);
+
+		if(rc) {
+
+			// It´s an error, extract message
+			in.block[in.used] = 0;
+			debug("Error was ",rc," (\"",(const char *) (in.block + in.current),"\")");
+
+			// Overload system error mostly because of the lack of ENOTCONN message on windows.
+			class Error : public std::system_error {
+			private:
+				std::string message;
+
+			public:
+				Error(int rc, const char *msg) : std::system_error((int) rc, std::generic_category()), message(msg) {
+				}
+
+				const char *what() const noexcept override {
+					return message.c_str();
+				}
+			};
+
+ 			throw Error(rc, (const char *) (in.block + in.current));
+
+		}
+
+		// It´s not an error, extract argument count
+		uint16_t argc = *((uint16_t *) (in.block + in.current));
+		in.current += sizeof(uint16_t);
+
+		debug("Received response \"", ((const char *) in.block), "\" with rc=", rc, " and ", argc, " arguments");
+
+		return *this;
+	}
 
  }
 

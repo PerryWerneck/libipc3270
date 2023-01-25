@@ -41,7 +41,7 @@
  #include "pipe-request.h"
  #include <lib3270/ipc/session.h>
  #include <algorithm>
- #include <udjat/tools/logger.h>
+ #include <ipc-client-internals.h>
 
  /*
  #include "../private.h"
@@ -52,7 +52,6 @@
  */
 
  using namespace std;
- using namespace Udjat;
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
@@ -108,7 +107,7 @@
 			Session(HANDLE h) : Abstract::Session{}, handler{std::make_shared<Pipe::Handler>(h)} {
 			}
 
-			std::shared_ptr<Request> RequestFactory(const Request::Type type, const char *name) const override {
+			std::shared_ptr<TN3270::Request> RequestFactory(const Request::Type type, const char *name) const override {
 				return make_shared<Pipe::Request>(handler,type,name);
 			}
 

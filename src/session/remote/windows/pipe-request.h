@@ -41,10 +41,32 @@
 				CloseHandle(hPipe);
 			}
 
+			BOOL transact(LPVOID lpInBuffer, DWORD nInBufferSize, LPVOID lpOutBuffer, DWORD nOutBufferSize, LPDWORD lpBytesRead) {
+				std::lock_guard<std::mutex> lock(guard);
+				return TransactNamedPipe(hPipe,lpInBuffer,nInBufferSize,lpOutBuffer,nOutBufferSize,lpBytesRead,NULL);
+			}
+
 		};
 
 		class Request : public TN3270::Request {
+		public:
+			/// @brief IPC Data type.
+			enum Type : uint8_t {
+				String	= 's',
+				Boolean	= 'b',
+				Uchar	= 'y',
+				Int16	= 'n',
+				Uint16	= 'q',
+				Int32	= 'i',
+				Int32x	= 'h',
+				Uint32	= 'u',
+				Int64	= 'x',
+				Uint64	= 't'
+			};
+
+
 		private:
+
 			std::shared_ptr<Pipe::Handler> handler;
 
 			struct {
@@ -64,9 +86,14 @@
 				Type type;
 			};
 
-		public:
-			Request(std::shared_ptr<Pipe::Handler> h, const Request::Type type, const char *name);
+			/// @brief Pointer to number of variants in the output buffer.
+			uint16_t * outvalues;
 
+			DataBlock * pushBlock(const void *ptr, size_t length);
+			DataBlock * getNextBlock() const;
+
+		public:
+			Request(std::shared_ptr<Pipe::Handler> h, const TN3270::Request::Type type, const char *name);
 			virtual ~Request();
 
 			TN3270::Request & call() override;

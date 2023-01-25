@@ -36,46 +36,45 @@
  *
  */
 
- #include <ipc-client-internals.h>
+ #include <config.h>
+ #include "pipe-request.h"
 
- using std::string;
+ using namespace std;
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
  namespace TN3270 {
 
-	/*
-	IPC::Request & IPC::Request::push(const char *arg) {
+	TN3270::Request & Pipe::Request::push(const char *arg) {
 		(*this->outvalues)++;
-		pushBlock(arg, strlen(arg)+1)->type = IPC::Request::String;
+		pushBlock(arg, strlen(arg)+1)->type = Pipe::Request::String;
 		return *this;
 	}
 
-	IPC::Request & IPC::Request::push(const bool arg) {
+	TN3270::Request & Pipe::Request::push(const bool arg) {
 		(*this->outvalues)++;
 		uint8_t value = (uint8_t) (arg ? 0xff : 0);
-		pushBlock(&value, sizeof(value))->type = IPC::Request::Boolean;
+		pushBlock(&value, sizeof(value))->type = Pipe::Request::Boolean;
 		return *this;
 	}
 
-	IPC::Request & IPC::Request::push(const uint8_t arg) {
+	TN3270::Request & Pipe::Request::push(const uint8_t arg) {
 		(*this->outvalues)++;
-		pushBlock(&arg, sizeof(arg))->type = IPC::Request::Uchar;
+		pushBlock(&arg, sizeof(arg))->type = Pipe::Request::Uchar;
 		return *this;
 	}
 
-	IPC::Request & IPC::Request::push(const int32_t arg) {
+	TN3270::Request & Pipe::Request::push(const int32_t arg) {
 		(*this->outvalues)++;
-		pushBlock(&arg, sizeof(arg))->type = IPC::Request::Int32;
+		pushBlock(&arg, sizeof(arg))->type = Pipe::Request::Int32;
 		return *this;
 	}
 
-	IPC::Request & IPC::Request::push(const uint32_t arg) {
+	TN3270::Request & Pipe::Request::push(const uint32_t arg) {
 		(*this->outvalues)++;
-		pushBlock(&arg, sizeof(arg))->type = IPC::Request::Uint32;
+		pushBlock(&arg, sizeof(arg))->type = Pipe::Request::Uint32;
 		return *this;
 	}
-	*/
 
  }
 
