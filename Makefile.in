@@ -269,11 +269,11 @@ install-windows-lib: \
 		--output-lib $(DESTDIR)$(libdir)/$(PACKAGE_NAME).dll.a
 
 	@$(MKDIR) \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
 
 	@$(INSTALL_DATA) \
 		$(BINRLS)/$(PACKAGE_NAME).def \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
 
 install-devel:
 
