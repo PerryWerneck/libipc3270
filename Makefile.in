@@ -268,6 +268,13 @@ install-windows-lib: \
 		--dllname @SONAME@ \
 		--output-lib $(DESTDIR)$(libdir)/$(PACKAGE_NAME).dll.a
 
+	@$(MKDIR) \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/$(PACKAGE_NAME).def \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)
+
 install-devel:
 
 	@$(MKDIR) \
