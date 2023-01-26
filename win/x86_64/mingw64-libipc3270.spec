@@ -1,5 +1,5 @@
 #
-# spec file for package mingw64-%{_libname}
+# spec file for package mingw64-libipc3270
 #
 # Copyright (c) 2015 SUSE LINUX GmbH, Nuernberg, Germany.
 # Copyright (C) <2008> <Banco do Brasil S.A.>
@@ -59,28 +59,23 @@ BuildRequires:	mingw64(pkg:gtk+-win32-3.0)
 BuildRequires:	mingw64(lib:3270.delayed)
 BuildRequires:	mingw64(pkg:libv3270)
 
-%description
-IPC client library for lib3270/pw3270.
-
-Designed as framework for language bindings.
-
-For more details, see https://softwarepublico.gov.br/social/pw3270/ .
-
 %define _product %(x86_64-w64-mingw32-pkg-config --variable=product_name lib3270)
+
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
 %define MINOR_VERSION %(echo %{version} | cut -d. -f2)
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
+
+%description
+IPC client library for lib3270/%{_product}.
+Designed as framework for language bindings.
 
 %package -n %{name}-%{_libvrs}
 Summary:		TN3270 Access library
 Group:			Development/Libraries/C and C++
 
 %description -n %{name}-%{_libvrs}
-IPC client library for lib3270/pw3270.
-
+IPC client library for lib3270/%{_product}.
 Designed as framework for language bindings.
-
-For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
 %package devel
 
@@ -89,7 +84,7 @@ Group:			Development/Libraries/C and C++
 Requires:		%{name}-%{_libvrs} = %{version}
 
 %description devel
-Header files for the ipc3270 library.
+Header files for %{name}.
 
 %prep
 %setup -n %{_libname}-%{version}
@@ -109,9 +104,10 @@ make all %{?_smp_mflags}
 
 %install
 %{_mingw64_makeinstall}
+%_mingw64_find_lang %{_libname}-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 %fdupes %{buildroot}
 
-%files -n %{name}-%{_libvrs}
+%files -n %{name}-%{_libvrs} -f langfiles
 %defattr(-,root,root)
 
 %doc AUTHORS README.md
@@ -126,19 +122,13 @@ make all %{?_smp_mflags}
 
 %{_mingw64_libdir}/*.a
 
-%{_mingw64_includedir}/lib3270/ipc.h
-%{_mingw64_includedir}/lib3270/ipc
+%{_mingw64_includedir}/*/ipc.h
+%{_mingw64_includedir}/*/ipc
 
 %{_mingw64_libdir}/pkgconfig/*.pc
 
-%dir %{_mingw64_datadir}/%{_product}/def
-%{_mingw64_datadir}/%{_product}/def/*.def
-
-%files -n mingw64-%{_product}-plugin-ipc
-%defattr(-,root,root)
-
-%dir %{_mingw64_libdir}/%{_product}-plugins
-%{_mingw64_libdir}/%{_product}-plugins/ipcserver.dll
+%dir %{_mingw64_datadir}/*/def
+%{_mingw64_datadir}/*/def/*.def
 
 %changelog
 

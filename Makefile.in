@@ -256,6 +256,9 @@ install-windows-lib: \
 		$(BINRLS)/@SONAME@ \
 		$(DESTDIR)$(bindir)/$(PACKAGE_NAME)@LIBEXT@
 		
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/$(PACKAGE_NAME).a \
 		$(DESTDIR)$(libdir)/$(PACKAGE_NAME).a
@@ -264,6 +267,13 @@ install-windows-lib: \
 		--input-def $(BINRLS)/$(PACKAGE_NAME).def \
 		--dllname @SONAME@ \
 		--output-lib $(DESTDIR)$(libdir)/$(PACKAGE_NAME).dll.a
+
+	@$(MKDIR) \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
+
+	@$(INSTALL_DATA) \
+		$(BINRLS)/$(PACKAGE_NAME).def \
+		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/def
 
 install-devel:
 
@@ -366,7 +376,7 @@ run: \
 ifeq ($(VALGRIND),no)
 
 	@LD_LIBRARY_PATH=$(BINDBG) \
-		$(BINDBG)/@PACKAGE_NAME@@EXEEXT@
+		$(BINDBG)/@PACKAGE_NAME@@EXEEXT@f
 
 else
 	@touch valgrind.suppression
