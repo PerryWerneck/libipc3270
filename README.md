@@ -1,6 +1,6 @@
 ## IPC (interprocess communication) library for pw3270.
 
-Created originally as part of PW3270 application this library is designed to act as a standard ABI for lib320 and pw3270 language bindings using the same objects for direct lib3270 calls and IPC based requests to the pw3270 GUI application. It's beeing used on libhllapi and pw3270's python library.
+Created originally as part of PW3270 application this library is designed to act as a standard ABI for lib320 and pw3270 language bindings using the same objects for direct lib3270 calls and IPC based requests to the pw3270 GUI application. It's beeing used on [libhllapi](../../../libhllapi) and [pw3270's python library](../../../python3-tn3270).
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 ![CodeQL](https://github.com/PerryWerneck/libipc3270/workflows/CodeQL/badge.svg)
