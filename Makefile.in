@@ -1,33 +1,41 @@
-#
-# "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
-# (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
-# aplicativos mainframe. Registro no INPI sob o nome G3270.
-#
-# Copyright (C) <2008> <Banco do Brasil S.A.>
-#
-# Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
-# os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
-# Free Software Foundation.
-#
-# Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
-# GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
-# A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
-# obter mais detalhes.
-#
-# Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
-# programa;  se  não, escreva para a Free Software Foundation, Inc., 59 Temple
-# Place, Suite 330, Boston, MA, 02111-1307, USA
-#
-# Contatos:
-#
-# perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
-# erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
-#
+
+#---[ Library configuration ]------------------------------------------------------------
 
 PACKAGE_NAME=@PACKAGE_NAME@
 PRODUCT_NAME=@PRODUCT_NAME@
-LIBNAME=libipc3270
-PROJECT_MODULES=@PROJECT_MODULES@
+
+MAIN_SOURCES= \
+	$(wildcard src/core/*.cc) \
+	$(wildcard src/core/@OSNAME@/*.cc) \
+	$(wildcard src/core/@OSNAME@/dynamic/*.cc) \
+	$(wildcard src/host/*.cc) \
+	$(wildcard src/session/*.cc) \
+	$(wildcard src/session/local/*.cc) \
+	$(wildcard src/session/remote/*.cc) \
+	$(wildcard src/session/remote/@OSNAME@/*.cc) \
+
+TEST_SOURCES= \
+	$(wildcard src/testprogram/*.cc) \
+	$(wildcard src/testprogram/@OSNAME@/*.rc)
+	
+TARGETS=@OSNAME@-lib devel locale
+
+#---[ Tools ]----------------------------------------------------------------------------
+
+CXX=@CXX@
+LD=@CXX@
+LN_S=@LN_S@
+MKDIR=@MKDIR_P@
+INSTALL=@INSTALL@
+INSTALL_DATA=@INSTALL_DATA@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+INSTALL_STRIP_PROGRAM=@INSTALL_STRIP_PROGRAM@
+XGETTEXT=@XGETTEXT@
+MSGCAT=@MSGCAT@
+WINDRES=@WINDRES@
+AR=@AR@
+VALGRIND=@VALGRIND@
+DLLTOOL=@DLLTOOL@
 
 #---[ Paths ]----------------------------------------------------------------------------
 
@@ -40,116 +48,356 @@ includedir=@includedir@
 datarootdir=@datarootdir@
 localedir=@localedir@
 docdir=@docdir@
-sysconfdir=@sysconfdir@
-POTDIR=$(BASEDIR)/.pot
-GETTEXT_PACKAGE=@GETTEXT_PACKAGE@
+sysconfdir=/etc
+srcdir=@srcdir@
 
-BASEDIR=@BASEDIR@
+OBJDIR=.obj/@OSNAME@
+OBJDBG=$(OBJDIR)/Debug
+OBJRLS=$(OBJDIR)/Release
 
-BINDIR=$(BASEDIR)/.bin
+BINDIR=.bin
 BINDBG=$(BINDIR)/Debug
 BINRLS=$(BINDIR)/Release
 
-#---[ Tools ]----------------------------------------------------------------------------
+POTDIR=.pot
 
-LN_S=@LN_S@
-MKDIR=@MKDIR_P@
-INSTALL=@INSTALL@
-INSTALL_DATA=@INSTALL_DATA@
-INSTALL_PROGRAM=@INSTALL_PROGRAM@
-DOXYGEN=@DOXYGEN@
-MSGCAT=@MSGCAT@
+#---[ Rules ]----------------------------------------------------------------------------
+
+CXXFLAGS= \
+	@CXXFLAGS@ \
+	-Isrc/include \
+	-DBUILD_DATE=`date +%Y%m%d` \
+	-DLIBDIR=$(libdir) \
+	-DLOCALEDIR=$(localedir) \
+	@DBUS_CFLAGS@ \
+	@LIB3270_CFLAGS@
+
+LDFLAGS=\
+	@LDFLAGS@
+
+LIBS= \
+	@LIBS@ \
+	@LIBICONV@ \
+	@DBUS_LIBS@ \
+	@LIB3270_LIBS@
+
+#---[ Debug Rules ]----------------------------------------------------------------------
+
+$(OBJDBG)/%.o: \
+	%.cc \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) $(@D)
+
+	@$(CXX) \
+		$(CXXFLAGS) \
+		-DDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
+	@$(CXX) \
+		$(CXXFLAGS) \
+		-Wall -Wextra -fstack-check \
+		-DDEBUG=1 \
+		-o $@ \
+		-c $<
+
+$(OBJDBG)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) $(@D)
+	@$(WINDRES) \
+		$< \
+		-O coff \
+		-o $@
+
+#---[ Release Rules ]--------------------------------------------------------------------
+
+$(OBJRLS)/%.o: \
+	%.cc \
+	$(DEPENDS)
+
+	@echo $< ...
+	@$(MKDIR) $(@D)
+
+	@$(CXX) \
+		$(CXXFLAGS) \
+		-DNDEBUG=1 \
+		-MM -MT $@ -MF $(patsubst %.o,%.d,$@) $<
+
+	@$(CXX) \
+		$(CXXFLAGS) \
+		-DNDEBUG=1 \
+		-o $@ \
+		-c $<
+
+$(OBJRLS)/%.o: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) $(@D)
+	@$(WINDRES) $< -O coff -o $@
+
+#---[ Misc Rules ]-----------------------------------------------------------------------
+
+$(POTDIR)/%.pot: \
+	%.cc
+
+	@echo $(notdir $@) ...
+	@$(MKDIR) $(dir $@)
+	@$(XGETTEXT) \
+		--from-code=UTF-8 \
+		--language=C \
+		--keyword=_ \
+		--keyword=N_ \
+		--keyword=MSG_:2 \
+		--output=$@ \
+		$<
+	@touch $@
+
+$(POTDIR)/%.pot: \
+	%.rc
+
+	@echo $< ...
+	@$(MKDIR) $(dir $@)
+	@touch $@
+
+install-%: \
+	%/Makefile
+
+	@$(MAKE) -C `dirname $<` DESTDIR=$(DESTDIR) install
 
 #---[ Release Targets ]------------------------------------------------------------------
 
 all: \
-	$(foreach MODULE, $(PROJECT_MODULES), $(MODULE)) \
-	locale/$(GETTEXT_PACKAGE).pot
+	$(BINRLS)/@SONAME@ \
+	$(BINRLS)/$(PACKAGE_NAME).a \
+	locale/$(PACKAGE_NAME).pot
 
-server: \
-	$(BINRLS)/ipcserver@DLLEXT@
+Release: \
+	$(BINRLS)/@SONAME@
 
-client: \
-	$(BINRLS)/libipc3270@LIBEXT@
+$(BINRLS)/@SONAME@: \
+	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
+	$(foreach SRC, $(basename $(wildcard src/main/os/@OSNAME@/*.rc)), $(OBJRLS)/$(SRC).o)
 
-$(BINRLS)/ipcserver@DLLEXT@: \
-	server/* \
-	Makefile
+	@$(MKDIR) $(@D)
+	@echo $< ...
+	@$(LD) \
+		-shared \
+		-Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$^ \
+		$(LIBS)
 
-	@$(MAKE) -C server $@	
+static: \
+	$(BINRLS)/$(PACKAGE_NAME).a
 
-$(BINRLS)/libipc3270@LIBEXT@: \
-	client/* \
-	Makefile
+$(BINRLS)/$(PACKAGE_NAME).a: \
+	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o)
 
-	@$(MAKE) -C client $@	
+	@echo $@ ...
+	@$(MKDIR) $(dir $@)
+	@$(AR) rcs $@ $^
 
-locale/$(GETTEXT_PACKAGE).pot:
+locale/$(PACKAGE_NAME).pot: \
+	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(POTDIR)/$(SRC).pot)
 
 	@rm -f $@
-	@$(MKDIR) $(@D)
-	@$(MAKE) -C client locale
-	@$(MAKE) -C server locale
-	@$(MSGCAT) \
-		--sort-output \
-		$(POTDIR)/ipc3270.pot \
-		$(POTDIR)/ipcserver.pot \
-		> $@
+	@$(MKDIR) $(dir $@)
+	@$(MSGCAT) --sort-output $^ > $@
 
+locale: \
+	locale/$(PACKAGE_NAME).pot
 
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	$(foreach MODULE, $(PROJECT_MODULES), install-$(MODULE)) \
-	install-locale
-
-install-locale: \
-	locale/$(GETTEXT_PACKAGE).pot
-	
-	@$(MAKE) -C locale DESTDIR=$(DESTDIR) install
-
-	@$(MKDIR) \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot
-
-	@$(INSTALL_DATA) \
-		locale/$(GETTEXT_PACKAGE).pot \
-		$(DESTDIR)$(datarootdir)/$(PRODUCT_NAME)/pot/$(LIBNAME).pot
-
-install-server: \
-	server
-
-	@$(MAKE) -C server DESTDIR=$(DESTDIR) install
-
-install-client: \
-	client
-
-	@$(MAKE) -C client DESTDIR=$(DESTDIR) install
+       $(foreach TARGET, $(TARGETS), install-$(TARGET)) \
+       locale/$(PACKAGE_NAME).pot
 
 doc:
-	@$(DOXYGEN) ./doxygen/doxyfile
+	doc/html/index.html
+	
+	@cd doc ; @DOXYGEN@ doxyfile; cd ..
 
-#---[ Install Targets ]------------------------------------------------------------------
+install-doc: \
+	doc
 
-Debug:
+	@$(MKDIR) \
+		$(DESTDIR)${docdir}/@PACKAGE_TARNAME@/reference/html
 
-	@$(MAKE) -C client $@
-	@$(MAKE) -C server $@
+	cp -rv ${srcdir}/doc/html/* "$(DESTDIR)${docdir}/@PACKAGE_TARNAME@/reference/html"
+
+install-linux-lib: \
+	$(BINRLS)/@SONAME@
+
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/@SONAME@ \
+		$(DESTDIR)$(libdir)/@SONAME@
+		
+	@$(LN_S) \
+		@SONAME@ \
+		$(DESTDIR)$(libdir)/$(PACKAGE_NAME)@LIBEXT@
+
+install-windows-lib: \
+	$(BINRLS)/@SONAME@ \
+	$(BINRLS)/$(PACKAGE_NAME).a
+
+	@$(MKDIR) \
+		$(DESTDIR)$(bindir)
+
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/@SONAME@ \
+		$(DESTDIR)$(bindir)/$(PACKAGE_NAME)@LIBEXT@
+		
+	@$(INSTALL_PROGRAM) \
+		$(BINRLS)/$(PACKAGE_NAME).a \
+		$(DESTDIR)$(libdir)/$(PACKAGE_NAME).a
+
+	@$(DLLTOOL) \
+		--input-def $(BINRLS)/$(PACKAGE_NAME).def \
+		--dllname @SONAME@ \
+		--output-lib $(DESTDIR)$(libdir)/$(PACKAGE_NAME).dll.a
+
+install-devel:
+
+	@$(MKDIR) \
+		$(DESTDIR)$(includedir)/lib3270
+
+	@$(INSTALL_DATA) \
+		src/include/lib3270/*.h \
+		$(DESTDIR)$(includedir)/lib3270
+
+	@$(MKDIR) \
+		$(DESTDIR)$(includedir)/lib3270/ipc
+
+	@$(INSTALL_DATA) \
+		src/include/lib3270/ipc/*.h \
+		$(DESTDIR)$(includedir)/lib3270/ipc
+
+	# Install PKG-CONFIG files
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)/pkgconfig
+
+	@$(INSTALL_DATA) \
+		sdk/dynamic.pc \
+		$(DESTDIR)$(libdir)/pkgconfig/@PACKAGE_NAME@.pc
+
+	@$(INSTALL_DATA) \
+		sdk/static.pc \
+		$(DESTDIR)$(libdir)/pkgconfig/@PACKAGE_NAME@-static.pc
+
+#---[ Uninstall Targets ]----------------------------------------------------------------
+
+uninstall: \
+       $(foreach TARGET, $(TARGETS), uninstall-$(TARGET))
+
+uninstall-linux-lib:
+
+	@rm -f \
+		$(DESTDIR)$(libdir)/@SONAME@
+		
+	@rm -f \
+		$(DESTDIR)$(libdir)/lib$(PACKAGE_NAME)@LIBEXT@
+
+uninstall-windows-lib:
+
+	@rm -f \
+		$(DESTDIR)$(bindir)/@SONAME@
+		
+	@rm -f \
+		$(DESTDIR)$(libdir)/@SONAME@.a
+
+uninstall-devel:
+
+	@rm -fr \
+		$(DESTDIR)$(includedir)/udjat
+
+	@rm -f \
+		$(DESTDIR)$(includedir)/udjat.h
+
+	# Uninstall PKG-CONFIG files
+	@rm -f \
+		$(DESTDIR)$(libdir)/pkgconfig/@PACKAGE_NAME@.pc
+
+#---[ Debug Targets ]--------------------------------------------------------------------
+
+Debug: \
+	$(BINDBG)/@PACKAGE_NAME@@EXEEXT@
+
+$(BINDBG)/@PACKAGE_NAME@@EXEEXT@: \
+	$(foreach SRC, $(basename $(TEST_SOURCES)), $(OBJDBG)/$(SRC).o) \
+	$(BINDBG)/@SONAME@
+
+	@$(MKDIR) $(@D)
+	@echo $< ...
+	@$(LD) \
+		-o $@ \
+		$^ \
+		-L$(BINDBG) \
+		-Wl,-rpath,$(BINDBG) \
+		$(LDFLAGS) \
+		$(LIBS)
+
+
+$(BINDBG)/@SONAME@: \
+	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJDBG)/$(SRC).o)
+
+	@$(MKDIR) $(@D)
+	@echo $< ...
+	@$(LD) \
+		-shared \
+		-Wl,-soname,$(@F) \
+		-o $@ \
+		$(LDFLAGS) \
+		$^ \
+		$(LIBS)
+
+
+run: \
+	$(BINDBG)/@PACKAGE_NAME@@EXEEXT@
+	
+ifeq ($(VALGRIND),no)
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(BINDBG)/@PACKAGE_NAME@@EXEEXT@
+
+else
+	@touch valgrind.suppression
+
+	@LD_LIBRARY_PATH=$(BINDBG) \
+		$(VALGRIND) --leak-check=full --track-origins=yes --gen-suppressions=all --suppressions=valgrind.suppression \
+		$(BINDBG)/@PACKAGE_NAME@@EXEEXT@
+endif
 
 #---[ Clean Targets ]--------------------------------------------------------------------
 
-clean:
-
-	@$(MAKE) -C client $@
-	@$(MAKE) -C server $@
+clean: \
+	cleanDebug \
+	cleanRelease
 
 cleanDebug:
 
-	@$(MAKE) -C client $@
-	@$(MAKE) -C server $@
+	@rm -fr $(OBJDBG)
+	@rm -fr $(BINDBG)
 
 cleanRelease:
 
-	@$(MAKE) -C client $@
-	@$(MAKE) -C server $@
+	@rm -fr $(OBJRLS)
+	@rm -fr $(BINRLS)
+
+clean: \
+	cleanDebug \
+	cleanRelease
+
+
+-include $(foreach SRC, $(basename $(MAIN_SOURCES) $(TEST_SOURCES)), $(OBJDBG)/$(SRC).d)
+-include $(foreach SRC, $(basename $(MAIN_SOURCES) $(TEST_SOURCES)), $(OBJRLS)/$(SRC).d)
 
 

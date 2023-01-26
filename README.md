@@ -1,6 +1,6 @@
-## IPC (interprocess communication) plugin & library for pw3270.
+## IPC (interprocess communication) library for pw3270.
 
-Created originally as part of PW3270 application this library is designed to act as a standard ABI for lib320 and pw3270 language bindings using the same method and objects for direct lib3270 calls and IPC based requests do the pw3270 GUI application.
+Created originally as part of PW3270 application this library is designed to act as a standard ABI for lib320 and pw3270 language bindings using the same method and objects for direct lib3270 calls and IPC based requests to the pw3270 GUI application. It's beeing used on libhllapi and pw3270's python library.
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 ![CodeQL](https://github.com/PerryWerneck/libipc3270/workflows/CodeQL/badge.svg)
@@ -10,14 +10,13 @@ Created originally as part of PW3270 application this library is designed to act
 
 ### Linux
 
-For the supported distributions get the install repositories and instructions from https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=libipc3270
+[<img src="https://raw.githubusercontent.com/PerryWerneck/pw3270/master/branding/obs-badge-en.svg" alt="Download from open build service" height="80px">](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=libipc3270)
 
 ## Building for Linux
 
 ### Requirements
 
  * [lib3270](../../../lib3270)
- * [libv3270](../../../libv3270)
 
 ### Building
 
@@ -63,7 +62,7 @@ For the supported distributions get the install repositories and instructions fr
 
 ### Windows native with MSYS2
 
-1. Build and install [libv3270](../../../libv3270)
+1. Build and install [lib3270](../../../lib3270)
 
 2. Get sources from git
 
@@ -85,6 +84,8 @@ For the supported distributions get the install repositories and instructions fr
 	```
 
 ### Windows native with MSVC
+
+**OUTDATED**
 
 1. Install pw3270 with sdk modules
 

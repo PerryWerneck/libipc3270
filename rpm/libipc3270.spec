@@ -20,7 +20,7 @@
 
 Summary:		IPC client library for lib3270/%{product} 
 Name:			libipc3270
-Version:		5.3
+Version:		5.5
 Release:		0
 License:		LGPL-3.0
 Source:			%{name}-%{version}.tar.xz
@@ -41,19 +41,15 @@ BuildRequires:	m4
 
 %if 0%{?fedora} ||  0%{?suse_version} > 1200
 
-BuildRequires:	pkgconfig(lib3270)
-BuildRequires:	pkgconfig(libv3270)
+BuildRequires:	pkgconfig(lib3270) >= 5.4
 BuildRequires:	pkgconfig(dbus-1)
 BuildRequires:	pkgconfig(dbus-glib-1)
-BuildRequires:	pkgconfig(gtk+-3.0)
 
 %else
 
-BuildRequires:	lib3270-devel >= 5.3
-BuildRequires:	libv3270-devel >= 5.3
+BuildRequires:	lib3270-devel >= 5.4
 BuildRequires:	dbus-1-devel
 BuildRequires:	dbus-glib-devel
-BuildRequires:	gtk3-devel
 
 %endif
 
@@ -73,10 +69,6 @@ For more details, see https://github.com/PerryWerneck/libipc3270 .
 %package -n %{name}-%{_libvrs}
 Summary:	IPC Library for %{product}
 
-%if 0%{?suse_version}
-Recommends: lib3270-ipc-service
-%endif
-
 %description -n %{name}-%{_libvrs}
 IPC client library for lib3270/%{product}.
 
@@ -91,33 +83,14 @@ Summary: Development files for %{name}
 Requires: %{name}-%{_libvrs} = %{version}
 
 %if 0%{?fedora} ||  0%{?suse_version} > 1200
-Requires:	pkgconfig(lib3270) >= 5.3
+Requires:	pkgconfig(lib3270) >= 5.4
 %else
-Requires:	lib3270-devel >= 5.3
+Requires:	lib3270-devel >= 5.4
 %endif
 
-%description -n libipc3270-devel
+%description devel
 
 Development files for lib3270/%{product} IPC client library.
-
-For more details, see https://github.com/PerryWerneck/libipc3270 .
-
-#---[ Plugin module for pw3270 main application ]----------------------------------------------------------------------
-
-%package -n %{product}-plugin-ipc
-Summary: IPC service plugin for %{product}
-
-Provides: pw3270-plugin-dbus
-Conflicts: otherproviders(pw3270-plugin-dbus)
-
-Provides: lib3270-ipc-service
-Conflicts: otherproviders(lib3270-ipc-service)
-
-Requires: %{product} >= 5.3
-
-%description -n %{product}-plugin-ipc
-
-PW3270 plugin exporting D-Bus objects for every tn3270 session.
 
 For more details, see https://github.com/PerryWerneck/libipc3270 .
 
@@ -129,7 +102,7 @@ For more details, see https://github.com/PerryWerneck/libipc3270 .
 NOCONFIGURE=1 \
 	./autogen.sh
 
-%configure --disable-static
+%configure
 
 %build
 make all
@@ -138,23 +111,9 @@ make all
 %makeinstall
 %find_lang %{name}-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 
-%files -n %{product}-plugin-ipc
-%defattr(-,root,root)
-
-# https://en.opensuse.org/openSUSE:Packaging_for_Leap#RPM_Distro_Version_Macros
-%if 0%{?sle_version} > 120200
-%doc AUTHORS README.md
-%license LICENSE
-%else
-%doc AUTHORS README.md LICENSE
-%endif
-
-%dir %{_libdir}/%{product}-plugins
-%{_libdir}/%{product}-plugins/ipcserver.so
-
 %files -n %{name}-%{_libvrs} -f langfiles
 %defattr(-,root,root)
-%{_libdir}/%{name}.so.%{MAJOR_VERSION}.%{MINOR_VERSION}
+%{_libdir}/%{name}.so.*.*
 
 %files devel
 %defattr(-,root,root)
@@ -163,7 +122,6 @@ make all
 %{_includedir}/lib3270/ipc/*.h
 %{_libdir}/%{name}.so
 %{_libdir}/pkgconfig/*.pc
-%{_datadir}/%{product}/pot/*.pot
 
 %pre -n %{name}-%{_libvrs} -p /sbin/ldconfig
 

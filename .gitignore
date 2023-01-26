@@ -35,4 +35,6 @@ ABOUT-NLS
 intl
 po
 ipc-glib.h
+ipcclient.cscope_file_list
+libtool
 

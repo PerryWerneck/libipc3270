@@ -55,7 +55,7 @@ BuildRequires:	mingw64(lib:iconv)
 BuildRequires:	mingw64(lib:intl)
 
 BuildRequires:	mingw64(pkg:gtk+-win32-3.0)
-BuildRequires:	mingw64(pkg:lib3270)
+BuildRequires:	mingw64(lib:3270.delayed)
 BuildRequires:	mingw64(pkg:libv3270)
 
 %description
