@@ -256,6 +256,9 @@ install-windows-lib: \
 		$(BINRLS)/@SONAME@ \
 		$(DESTDIR)$(bindir)/$(PACKAGE_NAME)@LIBEXT@
 		
+	@$(MKDIR) \
+		$(DESTDIR)$(libdir)
+
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/$(PACKAGE_NAME).a \
 		$(DESTDIR)$(libdir)/$(PACKAGE_NAME).a
@@ -366,7 +369,7 @@ run: \
 ifeq ($(VALGRIND),no)
 
 	@LD_LIBRARY_PATH=$(BINDBG) \
-		$(BINDBG)/@PACKAGE_NAME@@EXEEXT@
+		$(BINDBG)/@PACKAGE_NAME@@EXEEXT@f
 
 else
 	@touch valgrind.suppression

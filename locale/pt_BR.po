@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-08 10:10-0300\n"
+"POT-Creation-Date: 2023-01-26 10:03-0300\n"
 "PO-Revision-Date: 2021-01-08 10:11-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
@@ -19,24 +19,19 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Gtranslator 2.91.7\n"
 
-#: src/session/local/init.cc:90
+#: src/session/local/init.cc:101
 msgid " is invalid."
 msgstr "é inválido"
 
-#: src/session/local/init.cc:86
+#: src/session/local/init.cc:97
 msgid " is not in the required revision "
 msgstr "não está na versão necessária"
 
-#: src/session/local/get.cc:52 src/session/local/get.cc:65
-#: src/session/local/get.cc:78
+#: src/session/local/get.cc:56 src/session/local/get.cc:72
 msgid "Can't get screen contents"
 msgstr "Não foi possível obter o conteúdo da tela"
 
-#: src/plugin/plugin.c:86
-msgid "Can't start IPC Module"
-msgstr "Não foi possível iniciar o módulo IPC"
-
-#: src/session/local/init.cc:81
+#: src/session/local/init.cc:92
 msgid "Invalid callback table; "
 msgstr "Tabela de chamadas inválida"
 
@@ -607,6 +602,9 @@ msgstr "Desconectado"
 
 #~ msgid "Can't set socket to non blocking mode"
 #~ msgstr "Não foi possível setar o socket para o modo não blocante."
+
+#~ msgid "Can't start IPC Module"
+#~ msgstr "Não foi possível iniciar o módulo IPC"
 
 #~ msgid "Can't start download."
 #~ msgstr "Não foi possível iniciar o download."
