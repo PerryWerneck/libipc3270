@@ -45,6 +45,7 @@ BuildRequires:	automake
 BuildRequires:	gettext-devel
 BuildRequires:	xz
 BuildRequires:	fdupes
+BuildRequires:	libtool
 
 BuildRequires:	mingw64-cross-binutils
 BuildRequires:	mingw64-cross-gcc
@@ -65,8 +66,6 @@ Designed as framework for language bindings.
 
 For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
-#---[ Library ]-------------------------------------------------------------------------------------------------------
-
 %define _product %(x86_64-w64-mingw32-pkg-config --variable=product_name lib3270)
 %define MAJOR_VERSION %(echo %{version} | cut -d. -f1)
 %define MINOR_VERSION %(echo %{version} | cut -d. -f2)
@@ -83,8 +82,6 @@ Designed as framework for language bindings.
 
 For more details, see https://softwarepublico.gov.br/social/pw3270/ .
 
-#---[ Development ]---------------------------------------------------------------------------------------------------
-
 %package devel
 
 Summary:		TN3270 Access library development files
@@ -93,20 +90,6 @@ Requires:		%{name}-%{_libvrs} = %{version}
 
 %description devel
 Header files for the ipc3270 library.
-
-#---[ Plugin module for pw3270 main application ]----------------------------------------------------------------------
-
-%package -n mingw64-%{_product}-plugin-ipc
-Summary: IPC service plugin for %{_product}
-Requires: mingw64-%{_product} >= 5.2
-
-%description -n mingw64-%{_product}-plugin-ipc
-
-PW3270 plugin exporting D-Bus objects to be used by the ipc3270 client library.
-
-See more details at https://softwarepublico.gov.br/social/pw3270/
-
-#---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
 %setup -n %{_libname}-%{version}

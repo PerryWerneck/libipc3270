@@ -1,71 +1,23 @@
-#
-# "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
-# (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
-# aplicativos mainframe. Registro no INPI sob o nome G3270.
+# SPDX-License-Identifier: LGPL-3.0-or-later
 #
 # Copyright (C) <2008> <Banco do Brasil S.A.>
 #
-# Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
-# os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
-# Free Software Foundation.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 #
-# Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
-# GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
-# A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
-# obter mais detalhes.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 #
-# Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
-# programa;  se  não, escreva para a Free Software Foundation, Inc., 59 Temple
-# Place, Suite 330, Boston, MA, 02111-1307, USA
-#
-# Contatos:
-#
-# perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
-# erico.mendonca@gmail.com	(Erico Mascarenhas de Mendonça)
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
 !include "$(PW3270_SDK_PATH)\lib3270.mak"
-
-OBJ_FILES= \
-	client\src\core\abstract.obj \
-	client\src\core\actions.obj \
-	client\src\core\attribute.obj \
-	client\src\core\constants.obj \
-	client\src\core\events.obj \
-	client\src\core\session.obj \
-	client\src\core\windows\attribute.obj \
-	client\src\core\windows\pop.obj \
-	client\src\core\windows\push.obj \
-	client\src\core\windows\request.obj \
-	client\src\core\windows\tools.obj \
-	client\src\host\actions.obj \
-	client\src\host\init.obj \
-	client\src\host\pop.obj \
-	client\src\host\properties.obj \
-	client\src\host\push.obj \
-	client\src\host\states.obj \
-	client\src\host\stream.obj \
-	client\src\host\string.obj \
-	client\src\session\action.obj \
-	client\src\session\get.obj \
-	client\src\session\set.obj \
-	client\src\session\tools.obj \
-	client\src\session\local\actions.obj \
-	client\src\session\local\attribute.obj \
-	client\src\session\local\events.obj \
-	client\src\session\local\get.obj \
-	client\src\session\local\init.obj \
-	client\src\session\local\set.obj \
-	client\src\session\local\wait.obj \
-	client\src\session\remote\actions.obj \
-	client\src\session\remote\attribute.obj \
-	client\src\session\remote\get.obj \
-	client\src\session\remote\properties.obj \
-	client\src\session\remote\set.obj \
-	client\src\session\remote\tools.obj \
-	client\src\session\remote\wait.obj \
-	client\src\session\remote\windows\request.obj \
-	client\src\session\remote\windows\session.obj
+!include "sources.mak"
 
 .cc.obj:
 	@echo Compiling...
@@ -92,7 +44,6 @@ testprogram.exe: \
 		client\src\testprogram\testprogram.obj
 
 install: \
-	$(OBJ_FILES) \
 	ipc3270.dll
 	@echo Building library...
 	@-mkdir "$(PW3270_SDK_PATH)\lib"
@@ -109,8 +60,7 @@ install: \
 	@copy "client\src\include\lib3270\*.h" "$(PW3270_SDK_PATH)\include\lib3270"
 
 ipc3270.dll: \
-	$(OBJ_FILES) \
-	client\src\core\windows\dynamic\init.obj \
+	$(SRCFILES:.cpp=.obj) \
 	$(LIB3270_NAME).lib
 	@echo Build dll file....
 	link \
@@ -118,8 +68,7 @@ ipc3270.dll: \
 		/DLL \
 		/OUT:"$@" \
 		/IMPLIB:ipc3270.dll.lib \
-		$(OBJ_FILES) \
-		client\src\core\windows\dynamic\init.obj \
+		$(SRCFILES:.cpp=.obj) \
 		/DELAYLOAD:$(LIB3270_NAME).dll
 
 $(LIB3270_NAME).lib:
