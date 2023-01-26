@@ -40,6 +40,7 @@
  #include <private/session.h>
  #include "pipe-request.h"
  #include <lib3270/ipc/session.h>
+ #include <lib3270/ipc/action.h>
  #include <algorithm>
  #include <ipc-client-internals.h>
 
@@ -86,7 +87,7 @@
 				throw std::system_error(EINVAL, std::system_category(),string{"Invalid remote session id '"} + id + "'");
 			}
 
-			pipename += string{id,ptr - id};
+			pipename += string{id, ((size_t) (ptr - id))};
 
 		}
 
@@ -121,6 +122,31 @@
 			throw std::runtime_error("Can't set IPC Channel mode");
 		}
 
+		class Action : public TN3270::Action {
+		private:
+			std::shared_ptr<Pipe::Handler> handler;
+
+		public:
+			Action(std::shared_ptr<Pipe::Handler> h, const LIB3270_ACTION *dsc) : TN3270::Action{dsc}, handler{h} {
+			}
+
+			bool activatable() const override {
+				bool rc;
+				Pipe::Request{handler,Request::Method,"activatable"}.push(name()).call().pop(rc);
+				return rc;
+			}
+
+			void activate() override {
+				debug("Calling remote action '",name(),"'");
+				int32_t rc = Pipe::Request{handler,Request::Method,"action"}.push(name()).get_int();
+				debug("Remote action '",name(),"' has returned ",rc);
+				if(rc) {
+					throw std::system_error((int) rc, std::system_category());
+				}
+			}
+
+		};
+
 		class Session : public Abstract::Session {
 		private:
 			std::shared_ptr<Pipe::Handler> handler;
@@ -134,8 +160,7 @@
 			}
 
 			std::shared_ptr<TN3270::Action> ActionFactory(const LIB3270_ACTION *descriptor) {
-				throw runtime_error("Not implemented");
-//				return make_shared<Action>(connection,id,descriptor);
+				return make_shared<Action>(handler,descriptor);
 			}
 
 		};
@@ -144,17 +169,6 @@
 
  	}
 
-	/*
-	IPC::Session::Session(const char *id, const char *charset) : Abstract::Session() {
-
-
-		this->setCharSet(charset);
-	}
-
-	IPC::Session::~Session() {
-		CloseHandle(this->hPipe);
-	}
-	*/
 
  }
 
