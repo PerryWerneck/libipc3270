@@ -2,14 +2,14 @@
 
 pkgname=libipc3270
 
-pkgver=5.3
+pkgver=5.4
 pkgrel=0
 pkgdesc="IPC client library for lib3270/pw3270"
 url="https://github.com/PerryWerneck/libipc3270"
 arch=(i686 x86_64)
 license=(GPL)
 depends=()
-makedepends=(autoconf automake make openssl lib3270 libv3270 python3 gtk3 libtool dbus-glib)
+makedepends=(autoconf autoconf-archive automake make libtool gzip openssl dbus-glib lib3270 libv3270)
 checkdepends=()
 
 #groups=(gnome)
@@ -25,7 +25,7 @@ prepare() {
   mkdir -p scripts
   touch scripts/config.rpath
   NOCONFIGURE=1 ./autogen.sh
-  ./configure --prefix=/usr --disable-static
+  ./configure --prefix=/usr
 }
 
 build() {
