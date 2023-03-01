@@ -36,6 +36,11 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+	#include <config.h>
+#else
+	#include <version.h>
+#endif // HAVE_CONFIG_H
 
  #include <ipc-client-internals.h>
  #include <lib3270.h>
@@ -43,20 +48,12 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-TN3270_PUBLIC const char * TN3270::getVersion() {
-#ifdef PACKAGE_VERSION
+TN3270_PUBLIC const char * TN3270::getVersion() noexcept {
 	return PACKAGE_VERSION;
-#else
-    return "";
-#endif // PACKAGE_VERSION
 }
 
-TN3270_PUBLIC const char * TN3270::getRevision() {
-#ifdef PACKAGE_RELEASE
+TN3270_PUBLIC const char * TN3270::getRevision() noexcept {
 	return LIB3270_STRINGIZE_VALUE_OF(PACKAGE_RELEASE);
-#else
-    return "";
-#endif // PACKAGE_RELEASE
 }
 
 TN3270_PUBLIC const char * toCharString(const TN3270::KeyboardAction action) {

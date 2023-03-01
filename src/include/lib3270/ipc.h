@@ -80,7 +80,7 @@
 		 * @return Constant string with the IPC module library version (It's not the same of lib3270).
 		 *
 		 */
-		TN3270_PUBLIC const char * getVersion();
+		TN3270_PUBLIC const char * getVersion() noexcept;
 
 		/**
 		 * @brief Get IPC module library revision.
@@ -88,7 +88,7 @@
 		 * @return Constant string with the IPC module library revision (It's not the same of lib3270).
 		 *
 		 */
-		TN3270_PUBLIC const char * getRevision();
+		TN3270_PUBLIC const char * getRevision() noexcept;
 
 		/**
 		 * @brief Get protocol library install location.
