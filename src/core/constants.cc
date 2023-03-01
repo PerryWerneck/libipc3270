@@ -53,7 +53,7 @@ TN3270_PUBLIC const char * TN3270::getVersion() noexcept {
 }
 
 TN3270_PUBLIC const char * TN3270::getRevision() noexcept {
-	return LIB3270_STRINGIZE_VALUE_OF(PACKAGE_RELEASE);
+	return LIB3270_STRINGIZE_VALUE_OF(PACKAGE_PATCH_LEVEL);
 }
 
 TN3270_PUBLIC const char * toCharString(const TN3270::KeyboardAction action) {
