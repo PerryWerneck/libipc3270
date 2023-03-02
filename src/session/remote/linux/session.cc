@@ -109,6 +109,10 @@
 				return make_shared<Action>(connection,id,descriptor);
 			}
 
+			std::shared_ptr<Field> FieldFactory() override {
+				throw std::system_error(ENOTSUP, std::system_category());
+			}
+
 			std::shared_ptr<Field> FieldFactory(int) override {
 				throw std::system_error(ENOTSUP, std::system_category());
 			}

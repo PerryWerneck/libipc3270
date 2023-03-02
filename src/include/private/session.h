@@ -164,6 +164,8 @@
 			/// @brief Wait for connection state.
 			void waitForConnectionState(ConnectionState state, time_t timeout = DEFAULT_TIMEOUT) const override;
 
+			void waitForConnected(time_t timeout = DEFAULT_TIMEOUT) const override;
+
 			/// @brief Wait for screen changes.
 			void waitForChange(time_t seconds = DEFAULT_TIMEOUT) const override;
 

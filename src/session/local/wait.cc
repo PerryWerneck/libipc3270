@@ -72,6 +72,13 @@
 
 	}
 
+	void Local::Session::waitForConnected(time_t timeout) const {
+
+		// TODO: Will be updated to lib3270_wait_for_connected at some point.
+		waitForConnectionState(CONNECTED_TN3270E,timeout);
+
+	}
+
 	LIB3270_KEYBOARD_LOCK_STATE Local::Session::waitForKeyboardUnlock(time_t timeout) const {
 
 		return handler->get<LIB3270_KEYBOARD_LOCK_STATE>([timeout](H3270 *hSession){

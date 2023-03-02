@@ -37,9 +37,20 @@
 	std::shared_ptr<Field> Local::Session::FieldFactory(int baddr) {
 
 		int from, to;
+		LIB3270_FIELD_ATTRIBUTE attr;
 
-		int rc = handler->get<int>([baddr,&from,&to](H3270 * hSession){
-			return lib3270_get_field_bounds(hSession,baddr,&from,&to);
+		int rc = handler->get<int>([baddr,&from,&to,&attr](H3270 * hSession){
+
+			if(lib3270_get_field_bounds(hSession,baddr,&from,&to)) {
+				return errno;
+			}
+
+			attr = lib3270_get_field_attribute(hSession,baddr);
+			if(attr == LIB3270_FIELD_ATTRIBUTE_INVALID)
+				return errno;
+
+			return 0;
+
 		});
 
 		if(rc) {

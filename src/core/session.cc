@@ -38,6 +38,10 @@
 
  namespace TN3270 {
 
+	void Session::connect(time_t seconds) {
+		connect(nullptr,seconds);
+	}
+
 	std::shared_ptr<Session> Session::getInstance(const char *id, const char *charset) {
 
 		if(id && *id) {
@@ -53,13 +57,13 @@
 	Session::~Session() {
 	}
 
-	std::shared_ptr<Request> Session::RequestFactory(const Request::Type type, const char *name) const {
+	std::shared_ptr<Request> Session::RequestFactory(const Request::Type, const char *) const {
 		throw runtime_error("The back end is unable to handle remote requests");
 	}
 
 
 	/// @brief Fire event.
-	void Session::fire(const Event &event) {
+	void Session::fire(const Event &) {
 	}
 
 	void Session::push(const PFKey key) {

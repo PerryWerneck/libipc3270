@@ -215,6 +215,7 @@
 		virtual void setCharSet(const char *charset = NULL) = 0;
 
 		// Connect/disconnect
+		void connect(time_t seconds = DEFAULT_TIMEOUT);
 		virtual void connect(const char *url = nullptr, time_t seconds = DEFAULT_TIMEOUT) = 0;
 		virtual void disconnect() = 0;
 
@@ -229,6 +230,9 @@
 
 		/// @brief Wait for connection state.
 		virtual void waitForConnectionState(ConnectionState state, time_t timeout = DEFAULT_TIMEOUT) const = 0;
+
+		/// @brief Wait for 'online' state.
+		virtual void waitForConnected(time_t timeout = DEFAULT_TIMEOUT) const = 0;
 
 		/// @brief Wait for screen changes.
 		virtual void waitForChange(time_t seconds = DEFAULT_TIMEOUT) const = 0;

@@ -108,6 +108,13 @@
 
 	}
 
+	void Abstract::Session::waitForConnected(time_t timeout) const {
+
+		// TODO: Will be updated to lib3270_wait_for_connected at some point.
+		return waitForConnectionState(CONNECTED_TN3270E,timeout);
+
+	}
+
 	void Abstract::Session::waitForConnectionState(ConnectionState state, time_t timeout) const {
 
 		debug(__FUNCTION__,"(",timeout,")");
