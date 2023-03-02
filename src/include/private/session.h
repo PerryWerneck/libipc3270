@@ -140,7 +140,7 @@
 			unsigned short setCursor(unsigned short row, unsigned short col) override;
 
 			/// @brief Get cursor address
-			unsigned short getCursorAddress() override;
+			unsigned short getCursorAddress() const override;
 
 			/// @brief Get cursor position.
 			struct Cursor getCursorPosition() override;

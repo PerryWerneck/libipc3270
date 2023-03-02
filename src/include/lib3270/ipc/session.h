@@ -75,6 +75,15 @@
 		virtual std::string	toString(int baddr = 0, int len = -1, char lf = '\n') const = 0;
 		virtual std::string	toString(unsigned short row, unsigned short col, int len, char lf = '\n') const = 0;
 
+		/// @brief Build field for current cursor address.
+		virtual std::shared_ptr<Field> FieldFactory() const;
+
+		/// @brief Build field for address.
+		virtual std::shared_ptr<Field> FieldFactory(int baddr) const = 0;
+
+		/// @brief Build field for row, col.
+		virtual std::shared_ptr<Field> FieldFactory(unsigned short row, unsigned short col) const = 0;
+
 		/// @brief Input string.
 		virtual void push(const char *text, size_t length) = 0;
 		virtual void push(int baddr, const char *text, int length) = 0;
@@ -197,7 +206,7 @@
 		virtual unsigned short setCursor(unsigned short row, unsigned short col) = 0;
 
 		/// @brief Get cursor address
-		virtual unsigned short getCursorAddress() = 0;
+		virtual unsigned short getCursorAddress() const = 0;
 
 		/// @brief Get cursor position.
 		virtual struct Cursor getCursorPosition() = 0;

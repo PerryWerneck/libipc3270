@@ -109,6 +109,14 @@
 				return make_shared<Action>(connection,id,descriptor);
 			}
 
+			std::shared_ptr<Field> FieldFactory(int) const override {
+				throw std::system_error(ENOTSUP, std::system_category());
+			}
+
+			std::shared_ptr<Field> FieldFactory(unsigned short, unsigned short) const override {
+				throw std::system_error(ENOTSUP, std::system_category());
+			}
+
 		};
 
 		return make_shared<Session>(connection,id);
@@ -116,55 +124,4 @@
 	}
 
  }
-
- /*
- namespace TN3270 {
-
-	IPC::Session::Session(const char *id, const char *charset) : Abstract::Session() {
-
-		// Create D-Bus session.
-		DBusError err;
-
-		dbus_error_init(&err);
-		this->conn = dbus_bus_get(DBUS_BUS_SESSION, &err);
-
-		debug("dbus_bus_get conn=",conn);
-
-		throws_if_error(err);
-
-		if(!conn)
-			throw std::runtime_error("DBUS Connection failed");
-
-		auto sep = strchr(id,':');
-		if(!sep) {
-			throw std::system_error(EINVAL, std::system_category());
-		}
-
-		string name(id,sep-id);
-		std::transform(name.begin(), name.end(), name.begin(),[](unsigned char c){ return std::tolower(c); });
-
-		string path(sep+1);
-		std::transform(path.begin(), path.end(), path.begin(),[](unsigned char c){ return std::tolower(c); });
-
-		this->name = APPLICATION_ID ".";
-		this->name += path;
-
-		this->path = DBUS_OBJECT_PATH "/";
-		this->path += path;
-
-		this->interface = APPLICATION_ID ".session";
-
-		debug("D-Bus Object name=\"",this->name,"\" D-Bus Object path=\"",this->path,"\"");
-
-		setCharSet(charset);
-
-	}
-
-	IPC::Session::~Session() {
-
-	}
-
- }
-
-	*/
 

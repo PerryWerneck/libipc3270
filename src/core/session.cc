@@ -370,38 +370,6 @@
 
 	}
 
-	//void Session::setAttribute(const char GNUC_UNUSED(*name), const int GNUC_UNUSED(value)) {
-	//	throw std::system_error(ENOTSUP, std::system_category());
-	//}
-
-	//void Session::setAttribute(const char GNUC_UNUSED(*name), const char GNUC_UNUSED(*value)) {
-	//	throw std::system_error(ENOTSUP, std::system_category());
-	//}
-
-	//std::vector<std::shared_ptr<Abstract::Attribute>> Session::getAttributes() const {
-	//	std::vector<std::shared_ptr<Abstract::Attribute>> attributes;
-	//	this->getAttributes(attributes);
-	//	return attributes;
-	//}
-
-	/*
-	void Session::getAttribute(const char *name, int &value) const {
-		value = getAttribute(name).getInt32();
-	}
-
-	void Session::getAttribute(const char *name, unsigned int &value) const {
-		value = getAttribute(name).getUint32();
-	}
-
-	void Session::getAttribute(const char *name, std::string &value) const {
-		value.assign(value = getAttribute(name).getString().c_str());
-	}
-
-	void Session::getAttribute(const char *name, bool &value) const {
-		value = getAttribute(name).getBoolean();
-	}
-	*/
-
 	void Session::setProperty(const char *name, const int value) {
 		debug("Property ",name,"=",value);
 		RequestFactory(Request::SetProperty,name)->push(value).call();

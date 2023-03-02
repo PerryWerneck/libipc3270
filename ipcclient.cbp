@@ -70,6 +70,7 @@
 		<Unit filename="src/include/lib3270/ipc.h" />
 		<Unit filename="src/include/lib3270/ipc/action.h" />
 		<Unit filename="src/include/lib3270/ipc/attribute.h" />
+		<Unit filename="src/include/lib3270/ipc/field.h" />
 		<Unit filename="src/include/lib3270/ipc/host.h" />
 		<Unit filename="src/include/lib3270/ipc/request.h" />
 		<Unit filename="src/include/lib3270/ipc/session.h" />
@@ -79,6 +80,7 @@
 		<Unit filename="src/session/local/actions.cc" />
 		<Unit filename="src/session/local/attribute.cc" />
 		<Unit filename="src/session/local/events.cc" />
+		<Unit filename="src/session/local/field.cc" />
 		<Unit filename="src/session/local/get.cc" />
 		<Unit filename="src/session/local/init.cc" />
 		<Unit filename="src/session/local/private.h" />
@@ -87,6 +89,7 @@
 		<Unit filename="src/session/local/wait.cc" />
 		<Unit filename="src/session/remote/actions.cc" />
 		<Unit filename="src/session/remote/attribute.cc" />
+		<Unit filename="src/session/remote/field.cc" />
 		<Unit filename="src/session/remote/get.cc" />
 		<Unit filename="src/session/remote/linux/dbus-request.h" />
 		<Unit filename="src/session/remote/linux/request.cc" />

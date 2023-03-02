@@ -150,7 +150,7 @@
 
 	}
 
-	unsigned short Local::Session::getCursorAddress() {
+	unsigned short Local::Session::getCursorAddress() const {
 
 		return handler->get<unsigned short>([this](H3270 * hSession){
 

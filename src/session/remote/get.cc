@@ -100,7 +100,7 @@
 		return getProperty<uint32_t,unsigned short>("length");
 	}
 
-	unsigned short Abstract::Session::getCursorAddress() {
+	unsigned short Abstract::Session::getCursorAddress() const {
 		return getProperty<uint32_t,unsigned short>("cursor_address");
 	}
 

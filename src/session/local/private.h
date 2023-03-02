@@ -127,6 +127,10 @@
 				// Actions
 				std::shared_ptr<TN3270::Action> ActionFactory(const LIB3270_ACTION *descriptor) override;
 
+				// fields.
+				std::shared_ptr<Field> FieldFactory(int baddr) const;
+				std::shared_ptr<Field> FieldFactory(unsigned short row, unsigned short col) const;
+
 				void connect(const char *url, time_t seconds) override;
 				void disconnect() override;
 
@@ -175,7 +179,7 @@
 				void setCharSet(const char *charset = NULL) override;
 				unsigned short setCursor(int addr) override;
 				unsigned short setCursor(unsigned short row, unsigned short col) override;
-				unsigned short getCursorAddress() override;
+				unsigned short getCursorAddress() const override;
 				Session::Cursor getCursorPosition() override;
 				void setProperty(const char *name, const int value) override;
 				void setProperty(const char *name, const unsigned int value) override;
