@@ -129,6 +129,10 @@
 
 				void connect(const char *url, time_t seconds) override;
 				void disconnect() override;
+
+				bool connected() const override;
+				bool ready() const override;
+
 				void pfkey(unsigned short value) override;
 				void pakey(unsigned short value) override;
 				void push(const KeyboardAction action) override;

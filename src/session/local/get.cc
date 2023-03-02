@@ -110,6 +110,22 @@
 
 	}
 
+	bool Local::Session::connected() const {
+
+		return handler->get<bool>([](H3270 * hSession){
+			return lib3270_is_connected(hSession);
+		});
+
+	}
+
+	bool Local::Session::ready() const {
+
+		return handler->get<bool>([](H3270 * hSession){
+			return lib3270_is_ready(hSession);
+		});
+
+	}
+
 	unsigned short Local::Session::getScreenWidth() const {
 
 		return handler->get<unsigned short>([](H3270 * hSession){

@@ -152,6 +152,9 @@
 			void connect(const char *url = nullptr, time_t seconds = DEFAULT_TIMEOUT) override;
 			void disconnect() override;
 
+			bool connected() const override;
+			bool ready() const override;
+
 			/// @brief Wait.
 			void wait(time_t seconds) const override;
 

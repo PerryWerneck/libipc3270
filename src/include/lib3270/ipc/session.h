@@ -209,6 +209,9 @@
 		virtual void connect(const char *url = nullptr, time_t seconds = DEFAULT_TIMEOUT) = 0;
 		virtual void disconnect() = 0;
 
+		virtual bool connected() const = 0;
+		virtual bool ready() const = 0;
+
 		/// @brief Wait.
 		virtual void wait(time_t seconds) const = 0;
 

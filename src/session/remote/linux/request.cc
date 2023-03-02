@@ -404,6 +404,12 @@
 					value = rc;
 					break;
 
+				} else if (current_type == DBUS_TYPE_BOOLEAN) {
+					dbus_bool_t rc = 0;
+					debug("DBUS_TYPE_VARIANT-DBUS_TYPE_BOOLEAN");
+					dbus_message_iter_get_basic(&sub, &rc);
+					value = rc;
+					break;
 				}
 #ifdef DEBUG
 				else {

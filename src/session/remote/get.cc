@@ -80,6 +80,14 @@
 
 	}
 
+	bool Abstract::Session::connected() const {
+		return getProperty<bool,bool>("connected");
+	}
+
+	bool Abstract::Session::ready() const {
+		return getProperty<bool,bool>("ready");
+	}
+
 	unsigned short Abstract::Session::getScreenWidth() const {
 		return getProperty<uint32_t,unsigned short>("width");
 	}
