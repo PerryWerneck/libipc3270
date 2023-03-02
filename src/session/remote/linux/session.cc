@@ -109,11 +109,11 @@
 				return make_shared<Action>(connection,id,descriptor);
 			}
 
-			std::shared_ptr<Field> FieldFactory(int) const override {
+			std::shared_ptr<Field> FieldFactory(int) override {
 				throw std::system_error(ENOTSUP, std::system_category());
 			}
 
-			std::shared_ptr<Field> FieldFactory(unsigned short, unsigned short) const override {
+			std::shared_ptr<Field> FieldFactory(unsigned short, unsigned short) override {
 				throw std::system_error(ENOTSUP, std::system_category());
 			}
 

@@ -27,14 +27,14 @@
 
  namespace TN3270 {
 
-	std::shared_ptr<Field> Local::Session::FieldFactory(unsigned short row, unsigned short col) const {
+	std::shared_ptr<Field> Local::Session::FieldFactory(unsigned short row, unsigned short col) {
 		int addr = handler->get<int>([row,col](H3270 * hSession){
 			return lib3270_translate_to_address(hSession,row,col);
 		});
 		return FieldFactory(addr);
 	}
 
-	std::shared_ptr<Field> Local::Session::FieldFactory(int baddr) const {
+	std::shared_ptr<Field> Local::Session::FieldFactory(int baddr) {
 
 		int from, to;
 
@@ -47,11 +47,8 @@
 		}
 
 		class LocalField : public TN3270::Field {
-		private:
-			std::shared_ptr<Handler> handler;
-
 		public:
-			LocalField(std::shared_ptr<Handler> h, int from, int to) : TN3270::Field{from, to-from}, handler{h} {
+			LocalField(Local::Session &session, int from, int to) : TN3270::Field{session, (unsigned short) from, (unsigned short) (to-from)} {
 			}
 
 			bool next() override {
@@ -60,7 +57,7 @@
 
 		};
 
-		return make_shared<LocalField>(handler,from,to);
+		return make_shared<LocalField>(*this,from,to);
 	}
 
  }

@@ -39,6 +39,7 @@
 #include <config.h>
 #include <ipc-client-internals.h>
 #include <private/session.h>
+#include <lib3270/ipc/field.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
@@ -53,18 +54,18 @@
 	}
 
 	/// @brief Get contents of field ad address.
-	void Abstract::Session::pop(int GNUC_UNUSED(baddr), std::string GNUC_UNUSED(&text)) {
-		throw std::system_error(ENOTSUP, std::system_category());
+	void Abstract::Session::pop(int baddr, std::string &text) {
+		text = FieldFactory(baddr)->get();
 	}
 
 	/// @brief Get contents of field at position.
-	void Abstract::Session::pop(unsigned short GNUC_UNUSED(row), unsigned short GNUC_UNUSED(col), std::string GNUC_UNUSED(&text)) {
-		throw std::system_error(ENOTSUP, std::system_category());
+	void Abstract::Session::pop(unsigned short row, unsigned short col, std::string &text) {
+		text = FieldFactory(row,col)->get();
 	}
 
 	/// @brief Get contents of field at cursor position.
 	void Abstract::Session::pop(std::string &text) {
-		pop(-1,text);
+		text = FieldFactory()->get();
 	}
 
  }

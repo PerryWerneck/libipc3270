@@ -128,8 +128,8 @@
 				std::shared_ptr<TN3270::Action> ActionFactory(const LIB3270_ACTION *descriptor) override;
 
 				// fields.
-				std::shared_ptr<Field> FieldFactory(int baddr) const;
-				std::shared_ptr<Field> FieldFactory(unsigned short row, unsigned short col) const;
+				std::shared_ptr<Field> FieldFactory(int baddr) override;
+				std::shared_ptr<Field> FieldFactory(unsigned short row, unsigned short col) override;
 
 				void connect(const char *url, time_t seconds) override;
 				void disconnect() override;

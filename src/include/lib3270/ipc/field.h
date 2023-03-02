@@ -23,23 +23,36 @@
  #pragma once
 
  #include <lib3270/ipc.h>
+ #include <lib3270/ipc/session.h>
 
-	namespace TN3270 {
+ namespace TN3270 {
 
 		/// @brief TN3270 Action
 		class TN3270_PUBLIC Field {
 		protected:
+			TN3270::Session &session;	///< @brief The associated session
 			unsigned short start;		///< @brief Address of field start.
 			unsigned short length;		///< @brief Field length.
 
-		public:
-
-			constexpr Field(unsigned short s, unsigned short l) : start{s}, length{l} {
+			constexpr Field(TN3270::Session &h, unsigned short s, unsigned short l) : session{h}, start{s}, length{l} {
 			}
+
+		public:
 
 			/// @brief Jump to next unprotected field.
 			/// @return true if the field is valid.
 			virtual bool next() = 0;
+
+			/// @brief Get Field contents.
+			inline std::string get() const {
+				return session.toString(start,length);
+			}
+
+			/// @brief Set Field Contents.
+			void set(const std::string &str) {
+				session.push(start,str.c_str(),length);
+			}
+
 
 		};
 

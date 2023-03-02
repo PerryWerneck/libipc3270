@@ -27,7 +27,7 @@
 
  namespace TN3270 {
 
-	std::shared_ptr<Field> Session::FieldFactory() const {
+	std::shared_ptr<Field> Session::FieldFactory() {
 		return FieldFactory((int) getCursorAddress());
 	}
 

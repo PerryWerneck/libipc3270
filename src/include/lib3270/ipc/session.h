@@ -76,13 +76,13 @@
 		virtual std::string	toString(unsigned short row, unsigned short col, int len, char lf = '\n') const = 0;
 
 		/// @brief Build field for current cursor address.
-		virtual std::shared_ptr<Field> FieldFactory() const;
+		virtual std::shared_ptr<Field> FieldFactory();
 
 		/// @brief Build field for address.
-		virtual std::shared_ptr<Field> FieldFactory(int baddr) const = 0;
+		virtual std::shared_ptr<Field> FieldFactory(int baddr) = 0;
 
 		/// @brief Build field for row, col.
-		virtual std::shared_ptr<Field> FieldFactory(unsigned short row, unsigned short col) const = 0;
+		virtual std::shared_ptr<Field> FieldFactory(unsigned short row, unsigned short col) = 0;
 
 		/// @brief Input string.
 		virtual void push(const char *text, size_t length) = 0;
