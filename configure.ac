@@ -125,6 +125,8 @@ case "$host" in
 		AC_SUBST(EXEEXT,.exe)
 		AC_SUBST(SONAME,libipc3270.dll)
 		AC_SUBST(OSNAME,windows)
+		AC_CONFIG_FILES(sdk/windows/dynamic.pc)
+		AC_CONFIG_FILES(sdk/windows/static.pc)
 		;;
 
  	*)
@@ -141,9 +143,8 @@ case "$host" in
 		AC_SUBST(DBUS_LIBS)
 		AC_SUBST(DBUS_CFLAGS)
 
-		PKG_CHECK_MODULES( [GDBUS], [dbus-glib-1], app_cv_dbus=yes, AC_MSG_ERROR([No GDBUS support.])  )
-		AC_SUBST(GDBUS_LIBS)
-		AC_SUBST(GDBUS_CFLAGS)
+		AC_CONFIG_FILES(sdk/linux/dynamic.pc)
+		AC_CONFIG_FILES(sdk/linux/static.pc)
 
 esac
 
@@ -299,8 +300,6 @@ dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
 
 AC_CONFIG_FILES(src/include/version.h)
-AC_CONFIG_FILES(sdk/dynamic.pc)
-AC_CONFIG_FILES(sdk/static.pc)
 AC_CONFIG_FILES(locale/Makefile)
 AC_CONFIG_FILES(Makefile)
 
