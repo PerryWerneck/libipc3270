@@ -7,13 +7,16 @@ PRODUCT_NAME=@PRODUCT_NAME@
 MAIN_SOURCES= \
 	$(wildcard src/core/*.cc) \
 	$(wildcard src/core/@OSNAME@/*.cc) \
-	$(wildcard src/core/@OSNAME@/dynamic/*.cc) \
 	$(wildcard src/host/*.cc) \
 	$(wildcard src/session/*.cc) \
 	$(wildcard src/session/local/*.cc) \
 	$(wildcard src/session/remote/*.cc) \
 	$(wildcard src/session/remote/@OSNAME@/*.cc) \
 
+SOURCES= \
+	$(MAIN_SOURCES) \
+	$(wildcard src/core/@OSNAME@/dynamic/*.cc)
+	
 TEST_SOURCES= \
 	$(wildcard src/testprogram/*.cc) \
 	$(wildcard src/testprogram/@OSNAME@/*.rc)
@@ -179,7 +182,7 @@ Release: \
 	$(BINRLS)/@SONAME@
 
 $(BINRLS)/@SONAME@: \
-	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o) \
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o) \
 	$(foreach SRC, $(basename $(wildcard src/main/os/@OSNAME@/*.rc)), $(OBJRLS)/$(SRC).o)
 
 	@$(MKDIR) $(@D)
@@ -196,14 +199,14 @@ static: \
 	$(BINRLS)/$(PACKAGE_NAME).a
 
 $(BINRLS)/$(PACKAGE_NAME).a: \
-	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJRLS)/$(SRC).o)
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJRLS)/$(SRC).o)
 
 	@echo $@ ...
 	@$(MKDIR) $(dir $@)
 	@$(AR) rcs $@ $^
 
 locale/$(PACKAGE_NAME).pot: \
-	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(POTDIR)/$(SRC).pot)
+	$(foreach SRC, $(basename $(SOURCES)), $(POTDIR)/$(SRC).pot)
 
 	@rm -f $@
 	@$(MKDIR) $(dir $@)
@@ -357,7 +360,7 @@ $(BINDBG)/@PACKAGE_NAME@@EXEEXT@: \
 
 
 $(BINDBG)/@SONAME@: \
-	$(foreach SRC, $(basename $(MAIN_SOURCES)), $(OBJDBG)/$(SRC).o)
+	$(foreach SRC, $(basename $(SOURCES)), $(OBJDBG)/$(SRC).o)
 
 	@$(MKDIR) $(@D)
 	@echo $< ...
@@ -407,7 +410,7 @@ clean: \
 	cleanRelease
 
 
--include $(foreach SRC, $(basename $(MAIN_SOURCES) $(TEST_SOURCES)), $(OBJDBG)/$(SRC).d)
--include $(foreach SRC, $(basename $(MAIN_SOURCES) $(TEST_SOURCES)), $(OBJRLS)/$(SRC).d)
+-include $(foreach SRC, $(basename $(SOURCES) $(TEST_SOURCES)), $(OBJDBG)/$(SRC).d)
+-include $(foreach SRC, $(basename $(SOURCES) $(TEST_SOURCES)), $(OBJRLS)/$(SRC).d)
 
 
