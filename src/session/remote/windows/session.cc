@@ -163,6 +163,14 @@
 				return make_shared<Action>(handler,descriptor);
 			}
 
+			std::shared_ptr<Field> FieldFactory(int baddr) override {
+				throw std::system_error(ENOTSUP, std::system_category());
+			}
+
+			std::shared_ptr<Field> FieldFactory(unsigned short row, unsigned short col) override {
+				throw std::system_error(ENOTSUP, std::system_category());
+			}
+
 		};
 
 		return make_shared<Session>(hPipe);
