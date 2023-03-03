@@ -59,10 +59,25 @@ install: \
 
 
 ipc3270.dll: \
-	src\core\*.cc \
-	src\core\windows\*.cc
+	src/core/*.cc) \
+	src/core/windows/*.cc) \
+	src/host/*.cc) \
+	src/session/*.cc) \
+	src/session/local/*.cc) \
+	src/session/remote/*.cc) \
+	src/session/remote/windows/*.cc)
 
-	@$(MAKE) /f win\Makefile-debug.msc $(**:.cc=.obj)
+	@$(MAKE) \
+		/f win\Makefile-debug.msc \
+		$(**:.cc=.obj)
+
+	@link \
+		/NOLOGO \
+		/DLL \
+		/OUT:"$@" \
+		/IMPLIB:ipc3270.dll.lib \
+		$(**:.cc=.obj) \
+		/DELAYLOAD:$(LIB3270_NAME).dll
 
 #ipc3270.dll: \
 #	$(SRCFILES:.cpp=.obj) \
