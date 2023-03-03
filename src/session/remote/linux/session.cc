@@ -98,7 +98,10 @@
 			string id;
 
 		public:
-			Session(DBusConnection *c, const char *i) : Abstract::Session{}, connection{c}, id{i} {
+			Session(DBusConnection *c, const char *i, const char *charset) : Abstract::Session{}, connection{c}, id{i} {
+				if(charset && *charset) {
+					setCharSet(charset);
+				}
 			}
 
 			std::shared_ptr<Request> RequestFactory(const Request::Type type, const char *name) const override {
@@ -123,7 +126,7 @@
 
 		};
 
-		return make_shared<Session>(connection,id);
+		return make_shared<Session>(connection,id,charset);
 
 	}
 
