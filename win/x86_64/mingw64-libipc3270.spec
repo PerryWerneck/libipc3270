@@ -104,9 +104,10 @@ make all %{?_smp_mflags}
 
 %install
 %{_mingw64_makeinstall}
+%_mingw64_find_lang %{_libname}-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 %fdupes %{buildroot}
 
-%files -n %{name}-%{_libvrs}
+%files -n %{name}-%{_libvrs} -f langfiles
 %defattr(-,root,root)
 
 %doc AUTHORS README.md

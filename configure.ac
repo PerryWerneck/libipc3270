@@ -108,8 +108,8 @@ dnl ---------------------------------------------------------------------------
 dnl Check for OS specifics
 dnl ---------------------------------------------------------------------------
 
-CFLAGS="$CFLAGS -I$ac_pwd/src/include"
-CXXFLAGS="$CXXFLAGS -I$ac_pwd/src/include"
+CFLAGS="$CFLAGS -I$ac_pwd/src/include -DHAVE_CONFIG_H"
+CXXFLAGS="$CXXFLAGS -I$ac_pwd/src/include -DHAVE_CONFIG_H"
 
 case "$host" in
 	*-mingw32|*-pc-msys)
@@ -293,6 +293,7 @@ dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
 
+AC_CONFIG_FILES(src/include/version.h)
 AC_CONFIG_FILES(sdk/dynamic.pc)
 AC_CONFIG_FILES(sdk/static.pc)
 AC_CONFIG_FILES(locale/Makefile)

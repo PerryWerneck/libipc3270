@@ -75,6 +75,15 @@
 		virtual std::string	toString(int baddr = 0, int len = -1, char lf = '\n') const = 0;
 		virtual std::string	toString(unsigned short row, unsigned short col, int len, char lf = '\n') const = 0;
 
+		/// @brief Build field for current cursor address.
+		virtual std::shared_ptr<Field> FieldFactory();
+
+		/// @brief Build field for address.
+		virtual std::shared_ptr<Field> FieldFactory(int baddr) = 0;
+
+		/// @brief Build field for row, col.
+		virtual std::shared_ptr<Field> FieldFactory(unsigned short row, unsigned short col) = 0;
+
 		/// @brief Input string.
 		virtual void push(const char *text, size_t length) = 0;
 		virtual void push(int baddr, const char *text, int length) = 0;
@@ -197,7 +206,7 @@
 		virtual unsigned short setCursor(unsigned short row, unsigned short col) = 0;
 
 		/// @brief Get cursor address
-		virtual unsigned short getCursorAddress() = 0;
+		virtual unsigned short getCursorAddress() const = 0;
 
 		/// @brief Get cursor position.
 		virtual struct Cursor getCursorPosition() = 0;
@@ -206,8 +215,12 @@
 		virtual void setCharSet(const char *charset = NULL) = 0;
 
 		// Connect/disconnect
+		void connect(time_t seconds = DEFAULT_TIMEOUT);
 		virtual void connect(const char *url = nullptr, time_t seconds = DEFAULT_TIMEOUT) = 0;
 		virtual void disconnect() = 0;
+
+		virtual bool connected() const = 0;
+		virtual bool ready() const = 0;
 
 		/// @brief Wait.
 		virtual void wait(time_t seconds) const = 0;
@@ -217,6 +230,9 @@
 
 		/// @brief Wait for connection state.
 		virtual void waitForConnectionState(ConnectionState state, time_t timeout = DEFAULT_TIMEOUT) const = 0;
+
+		/// @brief Wait for 'online' state.
+		virtual void waitForConnected(time_t timeout = DEFAULT_TIMEOUT) const = 0;
 
 		/// @brief Wait for screen changes.
 		virtual void waitForChange(time_t seconds = DEFAULT_TIMEOUT) const = 0;

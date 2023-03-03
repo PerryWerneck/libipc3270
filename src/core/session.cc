@@ -38,6 +38,10 @@
 
  namespace TN3270 {
 
+	void Session::connect(time_t seconds) {
+		connect(nullptr,seconds);
+	}
+
 	std::shared_ptr<Session> Session::getInstance(const char *id, const char *charset) {
 
 		if(id && *id) {
@@ -53,13 +57,13 @@
 	Session::~Session() {
 	}
 
-	std::shared_ptr<Request> Session::RequestFactory(const Request::Type type, const char *name) const {
+	std::shared_ptr<Request> Session::RequestFactory(const Request::Type, const char *) const {
 		throw runtime_error("The back end is unable to handle remote requests");
 	}
 
 
 	/// @brief Fire event.
-	void Session::fire(const Event &event) {
+	void Session::fire(const Event &) {
 	}
 
 	void Session::push(const PFKey key) {
@@ -369,38 +373,6 @@
 		return toString(row, col, len, '\0').compare(0,len,s);
 
 	}
-
-	//void Session::setAttribute(const char GNUC_UNUSED(*name), const int GNUC_UNUSED(value)) {
-	//	throw std::system_error(ENOTSUP, std::system_category());
-	//}
-
-	//void Session::setAttribute(const char GNUC_UNUSED(*name), const char GNUC_UNUSED(*value)) {
-	//	throw std::system_error(ENOTSUP, std::system_category());
-	//}
-
-	//std::vector<std::shared_ptr<Abstract::Attribute>> Session::getAttributes() const {
-	//	std::vector<std::shared_ptr<Abstract::Attribute>> attributes;
-	//	this->getAttributes(attributes);
-	//	return attributes;
-	//}
-
-	/*
-	void Session::getAttribute(const char *name, int &value) const {
-		value = getAttribute(name).getInt32();
-	}
-
-	void Session::getAttribute(const char *name, unsigned int &value) const {
-		value = getAttribute(name).getUint32();
-	}
-
-	void Session::getAttribute(const char *name, std::string &value) const {
-		value.assign(value = getAttribute(name).getString().c_str());
-	}
-
-	void Session::getAttribute(const char *name, bool &value) const {
-		value = getAttribute(name).getBoolean();
-	}
-	*/
 
 	void Session::setProperty(const char *name, const int value) {
 		debug("Property ",name,"=",value);

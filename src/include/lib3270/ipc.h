@@ -71,6 +71,7 @@
 		class Controller;
 		class Action;
 		class Session;
+		class Field;
 
 		#define DEFAULT_TIMEOUT 5
 
@@ -80,7 +81,7 @@
 		 * @return Constant string with the IPC module library version (It's not the same of lib3270).
 		 *
 		 */
-		TN3270_PUBLIC const char * getVersion();
+		TN3270_PUBLIC const char * getVersion() noexcept;
 
 		/**
 		 * @brief Get IPC module library revision.
@@ -88,7 +89,7 @@
 		 * @return Constant string with the IPC module library revision (It's not the same of lib3270).
 		 *
 		 */
-		TN3270_PUBLIC const char * getRevision();
+		TN3270_PUBLIC const char * getRevision() noexcept;
 
 		/**
 		 * @brief Get protocol library install location.
@@ -300,141 +301,6 @@
 			SYSREQ,
 			KYBD_UNLOCK,	///< @brief Unlock the keyboard if it was locked by operator error.
 		};
-
-		/*
-		/// @brief Dynamic Data type
-		class TN3270_PUBLIC Attribute {
-		public:
-
-			/// @brief IPC Data type.
-			enum Type : uint8_t {
-				String	= 's',
-				Boolean	= 'b',
-				Uchar	= 'y',
-				Int16	= 'n',
-				Uint16	= 'q',
-				Int32	= 'i',
-				Int32x	= 'h',
-				Uint32	= 'u',
-				Int64	= 'x',
-				Uint64	= 't'
-			};
-
-		private:
-			Type 	  type;			///< @brief Data type.
-
-		protected:
-
-			size_t	  szData;
-			uint8_t	* data;			///< @brief Internal worker.
-
-			struct {
-				std::function<const char *(const void *worker)> name;
-				std::function<const char *(const void *worker)> description;
-
-				std::function <std::string (const Attribute & attr, const void *worker)> asString;
-				std::function <int32_t (const Attribute & attr, const void *worker)> asInt32;
-				std::function <uint32_t (const Attribute & attr, const void *worker)> asUint32;
-				std::function <bool (const Attribute & attr, const void *worker)> asBoolean;
-			} get;
-
-			struct {
-				std::function <void (const Attribute & attr, const void *worker, const char *value)> asString;
-				std::function <void (const Attribute & attr, const void *worker, const int32_t value)> asInt32;
-				std::function <void (const Attribute & attr, const void *worker, const uint32_t value)> asUint32;
-				std::function <void (const Attribute & attr, const void *worker, const bool value)> asBoolean;
-			} set;
-
-			Attribute(Type type, size_t szWorker = 0);
-
-		public:
-
-			Attribute(const Attribute &src);
-			Attribute(const Attribute *src);
-
-			~Attribute();
-
-			inline const char * getName() const {
-				return this->get.name(this->data);
-			}
-
-			inline const char * getDescription() const {
-				return this->get.description(this->data);
-			}
-
-			inline std::string getString() const {
-				return get.asString(*this,data);
-			}
-
-			inline int32_t getInt32() const {
-				return get.asInt32(*this,data);
-			}
-
-			inline uint32_t getUint32() const {
-				return get.asUint32(*this,data);
-			}
-
-			inline bool getBoolean() const {
-				return get.asBoolean(*this,data);
-			}
-
-			inline std::string toString() const {
-				return get.asString(*this, data);
-			}
-
-			inline void setString(const char * value) {
-				set.asString(*this,data,value);
-			}
-
-			inline void setInt32(const int32_t value) {
-				printf("\n%s %d\n\n",__FUNCTION__,value);
-				set.asInt32(*this,data,value);
-			}
-
-			inline void setUint32(const uint32_t value) {
-				set.asUint32(*this,data,value);
-			}
-
-			inline void setBoolean(const bool value) {
-				set.asBoolean(*this,data,value);
-			}
-
-			inline Attribute & operator=(const char * value) {
-				set.asString(*this,data,value);
-				return *this;
-			}
-
-			inline Attribute & operator=(const int32_t value) {
-				set.asInt32(*this,data,value);
-				return *this;
-			}
-
-			inline Attribute & operator=(const uint32_t value) {
-				set.asUint32(*this,data,value);
-				return *this;
-			}
-
-			inline Attribute & operator=(const bool value) {
-				set.asBoolean(*this,data,value);
-				return *this;
-			}
-
-			inline bool operator==(Type type) const noexcept {
-				return this->type == type;
-			}
-
-			inline Type getType() const {
-				return this->type;
-			}
-
-			inline operator Type() const {
-				return this->type;
-			}
-
-
-		};
-		*/
-
 
 	}
 

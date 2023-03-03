@@ -274,6 +274,15 @@
 
  int main(int argc, char **argv) {
 
+	{
+		auto session = TN3270::Session::getInstance(":A");
+
+		cout << "connected:" << session->connected() << endl;
+		cout << "ready:" << session->ready() << endl;
+
+		return -1;
+	}
+
 	const char * session = nullptr;
 	const char * url = getenv("LIB3270_DEFAULT_HOST");
 

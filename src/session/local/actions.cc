@@ -83,15 +83,6 @@
 
 	}
 
-	/*
-	void Local::Session::action(const char *action_name) {
-		std::lock_guard<std::recursive_mutex> lock(sync);
-		chkResponse(lib3270_activate_by_name(hSession,action_name));
-		if(this->timeout)
-			chkResponse(lib3270_wait_for_ready(hSession,this->timeout));
-	}
-	*/
-
  	void Local::Session::connect(const char *url, time_t seconds) {
 
  		handler->call([this,url,seconds](H3270 * hSession){

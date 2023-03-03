@@ -127,8 +127,16 @@
 				// Actions
 				std::shared_ptr<TN3270::Action> ActionFactory(const LIB3270_ACTION *descriptor) override;
 
+				// fields.
+				std::shared_ptr<Field> FieldFactory(int baddr) override;
+				std::shared_ptr<Field> FieldFactory(unsigned short row, unsigned short col) override;
+
 				void connect(const char *url, time_t seconds) override;
 				void disconnect() override;
+
+				bool connected() const override;
+				bool ready() const override;
+
 				void pfkey(unsigned short value) override;
 				void pakey(unsigned short value) override;
 				void push(const KeyboardAction action) override;
@@ -138,6 +146,7 @@
 				void waitForReady(time_t timeout) const override;
 				void waitForConnectionState(ConnectionState state, time_t timeout) const override;
 				void waitForChange(time_t timeout) const override;
+				void waitForConnected(time_t timeout) const override;
 
 				LIB3270_KEYBOARD_LOCK_STATE waitForKeyboardUnlock(time_t seconds) const override;
 
@@ -171,7 +180,7 @@
 				void setCharSet(const char *charset = NULL) override;
 				unsigned short setCursor(int addr) override;
 				unsigned short setCursor(unsigned short row, unsigned short col) override;
-				unsigned short getCursorAddress() override;
+				unsigned short getCursorAddress() const override;
 				Session::Cursor getCursorPosition() override;
 				void setProperty(const char *name, const int value) override;
 				void setProperty(const char *name, const unsigned int value) override;

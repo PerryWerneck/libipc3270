@@ -140,7 +140,7 @@
 			unsigned short setCursor(unsigned short row, unsigned short col) override;
 
 			/// @brief Get cursor address
-			unsigned short getCursorAddress() override;
+			unsigned short getCursorAddress() const override;
 
 			/// @brief Get cursor position.
 			struct Cursor getCursorPosition() override;
@@ -152,6 +152,9 @@
 			void connect(const char *url = nullptr, time_t seconds = DEFAULT_TIMEOUT) override;
 			void disconnect() override;
 
+			bool connected() const override;
+			bool ready() const override;
+
 			/// @brief Wait.
 			void wait(time_t seconds) const override;
 
@@ -160,6 +163,8 @@
 
 			/// @brief Wait for connection state.
 			void waitForConnectionState(ConnectionState state, time_t timeout = DEFAULT_TIMEOUT) const override;
+
+			void waitForConnected(time_t timeout = DEFAULT_TIMEOUT) const override;
 
 			/// @brief Wait for screen changes.
 			void waitForChange(time_t seconds = DEFAULT_TIMEOUT) const override;

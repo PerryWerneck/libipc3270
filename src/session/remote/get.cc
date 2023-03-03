@@ -80,6 +80,14 @@
 
 	}
 
+	bool Abstract::Session::connected() const {
+		return getProperty<bool,bool>("connected");
+	}
+
+	bool Abstract::Session::ready() const {
+		return getProperty<bool,bool>("ready");
+	}
+
 	unsigned short Abstract::Session::getScreenWidth() const {
 		return getProperty<uint32_t,unsigned short>("width");
 	}
@@ -92,7 +100,7 @@
 		return getProperty<uint32_t,unsigned short>("length");
 	}
 
-	unsigned short Abstract::Session::getCursorAddress() {
+	unsigned short Abstract::Session::getCursorAddress() const {
 		return getProperty<uint32_t,unsigned short>("cursor_address");
 	}
 
