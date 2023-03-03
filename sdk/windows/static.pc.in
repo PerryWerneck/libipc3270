@@ -8,8 +8,8 @@ product_name=@PRODUCT_NAME@
 Name: @PACKAGE_NAME@-static
 Description: @PACKAGE_DESCRIPTION@ (static library)
 Version: @PACKAGE_VERSION@
-Requires: lib3270
-Libs: -lipc3270.static @LIBS@ @LIB3270_LIBS@ @DBUS_LIBS@ @LIBICONV@ @INTL_LIBS@
+Requires: lib3270-delayed
+Libs: -lipc3270.static @LIBS@ @DBUS_LIBS@ @LIBICONV@ @INTL_LIBS@
 Cflags: -I@includedir@
 
 
