@@ -88,6 +88,10 @@ app_cv_dbus_path="/"`echo $app_cv_application_id | sed -e "s@\.@/@g"`
 AC_DEFINE_UNQUOTED(DBUS_OBJECT_PATH, "$app_cv_dbus_path",[The D-Bus object path])
 AC_SUBST(DBUS_OBJECT_PATH,$app_cv_dbus_path)
 
+app_pkg_description="$app_cv_product IPC Client library"
+AC_SUBST(PACKAGE_DESCRIPTION,$app_pkg_description)
+AC_DEFINE_UNQUOTED(PACKAGE_DESCRIPTION, "$app_pkg_description",[The package description])
+
 
 dnl ---------------------------------------------------------------------------
 dnl Set translation domain.
@@ -286,6 +290,7 @@ else
 
 fi
 
+AC_SUBST(INTL_LIBS)
 AC_SUBST(LIB3270_LIBS)
 AC_SUBST(LIB3270_CFLAGS)
 
