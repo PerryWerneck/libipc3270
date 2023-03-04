@@ -18,7 +18,11 @@
  */
 
  #pragma once
- #include <config.h>
+
+ #ifdef HAVE_CONFIG_H
+	#include <config.h>
+ #endif // HAVE_CONFIG_H
+
  #include <lib3270/ipc.h>
  #include <lib3270/ipc/session.h>
  #include <string>
@@ -26,6 +30,8 @@
 
  #ifdef HAVE_ICONV
 	#include <iconv.h>
+ #else
+	#include <lib3270/charset.h>
  #endif
 
  namespace TN3270 {

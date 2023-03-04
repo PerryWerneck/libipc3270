@@ -17,91 +17,48 @@
 #
 
 !include "$(PW3270_SDK_PATH)\lib3270.mak"
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#
+# Copyright (C) <2008> <Banco do Brasil S.A.>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+
+!include "$(PW3270_SDK_PATH)\lib3270.mak"
 
 .cc.obj:
-	@echo Compiling...
-	$(CPP) \
+	@echo $@ ...
+	@$(CPP) \
 		/c \
 		/DPACKAGE_NAME=\"ipc3270\" \
-		/DPRODUCT_NAME=$(PRODUCT_NAME) \
-		/DLIB3270_NAME=$(LIB3270_NAME) \
+		/DPRODUCT_NAME=\"$(PRODUCT_NAME)\" \
+		/DLIB3270_NAME=\"$(LIB3270_NAME)\" \
 		/DDEBUG=1 \
 		/I".\src\include" \
+		/I"$(PW3270_SDK_PATH)\include" \
 		/EHsc \
 		/Fo"$@" \
 		$<
 
-testprogram.exe: \
-	client\src\testprogram\testprogram.obj \
-	ipc3270.dll
-	
-	@echo Build exe file....
-	@link \
-		/nologo \
-		/OUT:"$@" \
-		client\src\testprogram\testprogram.obj
-
-install: \
-	ipc3270.dll
-	@echo Building library...
-	@-mkdir "$(PW3270_SDK_PATH)\lib"
-	@lib \
-		/NOLOGO \
-		/OUT:"$(PW3270_SDK_PATH)\lib\ipc3270.lib" \
-		$(OBJ_FILES)		
-
-	@copy "ipc3270.dll" "$(PW3270_SDK_PATH)\..\ipc3270.dll"
-	@copy "ipc3270.dll.lib" "$(PW3270_SDK_PATH)\lib\ipc3270.dll.lib"
-
-	@-mkdir "$(PW3270_SDK_PATH)\include\lib3270\ipc"
-	@copy "client\src\include\lib3270\ipc\*.h" "$(PW3270_SDK_PATH)\include\lib3270\ipc"
-	@copy "client\src\include\lib3270\*.h" "$(PW3270_SDK_PATH)\include\lib3270"
-
-
 ipc3270.dll: \
-	src/core/*.cc) \
-	src/core/windows/*.cc) \
-	src/host/*.cc) \
-	src/session/*.cc) \
-	src/session/local/*.cc) \
-	src/session/remote/*.cc) \
-	src/session/remote/windows/*.cc)
-
+	src/core/*.cc \
+	src/core/windows/*.cc \
+	src/host/*.cc \
+	src/session/*.cc \
+	src/session/local/*.cc \
+	src/session/remote/*.cc \
+	src/session/remote/windows/*.cc
 	@$(MAKE) \
 		/f win\Makefile-debug.msc \
 		$(**:.cc=.obj)
-
-	@link \
-		/NOLOGO \
-		/DLL \
-		/OUT:"$@" \
-		/IMPLIB:ipc3270.dll.lib \
-		$(**:.cc=.obj) \
-		/DELAYLOAD:$(LIB3270_NAME).dll
-
-#ipc3270.dll: \
-#	$(SRCFILES:.cpp=.obj) \
-#	$(LIB3270_NAME).lib
-#	@echo Build dll file....
-#	link \
-#		/NOLOGO \
-#		/DLL \
-#		/OUT:"$@" \
-#		/IMPLIB:ipc3270.dll.lib \
-#		$(SRCFILES:.cpp=.obj) \
-#		/DELAYLOAD:$(LIB3270_NAME).dll
-
-$(LIB3270_NAME).lib:
-	lib \
-		/def:"$(PW3270_SDK_PATH)\def\$(LIB3270_NAME).def" \
-		/out:$(LIB3270_NAME).lib
-
-clean:
-	del \
-		$(LIB3270_NAME).lib \
-		$(LIB3270_NAME).dll \
-		*.lib \
-		*.dll \
-		$(OBJ_FILES) \
-		client\src\core\windows\dynamic\init.obj \
-		testprogram.*

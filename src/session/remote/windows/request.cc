@@ -36,7 +36,10 @@
  *
  */
 
- #include <config.h>
+ #ifdef HAVE_CONFIG_H
+	#include <config.h>
+ #endif // HAVE_CONFIG_H
+
  #include <lib3270/ipc/request.h>
  #include "pipe-request.h"
  #include <ipc-client-internals.h>

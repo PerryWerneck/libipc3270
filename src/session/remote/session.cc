@@ -36,7 +36,10 @@
  *
  */
 
- #include <config.h>
+ #ifdef HAVE_CONFIG_H
+	#include <config.h>
+ #endif // HAVE_CONFIG_H
+
  #include <private/session.h>
  #include <cstring>
 
@@ -112,8 +115,6 @@
 			lib3270_iconv_free(converter);
 
 		converter = lib3270_iconv_new(remote,local);
-
-		debug("lib3270_iconv_new(",remote,",",local,"=",(void *) converter);
 
 #endif
 
@@ -195,13 +196,10 @@
 
 		if(converter) {
 
-			debug("Converting \"",text,"\" with lib3270 converter ",((void *) converter));
-
 			char * converted = lib3270_iconv_to_host(converter,text,length);
 
 			if(converted) {
 				std::string rc(converted);
-				debug("Converted=\"",rc,"\"");
 				lib3270_free(converted);
 				return rc;
 			}
