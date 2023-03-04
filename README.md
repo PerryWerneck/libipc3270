@@ -83,9 +83,7 @@ Created originally as part of [PW3270 application](../../../pw3270) this library
 	make install
 	```
 
-### Windows native with MSVC
-
-**OUTDATED**
+### Windows native with MSVC (untested)
 
 1. Install pw3270 with sdk modules
 
