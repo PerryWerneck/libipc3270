@@ -44,9 +44,6 @@
 		/// @brief Fire event.
 		void fire(const Event &event);
 
-		/// @brief Create an action object.
-		virtual std::shared_ptr<Action> ActionFactory(const LIB3270_ACTION *descriptor) = 0;
-
 	public:
 
 		/// @brief Get an instance of the TN3270 session based on the supplied ID.
@@ -260,6 +257,9 @@
 
 		/// @brief Insert event listener.
 		// void insert(Event::Type type, std::function <void(const Event &event)> listener);
+
+		/// @brief Create an action object.
+		virtual std::shared_ptr<Action> ActionFactory(const LIB3270_ACTION *descriptor) = 0;
 
 		/// @brief Create an action object.
 		std::shared_ptr<Action> ActionFactory(const char *name);

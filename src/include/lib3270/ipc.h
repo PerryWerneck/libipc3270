@@ -103,13 +103,13 @@
 		 * @brief Get list of attributes.
 		 *
 		 */
-		TN3270_PUBLIC std::vector<const LIB3270_PROPERTY *> getAttributes();
+		TN3270_PUBLIC bool for_each(const std::function<bool(const LIB3270_PROPERTY &property)> &method);
 
 		/**
 		 * @brief Get list of actions.
 		 *
 		 */
-		// TN3270_PUBLIC std::vector<const LIB3270_ACTION *> getActions();
+		TN3270_PUBLIC bool for_each(const std::function<bool(const LIB3270_ACTION &action)> &method);
 
 		/**
 		 * @brief Lib3270 dynamic memory block wrapper.
