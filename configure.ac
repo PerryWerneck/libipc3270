@@ -88,6 +88,10 @@ app_cv_dbus_path="/"`echo $app_cv_application_id | sed -e "s@\.@/@g"`
 AC_DEFINE_UNQUOTED(DBUS_OBJECT_PATH, "$app_cv_dbus_path",[The D-Bus object path])
 AC_SUBST(DBUS_OBJECT_PATH,$app_cv_dbus_path)
 
+app_pkg_description="$app_cv_product IPC Client library"
+AC_SUBST(PACKAGE_DESCRIPTION,$app_pkg_description)
+AC_DEFINE_UNQUOTED(PACKAGE_DESCRIPTION, "$app_pkg_description",[The package description])
+
 
 dnl ---------------------------------------------------------------------------
 dnl Set translation domain.
@@ -121,6 +125,8 @@ case "$host" in
 		AC_SUBST(EXEEXT,.exe)
 		AC_SUBST(SONAME,libipc3270.dll)
 		AC_SUBST(OSNAME,windows)
+		AC_CONFIG_FILES(sdk/windows/dynamic.pc)
+		AC_CONFIG_FILES(sdk/windows/static.pc)
 		;;
 
  	*)
@@ -137,9 +143,8 @@ case "$host" in
 		AC_SUBST(DBUS_LIBS)
 		AC_SUBST(DBUS_CFLAGS)
 
-		PKG_CHECK_MODULES( [GDBUS], [dbus-glib-1], app_cv_dbus=yes, AC_MSG_ERROR([No GDBUS support.])  )
-		AC_SUBST(GDBUS_LIBS)
-		AC_SUBST(GDBUS_CFLAGS)
+		AC_CONFIG_FILES(sdk/linux/dynamic.pc)
+		AC_CONFIG_FILES(sdk/linux/static.pc)
 
 esac
 
@@ -286,6 +291,7 @@ else
 
 fi
 
+AC_SUBST(INTL_LIBS)
 AC_SUBST(LIB3270_LIBS)
 AC_SUBST(LIB3270_CFLAGS)
 
@@ -294,8 +300,6 @@ dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
 
 AC_CONFIG_FILES(src/include/version.h)
-AC_CONFIG_FILES(sdk/dynamic.pc)
-AC_CONFIG_FILES(sdk/static.pc)
 AC_CONFIG_FILES(locale/Makefile)
 AC_CONFIG_FILES(Makefile)
 

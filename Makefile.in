@@ -7,6 +7,7 @@ PRODUCT_NAME=@PRODUCT_NAME@
 MAIN_SOURCES= \
 	$(wildcard src/core/*.cc) \
 	$(wildcard src/core/@OSNAME@/*.cc) \
+	$(wildcard src/core/@OSNAME@/*.rc) \
 	$(wildcard src/host/*.cc) \
 	$(wildcard src/session/*.cc) \
 	$(wildcard src/session/local/*.cc) \
@@ -264,7 +265,7 @@ install-windows-lib: \
 
 	@$(INSTALL_PROGRAM) \
 		$(BINRLS)/$(PACKAGE_NAME).a \
-		$(DESTDIR)$(libdir)/$(PACKAGE_NAME).a
+		$(DESTDIR)$(libdir)/$(PACKAGE_NAME).static.a
 
 	@$(DLLTOOL) \
 		--input-def $(BINRLS)/$(PACKAGE_NAME).def \
@@ -299,11 +300,11 @@ install-devel:
 		$(DESTDIR)$(libdir)/pkgconfig
 
 	@$(INSTALL_DATA) \
-		sdk/dynamic.pc \
+		sdk/@OSNAME@/dynamic.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/@PACKAGE_NAME@.pc
 
 	@$(INSTALL_DATA) \
-		sdk/static.pc \
+		sdk//@OSNAME@/static.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/@PACKAGE_NAME@-static.pc
 
 #---[ Uninstall Targets ]----------------------------------------------------------------

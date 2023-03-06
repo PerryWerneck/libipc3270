@@ -177,7 +177,7 @@
 
 	std::string Local::Session::getVersion() const {
 
-		return handler->get<std::string>([](H3270 * hSession){
+		return handler->get<std::string>([](H3270 *){
 			return lib3270_get_version();
 		});
 
@@ -185,7 +185,7 @@
 
 	std::string Local::Session::getRevision() const {
 
-		return handler->get<std::string>([](H3270 * hSession){
+		return handler->get<std::string>([](H3270 *){
 			return lib3270_get_revision();
 		});
 

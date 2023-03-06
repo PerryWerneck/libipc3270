@@ -42,31 +42,39 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
- std::vector<const LIB3270_PROPERTY *> TN3270::getAttributes() {
-
-	std::vector<const LIB3270_PROPERTY *> attributes;
+ TN3270_PUBLIC bool for_each(const std::function<bool(const LIB3270_PROPERTY &property)> &method) {
 
 	for(auto prop = lib3270_get_int_properties_list(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
+		if(method(*((const LIB3270_PROPERTY *) prop))) {
+			return true;
+		}
 	}
 
 	for(auto prop = lib3270_get_unsigned_properties_list(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
+		if(method(*((const LIB3270_PROPERTY *) prop))) {
+			return true;
+		}
 	}
 
 	for(auto prop = lib3270_get_string_properties_list(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
+		if(method(*((const LIB3270_PROPERTY *) prop))) {
+			return true;
+		}
 	}
 
 	for(auto prop = lib3270_get_toggles(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
+		if(method(*((const LIB3270_PROPERTY *) prop))) {
+			return true;
+		}
 	}
 
 	for(auto prop = lib3270_get_boolean_properties_list(); prop->name; prop++) {
-		attributes.push_back((const LIB3270_PROPERTY *) prop);
+		if(method(*((const LIB3270_PROPERTY *) prop))) {
+			return true;
+		}
 	}
 
-	return attributes;
+	return false;
 
  }
 
