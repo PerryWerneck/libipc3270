@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-26 10:03-0300\n"
+"POT-Creation-Date: 2023-03-03 02:29-0300\n"
 "PO-Revision-Date: 2021-01-08 10:11-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
@@ -19,11 +19,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Gtranslator 2.91.7\n"
 
-#: src/session/local/init.cc:101
+#: src/session/local/init.cc:104
 msgid " is invalid."
 msgstr "é inválido"
 
-#: src/session/local/init.cc:97
+#: src/session/local/init.cc:100
 msgid " is not in the required revision "
 msgstr "não está na versão necessária"
 
@@ -31,7 +31,7 @@ msgstr "não está na versão necessária"
 msgid "Can't get screen contents"
 msgstr "Não foi possível obter o conteúdo da tela"
 
-#: src/session/local/init.cc:92
+#: src/session/local/init.cc:95
 msgid "Invalid callback table; "
 msgstr "Tabela de chamadas inválida"
 

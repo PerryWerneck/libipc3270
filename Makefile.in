@@ -304,7 +304,7 @@ install-devel:
 		$(DESTDIR)$(libdir)/pkgconfig/@PACKAGE_NAME@.pc
 
 	@$(INSTALL_DATA) \
-		sdk//@OSNAME@/static.pc \
+		sdk/@OSNAME@/static.pc \
 		$(DESTDIR)$(libdir)/pkgconfig/@PACKAGE_NAME@-static.pc
 
 #---[ Uninstall Targets ]----------------------------------------------------------------
