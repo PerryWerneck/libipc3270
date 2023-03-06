@@ -52,8 +52,6 @@
 		<Unit filename="src/core/session.cc" />
 		<Unit filename="src/core/windows/attribute.cc" />
 		<Unit filename="src/core/windows/dynamic/init.cc" />
-		<Unit filename="src/core/windows/pop.cc" />
-		<Unit filename="src/core/windows/push.cc" />
 		<Unit filename="src/core/windows/request.cc" />
 		<Unit filename="src/core/windows/tools.cc" />
 		<Unit filename="src/host/actions.cc" />
