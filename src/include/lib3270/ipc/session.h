@@ -268,6 +268,9 @@
 		bool activatable(const char *name);
 
 		/// @brief Checks if the terminal contains the string.
+		bool contains(const char *str);
+
+		/// @brief Search for string on terminal.
 		size_t find(const char * str, size_t pos = 0) const;
 
 		/// @brief Get the number of occurrences of a string in the terminal.
