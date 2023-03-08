@@ -44,9 +44,6 @@
 		/// @brief Fire event.
 		void fire(const Event &event);
 
-		/// @brief Create an action object.
-		virtual std::shared_ptr<Action> ActionFactory(const LIB3270_ACTION *descriptor) = 0;
-
 	public:
 
 		/// @brief Get an instance of the TN3270 session based on the supplied ID.
@@ -262,12 +259,18 @@
 		// void insert(Event::Type type, std::function <void(const Event &event)> listener);
 
 		/// @brief Create an action object.
+		virtual std::shared_ptr<Action> ActionFactory(const LIB3270_ACTION *descriptor) = 0;
+
+		/// @brief Create an action object.
 		std::shared_ptr<Action> ActionFactory(const char *name);
 
 		void activate(const char *name);
 		bool activatable(const char *name);
 
 		/// @brief Checks if the terminal contains the string.
+		bool contains(const char *str);
+
+		/// @brief Search for string on terminal.
 		size_t find(const char * str, size_t pos = 0) const;
 
 		/// @brief Get the number of occurrences of a string in the terminal.

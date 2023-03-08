@@ -48,6 +48,17 @@
 
  namespace TN3270 {
 
+	TN3270_PUBLIC bool for_each(const std::function<bool(const LIB3270_ACTION &action)> &method) {
+
+		for(const LIB3270_ACTION *action = lib3270_get_actions(); action->name; action++) {
+			if(method(*action)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	Action::~Action() {
 	}
 

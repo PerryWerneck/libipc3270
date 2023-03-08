@@ -1,43 +1,80 @@
-/* SPDX-License-Identifier: LGPL-3.0-or-later */
-
 /*
- * Copyright (C) 2023 Perry Werneck <perry.werneck@gmail.com>
+ * "Software pw3270, desenvolvido com base nos códigos fontes do WC3270  e X3270
+ * (Paul Mattes Paul.Mattes@usa.net), de emulação de terminal 3270 para acesso a
+ * aplicativos mainframe. Registro no INPI sob o nome G3270.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published
- * by the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright (C) <2008> <Banco do Brasil S.A.>
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * Este programa é software livre. Você pode redistribuí-lo e/ou modificá-lo sob
+ * os termos da GPL v.2 - Licença Pública Geral  GNU,  conforme  publicado  pela
+ * Free Software Foundation.
  *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ * Este programa é distribuído na expectativa de  ser  útil,  mas  SEM  QUALQUER
+ * GARANTIA; sem mesmo a garantia implícita de COMERCIALIZAÇÃO ou  de  ADEQUAÇÃO
+ * A QUALQUER PROPÓSITO EM PARTICULAR. Consulte a Licença Pública Geral GNU para
+ * obter mais detalhes.
+ *
+ * Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este
+ * programa; se não, escreva para a Free Software Foundation, Inc., 51 Franklin
+ * St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * Este programa está nomeado como - e possui - linhas de código.
+ *
+ * Contatos:
+ *
+ * perry.werneck@gmail.com	(Alexandre Perry de Souza Werneck)
+ * erico.mendonca@gmail.com	(Erico Mascarenhas Mendonça)
+ *
  */
 
- #include <config.h>
+/**
+ * @file src/os/linux/attribute.cc
+ *
+ * @brief Implements methods for static attribute management.
+ *
+ * @author perry.werneck@gmail.com
+ *
+ */
+
+ #include <lib3270/ipc.h>
+ #include <lib3270/toggle.h>
+ #include <lib3270/properties.h>
  #include <lib3270/ipc/attribute.h>
 
- using namespace std;
+/*---[ Implement ]----------------------------------------------------------------------------------*/
 
- namespace TN3270 {
+ TN3270_PUBLIC bool for_each(const std::function<bool(const LIB3270_PROPERTY &property)> &method) {
 
-	/*
-	const char * Abstract::Attribute::name() const {
-		return "";
+	for(auto prop = lib3270_get_int_properties_list(); prop->name; prop++) {
+		if(method(*((const LIB3270_PROPERTY *) prop))) {
+			return true;
+		}
 	}
 
-	const char * Abstract::Attribute::description() const {
-		return "";
+	for(auto prop = lib3270_get_unsigned_properties_list(); prop->name; prop++) {
+		if(method(*((const LIB3270_PROPERTY *) prop))) {
+			return true;
+		}
 	}
 
-	bool Abstract::Attribute::as_bool() {
-		return as_int() != 0;
+	for(auto prop = lib3270_get_string_properties_list(); prop->name; prop++) {
+		if(method(*((const LIB3270_PROPERTY *) prop))) {
+			return true;
+		}
 	}
-	*/
+
+	for(auto prop = lib3270_get_toggles(); prop->name; prop++) {
+		if(method(*((const LIB3270_PROPERTY *) prop))) {
+			return true;
+		}
+	}
+
+	for(auto prop = lib3270_get_boolean_properties_list(); prop->name; prop++) {
+		if(method(*((const LIB3270_PROPERTY *) prop))) {
+			return true;
+		}
+	}
+
+	return false;
 
  }
-
-

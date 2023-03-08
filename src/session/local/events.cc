@@ -80,7 +80,7 @@
  namespace TN3270 {
 
 	/// @brief Popup Handler.
-	int Local::Session::popupHandler(H3270 *h3270, const LIB3270_POPUP *popup, unsigned char wait) {
+	int Local::Session::popupHandler(H3270 *h3270, const LIB3270_POPUP *popup, unsigned char) {
 
 		Local::Session * session = (Local::Session *) lib3270_get_user_data(h3270);
 

@@ -55,6 +55,16 @@
 			return session->getConnectionState() == state;
 		}
 
+		/// @brief Create an action object.
+		inline std::shared_ptr<Action> ActionFactory(const LIB3270_ACTION *descriptor) {
+			return session->ActionFactory(descriptor);
+		}
+
+		/// @brief Create an action object.
+		inline std::shared_ptr<Action> ActionFactory(const char *name) {
+			return session->ActionFactory(name);
+		}
+
 		// Contents
 
 		/**
@@ -252,11 +262,6 @@
 
 
 		// Actions
-
-		/// @brief Create new action object.
-		inline std::shared_ptr<TN3270::Action> ActionFactory(const char *name) {
-			return session->ActionFactory(name);
-		}
 
 		/// @brief Send PF.
 		inline Host & pfkey(unsigned short value) {

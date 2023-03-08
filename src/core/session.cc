@@ -337,6 +337,10 @@
 		return rc;
 	}
 
+	bool Session::contains(const char *str) {
+		return toString((int) 0,(int) -1, '\0').find(str) != string::npos;
+	}
+
 	/// @brief Checks if the terminal contains the string.
 	size_t Session::find(const char * str, size_t pos) const {
 		return toString((int) 0,(int) -1, '\0').find(str,pos);

@@ -23,5 +23,5 @@
  #define PACKAGE_NAME		"libipc3270"
  #define PRODUCT_NAME		"pw3270"
  #define PACKAGE_VERSION	"5.5"
- #define PACKAGE_RELEASE	"0"
+ #define PACKAGE_RELEASE	0
  
