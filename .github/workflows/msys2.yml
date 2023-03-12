@@ -21,6 +21,13 @@ jobs:
           msystem: mingw64
           update: true
           install: xz mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool mingw-w64-x86_64-gtk3 mingw-w64-x86_64-imagemagick mingw-w64-x86_64-optipng mingw-w64-x86_64-inkscape
+      - uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          repo: 'PerryWerneck/lib3270'
+          version: 'tags/5.4'
+          file: 'mingw-lib3270.tar.xz'
+          target: 'packages/mingw-lib3270.tar.xz'
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: CI-Build
         run: |
           ./win/ci-build.sh
