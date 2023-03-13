@@ -33,7 +33,7 @@ jobs:
           tag: 5.4
           artifacts: "mingw-libipc3270.tar.xz"
           allowUpdates: true
-          draft: true
+          draft: false
           makeLatest: true
           omitBody: true
           omitPrereleaseDuringUpdate: true
