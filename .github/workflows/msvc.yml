@@ -18,9 +18,4 @@ jobs:
           latest: true
           fileName: "mingw-lib3270.tar.xz"
       - name: Extract lib3270
-        uses: a7ul/tar-action@v1.1.0
-        id: extract
-        with:
-          command: x
-          files: mingw-lib3270.tar.xz
-          
+        run: 7z x mingw-lib3270.tar.xz
