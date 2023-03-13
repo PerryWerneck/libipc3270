@@ -29,4 +29,14 @@ jobs:
       - name: CI-Build
         run: |
           ./win/ci-build.sh
+      - uses: ncipollo/release-action@v1
+        with:
+          tag: 5.4
+          artifacts: "*.tar.xz"
+          allowUpdates: true
+          draft: true
+          makeLatest: true
+          omitBody: true
+          omitPrereleaseDuringUpdate: true
+          replacesArtifacts: true
 

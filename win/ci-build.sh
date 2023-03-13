@@ -16,8 +16,6 @@ mkdir -p ./.build
 #
 # Build LIB3270
 #
-find . -iname *.tar.xz
-
 if [ -e mingw-lib3270.tar.xz ]; then
 
 	echo "Unpacking lib3270"
@@ -43,6 +41,9 @@ echo "Building LIBIPC3270"
 ./configure || die "Configure failure"
 make clean || die "Make clean failure"
 make all  || die "Make failure"
+
+make DESTDIR=.bin/package install
+tar --create --xz --file=mingw-libipc3270.tar.xz --directory=.bin/package --verbose .
 
 echo "Build complete"
 
