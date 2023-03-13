@@ -32,7 +32,7 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           tag: 5.4
-          artifacts: "*.tar.xz"
+          artifacts: "mingw-libipc3270.tar.xz"
           allowUpdates: true
           draft: true
           makeLatest: true
