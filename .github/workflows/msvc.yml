@@ -1,0 +1,26 @@
+name: MSVC
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - msvc      
+jobs:
+  msvc-pack:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ilammy/msvc-dev-cmd@v1.4.1
+      - uses: robinraju/release-downloader@v1.7
+        with:
+          repository: "PerryWerneck/lib3270"
+          latest: true
+          fileName: "mingw-lib3270.tar.xz"
+      - name: Extract lib3270
+        uses: a7ul/tar-action@v1.1.0
+        id: extract
+        with:
+          command: x
+          files: mingw-lib3270.tar.xz
+          
