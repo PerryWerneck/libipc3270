@@ -7,6 +7,11 @@
 #
 echo "Running ${0}"
 
+die ( ) {
+	[ "$1" ] && echo "$*"
+	exit -1
+}
+
 myDIR=$(dirname $(dirname $(readlink -f ${0})))
 
 cd ${myDIR}
