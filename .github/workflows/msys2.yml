@@ -3,7 +3,10 @@ on:
   pull_request:
     branches:
       - master
-      
+  push:
+    branches:
+      - develop
+      - master      
 jobs:
   msys2-mingw:
     runs-on: windows-latest
