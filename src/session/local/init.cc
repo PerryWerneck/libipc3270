@@ -36,7 +36,10 @@
  *
  */
 
- #include <config.h>
+ #ifdef HAVE_CONFIG_H
+	#include <config.h>
+ #endif // HAVE_CONFIG_H
+
  #include "private.h"
  #include <memory>
  #include <lib3270/ipc/session.h>

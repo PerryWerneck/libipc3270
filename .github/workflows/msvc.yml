@@ -1,0 +1,37 @@
+name: MSVC
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - msvc      
+jobs:
+  msvc-pack:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ilammy/msvc-dev-cmd@v1.4.1
+      - uses: robinraju/release-downloader@v1.7
+        with:
+          repository: "PerryWerneck/lib3270"
+          latest: true
+          fileName: "mingw-lib3270.tar.xz"
+      - name: Extract lib3270 xz
+        run: 7z x mingw-lib3270.tar.xz -y
+      - name: Extract lib3270 tar
+        run: 7z x mingw-lib3270.tar -y
+      - name: Build
+        run: nmake /f win\Makefile-ci.msc LIB3270_SDK_PATH=mingw64 DESTDIR=ipc3270.msvc install
+      - name: check
+        run: 7z a msvc-libipc3270.zip .\ipc3270.msvc\*
+      - uses: ncipollo/release-action@v1
+        with:
+          tag: 5.4
+          artifacts: "*.zip"
+          allowUpdates: true
+          draft: false
+          makeLatest: true
+          omitBody: true
+          omitPrereleaseDuringUpdate: true
+          replacesArtifacts: true

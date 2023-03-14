@@ -16,7 +16,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-!include "$(PW3270_SDK_PATH)\lib3270.mak"
+!include "$(LIB3270_SDK_PATH)\share\pw3270\def\lib3270.mak"
 
 .cc.obj:
 	@echo $@ ...
@@ -25,9 +25,9 @@
 		/DPACKAGE_NAME=\"ipc3270\" \
 		/DPRODUCT_NAME=\"$(PRODUCT_NAME)\" \
 		/DLIB3270_NAME=\"$(LIB3270_NAME)\" \
-		/DDEBUG=1 \
+		/DNDEBUG=1 \
 		/I".\src\include" \
-		/I"$(PW3270_SDK_PATH)\include" \
+		/I"$(LIB3270_SDK_PATH)\include" \
 		/EHsc \
 		/Fo"$@" \
 		$<
@@ -41,14 +41,23 @@ install: \
 	ipc3270.static.lib \
 	$(LIB3270_NAME).lib
 	@echo Building library...
-	@-mkdir "$(PW3270_SDK_PATH)\lib"
-	copy "$(LIB3270_NAME).lib" "$(PW3270_SDK_PATH)\lib\$(LIB3270_NAME).lib"
-	copy "ipc3270.static.lib" "$(PW3270_SDK_PATH)\lib\ipc3270.static.lib"
-	copy "ipc3270.dll.lib" "$(PW3270_SDK_PATH)\lib\ipc3270.dll.lib"
-	copy "ipc3270.dll" "$(PW3270_SDK_PATH)\..\ipc3270.dll"
-	@-mkdir "$(PW3270_SDK_PATH)\include\lib3270\ipc"
-	copy "client\src\include\lib3270\ipc\*.h" "$(PW3270_SDK_PATH)\include\lib3270\ipc"
-	copy "client\src\include\lib3270\*.h" "$(PW3270_SDK_PATH)\include\lib3270"
+
+	@-mkdir "$(DESTDIR)"
+	@-mkdir "$(DESTDIR)\lib"
+	@copy /Y "$(LIB3270_NAME).lib" "$(DESTDIR)\lib\$(LIB3270_NAME).lib"
+	@copy /Y "ipc3270.static.lib" "$(DESTDIR)\lib\ipc3270.static.lib"
+	@copy /Y "ipc3270.dll.lib" "$(DESTDIR)\lib\ipc3270.dll.lib"
+
+	@-mkdir "$(DESTDIR)\bin"
+	@copy /Y "ipc3270.dll" "$(DESTDIR)\bin\ipc3270.dll"
+
+	@-mkdir "$(DESTDIR)\include"
+	@-mkdir "$(DESTDIR)\include\lib3270"
+	@-mkdir "$(DESTDIR)\include\lib3270\ipc"
+	@copy /Y "src\include\lib3270\ipc\*.h" "$(DESTDIR)\include\lib3270\ipc"
+	@copy /Y "src\include\lib3270\*.h" "$(DESTDIR)\include\lib3270"
+
+	@xcopy /s /y "$(LIB3270_SDK_PATH)\include\lib3270" "$(DESTDIR)\include\lib3270"
 
 testprogram.exe: \
 	src\testprogram\testprogram.obj \
@@ -69,7 +78,7 @@ ipc3270.static.lib: \
 	src/session/remote/*.cc \
 	src/session/remote/windows/*.cc
 	@$(MAKE) \
-		/f win\Makefile-debug.msc \
+		/f win\Makefile-ci.msc \
 		$(**:.cc=.obj)
 
 	@lib \
@@ -88,7 +97,7 @@ ipc3270.dll: \
 	src/session/remote/windows/*.cc \
 	$(LIB3270_NAME).lib
 	@$(MAKE) \
-		/f win\Makefile-debug.msc \
+		/f win\Makefile-ci.msc \
 		$(**:.cc=.obj)
 
 	@link \
@@ -101,7 +110,7 @@ ipc3270.dll: \
 
 $(LIB3270_NAME).lib:
 	lib \
-		/def:"$(PW3270_SDK_PATH)\def\$(LIB3270_NAME).def" \
+		/def:"$(LIB3270_SDK_PATH)\share\pw3270\def\$(LIB3270_NAME).def" \
 		/out:$(LIB3270_NAME).lib
 
 clean: \
