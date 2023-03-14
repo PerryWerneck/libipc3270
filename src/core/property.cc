@@ -44,76 +44,116 @@
  #include <lib3270/toggle.h>
  #include <lib3270/properties.h>
  #include <lib3270/ipc/property.h>
+ #include <stdexcept>
+ #include <cstring>
+ #include <memory>
 
-/*---[ Implement ]----------------------------------------------------------------------------------*/
+ using namespace std;
+
+ class Property : public TN3270::Property {
+ private:
+	const LIB3270_PROPERTY &property;
+	const Type attr_type;
+
+ public:
+	constexpr Property(const LIB3270_PROPERTY *p, const Type t) : property{*p},attr_type{t} {
+	}
+
+	Type type() const override {
+		return attr_type;
+	}
+
+	const char * name() const {
+		return property.name;
+	}
+
+	const char * description() const {
+		return property.description;
+	}
+
+	const char * label() const {
+		return property.label;
+	}
+
+	const char * icon() const {
+		return property.icon;
+	}
+
+	const char * summary() const {
+		return property.summary;
+	}
+
+ };
+
+
+ std::shared_ptr<TN3270::Property> TN3270::Property::find(const char *name) {
+
+	for(auto prop = lib3270_get_int_properties_list(); prop->name; prop++) {
+		if(!strcasecmp(prop->name,name)) {
+			return make_shared<::Property>((const LIB3270_PROPERTY *) prop,Property::Integer);
+		}
+	}
+
+	for(auto prop = lib3270_get_unsigned_properties_list(); prop->name; prop++) {
+		if(!strcasecmp(prop->name,name)) {
+			return make_shared<::Property>((const LIB3270_PROPERTY *) prop,Property::Unsigned);
+		}
+	}
+
+	for(auto prop = lib3270_get_string_properties_list(); prop->name; prop++) {
+		if(!strcasecmp(prop->name,name)) {
+			return make_shared<::Property>((const LIB3270_PROPERTY *) prop,Property::String);
+		}
+	}
+
+	for(auto prop = lib3270_get_toggles(); prop->name; prop++) {
+		if(!strcasecmp(prop->name,name)) {
+			return make_shared<::Property>((const LIB3270_PROPERTY *) prop,Property::Boolean);
+		}
+	}
+
+	for(auto prop = lib3270_get_boolean_properties_list(); prop->name; prop++) {
+		if(!strcasecmp(prop->name,name)) {
+			return make_shared<::Property>((const LIB3270_PROPERTY *) prop,Property::Boolean);
+		}
+	}
+
+	throw runtime_error("Unexpected property name");
+
+ }
 
  bool TN3270::Property::for_each(const std::function<bool(TN3270::Property &property)> &method) {
 
-	class Property : public TN3270::Property {
-	private:
-		const LIB3270_PROPERTY &property;
-		const Type attr_type;
-
-	public:
-		constexpr Property(const LIB3270_PROPERTY *p, const Type t) : property{*p},attr_type{t} {
-		}
-
-		Type type() const override {
-			return attr_type;
-		}
-
-		const char * name() const {
-			return property.name;
-		}
-
-		const char * description() const {
-			return property.description;
-		}
-
-		const char * label() const {
-			return property.label;
-		}
-
-		const char * icon() const {
-			return property.icon;
-		}
-
-		const char * summary() const {
-			return property.summary;
-		}
-
-	};
-
 	for(auto prop = lib3270_get_int_properties_list(); prop->name; prop++) {
-		Property attr{(const LIB3270_PROPERTY *) prop,Property::Integer};
+		::Property attr{(const LIB3270_PROPERTY *) prop,Property::Integer};
 		if(method(attr)) {
 			return true;
 		}
 	}
 
 	for(auto prop = lib3270_get_unsigned_properties_list(); prop->name; prop++) {
-		Property attr{(const LIB3270_PROPERTY *) prop,Property::Unsigned};
+		::Property attr{(const LIB3270_PROPERTY *) prop,Property::Unsigned};
 		if(method(attr)) {
 			return true;
 		}
 	}
 
 	for(auto prop = lib3270_get_string_properties_list(); prop->name; prop++) {
-		Property attr{(const LIB3270_PROPERTY *) prop,Property::String};
+		::Property attr{(const LIB3270_PROPERTY *) prop,Property::String};
 		if(method(attr)) {
 			return true;
 		}
 	}
 
 	for(auto prop = lib3270_get_toggles(); prop->name; prop++) {
-		Property attr{(const LIB3270_PROPERTY *) prop,Property::Boolean};
+		::Property attr{(const LIB3270_PROPERTY *) prop,Property::Boolean};
 		if(method(attr)) {
 			return true;
 		}
 	}
 
 	for(auto prop = lib3270_get_boolean_properties_list(); prop->name; prop++) {
-		Property attr{(const LIB3270_PROPERTY *) prop,Property::Boolean};
+		::Property attr{(const LIB3270_PROPERTY *) prop,Property::Boolean};
 		if(method(attr)) {
 			return true;
 		}

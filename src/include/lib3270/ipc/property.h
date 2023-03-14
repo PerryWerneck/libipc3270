@@ -19,6 +19,7 @@
 
  #pragma once
  #include <lib3270/ipc.h>
+ #include <memory>
 
  namespace TN3270 {
 
@@ -40,6 +41,7 @@
 		virtual Type type() const = 0;
 
 		static bool for_each(const std::function<bool(Property &property)> &method);
+		static std::shared_ptr<Property> find(const char *name);
 
 	};
 
