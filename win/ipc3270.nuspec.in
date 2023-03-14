@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+    <metadata>
+        <id>@APPLICATION_ID@</id>
+        <version>@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@.@PACKAGE_PATCH_LEVEL@</version>
+        <description>3270 Language Binding helper library for @host_cpu@</description>
+        <tags>Native, native</tags>
+    </metadata>
+         <files>
+        <file src="lib\*\*" target="native\lib" />
+        <file src="include\*" target="native\include" />
+        <file src="README.md" target="native" />
+        <file src="filament.props" target="native" />
+    </files>
+</package>
+
