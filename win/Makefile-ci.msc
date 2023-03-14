@@ -16,7 +16,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-!include "mingw64\share\pw3270\def\lib3270.mak"
+!include "$(LIB3270_SDK_PATH)\share\pw3270\def\lib3270.mak"
 
 .cc.obj:
 	@echo $@ ...
@@ -27,7 +27,7 @@
 		/DLIB3270_NAME=\"$(LIB3270_NAME)\" \
 		/DNDEBUG=1 \
 		/I".\src\include" \
-		/I"mingw64\include" \
+		/I"$(LIB3270_SDK_PATH)\include" \
 		/EHsc \
 		/Fo"$@" \
 		$<
@@ -57,7 +57,7 @@ install: \
 	@copy /Y "src\include\lib3270\ipc\*.h" "$(DESTDIR)\include\lib3270\ipc"
 	@copy /Y "src\include\lib3270\*.h" "$(DESTDIR)\include\lib3270"
 
-	@xcopy /s /y "mingw64\include\lib3270" "$(DESTDIR)\include\lib3270"
+	@xcopy /s /y "$(LIB3270_SDK_PATH)\include\lib3270" "$(DESTDIR)\include\lib3270"
 
 testprogram.exe: \
 	src\testprogram\testprogram.obj \
