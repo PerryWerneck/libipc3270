@@ -110,7 +110,7 @@ ipc3270.dll: \
 
 $(LIB3270_NAME).lib:
 	lib \
-		/def:"$(PW3270_SDK_PATH)\def\$(LIB3270_NAME).def" \
+		/def:"$(LIB3270_SDK_PATH)\share\pw3270\def\$(LIB3270_NAME).def" \
 		/out:$(LIB3270_NAME).lib
 
 clean: \
