@@ -18,7 +18,7 @@ jobs:
           latest: true
           fileName: "mingw-lib3270.tar.xz"
       - name: Extract lib3270
-        run: 7z x mingw-lib3270.tar.xz -y -olib3270
+        run: 7z x mingw-lib3270.tar.xz -y
       - name: Build
         run: nmake /f win\Makefile-ci.msc DESTDIR=ipc3270.msvc install
         
