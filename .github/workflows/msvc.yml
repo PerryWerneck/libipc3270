@@ -21,8 +21,17 @@ jobs:
         run: 7z x mingw-lib3270.tar.xz -y
       - name: Extract lib3270 tar
         run: 7z x mingw-lib3270.tar -y
-      - name: check
-        run: dir
       - name: Build
         run: nmake /f win\Makefile-ci.msc LIB3270_SDK_PATH=mingw64 DESTDIR=ipc3270.msvc install
-        
+      - name: check
+        run: 7z a libipc3270-msvc-sdk.zip .\ipc3270.msvc\*
+      - uses: ncipollo/release-action@v1
+        with:
+          tag: 5.4
+          artifacts: "*.zip"
+          allowUpdates: true
+          draft: false
+          makeLatest: true
+          omitBody: true
+          omitPrereleaseDuringUpdate: true
+          replacesArtifacts: true
