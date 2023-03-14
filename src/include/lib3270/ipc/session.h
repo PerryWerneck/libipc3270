@@ -21,7 +21,6 @@
  #include <lib3270/ipc.h>
  #include <lib3270/ipc/session.h>
  #include <lib3270/ipc/request.h>
- #include <lib3270/ipc/attribute.h>
  #include <iostream>
  #include <memory>
 
@@ -157,21 +156,6 @@
 		/// @return The keyboard lock state.
 		///
 		LIB3270_KEYBOARD_LOCK_STATE input(const std::string &str, const char control_char = '@');
-
-		// Attributes
-		// virtual std::shared_ptr<Abstract::Attribute> getAttribute(const char *name) const = 0;
-		// virtual void getAttributes(std::vector<std::shared_ptr<Abstract::Attribute>> & attributes) const = 0;
-		// std::vector<std::shared_ptr<Abstract::Attribute>> getAttributes() const;
-
-		/*
-		virtual void getAttribute(const char *name, int &value) const;
-		virtual void getAttribute(const char *name, unsigned int &value) const;
-		virtual void getAttribute(const char *name, std::string &value) const;
-		virtual void getAttribute(const char *name, bool &value) const;
-
-		virtual void setAttribute(const char *name, const int value);
-		virtual void setAttribute(const char *name, const char *value);
-		*/
 
 		/// @brief Get the lib3270 version string.
 		virtual std::string getVersion() const = 0;
