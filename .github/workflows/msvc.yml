@@ -22,5 +22,5 @@ jobs:
       - name: check
         run: dir
       - name: Build
-        run: nmake /f win\Makefile-ci.msc DESTDIR=ipc3270.msvc install
+        run: nmake /f win\Makefile-ci.msc LIB3270_SDK_PATH=mingw64 DESTDIR=ipc3270.msvc install
         
