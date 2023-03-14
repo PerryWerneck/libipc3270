@@ -162,7 +162,7 @@
  	return false;
  }
 
- TN3270_PUBLIC bool for_each(const std::function<bool(const LIB3270_PROPERTY &property)> &method) {
+ bool TN3270::for_each(const std::function<bool(const LIB3270_PROPERTY &property)> &method) {
 
 	for(auto prop = lib3270_get_int_properties_list(); prop->name; prop++) {
 		if(method(*((const LIB3270_PROPERTY *) prop))) {
