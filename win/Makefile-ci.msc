@@ -57,7 +57,7 @@ install: \
 	@copy /Y "src\include\lib3270\ipc\*.h" "$(DESTDIR)\include\lib3270\ipc"
 	@copy /Y "src\include\lib3270\*.h" "$(DESTDIR)\include\lib3270"
 
-	@xcopy /s "mingw64\include\lib3270" "$(DESTDIR)\include\lib3270"
+	@xcopy /s /y "mingw64\include\lib3270" "$(DESTDIR)\include\lib3270"
 
 testprogram.exe: \
 	src\testprogram\testprogram.obj \
