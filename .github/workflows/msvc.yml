@@ -20,5 +20,5 @@ jobs:
       - name: Extract lib3270
         run: 7z x mingw-lib3270.tar.xz -y -olib3270
       - name: Build
-        run: dir
+        run: nmake /f win\Makefile-ci.msc DESTDIR=ipc3270.msvc install
         
