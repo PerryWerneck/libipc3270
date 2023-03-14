@@ -48,6 +48,7 @@
 		<Unit filename="src/core/linux/attribute.cc" />
 		<Unit filename="src/core/linux/dynamic/init.cc" />
 		<Unit filename="src/core/linux/request.cc" />
+		<Unit filename="src/core/property.cc" />
 		<Unit filename="src/core/request.cc" />
 		<Unit filename="src/core/session.cc" />
 		<Unit filename="src/core/windows/attribute.cc" />
@@ -70,9 +71,11 @@
 		<Unit filename="src/include/lib3270/ipc/attribute.h" />
 		<Unit filename="src/include/lib3270/ipc/field.h" />
 		<Unit filename="src/include/lib3270/ipc/host.h" />
+		<Unit filename="src/include/lib3270/ipc/property.h" />
 		<Unit filename="src/include/lib3270/ipc/request.h" />
 		<Unit filename="src/include/lib3270/ipc/session.h" />
 		<Unit filename="src/include/private/session.h" />
+		<Unit filename="src/include/version.h" />
 		<Unit filename="src/session/action.cc" />
 		<Unit filename="src/session/get.cc" />
 		<Unit filename="src/session/local/actions.cc" />

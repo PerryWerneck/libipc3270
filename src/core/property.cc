@@ -43,9 +43,84 @@
  #include <lib3270/ipc.h>
  #include <lib3270/toggle.h>
  #include <lib3270/properties.h>
- #include <lib3270/ipc/attribute.h>
+ #include <lib3270/ipc/property.h>
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
+
+ bool TN3270::Attribute::for_each(const std::function<bool(TN3270::Property &property)> &method) {
+
+	class Property : public TN3270::Property {
+	private:
+		const LIB3270_PROPERTY &property;
+		const Type attr_type;
+
+	public:
+		constexpr Property(const LIB3270_PROPERTY *p, const Type t) : property{*p},attr_type{t} {
+		}
+
+		Type type() const override {
+			return attr_type;
+		}
+
+		const char * name() const {
+			return property.name;
+		}
+
+		const char * description() const {
+			return property.description;
+		}
+
+		const char * label() const {
+			return property.label;
+		}
+
+		const char * icon() const {
+			return property.icon;
+		}
+
+		const char * summary() const {
+			return property.summary;
+		}
+
+	};
+
+	for(auto prop = lib3270_get_int_properties_list(); prop->name; prop++) {
+		Property attr{(const LIB3270_PROPERTY *) prop,Property::Integer};
+		if(method(attr)) {
+			return true;
+		}
+	}
+
+	for(auto prop = lib3270_get_unsigned_properties_list(); prop->name; prop++) {
+		Property attr{(const LIB3270_PROPERTY *) prop,Property::Unsigned};
+		if(method(attr)) {
+			return true;
+		}
+	}
+
+	for(auto prop = lib3270_get_string_properties_list(); prop->name; prop++) {
+		Property attr{(const LIB3270_PROPERTY *) prop,Property::String};
+		if(method(attr)) {
+			return true;
+		}
+	}
+
+	for(auto prop = lib3270_get_toggles(); prop->name; prop++) {
+		Property attr{(const LIB3270_PROPERTY *) prop,Property::Boolean};
+		if(method(attr)) {
+			return true;
+		}
+	}
+
+	for(auto prop = lib3270_get_boolean_properties_list(); prop->name; prop++) {
+		Property attr{(const LIB3270_PROPERTY *) prop,Property::Boolean};
+		if(method(attr)) {
+			return true;
+		}
+	}
+
+ 	return false;
+ }
 
  TN3270_PUBLIC bool for_each(const std::function<bool(const LIB3270_PROPERTY &property)> &method) {
 
