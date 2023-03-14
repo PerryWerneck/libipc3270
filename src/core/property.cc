@@ -47,7 +47,7 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
- bool TN3270::Attribute::for_each(const std::function<bool(TN3270::Property &property)> &method) {
+ bool TN3270::Property::for_each(const std::function<bool(TN3270::Property &property)> &method) {
 
 	class Property : public TN3270::Property {
 	private:
