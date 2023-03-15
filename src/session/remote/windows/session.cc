@@ -148,6 +148,21 @@
 				}
 			}
 
+			void wait(time_t seconds) override {
+
+				time_t end = time(nullptr) + seconds;
+				while(time(nullptr) < end) {
+					int32_t rc = Pipe::Request{handler,Request::Method,"waitForReady"}.push((uint32_t) 1).get_int();
+					if(!rc) {
+						break;
+					} else if(rc != ETIMEDOUT) {
+						throw std::system_error((int) rc, std::system_category());
+					}
+				}
+
+			}
+
+
 		};
 
 		class Session : public Abstract::Session {

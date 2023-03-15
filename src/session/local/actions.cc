@@ -48,11 +48,10 @@
 
 		class Action : public TN3270::Action {
 		private:
-			time_t timeout;
 			std::shared_ptr<Handler> handler;
 
 		public:
-			Action(std::shared_ptr<Handler> h, time_t t, const LIB3270_ACTION *descriptor) : TN3270::Action{descriptor}, timeout{t}, handler{h} {
+			Action(std::shared_ptr<Handler> h, time_t t, const LIB3270_ACTION *descriptor) : TN3270::Action{descriptor,t}, handler{h} {
 			}
 
 			bool activatable() const override {
@@ -69,12 +68,6 @@
 					return lib3270_action_activate(descriptor,hSession);
 				});
 
-				if(timeout) {
-					handler->call([this](H3270 * hSession){
-						return lib3270_wait_for_ready(hSession,timeout);
-					});
-				}
-
 			}
 
 			void wait(time_t seconds) override {
@@ -82,7 +75,6 @@
 					return lib3270_wait_for_ready(hSession,seconds);
 				});
 			}
-
 
 		};
 

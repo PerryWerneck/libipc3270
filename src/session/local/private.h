@@ -60,26 +60,22 @@
 		namespace Local {
 
 			class TN3270_PRIVATE Session : public TN3270::Abstract::Session {
-			private:
+			protected:
 
 				/// @brief lib3270 handler.
 				/// Do serialized calls to lib3270 methods.
-				class Handler : private std::mutex {
-				private:
+				class Handler : protected std::mutex {
+				protected:
 
 					/// @brief Handle of the related instance of lib3270
-					H3270 * hSession;
+					H3270 * hSession = NULL;
 
 				public:
 
 					Handler() {
-						std::lock_guard<std::mutex> lock(*this);
-						hSession = lib3270_session_new("");
 					}
 
-					~Handler() {
-						std::lock_guard<std::mutex> lock(*this);
-						lib3270_session_free(hSession);
+					virtual ~Handler() {
 					}
 
 					void chkResponse(int rc);
@@ -107,8 +103,6 @@
 				/// @brief Wait for network events
 				void wait(time_t timeout = 5);
 
-			protected:
-
 				// Get strings from lib3270 without charset conversion.
 				std::string	get() const override;
 				std::string	get(int32_t baddr, int32_t len, uint8_t lf) const override;
@@ -119,9 +113,11 @@
 				void set(int32_t baddr, const std::string &str) override;
 				void set(uint32_t row, uint32_t col, const std::string &str) override;
 
+				Session(std::shared_ptr<Handler> handler);
+
 			public:
 
-				Session(const char *charset = nullptr);
+				// Session(const char *charset = nullptr);
 				virtual ~Session();
 
 				// Actions

@@ -44,13 +44,13 @@
  #include <memory>
  #include <lib3270/ipc/session.h>
 
-#ifdef _WIN32
- #include <lmcons.h>
-#endif // _WIN32
+ #ifdef _WIN32
+	#include <lmcons.h>
+ #endif // _WIN32
 
-#if defined(_MSC_VER)
+ #if defined(_MSC_VER)
 	#pragma comment(lib,LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME)".lib")
-#endif // _MSC_VER
+ #endif // _MSC_VER
 
  extern "C" {
 	 #include <lib3270/session.h>
@@ -61,8 +61,98 @@
 
  namespace TN3270 {
 
+	std::shared_ptr<Session> Session::getInstance(H3270 *hSession) {
+
+		class Session : public Local::Session {
+		private:
+			class Handler : public Local::Session::Handler  {
+			public:
+				Handler(H3270 *h) {
+					hSession = h;
+				}
+
+				virtual ~Handler() {
+				}
+			};
+
+		public:
+			Session(H3270 *hSession) : Local::Session(std::make_shared<Handler>(hSession)) {
+			}
+
+			virtual ~Session() {
+			}
+
+		};
+
+		return std::make_shared<Session>(hSession);
+
+	}
+
 	std::shared_ptr<Abstract::Session> Abstract::Session::getLocalInstance(const char *charset) {
-		return std::make_shared<Local::Session>(charset);
+
+		class Session : public Local::Session {
+		private:
+			class Handler : public Local::Session::Handler  {
+			public:
+				Handler() {
+					std::lock_guard<std::mutex> lock(*this);
+					hSession = lib3270_session_new("");
+				}
+
+				virtual ~Handler() {
+					std::lock_guard<std::mutex> lock(*this);
+					lib3270_session_free(hSession);
+				}
+			};
+
+		public:
+			Session(const char *charset) : Local::Session(std::make_shared<Handler>()) {
+
+				// Initialize lib3270 session.
+				handler->call([this,charset](H3270 * hSession){
+
+					lib3270_set_user_data(hSession,(void *) this);
+
+					Abstract::Session::setCharSet(lib3270_get_display_charset(hSession),charset);
+
+					lib3270_set_popup_handler(hSession, &popupHandler);
+
+					// Setup callbacks
+					struct lib3270_session_callbacks *cbk;
+
+					cbk = lib3270_get_session_callbacks(hSession,LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION),sizeof(struct lib3270_session_callbacks));
+					if(!cbk) {
+
+						string message(_("Invalid callback table; "));
+						message += "lib";
+						message += LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME);
+
+						if(strcasecmp(LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION),lib3270_get_revision())) {
+							 message += _(" is not in the required revision " );
+							 message += LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION);
+							 message += ".";
+						} else {
+							message += _(" is invalid.");
+						}
+
+						throw runtime_error(message);
+
+					}
+
+					cbk->update_connect	= connectHandler;
+
+					return 0;
+
+				});
+
+			}
+
+			virtual ~Session() {
+			}
+
+		};
+
+		return std::make_shared<Session>(charset);
 	}
 
 	void Local::Session::Handler::chkResponse(int rc) {
@@ -74,46 +164,8 @@
 		chkResponse(method(hSession));
 	}
 
- 	Local::Session::Session(const char *charset) : Abstract::Session(), handler{std::make_shared<Handler>()} {
-
+ 	Local::Session::Session(std::shared_ptr<Handler> h) : Abstract::Session(), handler{h} {
 		this->timeout = 5;
-
-		handler->call([this,charset](H3270 * hSession){
-
-			lib3270_set_user_data(hSession,(void *) this);
-
-			Abstract::Session::setCharSet(lib3270_get_display_charset(hSession),charset);
-
-			lib3270_set_popup_handler(hSession, &popupHandler);
-
-			// Setup callbacks
-			struct lib3270_session_callbacks *cbk;
-
-			cbk = lib3270_get_session_callbacks(hSession,LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION),sizeof(struct lib3270_session_callbacks));
-			if(!cbk) {
-
-				string message(_("Invalid callback table; "));
-				message += "lib";
-				message += LIB3270_STRINGIZE_VALUE_OF(LIB3270_NAME);
-
-				if(strcasecmp(LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION),lib3270_get_revision())) {
-					 message += _(" is not in the required revision " );
-					 message += LIB3270_STRINGIZE_VALUE_OF(LIB3270_REVISION);
-					 message += ".";
-				} else {
-					message += _(" is invalid.");
-				}
-
-				throw runtime_error(message);
-
-			}
-
-			cbk->update_connect	= connectHandler;
-
-			return 0;
-
-		});
-
 	}
 
 	Local::Session::~Session() {

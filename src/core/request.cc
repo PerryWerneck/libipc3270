@@ -25,7 +25,7 @@
 
  namespace TN3270 {
 
-	Request::Request(const Type type) {
+	Request::Request(const Type) {
 	}
 
 	Request::~Request() {

@@ -45,6 +45,9 @@
 
 	public:
 
+		/// @brief Get an instance of the TN3270 session bound to an existent lib3270 session.
+		static std::shared_ptr<Session> getInstance(H3270 *hSession);
+
 		/// @brief Get an instance of the TN3270 session based on the supplied ID.
 		/// @param id The session id (nullptr or empty for local session).
 		/// @param charset The local charset.
