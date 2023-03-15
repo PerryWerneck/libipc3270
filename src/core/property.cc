@@ -27,11 +27,7 @@
  *
  */
 
- #ifdef HAVE_CONFIG_H
-	#include <config.h>
- #endif // HAVE_CONFIG_H
-
-/**
+ /**
  * @file src/os/linux/attribute.cc
  *
  * @brief Implements methods for static attribute management.
@@ -39,6 +35,15 @@
  * @author perry.werneck@gmail.com
  *
  */
+
+ #ifdef HAVE_CONFIG_H
+	#include <config.h>
+ #endif // HAVE_CONFIG_H
+
+ #ifdef _MSC_VER
+	#define strncasecmp _strnicmp
+	#define strcasecmp _stricmp
+ #endif
 
  #include <lib3270/ipc.h>
  #include <lib3270/toggle.h>
