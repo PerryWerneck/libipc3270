@@ -77,6 +77,13 @@
 
 			}
 
+			void wait(time_t seconds) override {
+				handler->call([this,seconds](H3270 * hSession){
+					return lib3270_wait_for_ready(hSession,seconds);
+				});
+			}
+
+
 		};
 
 		return std::make_shared<Action>(handler,timeout,descriptor);

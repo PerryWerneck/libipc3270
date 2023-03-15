@@ -56,6 +56,8 @@
 		public:
 			virtual bool activatable() const = 0;
 			virtual void activate() = 0;
+			virtual void wait(time_t seconds = DEFAULT_TIMEOUT) = 0;
+
 			virtual ~Action();
 
 			inline operator bool() const {
