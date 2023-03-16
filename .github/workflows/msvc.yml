@@ -19,7 +19,7 @@ jobs:
       - name: echo-tag
         run: echo ${{ steps.gettag.outputs.tag }}
       - name: test
-      	run: bad-command
+        run: bad-command
       - uses: ilammy/msvc-dev-cmd@v1.4.1
       - uses: robinraju/release-downloader@v1.7
         with:
