@@ -92,9 +92,9 @@
 				}
 
 				unsigned long datatype; // #defined in winnt.h (predefined types 0-11)
-				unsigned long datalen = 4096;
-				char datadir[datalen+1];
-				memset(datadir,0,datalen+1);
+				char datadir[4097];
+				memset(datadir,0,sizeof(datadir));
+				unsigned long datalen = sizeof(datadir)-1;
 
 				LSTATUS rc = RegQueryValueExA(hKey,"InstallLocation",NULL,&datatype,(LPBYTE) datadir,&datalen);
 				RegCloseKey(hKey);
