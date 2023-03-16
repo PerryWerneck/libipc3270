@@ -52,12 +52,11 @@ install: \
 	@copy /Y "ipc3270.dll" "$(DESTDIR)\bin\ipc3270.dll"
 
 	@-mkdir "$(DESTDIR)\include"
-	@-mkdir "$(DESTDIR)\include\lib3270"
-	@-mkdir "$(DESTDIR)\include\lib3270\ipc"
-	@copy /Y "src\include\lib3270\ipc\*.h" "$(DESTDIR)\include\lib3270\ipc"
-	@copy /Y "src\include\lib3270\*.h" "$(DESTDIR)\include\lib3270"
+	@copy /Y "$(LIB3270_SDK_PATH)\include\lib3270.h" "$(DESTDIR)\include"
 
+	@-mkdir "$(DESTDIR)\include\lib3270"
 	@xcopy /s /y "$(LIB3270_SDK_PATH)\include\lib3270" "$(DESTDIR)\include\lib3270"
+	@xcopy /s /y "src\include\lib3270" "$(DESTDIR)\include\lib3270"
 
 testprogram.exe: \
 	src\testprogram\testprogram.obj \
