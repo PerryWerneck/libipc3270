@@ -27,7 +27,7 @@ jobs:
         run: 7z a msvc-libipc3270.zip .\ipc3270.msvc\*
       - uses: ncipollo/release-action@v1
         with:
-          tag: 5.4
+          tag: 5.5
           artifacts: "*.zip"
           allowUpdates: true
           draft: false

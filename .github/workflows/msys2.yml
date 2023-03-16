@@ -30,7 +30,7 @@ jobs:
           ./win/ci-build.sh
       - uses: ncipollo/release-action@v1
         with:
-          tag: 5.4
+          tag: 5.5
           artifacts: "mingw-libipc3270.tar.xz"
           allowUpdates: true
           draft: false
