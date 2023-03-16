@@ -14,8 +14,8 @@ jobs:
       - uses: oprypin/find-latest-tag@v1
         id: gettag
         with:
-        repository: PerryWerneck/libipc3270  # The repository to scan.
-        releases-only: true  # We know that all relevant tags have a GitHub release for them.
+          repository: PerryWerneck/libipc3270  # The repository to scan.
+          releases-only: true  # We know that all relevant tags have a GitHub release for them.
       - name: echo-tag
         run: echo ${{ steps.gettag.outputs.tag }}
       - name: test
