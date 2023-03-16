@@ -65,8 +65,51 @@
 
 	}
 
+	std::string getDataDir() {
+		return getInstallLocation();
+	}
+
 	std::string getInstallLocation() {
 
+		static const char * regpaths[] = {
+			"Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\",
+			"Software\\"
+		};
+
+		std::string names[] = {
+			getProductName(),
+			"pw3270",
+			"lib3270"
+		};
+
+		for(const char *regpath : regpaths) {
+
+			for(std::string &name : names) {
+
+				HKEY hKey = 0;
+				if(RegOpenKeyEx(HKEY_LOCAL_MACHINE,(string{regpath} + name).c_str(),0,KEY_QUERY_VALUE,&hKey) != ERROR_SUCCESS) {
+					continue;
+				}
+
+				unsigned long datatype; // #defined in winnt.h (predefined types 0-11)
+				unsigned long datalen = 4096;
+				char datadir[datalen+1];
+				memset(datadir,0,datalen+1);
+
+				LSTATUS rc = RegQueryValueExA(hKey,"InstallLocation",NULL,&datatype,(LPBYTE) datadir,&datalen);
+				RegCloseKey(hKey);
+
+				if(rc == ERROR_SUCCESS) {
+					return string{datadir};
+				}
+
+			}
+
+		}
+
+		return ".";
+
+		/*
 		LSTATUS rc;
 		HKEY hKey = 0;
 
@@ -114,6 +157,8 @@
 		}
 
 		return installLocation;
+	*/
+
 	}
 
  }

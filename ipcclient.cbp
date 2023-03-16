@@ -42,7 +42,6 @@
 			<Add option="`pkg-config --libs lib3270`" />
 		</Linker>
 		<Unit filename="src/core/actions.cc" />
-		<Unit filename="src/core/attribute.cc" />
 		<Unit filename="src/core/constants.cc" />
 		<Unit filename="src/core/events.cc" />
 		<Unit filename="src/core/linux/attribute.cc" />

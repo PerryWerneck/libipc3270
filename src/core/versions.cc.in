@@ -17,11 +17,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #pragma once
+ #include <lib3270/ipc.h>
 
- #define APPLICATION_ID		"br.app.pw3270.terminal"
- #define PACKAGE_NAME		"libipc3270"
- #define PRODUCT_NAME		"pw3270"
- #define PACKAGE_VERSION	"5.5"
- #define PACKAGE_RELEASE	0
+ TN3270_PUBLIC const char * TN3270::getApplicationId() noexcept {
+	return "@APPLICATION_ID@";
+ }
+ 
+ TN3270_PUBLIC const char * TN3270::getProductName() noexcept {
+ 	return "@PRODUCT_NAME@";
+ }
+ 
+ TN3270_PUBLIC const char * TN3270::getVersion() noexcept {
+	return "@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@";
+ }
+
+ TN3270_PUBLIC const char * TN3270::getRevision() noexcept {
+	return "@PACKAGE_PATCH_LEVEL@";
+ }
  
