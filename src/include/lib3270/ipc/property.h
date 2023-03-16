@@ -17,34 +17,34 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #ifdef HAVE_CONFIG_H
-	#include <config.h>
- #endif // HAVE_CONFIG_H
-
- #include <lib3270/ipc/request.h>
- #include <string>
-
- using namespace std;
+ #pragma once
+ #include <lib3270/ipc.h>
+ #include <memory>
 
  namespace TN3270 {
 
-	std::string Request::get_string() {
+	class TN3270_PUBLIC Property {
+	public:
 
-		std::string rc;
-		call();
-		pop(rc);
-		return rc;
+		enum Type : uint8_t {
+			Integer = 'I',
+			Unsigned = 'U',
+			String = 'S',
+			Boolean = 'B'
+		};
 
-	}
+		virtual const char * name() const = 0;
+		virtual const char * description() const = 0;
+		virtual const char * label() const = 0;
+		virtual const char * icon() const = 0;
+		virtual const char * summary() const = 0;
+		virtual Type type() const = 0;
 
-	int32_t Request::get_int() {
+		static bool for_each(const std::function<bool(Property &property)> &method);
+		static std::shared_ptr<Property> find(const char *name);
 
-		int32_t rc;
-		call();
-		pop(rc);
-		return rc;
+	};
 
-	}
 
  }
 

@@ -127,6 +127,9 @@ case "$host" in
 		AC_SUBST(OSNAME,windows)
 		AC_CONFIG_FILES(sdk/windows/dynamic.pc)
 		AC_CONFIG_FILES(sdk/windows/static.pc)
+		AC_CONFIG_FILES(win/ipc3270.nuspec)
+		AC_CONFIG_FILES(win/filament.props)
+		AC_CONFIG_FILES(src/core/windows/resources.rc)
 		;;
 
  	*)

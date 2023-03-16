@@ -17,12 +17,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #include <config.h>
+ #ifdef HAVE_CONFIG_H
+	#include <config.h>
+ #endif // HAVE_CONFIG_H
+
  #include <lib3270/ipc/request.h>
 
  namespace TN3270 {
 
-	Request::Request(const Type type) {
+	Request::Request(const Type) {
 	}
 
 	Request::~Request() {

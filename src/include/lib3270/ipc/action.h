@@ -47,19 +47,54 @@
 
 		/// @brief TN3270 Action
 		class TN3270_PUBLIC Action {
+		private:
+			/// @brief Default timeout value.
+			time_t timeout;
+
 		protected:
 			const LIB3270_ACTION *descriptor;
 
-			constexpr Action(const LIB3270_ACTION *dsc) : descriptor{dsc} {
+			constexpr Action(const LIB3270_ACTION *dsc, time_t maxwait = DEFAULT_TIMEOUT) : timeout{maxwait}, descriptor{dsc}{
 			}
 
 		public:
+
+			/// @brief Check if the action can be activated.
+			/// @return true if the action can be activated.
 			virtual bool activatable() const = 0;
+
+			/// @brief Activate action.
 			virtual void activate() = 0;
+
+			/// @brief Wait for terminal to be ready (convenience method).
+			/// @param seconds Maximum time to wait.
+			virtual void wait(time_t seconds) = 0;
+
+			/// @brief Wait for terminal to be ready using default timeout.
+			inline void wait() {
+				wait(this->timeout);
+			}
+
+			/// @brief Activate action and wait for ready.
+			void activate(time_t seconds);
+
+			/// @brief Activate action if available, do nothing if not available.
+			/// @param seconds Seconds to wait for ready if activated, 0 to disable (@see wait).
+			/// @return true if the action was activated, false if not.
+			bool try_activate(time_t seconds = 0);
+
 			virtual ~Action();
 
 			inline operator bool() const {
 				return activatable();
+			}
+
+			inline time_t maxwait() const noexcept {
+				return this->timeout;
+			}
+
+			inline void maxwait(time_t value) noexcept {
+				this->timeout = value;
 			}
 
 			const char * name() const noexcept;

@@ -39,7 +39,7 @@
  #include <ctime>
 
 #if defined(_MSC_VER)
-	#pragma comment(lib,"ipc3270.lib")
+	#pragma comment(lib,"ipc3270.dll.lib")
 #else
 	#pragma GCC diagnostic ignored "-Wunused-function"
 	#pragma GCC diagnostic ignored "-Wunused-parameter"

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+	<metadata>
+		<id>@APPLICATION_ID@</id>
+		<version>@PACKAGE_MAJOR_VERSION@.@PACKAGE_MINOR_VERSION@.@PACKAGE_PATCH_LEVEL@</version>
+        <title>TN3270e high level API using lib3270 or pw3270</title>
+        <authors>Perry Werneck</authors>
+        <licenseUrl>https://raw.githubusercontent.com/PerryWerneck/libipc3270/master/LICENSE</licenseUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>IPC 3270 provides a high level API to remote control a running pw3270 terminal or directly access a tn3270 host using lib3270.</description>
+        <copyright>LGPL-3.0</copyright>
+		<tags>Native, native</tags>
+	</metadata>
+	<files>
+		<file src="lib\*" target="native\lib" />
+		<file src="include\*" target="native\include" />
+		<file src="README.md" target="native" />
+		<file src="filament.props" target="native" />
+	</files>
+</package>
+

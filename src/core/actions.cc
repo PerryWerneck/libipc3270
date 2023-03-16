@@ -62,6 +62,31 @@
 	Action::~Action() {
 	}
 
+	bool Action::try_activate(time_t seconds) {
+
+		if(!activatable()) {
+			return false;
+		}
+
+		activate();
+
+		if(seconds) {
+			wait(seconds);
+		}
+
+		return true;
+	}
+
+	void Action::activate(time_t seconds) {
+
+		activate();
+
+		if(seconds) {
+			wait(seconds);
+		}
+
+	}
+
 	const char * Action::name() const noexcept {
 		return ((const LIB3270_PROPERTY *) this->descriptor)->name;
 	}

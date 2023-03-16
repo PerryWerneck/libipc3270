@@ -37,4 +37,8 @@ po
 ipc-glib.h
 ipcclient.cscope_file_list
 libtool
+*.props
+*.nuspec
+*.zip
+*.tar.*
 

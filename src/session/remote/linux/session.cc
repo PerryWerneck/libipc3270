@@ -90,6 +90,20 @@
 				}
 			}
 
+			void wait(time_t seconds) override {
+
+				time_t end = time(nullptr) + seconds;
+				while(time(nullptr) < end) {
+					int rc = DBus::Request{connection,id,Request::Method,"waitForReady"}.push((uint32_t) 1).call().get_int();
+					if(!rc) {
+						break;
+					} else if(rc != ETIMEDOUT) {
+						throw std::system_error((int) rc, std::system_category());
+					}
+				}
+
+			}
+
 		};
 
 		class Session : public Abstract::Session {
