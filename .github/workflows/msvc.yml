@@ -5,7 +5,7 @@ on:
       - master
   push:
     branches:
-      - develop      
+      - master      
 jobs:
   msvc-pack:
     runs-on: windows-latest
@@ -27,7 +27,7 @@ jobs:
         id: version-step
         uses: michmich112/extract-version@main
         with:
-          version-file: "{'path':'./configure.ac', 'line':26}"
+          version-file: ./configure.ac
           schema: major.minor
       - name: pack
         run: 7z a msvc-libipc3270.zip .\ipc3270.msvc\*
