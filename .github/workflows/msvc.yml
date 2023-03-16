@@ -11,6 +11,11 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
+      - name: 'Get tag'
+        id: currenttag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - name: test
+        run: echo ${{ steps.currenttag.outputs.tag }}
       - uses: ilammy/msvc-dev-cmd@v1.4.1
       - uses: robinraju/release-downloader@v1.7
         with:
@@ -23,12 +28,6 @@ jobs:
         run: 7z x mingw-lib3270.tar -y
       - name: Build
         run: nmake /f win\Makefile-ci.msc LIB3270_SDK_PATH=mingw64 DESTDIR=ipc3270.msvc install
-      - name: Get version
-        id: version-step
-        uses: michmich112/extract-version@main
-        with:
-          version-file: ./configure.ac
-          schema: major.minor
       - name: pack
         run: 7z a msvc-libipc3270.zip .\ipc3270.msvc\*
       - uses: ncipollo/release-action@v1
