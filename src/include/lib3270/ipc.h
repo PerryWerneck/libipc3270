@@ -84,6 +84,22 @@
 		TN3270_PUBLIC const char * getVersion() noexcept;
 
 		/**
+		 * @brief Get IPC module product name.
+		 *
+		 * @return Constant string with the IPC module product name (It's not the same of lib3270).
+		 *
+		 */
+		TN3270_PUBLIC const char * getProductName() noexcept;
+
+		/**
+		 * @brief Get IPC module application id.
+		 *
+		 * @return Constant string with the IPC module application id (It's not the same of lib3270).
+		 *
+		 */
+		TN3270_PUBLIC const char * getApplicationId() noexcept;
+
+		/**
 		 * @brief Get IPC module library revision.
 		 *
 		 * @return Constant string with the IPC module library revision (It's not the same of lib3270).
@@ -98,6 +114,14 @@
 		 *
 		 */
 		TN3270_PUBLIC std::string getInstallLocation();
+
+		/**
+		 * @brief Get protocol library datadir.
+		 *
+		 * @return The datadir path of the tn3270 protocol library.
+		 *
+		 */
+		TN3270_PUBLIC std::string getDataDir();
 
 		/**
 		 * @brief Get list of attributes.

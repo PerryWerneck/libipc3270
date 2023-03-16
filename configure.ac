@@ -302,7 +302,7 @@ dnl ---------------------------------------------------------------------------
 dnl Configure which files to generate.
 dnl ---------------------------------------------------------------------------
 
-AC_CONFIG_FILES(src/include/version.h)
+AC_CONFIG_FILES(src/core/versions.cc)
 AC_CONFIG_FILES(locale/Makefile)
 AC_CONFIG_FILES(Makefile)
 
