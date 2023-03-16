@@ -5,17 +5,21 @@ on:
       - master
   push:
     branches:
-      - develop      
+      - versioncheck      
 jobs:
   msvc-pack:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      - name: 'Get tag'
-        id: currenttag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+      - uses: oprypin/find-latest-tag@v1
+        id: gettag
+        with:
+        repository: PerryWerneck/libipc3270  # The repository to scan.
+        releases-only: true  # We know that all relevant tags have a GitHub release for them.
+      - name: echo-tag
+        run: echo ${{ steps.gettag.outputs.tag }}
       - name: test
-        run: echo ${{ steps.currenttag.outputs.tag }}
+      	run: bad-command
       - uses: ilammy/msvc-dev-cmd@v1.4.1
       - uses: robinraju/release-downloader@v1.7
         with:
@@ -32,7 +36,7 @@ jobs:
         run: 7z a msvc-libipc3270.zip .\ipc3270.msvc\*
       - uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.version-step.outputs.version }}
+          tag: 5.5
           artifacts: "*.zip"
           allowUpdates: true
           draft: false
