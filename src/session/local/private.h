@@ -117,7 +117,6 @@
 
 			public:
 
-				// Session(const char *charset = nullptr);
 				virtual ~Session();
 
 				// Actions
@@ -154,10 +153,6 @@
 				ProgramMessage getProgramMessage() const override;
 				ConnectionState getConnectionState() const override;
 				SSLState getSSLState() const override;
-
-				// Attributes
-				//std::shared_ptr<Abstract::Attribute> getAttribute(const char *name) const override;
-				//void getAttributes(std::vector<std::shared_ptr<Abstract::Attribute>> & attributes) const override;
 
 				std::string getVersion() const override;
 				std::string getRevision() const override;

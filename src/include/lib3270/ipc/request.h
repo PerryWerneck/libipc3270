@@ -104,9 +104,21 @@
 			return push(Fargs...);
 		}
 
-		template<typename T, typename... Targs>
-		Request & push(const T str, Targs... Fargs) {
-			push(str);
+		template<typename... Targs>
+		Request & push(const int32_t arg, Targs... Fargs) {
+			push(arg);
+			return push(Fargs...);
+		}
+
+		template<typename... Targs>
+		Request & push(const uint32_t arg, Targs... Fargs) {
+			push(arg);
+			return push(Fargs...);
+		}
+
+		template<typename... Targs>
+		Request & push(const uint8_t arg, Targs... Fargs) {
+			push(arg);
 			return push(Fargs...);
 		}
 

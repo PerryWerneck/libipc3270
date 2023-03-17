@@ -88,8 +88,6 @@
 
 		}
 
-//		debug("Charsets: remote=",remote," local=",local);
-
 #ifdef HAVE_ICONV
 
 		if(this->converter.local != (iconv_t) (-1))
@@ -189,7 +187,6 @@
 
 #ifdef HAVE_ICONV
 
-//		debug("Using ICONV");
 		return convertCharset(const_cast<Abstract::Session *>(this)->converter.host,text,length);
 
 #else
