@@ -143,7 +143,7 @@
 
 			debug("Running waitForKeyboardUnlock request...");
 
-			int32_t rc = RequestFactory(Request::Method,"waitForKeyboardUnlock")->push((uint32_t) 1).get_int();
+			rc = RequestFactory(Request::Method,"waitForKeyboardUnlock")->push((uint32_t) 1).get_int();
 
 			debug("Wait for unlock returned ",rc);
 

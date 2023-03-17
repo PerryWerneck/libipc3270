@@ -47,18 +47,6 @@
 
  namespace TN3270 {
 
-	/*
-	void Abstract::Session::action(const char *action_name) {
-
-		int32_t rc = RequestFactory(Request::Method,"action")->push(action_name).get_int();
-
-		if(rc) {
-            throw std::system_error((int) rc, std::system_category());
-		}
-
-	}
-	*/
-
  	void Abstract::Session::connect(const char *url, time_t seconds) {
 
 		RequestFactory(Request::Method,"connect")->push(url ? url : "").call();
