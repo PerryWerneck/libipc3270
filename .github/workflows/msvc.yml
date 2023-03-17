@@ -3,14 +3,16 @@ on:
   pull_request:
     branches:
       - master
-  push:
-    branches:
-      - develop      
 jobs:
   msvc-pack:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: oprypin/find-latest-tag@v1
+        id: gettag
+        with:
+          repository: PerryWerneck/libipc3270  # The repository to scan.
+          releases-only: true  # We know that all relevant tags have a GitHub release for them.
       - uses: ilammy/msvc-dev-cmd@v1.4.1
       - uses: robinraju/release-downloader@v1.7
         with:
@@ -27,7 +29,7 @@ jobs:
         run: 7z a msvc-libipc3270.zip .\ipc3270.msvc\*
       - uses: ncipollo/release-action@v1
         with:
-          tag: 5.4
+          tag: ${{ steps.gettag.outputs.tag }}
           artifacts: "*.zip"
           allowUpdates: true
           draft: false
