@@ -35,26 +35,6 @@
 
 /*---[ Implement ]----------------------------------------------------------------------------------*/
 
-/*
-TN3270::Attribute TN3270::Host::getAttribute(const char *name) const {
-
-	if(!this->session)
-		throw std::system_error(ENODATA, std::system_category());
-
-	return this->session->getAttribute(name);
-
-}
-
-std::vector<TN3270::Attribute> TN3270::Host::getAttributes() const {
-
-	if(!this->session)
-		throw std::system_error(ENODATA, std::system_category());
-
-	return this->session->getAttributes();
-
-}
-*/
-
 void TN3270::Host::setTimeout(time_t timeout) {
 	this->timeout = timeout;
 	this->session->setTimeout(timeout);
