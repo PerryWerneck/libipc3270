@@ -274,7 +274,9 @@
 
  int main(int argc, char **argv) {
 
+#ifdef _WIN32
 	cout << endl << "Install location: '" << TN3270::getInstallLocation() << "'" << endl << endl;
+#endif // _WIN32
 
 	{
 		auto session = TN3270::Session::getInstance(":A");
