@@ -176,18 +176,9 @@
 			session->setHostURL(url);
 		}
 
-
-		// Get properties
-		// std::shared_ptr<Abstract::Attribute> getAttribute(const char *name) const;
-		// std::vector<std::shared_ptr<Abstract::Attribute>> getAttributes() const;
-
 		inline time_t getTimeout() const noexcept {
 			return this->timeout;
 		}
-
-		//inline std::shared_ptr<Abstract::Attribute> operator[](const char *name) const {
-		//	return getAttribute(name);
-		//}
 
 		// Set properties.
 		inline void setProperty(const char *name, const int value) {

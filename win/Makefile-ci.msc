@@ -58,6 +58,7 @@ install: \
 	@-mkdir "$(DESTDIR)\include\lib3270"
 	@xcopy /s /y "$(LIB3270_SDK_PATH)\include\lib3270" "$(DESTDIR)\include\lib3270"
 	@xcopy /s /y "src\include\lib3270" "$(DESTDIR)\include\lib3270"
+	@xcopy /s /y "$(LIB3270_SDK_PATH)\share\pw3270\def\*" "$(DESTDIR)\include\lib3270"
 
 testprogram.exe: \
 	src\testprogram\testprogram.obj \
