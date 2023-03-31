@@ -13,6 +13,10 @@ Created originally as part of [PW3270 application](../../../pw3270) this library
 
 [<img src="https://raw.githubusercontent.com/PerryWerneck/pw3270/master/branding/obs-badge-en.svg" alt="Download from open build service" height="80px">](https://software.opensuse.org/download.html?project=home%3APerryWerneck%3Apw3270&package=libipc3270)
 
+### Windows
+
+The MSVC and MinGW libraries for windows can be found on [Releases](../../releases)
+
 ## Building for Linux
 
 ### Requirements
