@@ -1,11 +1,14 @@
-name: MSYS2
+name: Publish
 on:
   pull_request:
     branches:
       - master
+  push:
+    branches:
+      - develop
 jobs:
   msys2-mingw:
-    name: Publish Windows 64
+    name: Publish MinGW 64
     runs-on: windows-latest
     defaults:
       run:
@@ -33,6 +36,40 @@ jobs:
         with:
           tag: ${{ steps.gettag.outputs.tag }}
           artifacts: "*-libipc3270.tar.xz"
+          allowUpdates: true
+          draft: false
+          makeLatest: true
+          omitBody: true
+          omitPrereleaseDuringUpdate: true
+          replacesArtifacts: true
+  msvc-pack:
+    runs-on: windows-latest
+    name: Publish MSVC Library
+    steps:
+      - uses: actions/checkout@v3
+      - uses: oprypin/find-latest-tag@v1
+        id: gettag
+        with:
+          repository: PerryWerneck/libipc3270  # The repository to scan.
+          releases-only: true  # We know that all relevant tags have a GitHub release for them.
+      - uses: ilammy/msvc-dev-cmd@v1.4.1
+      - uses: robinraju/release-downloader@v1.7
+        with:
+          repository: PerryWerneck/lib3270
+          latest: true
+          fileName: mingw-w64-x86_64-lib3270.tar.xz
+      - name: Extract lib3270 xz
+        run: 7z x mingw-w64-x86_64-lib3270.tar.xz -y
+      - name: Extract lib3270 tar
+        run: 7z x mingw-w64-x86_64-lib3270.tar -y
+      - name: Build
+        run: nmake /f win\Makefile-ci.msc LIB3270_SDK_PATH=mingw64 DESTDIR=ipc3270.msvc install
+      - name: pack
+        run: 7z a msvc-libipc3270.zip .\ipc3270.msvc\*
+      - uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.gettag.outputs.tag }}
+          artifacts: "*.zip"
           allowUpdates: true
           draft: false
           makeLatest: true
