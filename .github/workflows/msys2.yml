@@ -3,8 +3,12 @@ on:
   pull_request:
     branches:
       - master
+  push:
+    branches:
+      - develop
 jobs:
   msys2-mingw:
+    name: Publish Windows 64
     runs-on: windows-latest
     defaults:
       run:
@@ -23,16 +27,15 @@ jobs:
           install: xz mingw-w64-x86_64-gcc automake autoconf make git pkgconf mingw-w64-x86_64-gettext gettext-devel mingw-w64-x86_64-openssl libtool mingw-w64-x86_64-gtk3 mingw-w64-x86_64-imagemagick mingw-w64-x86_64-optipng mingw-w64-x86_64-inkscape
       - uses: robinraju/release-downloader@v1.7
         with:
-          repository: "PerryWerneck/lib3270"
+          repository: PerryWerneck/lib3270
           latest: true
-          fileName: "mingw-lib3270.tar.xz"
+          fileName: mingw-w64-x86_64-lib3270.tar.xz
       - name: CI-Build
-        run: |
-          ./win/ci-build.sh
+        run: ./win/ci-build.sh
       - uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.gettag.outputs.tag }}
-          artifacts: "mingw-libipc3270.tar.xz"
+          artifacts: "*-libipc3270.tar.xz"
           allowUpdates: true
           draft: false
           makeLatest: true

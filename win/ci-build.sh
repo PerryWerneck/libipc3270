@@ -12,31 +12,17 @@ die ( ) {
 	exit -1
 }
 
-myDIR=$(dirname $(dirname $(readlink -f ${0})))
+myDIR="$(dirname $(dirname "$(readlink -f "${0}")"))"
 
-cd ${myDIR}
+cd "${myDIR}"
 rm -fr ./.build
 mkdir -p ./.build
 
 #
-# Build LIB3270
+# Unpack LIB3270
 #
-if [ -e mingw-lib3270.tar.xz ]; then
-
-	echo "Unpacking lib3270"
-	tar -C / -Jxvf mingw-lib3270.tar.xz 
-
-else
-	echo "Building lib3270"
-	git clone https://github.com/PerryWerneck/lib3270.git ./.build/lib3270 || die "clone lib3270 failure"
-	cd ./.build/lib3270
-	./autogen.sh || die "Lib3270 autogen failure"
-	./configure || die "Lib3270 Configure failure"
-	make clean || die "Lib3270 Make clean failure"
-	make all || die "Lib3270 Make failure"
-	make install || die "Lib3270 Install failure"
-	cd ../..
-fi
+echo "Unpacking lib3270"
+tar -C / -Jxvf "${MINGW_PACKAGE_PREFIX}-lib3270.tar.xz" 
 
 #
 # Build LIBIPC3270
@@ -47,8 +33,8 @@ echo "Building LIBIPC3270"
 make clean || die "Make clean failure"
 make all  || die "Make failure"
 
-make DESTDIR=.bin/package install
-tar --create --xz --file=mingw-libipc3270.tar.xz --directory=.bin/package --verbose .
+make DESTDIR=.bin/package install || die "Install failure"
+tar --create --xz --file="${MINGW_PACKAGE_PREFIX}-libipc3270.tar.xz" --directory=.bin/package --verbose . || die "Package failure"
 
 echo "Build complete"
 
