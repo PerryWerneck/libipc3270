@@ -40,4 +40,38 @@ jobs:
           omitBody: true
           omitPrereleaseDuringUpdate: true
           replacesArtifacts: true
+  msvc-pack:
+    runs-on: windows-latest
+    name: Publish MSVC Library
+    steps:
+      - uses: actions/checkout@v3
+      - uses: oprypin/find-latest-tag@v1
+        id: gettag
+        with:
+          repository: PerryWerneck/libipc3270
+          releases-only: true
+      - uses: ilammy/msvc-dev-cmd@v1.4.1
+      - uses: robinraju/release-downloader@v1.7
+        with:
+          repository: PerryWerneck/lib3270
+          latest: true
+          fileName: "mingw-w64-x86_64-lib3270-5.4-0-x86_64.pkg.tar.zst"      
+      - name: Extract lib3270 zst
+        run: 7z x mingw-w64-x86_64-lib3270-5.4-0-x86_64.pkg.tar.zst -y
+      - name: Extract lib3270 tar
+        run: 7z x mingw-w64-x86_64-lib3270.tar -y
+      - name: Build
+        run: nmake /f win\Makefile-ci.msc LIB3270_SDK_PATH=mingw64 DESTDIR=ipc3270.msvc install
+      - name: pack
+        run: 7z a msvc-libipc3270.zip .\ipc3270.msvc\*
+      - uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ steps.gettag.outputs.tag }}
+          artifacts: "*.zip"
+          allowUpdates: true
+          draft: false
+          makeLatest: true
+          omitBody: true
+          omitPrereleaseDuringUpdate: true
+          replacesArtifacts: true
 
