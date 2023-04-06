@@ -1,11 +1,11 @@
 name: Publish
 on:
+  push:
+    branches:
+      - master      
   pull_request:
     branches:
       - master
-      - develop      
-  push:
-    branches:
       - develop      
 jobs:
   msys2-mingw:
