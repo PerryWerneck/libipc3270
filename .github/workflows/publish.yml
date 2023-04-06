@@ -16,7 +16,7 @@ jobs:
       - uses: oprypin/find-latest-tag@v1
         id: gettag
         with:
-          repository: PerryWerneck/libv3270
+          repository: PerryWerneck/libipc3270
           releases-only: true
       - uses: msys2/setup-msys2@v2
         with:
