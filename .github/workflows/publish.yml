@@ -9,7 +9,7 @@ on:
       - develop      
 jobs:
   msys2-mingw:
-    name: Publish Windows 64
+    name: Publish MinGW 64
     runs-on: windows-latest
     defaults:
       run:
@@ -45,7 +45,7 @@ jobs:
           replacesArtifacts: true
   msvc-pack:
     runs-on: windows-latest
-    name: Publish MSVC Library
+    name: Publish MSVC 64
     steps:
       - uses: actions/checkout@v3
       - uses: oprypin/find-latest-tag@v1
@@ -58,19 +58,17 @@ jobs:
         with:
           repository: PerryWerneck/lib3270
           latest: true
-          fileName: "mingw-w64-x86_64-lib3270-5.4-0-x86_64.pkg.tar.zst"      
-      - name: Extract lib3270 zst
-        run: 7z x mingw-w64-x86_64-lib3270-5.4-0-x86_64.pkg.tar.zst -y
-      - name: Extract lib3270 tar
-        run: 7z x mingw-w64-x86_64-lib3270.tar -y
+          fileName: "mingw-w64-x86_64-lib3270-x86_64.zip"      
+      - name: Extract sdk
+        run: 7z -y x -osdk *.zip
       - name: Build
-        run: nmake /f win\Makefile-ci.msc LIB3270_SDK_PATH=mingw64 DESTDIR=ipc3270.msvc install
+        run: nmake /f win\Makefile-ci.msc LIB3270_SDK_PATH=sdk DESTDIR=ipc3270.msvc install
       - name: pack
-        run: 7z a msvc-libipc3270.zip .\ipc3270.msvc\*
+        run: 7z a msvc-libipc3270-x86_64.zip .\ipc3270.msvc\*
       - uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.gettag.outputs.tag }}
-          artifacts: "*.zip"
+          artifacts: "*libipc3270*.zip"
           allowUpdates: true
           draft: false
           makeLatest: true
