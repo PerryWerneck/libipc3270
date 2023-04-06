@@ -1,8 +1,5 @@
 name: Publish
-on:
-  push:
-    branches:
-      - master      
+on:   
   pull_request:
     branches:
       - master
