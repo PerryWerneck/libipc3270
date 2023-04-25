@@ -13,19 +13,11 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via http://bugs.opensuse.org/
+# Please submit bugfixes or comments via https://github.com/PerryWerneck/libipc3270/issues
 #
 
 %define _libname libipc3270
 
-%define __strip %{_mingw64_strip}
-%define __objdump %{_mingw64_objdump}
-%define _use_internal_dependency_generator 0
-%define __find_requires %{_mingw64_findrequires}
-%define __find_provides %{_mingw64_findprovides}
-%define __os_install_post %{_mingw64_debug_install_post} \
-                          %{_mingw64_install_post}
-                          
 #---[ Package header ]------------------------------------------------------------------------------------------------
 
 Summary:		lib3270/pw3270 IPC client library for 64 bits Windows
@@ -52,12 +44,14 @@ BuildRequires:	mingw64-cross-gcc
 BuildRequires:	mingw64-cross-gcc-c++
 BuildRequires:	mingw64-cross-pkg-config
 BuildRequires:	mingw64-filesystem
-BuildRequires:	mingw64(lib:iconv)
 BuildRequires:	mingw64(lib:intl)
 
 BuildRequires:	mingw64(pkg:gtk+-win32-3.0)
 BuildRequires:	mingw64(lib:3270.delayed)
 BuildRequires:	mingw64(pkg:libv3270)
+
+# Statics to avoid dependencies
+BuildRequires:	mingw64-win_iconv-devel-static
 
 %define _product %(x86_64-w64-mingw32-pkg-config --variable=product_name lib3270)
 
@@ -65,15 +59,21 @@ BuildRequires:	mingw64(pkg:libv3270)
 %define MINOR_VERSION %(echo %{version} | cut -d. -f2)
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
+%_mingw64_package_header_debug
+
+BuildArch: noarch
+
 %description
 IPC client library for lib3270/%{_product}.
 Designed as framework for language bindings.
 
 %package -n %{name}-%{_libvrs}
+Provides: %{name}
 Summary:		TN3270 Access library
 Group:			Development/Libraries/C and C++
 
 %description -n %{name}-%{_libvrs}
+
 IPC client library for lib3270/%{_product}.
 Designed as framework for language bindings.
 
@@ -83,8 +83,13 @@ Summary:		TN3270 Access library development files
 Group:			Development/Libraries/C and C++
 Requires:		%{name}-%{_libvrs} = %{version}
 
+# Fix-me: This should be detected.
+Provides:		mingw64(lib:ipc3270.dll)
+
 %description devel
 Header files for %{name}.
+
+%_mingw64_debug_package
 
 %prep
 %setup -n %{_libname}-%{version}
