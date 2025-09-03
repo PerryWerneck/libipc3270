@@ -306,7 +306,7 @@ else
     lib_src,
     install: true,
     version : libversion,
-    c_args: [ '-ffat-lto-objects' ],
+    cpp_args: [ '-ffat-lto-objects' ],
     soversion : libversion,
     gnu_symbol_visibility: 'hidden',
 	dependencies: [
@@ -324,7 +324,7 @@ else
 		meson.project_name(), 
 	    lib_src,
 		pic: true,
-		c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
+		cpp_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
 		install: true,
 		include_directories: includes_dir,
 		dependencies: [
