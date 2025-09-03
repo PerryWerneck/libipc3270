@@ -13,14 +13,14 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via http://bugs.opensuse.org/
+# Please submit bugfixes or comments via https://github.com/PerryWerneck/libipc3270/issues
 #
 
 %define product %(pkg-config --variable=product_name lib3270)
 
 Summary:		IPC client library for lib3270/%{product} 
 Name:			libipc3270
-Version: 5.5.0
+Version:		5.5
 Release:		0
 License:		LGPL-3.0
 Source:			%{name}-%{version}.tar.xz
@@ -30,14 +30,13 @@ URL:			https://github.com/PerryWerneck/libipc3270
 Group:			Development/Libraries/C and C++
 BuildRoot:		/var/tmp/%{name}-%{version}
 
-BuildRequires:	autoconf >= 2.61
-BuildRequires:	automake
-BuildRequires:	libtool
-BuildRequires:	binutils
-BuildRequires:	coreutils
+BuildRequires:	fdupes
+BuildRequires:	gettext-devel
+BuildRequires:	meson >= 0.56.0
+BuildRequires:	pkgconfig
 BuildRequires:	gcc-c++
 BuildRequires:	gettext-devel
-BuildRequires:	m4
+BuildRequires:	gettext-tools
 
 %if 0%{?fedora} ||  0%{?suse_version} > 1200
 
@@ -67,7 +66,7 @@ For more details, see https://github.com/PerryWerneck/libipc3270 .
 %define _libvrs %{MAJOR_VERSION}_%{MINOR_VERSION}
 
 %package -n %{name}-%{_libvrs}
-Summary:	IPC Library for %{product}
+Summary: IPC Library for %{product}
 
 %description -n %{name}-%{_libvrs}
 IPC client library for lib3270/%{product}.
@@ -94,24 +93,23 @@ Development files for lib3270/%{product} IPC client library.
 
 For more details, see https://github.com/PerryWerneck/libipc3270 .
 
+%lang_package -n %{name}-%{_libvrs}
+
 #---[ Build & Install ]-----------------------------------------------------------------------------------------------
 
 %prep
-%setup
-
-NOCONFIGURE=1 \
-	./autogen.sh
-
-%configure
+%autosetup
+%meson
 
 %build
-make all
+%meson_build
 
 %install
-%makeinstall
+%meson_install
+
 %find_lang %{name}-%{MAJOR_VERSION}.%{MINOR_VERSION} langfiles
 
-%files -n %{name}-%{_libvrs} -f langfiles
+%files -n %{name}-%{_libvrs}
 %defattr(-,root,root)
 %{_libdir}/%{name}.so.*.*
 
@@ -121,7 +119,10 @@ make all
 %dir %{_includedir}/lib3270/ipc
 %{_includedir}/lib3270/ipc/*.h
 %{_libdir}/%{name}.so
+%{_libdir}/%{name}.a
 %{_libdir}/pkgconfig/*.pc
+
+%files -n %{name}-%{_libvrs}-lang -f langfiles
 
 %pre -n %{name}-%{_libvrs} -p /sbin/ldconfig
 

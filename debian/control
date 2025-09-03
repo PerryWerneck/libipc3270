@@ -2,7 +2,7 @@ Source: libipc3270
 Section: unknown
 Priority: optional
 Maintainer: Perry Werneck <perry.werneck@gmail.com>
-Build-Depends: debhelper (>= 7), autotools-dev, autoconf, automake, gettext, libssl-dev, pkg-config, libdbus-1-dev, libdbus-glib-1-dev, lib3270-dev, libv3270-dev
+Build-Depends: debhelper (>= 7), meson, pkg-config, gettext, libssl-dev, pkg-config, libdbus-1-dev, lib3270-dev
 
 Package: libipc3270
 Architecture: any
@@ -27,9 +27,3 @@ Depends: libipc3270 (= ${binary:Version}), ${misc:Depends}
 Description: Debugging symbols for libipc3270
  This package contains the debugging symbols for libipc3270.
 
-Package: pw3270-plugin-ipc
-Architecture: any
-Depends: ${misc:Depends}, pw3270
-Enhances: libipc3270 (= ${binary:Version})
-Description: IPC server plugin for pw3270.
- This package provides a plugin exporting an active pw3270 to D-Bus.

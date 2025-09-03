@@ -8,7 +8,7 @@ pkgdesc="IPC client library for lib3270/pw3270"
 url="https://github.com/PerryWerneck/libipc3270"
 arch=(i686 x86_64)
 license=(GPL)
-depends=()
+depends=(lib3270)
 makedepends=(autoconf autoconf-archive automake make libtool gzip openssl dbus-glib lib3270 libv3270)
 checkdepends=()
 
