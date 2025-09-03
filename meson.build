@@ -41,27 +41,13 @@ else
   datecmd = 'date -u -d@' + time_epoch
 endif
 
-compiler_flags = [
-  '-ggdb3',
-  '-fvisibility=hidden',
-  '-pthread',
-  '-fPIC',
-  '-DHAVE_CONFIG_H=1',
-  '-Wno-deprecated-declarations',
-  '-DBUILD_DATE='+time_epoch,
-]
-
-if enable_debug
-  compiler_flags += [
-	  '-DDEBUG=1'
-  ]
-else
-  compiler_flags += [
-	'-DNDEBUG=1'
-  ]
-endif
-
-add_project_arguments(cc.get_supported_arguments(compiler_flags), language: 'c')
+add_project_arguments(cc.get_supported_arguments([
+	'-ggdb3',
+	'-fvisibility=hidden',
+	'-DHAVE_CONFIG_H=1',
+	'-DBUILD_DATE='+time_epoch,
+	get_option('buildtype').contains('debug') ? '-DDEBUG=1' : '-DNDEBUG=1',
+]), language: 'c')
 
 #
 # Versioning
@@ -273,6 +259,9 @@ elif host_machine.system() == 'darwin'
 		install: true,
 		version : libversion,
 		soversion : libversion,
+		c_args: [ 
+			'-fPIC' 
+		],
 		gnu_symbol_visibility: 'hidden',
 		dependencies: [
 			libintl,
@@ -285,7 +274,7 @@ elif host_machine.system() == 'darwin'
 
 	static_library = declare_dependency(
 		link_with : static_library(
-		meson.project_name(), 
+			meson.project_name(), 
 			lib_src,
 			pic: true,
 			c_args: [ '-DSTATIC_LIBRARY' ],

@@ -35,7 +35,6 @@ add_project_arguments('-DGETTEXT_PACKAGE="' + gettext_package + '"', language: '
 
 i18n.gettext(
 	gettext_package, 
-    args: '--directory=' + meson.project_source_root(),
-    preset: 'glib'
+    args: '--directory=' + meson.project_source_root()
 )
 
