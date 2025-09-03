@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 project(
-	'libipc3270', 
+	'ipc3270', 
 	['cpp'],
 	version: '5.5.0',
 	license: 'GPL-3.0-or-later',
@@ -77,7 +77,7 @@ libversion = '@0@.@1@'.format(pkg_major_version,pkg_minor_version)
 #
 # i18n
 #
-#subdir('po')
+subdir('po')
 
 #
 # Dependencies
@@ -307,7 +307,8 @@ else
     name: meson.project_name(),
     description: project_description,
     variables: pkg_variables,
-    requires: [ 'lib3270', dbus ],
+    requires: [ 'lib3270' ],
+	requires_private: [ dbus ],
     libraries: [ '-lv3270' ]
   )
 

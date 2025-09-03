@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pw3270 5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-07 23:16-0300\n"
+"POT-Creation-Date: 2025-09-03 07:20-0300\n"
 "PO-Revision-Date: 2021-01-08 10:11-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Português <>\n"
@@ -19,29 +19,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Gtranslator 2.91.7\n"
 
-#: src/session/local/init.cc:101
-msgid " is invalid."
-msgstr "é inválido"
-
-#: src/session/local/init.cc:97
-msgid " is not in the required revision "
-msgstr "não está na versão necessária"
-
-#: src/session/local/get.cc:56 src/session/local/get.cc:72
-msgid "Can't get screen contents"
-msgstr "Não foi possível obter o conteúdo da tela"
-
-#: src/session/local/init.cc:92
-msgid "Invalid callback table; "
-msgstr "Tabela de chamadas inválida"
+#: src/session/local/events.cc:71
+msgid "Out of memory in vasprintf"
+msgstr "Memória insuficiente em vasprintf"
 
 #: src/session/local/events.cc:88 src/session/local/events.cc:142
 msgid "Invalid session handler"
 msgstr "Identificador de sessão é inválido"
-
-#: src/session/local/events.cc:71
-msgid "Out of memory in vasprintf"
-msgstr "Memória insuficiente em vasprintf"
 
 #: src/session/local/events.cc:164
 msgid "connected"
@@ -50,6 +34,22 @@ msgstr "Conectado"
 #: src/session/local/events.cc:164
 msgid "disconnected"
 msgstr "Desconectado"
+
+#: src/session/local/get.cc:56 src/session/local/get.cc:72
+msgid "Can't get screen contents"
+msgstr "Não foi possível obter o conteúdo da tela"
+
+#: src/session/local/init.cc:126
+msgid "Invalid callback table; "
+msgstr "Tabela de chamadas inválida"
+
+#: src/session/local/init.cc:131
+msgid " is not in the required revision "
+msgstr "não está na versão necessária"
+
+#: src/session/local/init.cc:135
+msgid " is invalid."
+msgstr "é inválido"
 
 #~ msgid " and <b>%s</b> for %s."
 #~ msgstr " e <b>%s</b> para %s."
@@ -2612,13 +2612,13 @@ msgstr "Desconectado"
 #~ msgid ""
 #~ "The current candidate issuer certificate was rejected because its issuer "
 #~ "name and serial number was present and did not match the authority key "
-#~ "identifier of the current certificate. Only displayed when the -"
-#~ "issuer_checks option is set."
+#~ "identifier of the current certificate. Only displayed when the "
+#~ "-issuer_checks option is set."
 #~ msgstr ""
 #~ "The current candidate issuer certificate was rejected because its issuer "
 #~ "name and serial number was present and did not match the authority key "
-#~ "identifier of the current certificate. Only displayed when the -"
-#~ "issuer_checks option is set."
+#~ "identifier of the current certificate. Only displayed when the "
+#~ "-issuer_checks option is set."
 
 #~ msgid ""
 #~ "The current candidate issuer certificate was rejected because its "
