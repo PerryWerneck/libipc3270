@@ -20,7 +20,7 @@
 
 Summary:		IPC client library for lib3270/%{product} 
 Name:			libipc3270
-Version:		5.5
+Version: 5.5.0
 Release:		0
 License:		LGPL-3.0
 Source:			%{name}-%{version}.tar.xz

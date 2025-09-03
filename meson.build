@@ -47,7 +47,7 @@ add_project_arguments(cc.get_supported_arguments([
 	'-DHAVE_CONFIG_H=1',
 	'-DBUILD_DATE='+time_epoch,
 	get_option('buildtype').contains('debug') ? '-DDEBUG=1' : '-DNDEBUG=1',
-]), language: 'c')
+]), language: 'cpp')
 
 #
 # Versioning

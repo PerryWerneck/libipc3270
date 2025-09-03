@@ -47,3 +47,17 @@ src/session/remote/windows/request.cc
 src/session/remote/windows/session.cc
 src/session/set.cc
 src/session/tools.cc
+src/host/private.h
+src/include/ipc-client-internals.h
+src/include/lib3270/ipc.h
+src/include/lib3270/ipc/field.h
+src/include/lib3270/ipc/host.h
+src/include/lib3270/ipc/property.h
+src/include/lib3270/ipc/request.h
+src/include/lib3270/ipc/session.h
+src/include/lib3270/ipc/action.h
+src/include/private/session.h
+src/session/local/private.h
+src/session/remote/linux/dbus-request.h
+src/session/remote/private.h
+src/session/remote/windows/pipe-request.h
