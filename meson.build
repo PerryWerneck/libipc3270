@@ -372,3 +372,17 @@ executable(
 	include_directories: includes_dir
 )
 
+install_headers(
+  'src/include/lib3270/ipc.h',
+  subdir: 'lib3270'  
+)
+
+install_headers(
+	'src/include/lib3270/ipc/field.h',
+	'src/include/lib3270/ipc/host.h',
+	'src/include/lib3270/ipc/property.h',
+	'src/include/lib3270/ipc/request.h',
+	'src/include/lib3270/ipc/session.h',
+	'src/include/lib3270/ipc/action.h',
+  subdir: 'lib3270/ipc'  
+)
