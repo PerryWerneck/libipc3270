@@ -17,18 +17,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #include <config.h>
  #include <lib3270/ipc.h>
 
  TN3270_PUBLIC const char * TN3270::getApplicationId() noexcept {
-	return "br.app.pw3270.terminal";
+	return LIB3270_STRINGIZE_VALUE_OF(PRODUCT_ID);
  }
  
  TN3270_PUBLIC const char * TN3270::getProductName() noexcept {
- 	return "pw3270";
+ 	return LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME);
  }
  
  TN3270_PUBLIC const char * TN3270::getVersion() noexcept {
-	return "5.5";
+	return PACKAGE_VERSION;
  }
 
  TN3270_PUBLIC const char * TN3270::getRevision() noexcept {

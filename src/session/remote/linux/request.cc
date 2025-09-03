@@ -60,7 +60,7 @@
 
 		if(id[0] == ':') {
 
-			object_name.assign(APPLICATION_ID ".");
+			object_name.assign(LIB3270_STRINGIZE_VALUE_OF(PRODUCT_ID) ".");
 
 			object_name += (id+1);
 			object_path += (id+1);
@@ -83,7 +83,7 @@
 		debug("Object name=",object_name);
 		debug("Object path=",object_path);
 
-		static const char *interface_name = APPLICATION_ID ".session";
+		static const char *interface_name = LIB3270_STRINGIZE_VALUE_OF(PRODUCT_ID) ".session";
 
 		switch(type) {
 		case Request::Method:
