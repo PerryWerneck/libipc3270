@@ -77,10 +77,11 @@ dbus = dependency('dbus-1', required: false)
 #
 # Configuration
 #
+product_id = lib3270.get_variable('product_id')
 app_conf = configuration_data()
 app_conf.set_quoted('PACKAGE_NAME', meson.project_name())
 app_conf.set('PRODUCT_NAME', lib3270.get_variable('product_name'))
-app_conf.set('PRODUCT_ID', lib3270.get_variable('product_id'))
+app_conf.set('PRODUCT_ID', product_id)
 app_conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 app_conf.set_quoted('PACKAGE_DESCRIPTION', project_description)
 app_conf.set('PACKAGE_VERSION_MAJOR', pkg_major_version)
@@ -88,7 +89,7 @@ app_conf.set('PACKAGE_VERSION_MINOR', pkg_minor_version)
 app_conf.set('PACKAGE_VERSION_MICRO', pkg_micro_version)
 
 # FIXME: use product_id from lib3270
-dbus_object_path='/br/app/pw3270'
+dbus_object_path= '/' + product_id.replace('.','/')
 app_conf.set_quoted('DBUS_OBJECT_PATH',dbus_object_path)
 
 app_conf.set('HAVE_LIBINTL', 1)
