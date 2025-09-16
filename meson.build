@@ -179,7 +179,7 @@ config_src = [
 if host_machine.system() == 'windows'
 
 	pkg.generate(
-		name: meson.project_name(),
+		name: 'lib' + meson.project_name(),
 		description: project_description,
 		variables: pkg_variables,
 		requires: [ 'lib3270' ],
@@ -247,11 +247,10 @@ if host_machine.system() == 'windows'
 elif host_machine.system() == 'darwin'
 
 	pkg.generate(
-		name: meson.project_name(),
+		name: 'lib' + meson.project_name(),
 		description: project_description,
 		variables: pkg_variables,
-		requires: [ 'lib3270' ],
-		libraries: [ '-lv3270' ]
+		requires: [ 'lib3270' ]
 	)
 
 	dynamic = shared_library(
@@ -294,12 +293,11 @@ elif host_machine.system() == 'darwin'
 else
 
   pkg.generate(
-    name: meson.project_name(),
+    name: 'lib' + meson.project_name(),
     description: project_description,
     variables: pkg_variables,
     requires: [ 'lib3270' ],
 	requires_private: [ dbus ],
-    libraries: [ '-lv3270' ]
   )
 
   dynamic = shared_library(
