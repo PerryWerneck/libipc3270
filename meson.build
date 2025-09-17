@@ -182,8 +182,7 @@ if host_machine.system() == 'windows'
 		name: 'lib' + meson.project_name(),
 		description: project_description,
 		variables: pkg_variables,
-		requires: [ 'lib3270' ],
-		libraries: [ '-lv3270.dll' ]
+		libraries: [ '-lipc3270.dll' ]
 	)
 
 	# https://mesonbuild.com/Windows-module.html
@@ -250,7 +249,7 @@ elif host_machine.system() == 'darwin'
 		name: 'lib' + meson.project_name(),
 		description: project_description,
 		variables: pkg_variables,
-		requires: [ 'lib3270' ]
+		libraries: [ '-lipc3270' ],
 	)
 
 	dynamic = shared_library(
@@ -296,7 +295,7 @@ else
     name: 'lib' + meson.project_name(),
     description: project_description,
     variables: pkg_variables,
-    requires: [ 'lib3270' ],
+	libraries: [ '-lipc3270' ],
 	requires_private: [ dbus ],
   )
 
