@@ -157,13 +157,13 @@ lib_src = [
 pkg = import('pkgconfig')
 
 pkg_variables = [
-
-  'version_major=@0@'.format(pkg_major_version),
-  'version_minor=@0@'.format(pkg_minor_version),
-  'version_micro=@0@'.format(pkg_micro_version),
-  'dbus_object_path=@0@'.format(dbus_object_path),
-  'module_version=@0@.@1@'.format(pkg_major_version,pkg_minor_version),
-
+	'product_name=@0@'.format(lib3270.get_variable('product_name')),
+	'product_id=@0@'.format(product_id),
+	'version_major=@0@'.format(pkg_major_version),
+	'version_minor=@0@'.format(pkg_minor_version),
+	'version_micro=@0@'.format(pkg_micro_version),
+	'dbus_object_path=@0@'.format(dbus_object_path),
+	'module_version=@0@.@1@'.format(pkg_major_version,pkg_minor_version),
 ]
 
 #
@@ -241,6 +241,7 @@ if host_machine.system() == 'windows'
 			'-lws2_32',
 		],
 		include_directories : includes_dir,
+		variables: pkg_variables,
 	)
 
 elif host_machine.system() == 'darwin'
@@ -287,6 +288,7 @@ elif host_machine.system() == 'darwin'
 			],
 		),
 		include_directories : includes_dir,
+		variables: pkg_variables,
 	)
 
 else
@@ -334,6 +336,7 @@ else
 		],
 	),
 	include_directories : includes_dir,
+	variables: pkg_variables,
   )
  
 endif
@@ -341,6 +344,7 @@ endif
 dynamic_library = declare_dependency(
 	link_with : dynamic,
 	include_directories : includes_dir,
+	variables: pkg_variables,
 ) 
 
 executable(
