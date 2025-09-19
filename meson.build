@@ -159,6 +159,7 @@ pkg = import('pkgconfig')
 pkg_variables = [
 	'product_name=@0@'.format(lib3270.get_variable('product_name')),
 	'product_id=@0@'.format(product_id),
+	'sdk_version=@0@'.format(lib3270.get_variable('sdk_version')),
 	'version_major=@0@'.format(pkg_major_version),
 	'version_minor=@0@'.format(pkg_minor_version),
 	'version_micro=@0@'.format(pkg_micro_version),
