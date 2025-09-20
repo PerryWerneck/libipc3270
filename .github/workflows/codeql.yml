@@ -57,10 +57,10 @@ jobs:
 
     - name: Install Packages
       run: |
-        echo 'deb https://download.opensuse.org/repositories/home:/PerryWerneck:/udjat/xUbuntu_24.04/ /' | sudo tee /etc/apt/sources.list.d/home:PerryWerneck:udjat.list
-        curl -fsSL https://download.opensuse.org/repositories/home:/PerryWerneck:/udjat/xUbuntu_24.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_PerryWerneck_udjat.gpg > /dev/null
-        sudo apt-get update
-        sudo apt-get install --yes meson pkg-config python3-dev pkg-config gettext libssl-dev libdbus-1-dev libdbus-glib-1-dev lib3270-dev
+        echo 'deb http://download.opensuse.org/repositories/home:/PerryWerneck:/pw3270/xUbuntu_24.04/ /' | sudo tee /etc/apt/sources.list.d/home:PerryWerneck:pw3270.list
+        curl -fsSL https://download.opensuse.org/repositories/home:PerryWerneck:pw3270/xUbuntu_24.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/home_PerryWerneck_pw3270.gpg > /dev/null
+        sudo apt update
+        sudo apt install --yes meson pkg-config pkg-config gettext libdbus-1-dev libdbus-glib-1-dev lib3270-dev
 
     # Initializes the CodeQL tools for scanning.
     # Initializes the CodeQL tools for scanning.
