@@ -3,7 +3,7 @@
 Created originally as part of [PW3270 application](../../../pw3270) this library is designed to act as a standard ABI for [lib320](../../../lib3270) and pw3270 language bindings using the same objects for direct lib3270 calls and IPC based requests to the pw3270 GUI application. It's beeing used on [libhllapi](../../../libhllapi) and [pw3270's python library](../../../python3-tn3270).
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-![CodeQL](https://github.com/PerryWerneck/libipc3270/workflows/CodeQL/badge.svg)
+[![CodeQL Advanced](https://github.com/PerryWerneck/libipc3270/actions/workflows/codeql.yml/badge.svg)](https://github.com/PerryWerneck/libipc3270/actions/workflows/codeql.yml)
 [![build result](https://build.opensuse.org/projects/home:PerryWerneck:pw3270/packages/libipc3270/badge.svg?type=percent)](https://build.opensuse.org/package/show/home:PerryWerneck:pw3270/libipc3270)
 
 ## Instalation
@@ -18,13 +18,33 @@ The MSVC and MinGW libraries for windows can be found on [Releases](../../releas
 
 ## Building for Linux
 
-### Requirements
+1. Install the required libraries
 
- * [lib3270](../../../lib3270)
+  	* pkgconfig
+  	* gettext-devel
+  	* curl
+  	* meson
+	* gcc-c++
+	* openssl-devel
+	* dbus-1-devel
+	* xz
 
-### Building
+	(This command can make it easy on SuSE: grep -i buildrequires rpm/lib3270.spec | cut -d: -f2 | sudo xargs zypper in )
 
- * TODO
+2. Get sources from git
+
+	```shell
+	git clone https://github.com/PerryWerneck/libipc3270.git ./libipc3270
+	```
+
+3. Setup, build and install
+
+	```shell
+	cd libipc3270
+	meson setup .build
+	meson compile -C .build
+	meson install -C .build
+	```
 
 ## Building for windows
 
@@ -38,30 +58,30 @@ The MSVC and MinGW libraries for windows can be found on [Releases](../../releas
 	sudo zypper ar obs://home:PerryWerneck:pw3270 pw3270
 	sudo zypper ref
 	```
-2. Get sources from git
+2. Install 64 bits cross compilers
+
+	```shell
+	zypper in \
+		pkgconfig \
+		gettext-devel \
+		mingw64-libcurl-devel \
+		mingw64-cross-meson \
+		mingw64-libopenssl-devel \
+		mingw64-cross-gcc-c++
+	```
+
+3. Get sources from git
 
 	```shell
 	git clone https://github.com/PerryWerneck/libipc3270.git ./libipc3270
 	```
 
-3. Install 64 bits cross compilers
-
-	```shell
-	./libipc3270/win/install-cross.sh --64
-	```
-
-3. Configure 64 bits build environment
-
-        ```shell
-        ./libipc3270/win/win-configure.sh --64
-        ```
-
 4. Build
 
 	```shell
 	cd libipc3270
-	make clean
-	make all
+	meson setup --cross-file /usr/lib/rpm/macros.d/meson-mingw64-cross-file.txt .build
+	meson compile -C .build
 	```
 
 ### Windows native with MSYS2
@@ -74,17 +94,10 @@ The MSVC and MinGW libraries for windows can be found on [Releases](../../releas
 	git clone https://github.com/PerryWerneck/libipc3270.git ./libipc3270
 	```
 
-4. Build library using the mingw shell
+3. Build with packman
 
 	```shell
-	cd libipc3270
-	./autogen.sh
-	make all
-	```
-5. Install
-
-	```shell
-	make install
+	makepkg BUILDDIR=/tmp/pkg -p PKGBUILD.mingw
 	```
 
 ### Windows native with MSVC (untested)
@@ -103,8 +116,5 @@ The MSVC and MinGW libraries for windows can be found on [Releases](../../releas
 
 5. Build and install
 
-	```shell
-	cd ipc3270
-	install.bat
-	```
-
+	TODO
+	
