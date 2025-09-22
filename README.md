@@ -29,7 +29,7 @@ The MSVC and MinGW libraries for windows can be found on [Releases](../../releas
 	* dbus-1-devel
 	* xz
 
-	(This command can make it easy on SuSE: grep -i buildrequires rpm/lib3270.spec | cut -d: -f2 | sudo xargs zypper in )
+	(This command can make it easy on SuSE: grep -i buildrequires rpm/libipc3270.spec | cut -d: -f2 | sudo xargs zypper in )
 
 2. Get sources from git
 
@@ -117,4 +117,4 @@ The MSVC and MinGW libraries for windows can be found on [Releases](../../releas
 5. Build and install
 
 	TODO
-	
+
