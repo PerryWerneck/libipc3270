@@ -73,10 +73,20 @@ threads = dependency('threads')
 libiconv = dependency('iconv', required : false)
 dbus = dependency('dbus-1', required: false)
 
-lib3270 = dependency(
-	'lib3270', 
-	fallback: [ 'lib3270', 'static_library' ]
-)
+if cc.get_id() == 'msvc'
+
+	lib3270 = dependency(
+		'lib3270-delayed'
+	)
+
+else 
+
+	lib3270 = dependency(
+		'lib3270', 
+		fallback: [ 'lib3270', 'static_library' ]
+	)
+
+endif
 
 #
 # Configuration

@@ -73,7 +73,7 @@
 		if(id[0] == ':') {
 
 #ifdef PRODUCT_NAME
-			pipename += PRODUCT_NAME;
+			pipename += LIB3270_STRINGIZE_VALUE_OF(PRODUCT_NAME);
 #else
 			pipename += "pw3270";
 #endif // PRODUCT_NAME
