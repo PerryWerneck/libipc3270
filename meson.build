@@ -71,8 +71,12 @@ subdir('po')
 libintl = dependency('intl', required: false)
 threads = dependency('threads')
 libiconv = dependency('iconv', required : false)
-lib3270 = dependency('lib3270', fallback: [ 'lib3270', 'static_library' ])
 dbus = dependency('dbus-1', required: false)
+
+lib3270 = dependency(
+	'lib3270', 
+	fallback: [ 'lib3270', 'static_library' ]
+)
 
 #
 # Configuration
@@ -183,6 +187,7 @@ if host_machine.system() == 'windows'
 		name: 'lib' + meson.project_name(),
 		description: project_description,
 		variables: pkg_variables,
+		requires_private: [ 'lib3270' ],
 		libraries: [ '-lipc3270.dll' ]
 	)
 
@@ -251,6 +256,7 @@ elif host_machine.system() == 'darwin'
 		name: 'lib' + meson.project_name(),
 		description: project_description,
 		variables: pkg_variables,
+		requires_private: [ 'lib3270' ],
 		libraries: [ '-lipc3270' ],
 	)
 
@@ -299,7 +305,7 @@ else
     description: project_description,
     variables: pkg_variables,
 	libraries: [ '-lipc3270' ],
-	requires_private: [ dbus ],
+	requires_private: [ dbus, 'lib3270' ],
   )
 
   dynamic = shared_library(
