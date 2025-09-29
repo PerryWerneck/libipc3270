@@ -256,7 +256,7 @@ elif host_machine.system() == 'darwin'
 		name: 'lib' + meson.project_name(),
 		description: project_description,
 		variables: pkg_variables,
-		requires_private: [ 'lib3270' ],
+		requires: [ 'lib3270' ],
 		libraries: [ '-lipc3270' ],
 	)
 
@@ -304,8 +304,9 @@ else
     name: 'lib' + meson.project_name(),
     description: project_description,
     variables: pkg_variables,
+	requires: [ 'lib3270' ],
+	requires_private: [ dbus ],
 	libraries: [ '-lipc3270' ],
-	requires_private: [ dbus, 'lib3270' ],
   )
 
   dynamic = shared_library(
